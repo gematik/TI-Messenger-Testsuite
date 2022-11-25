@@ -1,0 +1,46 @@
+include::config.adoc[]
+== Entwickler-Guide
+
+=== Starte Cucumber-Scenario innerhalb der IDE (IntelliJ IDEA)
+
+In den "run configuration":
+
+* setze "main class" auf `de.gematik.test.tiger.TigerCucumberRunner`
+
+* setze folgende "glue code packages"
+
+[source]
+----
+net.serenitybdd.cucumber.actors
+de.gematik.test.tiger.hooks
+de.gematik.test.tiger.glue
+de.gematik.tim.test.glue
+----
+
+Für die Entwicklung dieser Testsuite wurde das Tiger-Framework benutzt.
+Im folgenden Link finden sie das link:https://gematik.github.io/app-Tiger/Tiger-User-Manual.html#_intellij[Tiger-Manual]
+für weitere Informationen.
+
+=== Disable TLS
+
+Um TLS zu deaktivieren dürfen die Umgebungsvariablen nicht gesetzt werden und in der link:tiger.yml[tiger.yml] müssen folgende Zeilen 2 und 3. gelöscht werden
+
+IMPORTANT: Zeile 1 "tigerProxy:" muss weiterhin stehen bleiben
+
+[source,yml,linenums]
+----
+tigerProxy:
+  tls:
+    forwardMutualTlsIdentity: "${TIM_KEYSTORE};${TIM_KEYSTORE_PW};pkcs12"
+----
+
+Mit dieser Konfiguration müssen alle Links in der link:src/test/resources/combine_items.json[combine_items.json] auf `http` gesetzt werden.
+
+=== Disable prepare-items (autofill combine_items.json)
+
+Per default fragt das Plugin die Info-Schnittstelle ab und fügt notwendige Tags und Properties hinzu.
+Für eine genauere Steuerung oder sollte die Info-Schnittstelle noch nicht vollständig implementiert sein, kann die `combine_items.json` händisch erstellt und verwendet werden. Hierzu kann maven mit dem Profil `disable-prepare-items` verwendet werden.
+
+----
+maven clean install -P disable-prepare-items
+----

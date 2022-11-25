@@ -1,0 +1,131 @@
+# language: de
+@File:FeatureFile_05 @Ctl:UseCase
+@Anwendungsfall:AF_10058
+@Akzeptanz-Kriterium:ML-123611 @Akzeptanz-Kriterium:ML-123612
+Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
+  AF_10058 Akteur (User-HBA) im Verzeichnisdienst hinzufügen
+  Mit diesem Anwendungsfall wird ein Akteur in der Rolle "User-HBA" für andere Akteure anderer Messenger-Services
+  auffindbar und erreichbar. Dafür werden FHIR-Ressourcen mit ihrer jeweiligen MXID im Personenverzeichnis
+  (PractitionerRole) des VZD-FHIR-Directory hinterlegt. Zusätzlich besteht die Möglichkeit die Sichtbarkeit für
+  andere Akteure einzuschränken.
+
+  Inhalt
+  TF 1 & 2 User im VZD hinzufügen
+  TF 3     User im VZD hinzufügen und Suche aus anderer Organisation
+  TF 4 & 5 User im VZD löschen
+  TF 6     Negativ-Tests User hinzufügen
+
+  @Ctl:OneHomeServer
+  @TCID:TIM_11_AF_501 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 05.1 Akteur im Verzeichnisdienst - Hinzufügen - HBA-User legt sich an und sucht seinen Eintrag
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
+    Und        "A" hinterlegt seine MXID im Verzeichnis Dienst
+    Wenn       "A" sucht die MXID des Benutzers "A" im Verzeichnis Dienst
+    Dann       "A" findet seine MXID im Verzeichnis Dienst
+
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1 |
+
+  @Ctl:OneHomeServer
+  @TCID:TIM_11_AF_502 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 05.2 Akteur im Verzeichnisdienst - Hinzufügen - HBA-User legt sich an und sucht anderen Eintrag
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Wenn       "A" sucht die MXID des Benutzers "A" im Verzeichnis Dienst
+    Und        "A" findet seine MXID im Verzeichnis Dienst
+    Dann       "A" sucht die MXID des Benutzers "B" im Verzeichnis Dienst
+    Und        "A" findet "B" in FHIR
+
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(false)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1A.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |
+
+  @TCID:TIM_11_AF_503 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 05.3 Akteur im Verzeichnisdienst - Hinzufügen - HBA-User aus anderer Organisation sucht HBA-User Eintrag
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Wenn       "A" sucht die MXID des Benutzers "A" im Verzeichnis Dienst
+    Und        "A" findet seine MXID im Verzeichnis Dienst
+    Dann       "B" sucht die MXID des Benutzers "A" im Verzeichnis Dienst
+    Und        "B" findet "A" in FHIR
+
+  @DistinctProperty(homeserver)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName1.hasTag("prefIOP"))
+  @Filter(ApiName2.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1 | ApiName2 |
+
+  @Ctl:OneHomeServer
+  @TCID:TIM_11_AF_504 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 05.4 Akteur im Verzeichnisdienst - Löschen - HBA-User löscht Eintrag
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "B" findet "A" in FHIR
+    Wenn       "A" löscht seine MXID im Verzeichnis Dienst
+    Dann       "B" kann "A" nicht finden in FHIR
+
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(false)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1A.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |
+
+  @TCID:TIM_11_AF_505 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 05.5 Akteur im Verzeichnisdienst - Löschen - HBA-User löscht Eintrag und ist nicht aufindbar für HBA-User anderer Organisation
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "B" findet "A" in FHIR
+    Wenn       "A" löscht seine MXID im Verzeichnis Dienst
+    Dann       "B" kann "A" nicht finden in FHIR
+
+  @DistinctProperty(homeserver)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName1.hasTag("prefIOP"))
+  @Filter(ApiName2.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1 | ApiName2 |
+
+  @Ctl:OneHomeServer
+  @TCID:TIM_11_AF_506 @PRIO:1 @Testfall:Negativ @Status:Implementiert
+  Szenariogrundriss: 05.6 Akteur im Verzeichnisdienst - Hinzufügen - Nicht erfolgreich ohne Authencitation im Verzeichnisdienst
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_X1"
+    Wenn       "A" versucht seine MXID im Verzeichnis Dienst ohne Authencitation zu hinterlegen
+    Dann       erhält "A" einen Responsecode 401
+
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1 |

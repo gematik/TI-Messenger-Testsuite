@@ -1,0 +1,19 @@
+@Ctl:Technical
+Feature: ContactManagement
+
+  @CI:MultiServerConfig
+  Scenario Outline: Organization contacts practitioner with and without been in the contact management
+    Given "practitioner" claims a device at interface <ApiName1> with user name "practitioner"
+    And   "organization" claims a device at interface <ApiName2> with user name "organization"
+    When  "organization" tries to contact "practitioner" directly "Hello from the other site"
+    Then  "organization" is notable to contact "practitioner"
+    When  "practitioner" put "organization" into his contact management
+    When  "organization" tries to contact "practitioner" directly "Hello from the other site"
+    Then  "organization" is able to contact "practitioner"
+
+     @Filter(ApiName1.hasTag("client"))
+     @Filter(ApiName2.hasTag("client"))
+     @DistinctProperty(homeserver)
+
+    Examples:
+      | ApiName1 | ApiName2 |

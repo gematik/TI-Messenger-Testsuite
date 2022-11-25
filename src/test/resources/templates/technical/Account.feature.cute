@@ -1,0 +1,10 @@
+@Ctl:Technical
+Feature: Account operations
+
+  Scenario Outline: AccountController
+    Given "gematik" claims a device at interface <ApiName1> with user name "MyName"
+    Then account information for "gematik" is returned
+
+    @Filter(ApiName1.hasTag("client"))
+    Examples:
+      | ApiName1 |

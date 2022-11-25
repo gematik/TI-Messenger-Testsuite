@@ -1,0 +1,20 @@
+@Ctl:Technical
+Feature: Media operations
+
+  Scenario Outline: MediaController
+    Given "gematik" claims a device at interface <ApiName1> with user name "MyName"
+    When "gematik" uploads a media file with content "ABCDEF"
+    Then "gematik" can download media file with content "ABCDEF"
+
+    @Filter(ApiName1.hasTag("client"))
+    Examples:
+      | ApiName1 |
+
+  Scenario Outline: MediaController2
+    Given "gematik" claims a device at interface <ApiName1> with user name "MyName"
+    When "gematik" uploads a media file "bild.jpg"
+    Then "gematik" can download media file "bild.jpg"
+
+    @Filter(ApiName1.hasTag("client"))
+    Examples:
+      | ApiName1 |

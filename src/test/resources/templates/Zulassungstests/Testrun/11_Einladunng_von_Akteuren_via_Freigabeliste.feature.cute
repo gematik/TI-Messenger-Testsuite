@@ -1,0 +1,160 @@
+# language: de
+@File:FeatureFile_11 @Ctl:UseCase @Ctl:Additional @Ctl:Freigabeliste
+@Anwendungsfall:AF_Freigabeliste
+Funktionalität: 11. Einladung von Akteuren via Freigabeliste
+  Die folgenden Testfälle sollen die Funktionalität der Freigabeliste zur Einladung von Akteuren sicher stellen,
+  die nicht weiter in der Spezifikationen des TI-Messengers beschrieben sind aber trotzdem für den Betrieb des
+  TI-Messenger-Dienst wichtig sind.
+
+  Inhalt
+  TF 1 & 2 Einladung via Freigabeliste Chat/Raum HBA
+  TF 3     OrgUser lädt HBA via Friagbeliste ein
+  TF 4 - 5 Negativ-Tets für die Freigabeliste
+
+  # TODO Bei mehreren Anbietern MaxSameColumnProperty & Shuffle anschalten
+
+  @Ctl:BP_P2P @Ctl:BP_FL
+  @TCID:TIM_11_AF_1101 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 11.1 Einladung via Freigabeliste außerhalb einer Oganisation - Raum - Beide User jeweils in Freigabeliste (HBA-User an HBA-User)
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
+    Und        "A" hinterlegt "B" in seiner Freigabeliste
+    Und        "B" hinterlegt "A" in seiner Freigabeliste
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Wenn       "B" lädt "A" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "A" erhält eine Einladung von "B"
+    Und        "A" bestätigt eine Einladung von "B"
+    Und        "A" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Und        "B" empfängt eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
+    Und        "A" verlässt Chat-Raum "TIM Testraum 1"
+    Und        "B" verlässt Chat-Raum "TIM Testraum 1"
+    Und        "A" löscht "B" in seiner Freigabeliste
+    Und        "B" löscht "A" in seiner Freigabeliste
+
+  #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName1,homeserver,2)
+  @DistinctProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName1.hasTag("prefIOP"))
+  @Filter(ApiName2.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1 | ApiName2 |
+
+  @Ctl:BP_P2P @Ctl:BP_FL
+  @TCID:TIM_11_AF_1102 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 11.2 Einladung via Freigabeliste außerhalb einer Oganisation - Chat - Beide User jeweils in Freigabeliste (HBA-User an HBA-User)
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
+    Und        "A" hinterlegt "B" in seiner Freigabeliste
+    Und        "B" hinterlegt "A" in seiner Freigabeliste
+    Wenn       "B" schreibt "A" direkt "Hello from the other site"
+    Dann       "A" erhält eine Einladung von "B"
+    Und        "A" bestätigt eine Einladung von "B"
+    Und        "A" empfängt eine Nachricht "Hello from the other site" von "B"
+    Und        "A" verlässt Chat mit "B"
+    Und        "B" verlässt Chat mit "A"
+    Und        "A" löscht "B" in seiner Freigabeliste
+    Und        "B" löscht "A" in seiner Freigabeliste
+
+  #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName1,homeserver,2)
+  @DistinctProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName1.hasTag("prefIOP"))
+  @Filter(ApiName2.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1 | ApiName2 |
+
+  @Ctl:BP_O2P @Ctl:BP_FL @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_1103 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 11.3 Einladung via Freigabeliste außerhalb einer Oganisation - Chat - Nur ein User in Freigabeliste (Organisations-User an HBA-User)
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_A"
+    Und        "C" hinterlegt "B" in seiner Freigabeliste
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
+    Wenn       "B" schreibt "C" direkt "Hello from the other site"
+    Dann       "C" erhält eine Einladung von "B"
+    Und        "C" bestätigt eine Einladung von "B"
+    Und        "C" empfängt eine Nachricht "Hello from the other site" von "B"
+    Und        "C" verlässt Chat mit "B"
+    Und        "C" löscht "B" in seiner Freigabeliste
+
+  @Shuffle(true)
+  #@MaxSameColumnProperty(ApiName1B,homeserver,2)
+  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+  @Filter(!ApiName2.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+  @DistinctColumn(ApiName1B)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName2.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName2 |
+
+  @Ctl:BP_P2P @Ctl:BP_FL @CI:MultiServerConfig
+  @TCID:TIM_11_AF_1104 @PRIO:1 @Testfall:Negativ @Status:Implementiert
+  Szenariogrundriss: 11.4 Einladung via Freigabeliste außerhalb einer Oganisation - Raum - Nur ein User in Freigabeliste (HBA-User an HBA-User)
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
+    Und        "B" hinterlegt "A" in seiner Freigabeliste
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Wenn       "B" lädt "A" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "B" ist nicht berechtigt "A" zu kontaktieren
+    Und        "A" erhält KEINE Einladung von "B" für den Raum "TIM Testraum 1"
+    Und        "B" löscht "A" in seiner Freigabeliste
+
+  #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName2,homeserver,2)
+  @DistinctProperty(homeserver)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName1.hasTag("prefIOP"))
+  @Filter(ApiName2.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1 | ApiName2 |
+
+  @Ctl:BP_P2P @Ctl:BP_FL @CI:MultiServerConfig
+  @TCID:TIM_11_AF_1105 @PRIO:1 @Testfall:Negativ @Status:Implementiert
+  Szenariogrundriss: 11.5 Einladung via Freigabeliste außerhalb einer Oganisation - Chat - Nur User in eigener Freigabeliste (HBA-User an HBA-User)
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
+    Und        "B" hinterlegt "A" in seiner Freigabeliste
+    Wenn       "B" schreibt "A" direkt "Hello from the other site"
+    Dann       "B" ist nicht berechtigt "A" zu kontaktieren
+    Und        "A" erhält KEINE Einladung von "B"
+    Und        "B" löscht "A" in seiner Freigabeliste
+
+  #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName2,homeserver,2)
+  @DistinctProperty(homeserver)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName1.hasTag("prefIOP"))
+  @Filter(ApiName2.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1 | ApiName2 |

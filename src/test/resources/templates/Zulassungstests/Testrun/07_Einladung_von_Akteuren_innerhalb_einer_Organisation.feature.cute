@@ -1,0 +1,500 @@
+# language: de
+@File:FeatureFile_07 @Ctl:UseCase @Ctl:OneHomeServer
+@Anwendungsfall:AF_10104
+@Akzeptanz-Kriterium:ML-123896 @Akzeptanz-Kriterium:ML-129415 @Akzeptanz-Kriterium:ML-129414
+@Akzeptanz-Kriterium:ML-132590
+Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
+  AF_10104 - Einladung von Akteuren innerhalb einer Organisation
+  In diesem Anwendungsfall wird ein Akteur der zu einer gemeinsamen Organisation gehört in einen Raum
+  eingeladen um Aktionen auszuführen. Für die Suche von Akteuren innerhalb einer gemeinsamen Organisation
+  durchsucht ein TI-Messenger-Client das Nutzerverzeichnis seiner Organisation auf dem Matrix-Homeserver.
+  In diesem Anwendungsfall prüft der Messenger-Proxy ob die im Invite-Event enthaltenen Matrix-Domains Teil
+  der TI-Föderation sind (siehe Berechtigungskonzept - Stufe 1). Ist dies der Fall erfolgt die Weiterleitung
+  an den zugehörigen Matrix-Homeserver. Dieser prüft ob die beteiligten Akteure bei ihm registriert sind. Ist
+  dies nicht der Fall,  handelt es sich bei dem einzuladenden Akteur nicht um einen Akteur innerhalb der
+  Organisation und das Invite-Event wird an den Matrix- Homeserver des einzuladenden Akteurs weitergeleitet.
+  Der Anwendungsfall "AF_10061 - Einladung von Akteuren außerhalb einer Organisation" zeigt den sich daraus
+  ergebenden Verlauf.
+
+  In diesem Anwendungsfall erfolgt gleichzeitig eine Prüfung des Berechtigungskonzept.
+
+  Inhalt
+  TF  1 -  4 Einladung in Chat/Raum (HBA an HBA)
+  TF  5      Einladung in Chat (HBA an OrgUser)
+  TF  6      Einladung in Raum (OrgUser an OrgUser)
+  TF  7      Einladung in Chat (OrgUser an HBA)
+  TF  8 &  9 Ablehnung der Einladung in Chat/Raum (HBA an HBA)
+  TF 10 & 11 Ablehnung der Einladung in Chat/Raum (OrgUser an OrgUser)
+  TF 12 & 13 Negativ-Tests zur Einladung - Dritter Nutzer soll in Chat eingeladen werden (HBA & OrgUser)
+  TF 14 & 15 Negativ-Tests zur Einladung - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht (HBA & OrgUser)
+  TF 16 & 17 Einladung durch nicht im Verzeichnisdienst registrierte User in Chat/Raum (HBA an HBA)
+  TF 18 & 19 Einladung durch nicht im Verzeichnisdienst registrierte User in Chat/Raum (OrgUser und OrgUser)
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_701 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 07.1 Einladung innerhalb einer Organisation - Einladung in Chat - Volltextsuche (HBA-User an HBA-User)
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" findet "B" in FHIR
+    Wenn       "A" schreibt "B" direkt "Hello from the other site"
+    Dann       "B" erhält eine Einladung von "A"
+    Und        "B" bestätigt eine Einladung von "A"
+    Und        "B" empfängt eine Nachricht "Hello from the other site" von "A"
+
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(false)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1A.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_702 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 07.2 Einladung innerhalb einer Organisation - Einladung in Chat - unscharfe Suche (HBA-User an HBA-User)
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" findet TI-Messenger-Nutzer "B" bei Suche nach Namen minus 0-1 (Anzahl vorne-hinten) Char(s) abgeschnitten
+    Wenn       "A" schreibt "B" direkt "Hello from the other site"
+    Dann       "B" erhält eine Einladung von "A"
+    Und        "B" bestätigt eine Einladung von "A"
+    Und        "B" empfängt eine Nachricht "Hello from the other site" von "A"
+
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(false)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1A.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_703 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 07.3 Einladung innerhalb einer Organisation - Einladung in Raum - Volltextsuche (HBA-User an HBA-User)
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" findet "B" in FHIR
+    Wenn       "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
+
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(false)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1A.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_704 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 07.4 Einladung innerhalb einer Organisation - Einladung in Raum - unscharfe Suche (HBA-User an HBA-User)
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" findet TI-Messenger-Nutzer "B" bei Suche nach Namen minus 0-1 (Anzahl vorne-hinten) Char(s) abgeschnitten
+    Wenn       "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
+
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(false)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1A.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |
+
+  @Ctl:BP_P2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_705 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 07.5 Einladung innerhalb einer Organisation - Einladung in Chat - HBA-User lädt Organisations-User ein
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "HBA_A"
+    Und        "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
+    Und        "C" findet "B" im Healthcare-Service "HealthcareServiceName"
+    Wenn       "C" schreibt "B" direkt "Hello from the other site"
+    Und        "B" erhält eine Einladung von "C"
+    Und        "B" bestätigt eine Einladung von "C"
+    Dann       "B" empfängt eine Nachricht "Hello from the other site" von "C"
+
+  #@DistinctColumn(ApiName1A)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(false)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+  @Filter(ApiName1C.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @Ctl:BP_O2O  @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_706 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 07.6 Einladung innerhalb einer Organisation - Einladung in Raum - Organisations-User lädt Organisations-User ein
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
+    Und        "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Wenn       "C" lädt "B" über den HealthcareService "HealthcareServiceName1" in den Chat-Raum "TIM Testraum 1" ein
+    Dann       "B" erhält eine Einladung von "C"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
+
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(false)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @Ctl:BP_O2P @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_707 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 07.7 Einladung innerhalb einer Organisation - Einladung in Chat - Organisations-User lädt HBA-User ein
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "HBA_A"
+    Und        "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
+    Und        "B" findet "C" in FHIR
+    Wenn       "B" schreibt "C" direkt "Hello from the other site"
+    Und        "C" erhält eine Einladung von "B"
+    Und        "C" bestätigt eine Einladung von "B"
+    Dann       "C" empfängt eine Nachricht "Hello from the other site" von "B"
+
+  #@DistinctColumn(ApiName1A)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(false)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+  @Filter(ApiName1C.hasTag("practitioner"))
+
+     Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_708 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 07.8 Einladung innerhalb einer Organisation - Einladung in Chat - Ablehnung der Einladung (HBA-User an HBA-User)
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" findet "B" in FHIR
+    Und        "A" schreibt "B" direkt "Hello from the other site"
+    Und        "B" erhält eine Einladung von "A"
+    Wenn       "B" lehnt eine Einladung zum Chat mit "A" ab
+    Dann       "B" ist dem Chat mit "A" nicht beigetreten
+
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(false)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1A.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_709 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 07.9 Einladung innerhalb einer Organisation - Einladung in Raum - Ablehnung der Einladung (HBA-User an HBA-User)
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegt seine MXID im Verzeichnis Dienst
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" findet "B" in FHIR
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
+    Wenn       "B" lehnt eine Einladung für Raum "TIM Testraum 1" ab
+    Dann       "B" ist dem Raum "TIM Testraum 1" nicht beigetreten
+
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(false)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1A.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |
+
+  @Ctl:BP_O2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_710 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 07.10 Einladung innerhalb einer Organisation - Einladung in Chat - Ablehnung der Einladung (Organisations-User an Organisations-User)
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
+    Und        "B" findet "C" im Healthcare-Service "HealthcareServiceName2"
+    Und        "B" schreibt "C" direkt "Hello from the other site"
+    Und        "C" erhält eine Einladung von "B"
+    Wenn       "C" lehnt eine Einladung zum Chat mit "B" ab
+    Dann       "C" ist dem Chat mit "B" nicht beigetreten
+
+  #@DistinctColumn(ApiName1A)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(false)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @Ctl:BP_O2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_711 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 07.11 Einladung innerhalb einer Organisation - Einladung in Raum - Ablehnung der Einladung (Organisations-User an Organisations-User)
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "B" findet "C" im Healthcare-Service "HealthcareServiceName2"
+    Und        "B" lädt "C" in Chat-Raum "TIM Testraum 1" ein
+    Und        "C" erhält eine Einladung in Raum "TIM Testraum 1"
+    Wenn       "C" lehnt eine Einladung für Raum "TIM Testraum 1" ab
+    Dann       "C" ist dem Raum "TIM Testraum 1" nicht beigetreten
+
+  #@DistinctColumn(ApiName1A)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(false)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_712 @PRIO:1 @Testfall:Negativ @Status:Implementiert
+  Szenariogrundriss: 07.12 Einladung innerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (HBA)
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "HBA_C"
+    Und        "A", "B", "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" findet "B" in FHIR
+    Und        "A" findet "C" in FHIR
+    Und        "A" schreibt "B" direkt "Hello from the other site"
+    Und        "B" erhält eine Einladung von "A"
+    Und        "B" bestätigt eine Einladung von "A"
+    Und        "B" empfängt eine Nachricht "Hello from the other site" von "A"
+    Wenn       "A" lädt "C" in Chat mit "B" ein
+    Dann       erhält "A" einen Responsecode 401
+
+  @Shuffle(true)
+  @EqualProperty(homeserver)
+  @DistinctColumn(ApiName1A)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+  @Filter(ApiName1A.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("practitioner"))
+  @Filter(ApiName1C.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @Ctl:BP_O2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_713 @PRIO:1 @Testfall:Negativ @Status:Implementiert
+  Szenariogrundriss: 07.13 Einladung innerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (OrgUser)
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Und        "D" reserviert sich einen Test-Client an der Schnittstelle <ApiName1D> mit dem Benutzer "OrgUser_C"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "D"
+    Und        "B" findet "C" im Healthcare-Service "HealthcareServiceName1"
+    Und        "B" findet "D" im Healthcare-Service "HealthcareServiceName2"
+    Und        "B" schreibt "C" direkt "Hello from the other site"
+    Und        "C" erhält eine Einladung von "B"
+    Und        "C" bestätigt eine Einladung von "B"
+    Und        "C" empfängt eine Nachricht "Hello from the other site" von "B"
+    Wenn       "B" lädt "D" in Chat mit "C" ein
+    Dann       erhält "B" einen Responsecode 401
+
+  #@Shuffle(true)
+  @EqualProperty(homeserver)
+  @DistinctColumn(ApiName1B)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+  @Filter(ApiName1D.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C | ApiName1D |
+
+  @WIP
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_714 @PRIO:1 @Testfall:Negativ @Status:InBearbeitung
+  Szenariogrundriss: 07.14 Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch HBA-User
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Und        "A" hinterlegt seine MXID im Verzeichnis Dienst
+    Dann       "A" findet TI-Messenger-Nutzer "B" bei Suche mit Namen "HBA_B" NICHT
+
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(false)
+  @DistinctColumn(ApiName1A)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1A.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |
+
+  @WIP
+  @Ctl:BP_O2P @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_715 @PRIO:1 @Testfall:Negativ @Status:InBearbeitung
+  Szenariogrundriss: 07.15 Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch Organisations-User
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "HBA_B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
+    Dann       "B" findet TI-Messenger-Nutzer "C" bei Suche mit Namen "HBA_B" NICHT
+
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(false)
+  @DistinctColumn(ApiName1B)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+  @Filter(ApiName1C.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @Ctl:BP_N2P
+  @TCID:TIM_11_AF_716 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 07.16 Einladung innerhalb einer Organisation - Einladung in Chat - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Und        "A" hinterlegt seine MXID im Verzeichnis Dienst
+    Wenn       "B" schreibt "A" direkt "Hello from the other site"
+    Dann       "A" erhält eine Einladung von "B"
+    Und        "A" bestätigt eine Einladung von "B"
+    Und        "A" empfängt eine Nachricht "Hello from the other site" von "B"
+
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(false)
+  @DistinctColumn(ApiName1B)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1A.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |
+
+  @Ctl:BP_N2P @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_717 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 07.17 Einladung innerhalb einer Organisation - Einladung in Raum - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Und        "A" hinterlegt seine MXID im Verzeichnis Dienst
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "B" findet "A" in FHIR
+    Wenn       "B" lädt "A" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "A" erhält eine Einladung von "B"
+    Und        "A" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "A" ist dem Raum "TIM Testraum 1" beigetreten
+
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(false)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1A.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |
+
+  @Ctl:BP_N2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_718 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 07.18 Einladung innerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
+    Wenn       "C" schreibt "B" direkt "Hello from the other site"
+    Dann       "B" erhält eine Einladung von "C"
+    Und        "B" bestätigt eine Einladung von "C"
+    Und        "B" empfängt eine Nachricht "Hello from the other site" von "C"
+
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(false)
+  @DistinctColumn(ApiName1C)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @Ctl:BP_N2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_719 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+    Szenariogrundriss: 07.19 Einladung innerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
+      Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+      Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+      Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+      Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
+      Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+      Und        "B" findet "C" im Healthcare-Service "HealthcareServiceName1"
+      Wenn       "B" lädt "C" in Chat-Raum "TIM Testraum 1" ein
+      Dann       "C" erhält eine Einladung von "B"
+      Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1"
+      Und        "C" ist dem Raum "TIM Testraum 1" beigetreten
+
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(false)
+  @DistinctColumn(ApiName1B)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |

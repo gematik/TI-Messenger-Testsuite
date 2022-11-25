@@ -1,0 +1,287 @@
+# default local Tiger Proxy
+tigerProxy:
+  tls:
+    forwardMutualTlsIdentity: "${TIM_KEYSTORE};${TIM_KEYSTORE_PW};pkcs12"
+
+servers:
+
+  tim-db:
+    type: docker
+    source:
+      - postgres
+    version: latest
+    startupTimeoutSec: 10
+    environment:
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_DB=tim
+    exports:
+      - DB_PORT=${PORT:5432}
+
+  testdriverApi_A_IOS_Client:
+    type: externalJar
+    dependsUpon: tim-db
+    startupTimeoutSec: 120
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8080/actuator/health
+    externalJarOptions:
+      workingDir: "target"
+    environment:
+      - SERVER_PORT=8080
+      - info.app.title=a_ios_c
+      - info.app.homeserver=hs-a
+      - info.app.clientInfo.canAdministrateFhirOrganization=false
+      - spring.application.name=testdriverApi_A_IOS_Client
+      - spring.jpa.generate-ddl=true
+      - spring.jpa.hibernate.format_sql=create
+      - db.port=${db.port}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms512m -Xmx1g
+
+  testdriverApi_A_AND_Client:
+    type: externalUrl
+    dependsUpon: testdriverApi_A_IOS_Client
+    source:
+      - https://127.0.0.1:8080
+    healthcheckUrl: https://127.0.0.1:8080/actuator/health
+
+  testdriverApi_A_WIN_Client:
+    type: externalUrl
+    dependsUpon: testdriverApi_A_IOS_Client
+    source:
+      - https://127.0.0.1:8080
+    healthcheckUrl: https://127.0.0.1:8080/actuator/health
+
+  testdriverApi_A_ORG:
+    type: externalJar
+    dependsUpon: testdriverApi_A_IOS_Client
+    startupTimeoutSec: 120
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8083/actuator/health
+    externalJarOptions:
+      workingDir: "target"
+    environment:
+      - SERVER_PORT=8083
+      - info.app.title=a_org
+      - info.app.homeserver=hs-a
+      - info.app.clientInfo.canAdministrateFhirPractitioner=false
+      - info.app.clientInfo.canSendMessages=false
+      - spring.application.name=testdriverApi_A_ORG
+      - db.port=${db.port}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms512m -Xmx1g
+
+  testdriverApi_B_IOS_Client:
+    type: externalJar
+    dependsUpon: testdriverApi_A_IOS_Client
+    startupTimeoutSec: 120
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8084/actuator/health
+    externalJarOptions:
+      workingDir: "target"
+    environment:
+      - SERVER_PORT=8084
+      - info.app.title=b_ios_c
+      - info.app.homeserver=hs-b
+      - info.app.clientInfo.canAdministrateFhirOrganization=false
+      - spring.application.name=testdriverApi_B_IOS_Client
+      - db.port=${db.port}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms512m -Xmx1g
+
+  testdriverApi_B_AND_Client:
+    type: externalUrl
+    dependsUpon: testdriverApi_B_IOS_Client
+    source:
+      - https://127.0.0.1:8084
+    healthcheckUrl: https://127.0.0.1:8084/actuator/health
+
+  testdriverApi_B_Win_Client:
+    type: externalUrl
+    dependsUpon: testdriverApi_B_IOS_Client
+    source:
+      - https://127.0.0.1:8084
+    healthcheckUrl: https://127.0.0.1:8084/actuator/health
+
+  testdriverApi_B_ORG:
+    type: externalJar
+    dependsUpon: testdriverApi_A_IOS_Client
+    startupTimeoutSec: 120
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8087/actuator/health
+    externalJarOptions:
+      workingDir: "target"
+    environment:
+      - SERVER_PORT=8087
+      - info.app.title=b_org
+      - info.app.homeserver=hs-b
+      - info.app.clientInfo.canAdministrateFhirPractitioner=false
+      - info.app.clientInfo.canSendMessages=false
+      - spring.application.name=testdriverApi_B_ORG
+      - db.port=${db.port}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms512m -Xmx1g
+
+  testdriverApi_C_IOS_Client:
+    type: externalJar
+    dependsUpon: testdriverApi_A_IOS_Client
+    startupTimeoutSec: 120
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8088/actuator/health
+    externalJarOptions:
+      workingDir: "target"
+    environment:
+      - SERVER_PORT=8088
+      - info.app.title=c_ios_c
+      - info.app.homeserver=hs-c
+      - info.app.clientInfo.canAdministrateFhirOrganization=false
+      - spring.application.name=testdriverApi_C_IOS_Client
+      - db.port=${db.port}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms512m -Xmx1g
+
+  testdriverApi_C_AND_Client:
+    type: externalUrl
+    dependsUpon: testdriverApi_C_IOS_Client
+    source:
+      - https://127.0.0.1:8088
+    healthcheckUrl: https://127.0.0.1:8088/actuator/health
+
+
+  testdriverApi_C_WIN_Client:
+    type: externalUrl
+    dependsUpon: testdriverApi_C_IOS_Client
+    source:
+      - https://127.0.0.1:8088
+    healthcheckUrl: https://127.0.0.1:8088/actuator/health
+
+  testdriverApi_C_ORG:
+    type: externalJar
+    dependsUpon: testdriverApi_A_IOS_Client
+    startupTimeoutSec: 120
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8091/actuator/health
+    externalJarOptions:
+      workingDir: "target"
+    environment:
+      - SERVER_PORT=8091
+      - info.app.title=c_org
+      - info.app.homeserver=hs-c
+      - info.app.clientInfo.canAdministrateFhirPractitioner=false
+      - info.app.clientInfo.canSendMessages=false
+      - spring.application.name=testdriverApi_C_ORG
+      - db.port=${db.port}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms512m -Xmx1g
+
+  testdriverApi_D_IOS_Client:
+    type: externalJar
+    dependsUpon: testdriverApi_A_IOS_Client
+    startupTimeoutSec: 120
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8092/actuator/health
+    externalJarOptions:
+      workingDir: "target"
+    environment:
+      - SERVER_PORT=8092
+      - info.app.title=d_ios_c
+      - info.app.homeserver=hs-d
+      - info.app.clientInfo.canAdministrateFhirOrganization=false
+      - spring.application.name=testdriverApi_D_IOS_Client
+      - db.port=${db.port}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms512m -Xmx1g
+
+  testdriverApi_D_AND_Client:
+    type: externalUrl
+    dependsUpon: testdriverApi_D_IOS_Client
+    source:
+      - https://127.0.0.1:8092
+    healthcheckUrl: https://127.0.0.1:8092/actuator/health
+
+  testdriverApi_D_WIN_Client:
+    type: externalUrl
+    dependsUpon: testdriverApi_D_IOS_Client
+    source:
+      - https://127.0.0.1:8092
+    healthcheckUrl: https://127.0.0.1:8092/actuator/health
+
+  testdriverApi_D_ORG:
+    type: externalJar
+    dependsUpon: testdriverApi_A_IOS_Client
+    startupTimeoutSec: 120
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8095/actuator/health
+    externalJarOptions:
+      workingDir: "target"
+    environment:
+      - SERVER_PORT=8095
+      - info.app.title=d_org
+      - info.app.homeserver=hs-d
+      - info.app.clientInfo.canAdministrateFhirPractitioner=false
+      - info.app.clientInfo.canSendMessages=false
+      - spring.application.name=testdriverApi_D_ORG
+      - db.port=${db.port}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms512m -Xmx1g
+
+  testdriverApi_E_IOS_Client:
+    type: externalJar
+    dependsUpon: testdriverApi_A_IOS_Client
+    startupTimeoutSec: 120
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8096/actuator/health
+    externalJarOptions:
+      workingDir: "target"
+    environment:
+      - SERVER_PORT=8096
+      - info.app.title=e_ios_c
+      - info.app.homeserver=hs-e
+      - info.app.clientInfo.canAdministrateFhirOrganization=false
+      - spring.application.name=testdriverApi_E_IOS_Client
+      - db.port=${db.port}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms512m -Xmx1g
+
+  testdriverApi_E_AND_Client:
+    type: externalUrl
+    dependsUpon: testdriverApi_E_IOS_Client
+    source:
+      - https://127.0.0.1:8096
+    healthcheckUrl: https://127.0.0.1:8096/actuator/health
+
+  testdriverApi_E_WIN_Client:
+    type: externalUrl
+    dependsUpon: testdriverApi_E_IOS_Client
+    source:
+      - https://127.0.0.1:8096
+    healthcheckUrl: https://127.0.0.1:8096/actuator/health
+
+
+  testdriverApi_E_ORG:
+    type: externalJar
+    dependsUpon: testdriverApi_A_IOS_Client
+    startupTimeoutSec: 120
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8099/actuator/health
+    externalJarOptions:
+      workingDir: "target"
+    environment:
+      - SERVER_PORT=8099
+      - info.app.title=e_org
+      - info.app.homeserver=hs-e
+      - info.app.clientInfo.canAdministrateFhirPractitioner=false
+      - info.app.clientInfo.canSendMessages=false
+      - spring.application.name=testdriverApi_E_ORG
+      - db.port=${db.port}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms512m -Xmx1g

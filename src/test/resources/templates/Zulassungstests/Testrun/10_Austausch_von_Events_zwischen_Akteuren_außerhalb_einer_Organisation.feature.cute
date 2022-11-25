@@ -1,0 +1,760 @@
+# language: de
+@File:FeatureFile_10 @Ctl:UseCase
+@Anwendungsfall:AF_10062
+@Akzeptanz-Kriterium:ML-123665 @Akzeptanz-Kriterium:ML-123666 @Akzeptanz-Kriterium:ML-123667
+@Akzeptanz-Kriterium:ML-123668
+Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Organisation
+  AF_10062 - Austausch von Events zwischen Akteuren außerhalb einer Organisation
+  In diesem Anwendungsfall können Akteure welche sich in einem gemeinsamen Raum befinden Nachrichten austauschen und
+  andere durch die Matrix-Spezifikation festgelegte Aktionen ausführen. Dieser Anwendungsfall setzt ein erfolgreiches
+  Invite-Event eines oder mehrerer beteiligter Akteure voraus. In diesem Anwendungsfall sind die beteiligten Akteure
+  in einem gemeinsamen Chatraum und auf unterschiedlichen Messenger-Services verteilt.
+
+  Inhalt
+  TF 1  -  3 HBA sendet Nachticht Chat/Raum (HBA an HBA)
+  TF 4  &  5 HBA sendet Nachticht Chat/Raum (HBA an OrgUser)
+  TF 6  &  7 OrgUser sendet Nachticht Chat/Raum (OrgUser an OrgUser)
+  TF 8  &  9 OrgUser sendet Nachticht Chat/Raum (OrgUser an HBA) (Negativ)
+  TF 10 & 11 Nachrichten an Healthcare Service (HBA an Healthcare Service & OrgUser an Healthcare Service)
+  TF 12 & 13 Ändern einer Nachricht von HBA/OrgUser
+  TF 14 - 17 Löschen einer Nachricht durch HBA/OrgUser in Chat/Raum
+  TF 18 & 19 Nachricht an ausgeloggten User senden durch HBA/OrgUser
+  TF 20 - 23 Attachment senden durch HBA/OrgUser
+
+  # TODO Bei mehreren Anbietern MaxSameColumnProperty & Shuffle anschalten
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_1001 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 10.1 Events außerhalb einer Organisation - Chat - Test-Client "A" sendet und empängt eine Nachricht
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" findet "B" in FHIR
+    Wenn       "A" schreibt "B" direkt "Hello from the other site"
+    Und        "B" erhält eine Einladung von "A"
+    Und        "B" bestätigt eine Einladung von "A"
+    Dann       "B" empfängt eine Nachricht "Hello from the other site" von "A"
+    Wenn       "B" schreibt "A" direkt "At least I can say that I have tried"
+    Dann       "A" empfängt eine Nachricht "At least I can say that I have tried" von "B"
+
+  #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName1,homeserver,2)
+  @DistinctProperty(homeserver)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName1.hasTag("prefIOP"))
+  @Filter(ApiName2.hasTag("prefIOP"))
+
+      Beispiele:
+    | ApiName1 | ApiName2 |
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_1002 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 10.2 Events außerhalb einer Organisation - Raum - Test-Client "A" sendet eine Nachricht
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" findet "B" in FHIR
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Wenn       "A" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Dann       "B" empfängt eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
+
+  #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName1,homeserver,2)
+  @DistinctProperty(homeserver)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName1.hasTag("prefIOP"))
+  @Filter(ApiName2.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1 | ApiName2 |
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_1003 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 10.3 Events außerhalb einer Organisation - Raum - Test-Client "B" sendet eine Nachricht
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" findet "B" in FHIR
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Wenn       "B" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Dann       "A" empfängt eine Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1"
+
+  #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName2,homeserver,2)
+  @DistinctProperty(homeserver)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName1.hasTag("prefIOP"))
+  @Filter(ApiName2.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1 | ApiName2 |
+
+  @Ctl:BP_P2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_1004 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 10.4 Events außerhalb einer Organisation - Chat - HBA-User sendet Organisations-User eine Nachricht
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_A"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Wenn       "C" schreibt "B" direkt "Hello from the other site"
+    Und        "B" erhält eine Einladung von "C"
+    Und        "B" bestätigt eine Einladung von "C"
+    Dann       "B" empfängt eine Nachricht "Hello from the other site" von "C"
+
+  #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName1,homeserver,2)
+  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+  @Filter(!ApiName1B.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("prefIOP"))
+  @Filter(ApiName2.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName2 |
+
+  @Ctl:BP_P2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_1005 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 10.5 Events außerhalb einer Organisation - Raum - HBA-User sendet Organisations-User eine Nachricht
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_A"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und        "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Wenn       "C" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Dann       "B" empfängt eine Nachricht "Hello from the other site" von "C" im Raum "TIM Testraum 1"
+
+  #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName1,homeserver,2)
+  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+  @Filter(!ApiName1B.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("prefIOP"))
+  @Filter(ApiName2.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName2 |
+
+  @Ctl:BP_O2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_1006 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 10.6 Events außerhalb einer Organisation - Chat - Organisations-User sendet Organisations-User eine Nachricht
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Org Admin Client an Schnittstelle <ApiName2A>
+    Und        "D" reserviert sich einen Test-Client an der Schnittstelle <ApiName2B> mit dem Benutzer "OrgUser_B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "C" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "D"
+    Und        "B" findet "D" im Healthcare-Service "HealthcareServiceName2"
+    Wenn       "B" schreibt "D" direkt "Hello from the other site"
+    Und        "D" erhält eine Einladung von "B"
+    Und        "D" bestätigt eine Einladung von "B"
+    Dann       "D" empfängt eine Nachricht "Hello from the other site" von "B"
+
+  #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName1B,homeserver,2)
+  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+  @Filter(!ApiName1B.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName2A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName2B.hasTag("client"))
+  @Filter(ApiName1B.hasTag("prefIOP"))
+  @Filter(ApiName2B.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName2A | ApiName2B |
+
+  @Ctl:BP_O2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_1007 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 10.7 Events außerhalb einer Organisation - Raum - Organisations-User sendet Organisations-User eine Nachricht
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Org Admin Client an Schnittstelle <ApiName2A>
+    Und        "D" reserviert sich einen Test-Client an der Schnittstelle <ApiName2B> mit dem Benutzer "OrgUser_B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "C" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "D"
+    Und        "B" findet "D" im Healthcare-Service "HealthcareServiceName2"
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "B" lädt "D" in Chat-Raum "TIM Testraum 1" ein
+    Und        "D" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "D" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Wenn       "B" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Dann       "D" empfängt eine Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1"
+
+  #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName1B,homeserver,2)
+  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+  @Filter(!ApiName1B.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName2A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName2B.hasTag("client"))
+  @Filter(ApiName1B.hasTag("prefIOP"))
+  @Filter(ApiName2B.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName2A | ApiName2B |
+
+  @Ctl:BP_O2P @Ctl:OrgAdmin @CI:MultiServerConfig
+  @TCID:TIM_11_AF_1008 @PRIO:1 @Testfall:Negativ @Status:Implementiert
+  Szenariogrundriss: 10.8 Events außerhalb einer Organisation - Chat - Organisations-User sendet HBA-User eine Nachricht
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_A"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "B" findet "C" in FHIR
+    Wenn       "B" versucht "C" direkt "Hello from the other site" zu schreiben
+    Dann       erhält "B" einen Responsecode 403
+    Und        "C" erhält KEINE Einladung von "B"
+
+  #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName1B,homeserver,2)
+  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+  @Filter(!ApiName1B.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("prefIOP"))
+  @Filter(ApiName2.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName2 |
+
+  @Ctl:BP_O2P @Ctl:OrgAdmin @CI:MultiServerConfig
+  @TCID:TIM_11_AF_1009 @PRIO:1 @Testfall:Negativ @Status:Implementiert
+  Szenariogrundriss: 10.9 Events außerhalb einer Organisation - Raum - Organisations-User sendet HBA-User eine Nachricht
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_A"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "B" findet "C" in FHIR
+    Wenn       "B" versucht "C" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann        erhält "B" einen Responsecode 403
+    Und         "C" erhält KEINE Einladung von "B" für den Raum "TIM Testraum 1"
+
+  #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName1B,homeserver,2)
+  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+  @Filter(!ApiName1B.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("prefIOP"))
+  @Filter(ApiName2.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName2 |
+
+  @Ctl:BP_O2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_1010 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 10.10 Events außerhalb einer Organisation - Chat - Organisations-User sendet eine Nachricht an HealthCareService
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Org Admin Client an Schnittstelle <ApiName2A>
+    Und        "D" reserviert sich einen Test-Client an der Schnittstelle <ApiName2B> mit dem Benutzer "OrgUser_B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "C" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "D"
+    Und        "D" schreibt "B" über den Healthcare-Service "HealthcareServiceName1" direkt "Hello from the other site"
+    Und        "B" erhält eine Einladung von "D"
+    Und        "B" bestätigt eine Einladung von "D"
+    Und        "B" empfängt eine Nachricht "Hello from the other site" von "D"
+    Wenn       "B" schreibt "D" direkt "At least I can say that I have tried"
+    Dann       "D" empfängt eine Nachricht "At least I can say that I have tried" von "B"
+
+  #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName2B,homeserver,2)
+  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+  @Filter(!ApiName1B.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName2A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName2B.hasTag("client"))
+  @Filter(ApiName1B.hasTag("prefIOP"))
+  @Filter(ApiName2B.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName2A | ApiName2B |
+
+  @Ctl:BP_P2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_1011 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 10.11 Events außerhalb einer Organisation - Chat - HBA-User sendet eine Nachricht an HealthCareService
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Org Admin Client an Schnittstelle <ApiName2A>
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName2B> mit dem Benutzer "OrgUser_A"
+    Und        "A" hinterlegt seine MXID im Verzeichnis Dienst
+    Und        "B" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
+    Wenn       "A" schreibt "C" über den Healthcare-Service "HealthcareServiceName1" direkt "Hello from the other site"
+    Und        "C" erhält eine Einladung von "A"
+    Und        "C" bestätigt eine Einladung von "A"
+    Dann       "C" empfängt eine Nachricht "Hello from the other site" von "A"
+    Wenn       "C" schreibt "A" direkt "At least I can say that I have tried"
+    Dann       "A" empfängt eine Nachricht "At least I can say that I have tried" von "C"
+
+  #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName1,homeserver,2)
+  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+  @Filter(!ApiName1.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
+  @Filter(!ApiName1.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2A.hasTag("orgAdmin"))
+  @Filter(ApiName2B.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName1.hasTag("prefIOP"))
+  @Filter(ApiName2B.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1 | ApiName2A | ApiName2B |
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_1012 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 10.12 Events außerhalb einer Organisation - Raum - HBA_User ändert eine Nachricht
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" findet "B" in FHIR
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "A" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Und        "B" empfängt eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
+    Dann       "A" ändert seine letzte Nachricht im Raum "TIM Testraum 1" in "At least I can say that I have tried"
+    Wenn       "B" empfängt eine Nachricht "At least I can say that I have tried" von "A" im Raum "TIM Testraum 1"
+    Und        "B" kann die Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1" nicht sehen
+
+  #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName2,homeserver,2)
+  @DistinctProperty(homeserver)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName1.hasTag("prefIOP"))
+  @Filter(ApiName2.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1 | ApiName2 |
+
+  @Ctl:BP_O2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_1013 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 10.13 Events außerhalb einer Organisation - Raum - Organisations-User ändert eine Nachricht
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Org Admin Client an Schnittstelle <ApiName2A>
+    Und        "D" reserviert sich einen Test-Client an der Schnittstelle <ApiName2B> mit dem Benutzer "OrgUser_B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "C" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "D"
+    Und        "B" findet "D" im Healthcare-Service "HealthcareServiceName2"
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "B" lädt "D" in Chat-Raum "TIM Testraum 1" ein
+    Und        "D" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "D" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Und        "D" empfängt eine Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1"
+    Wenn       "B" ändert seine letzte Nachricht im Raum "TIM Testraum 1" in "At least I can say that I have tried"
+    Dann       "D" empfängt eine Nachricht "At least I can say that I have tried" von "B" im Raum "TIM Testraum 1"
+    Und        "D" kann die Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1" nicht sehen
+
+  #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName1B,homeserver,2)
+  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+  @Filter(!ApiName1B.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName2A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName2B.hasTag("client"))
+  @Filter(ApiName1B.hasTag("prefIOP"))
+  @Filter(ApiName2B.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName2A | ApiName2B |
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_1014 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 10.14 Events außerhalb einer Organisation - Chat - HBA-User "B" löscht eine Nachricht
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" findet "B" in FHIR
+    Und        "A" schreibt "B" direkt "Hello from the other site"
+    Und        "B" erhält eine Einladung von "A"
+    Und        "B" bestätigt eine Einladung von "A"
+    Und        "B" empfängt eine Nachricht "Hello from the other site" von "A"
+    Und        "B" schreibt "A" direkt "At least I can say that I have tried"
+    Und        "A" empfängt eine Nachricht "At least I can say that I have tried" von "B"
+    Wenn       "B" löscht seine Nachricht "At least I can say that I have tried" im Chat mit "A"
+    Dann       "A" kann die Nachricht "At least I can say that I have tried" von "B" im Chat mit "B" nicht sehen
+    Und        "B" kann die Nachricht "At least I can say that I have tried" von "B" im Chat mit "A" nicht sehen
+
+  #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName2,homeserver,2)
+  @DistinctProperty(homeserver)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName1.hasTag("prefIOP"))
+  @Filter(ApiName2.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1 | ApiName2 |
+
+  @Ctl:BP_O2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_1015 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 10.15 Events außerhalb einer Organisation - Chat - Organisations-User "B" löscht eine Nachricht
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Org Admin Client an Schnittstelle <ApiName2A>
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "D" reserviert sich einen Test-Client an der Schnittstelle <ApiName2B> mit dem Benutzer "OrgUser_B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "C"
+    Und        "B" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "D"
+    Und        "C" findet "D" im Healthcare-Service "HealthcareServiceName1"
+    Und        "C" schreibt "D" direkt "Hello from the other site"
+    Und        "D" erhält eine Einladung von "C"
+    Und        "D" bestätigt eine Einladung von "C"
+    Und        "D" empfängt eine Nachricht "Hello from the other site" von "C"
+    Und        "D" schreibt "C" direkt "At least I can say that I have tried"
+    Und        "C" empfängt eine Nachricht "At least I can say that I have tried" von "D"
+    Wenn       "D" löscht seine Nachricht "At least I can say that I have tried" im Chat mit "C"
+    Dann       "C" kann die Nachricht "At least I can say that I have tried" von "D" im Chat mit "D" nicht sehen
+    Und        "D" kann die Nachricht "At least I can say that I have tried" von "D" im Chat mit "C" nicht sehen
+
+  @Shuffle(true)
+  #@MaxSameColumnProperty(ApiName2B,homeserver,2)
+  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+  @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
+  @DistinctColumn(ApiName2B)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName2A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName2B.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_1016 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 10.16 Events außerhalb einer Organisation - Raum - HBA-User "A" löscht eine Nachricht
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" findet "B" in FHIR
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "A" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Und        "B" empfängt eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
+    Wenn       "A" löscht seine Nachricht "Hello from the other site" im Raum "TIM Testraum 1"
+    Dann       "A" kann die Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1" nicht sehen
+    Und        "B" kann die Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1" nicht sehen
+
+  #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName1,homeserver,2)
+  @DistinctProperty(homeserver)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName1.hasTag("prefIOP"))
+  @Filter(ApiName2.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1 | ApiName2 |
+
+  @Ctl:BP_P2P @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_1017 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 10.17 Events außerhalb einer Organisation - Raum - Organisations-User "A" löscht eine Nachricht
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Org Admin Client an Schnittstelle <ApiName2A>
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "D" reserviert sich einen Test-Client an der Schnittstelle <ApiName2B> mit dem Benutzer "OrgUser_B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "C"
+    Und        "B" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "D"
+    Und        "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "C" findet "D" im Healthcare-Service "HealthcareServiceName1"
+    Und        "C" lädt "D" in Chat-Raum "TIM Testraum 1" ein
+    Und        "D" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "D" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "C" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Und        "D" empfängt eine Nachricht "Hello from the other site" von "C" im Raum "TIM Testraum 1"
+    Wenn       "C" löscht seine Nachricht "Hello from the other site" im Raum "TIM Testraum 1"
+    Dann       "C" kann die Nachricht "Hello from the other site" von "C" im Raum "TIM Testraum 1" nicht sehen
+    Und        "D" kann die Nachricht "Hello from the other site" von "C" im Raum "TIM Testraum 1" nicht sehen
+
+  @Shuffle(true)
+  #@MaxSameColumnProperty(ApiName1B,homeserver,2)
+  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+  @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
+  @DistinctColumn(ApiName1B)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName2A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName2B.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_1018 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 10.18 Events außerhalb einer Organisation - Raum - HBA-User "A" sendet eine Nachricht an ausgeloggten "B"
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "B" loggt sich im TI-Messenger aus
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" findet "B" in FHIR
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "A" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Wenn       "B" loggt sich im TI-Messenger ein
+    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" empfängt eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
+
+  #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName1,homeserver,2)
+  @DistinctProperty(homeserver)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName1.hasTag("prefIOP"))
+  @Filter(ApiName2.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1 | ApiName2 |
+
+  @Ctl:BP_O2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_1019 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 10.19 Events außerhalb einer Organisation - Raum - Organisations-User "A" sendet eine Nachricht an ausgeloggten "B"
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Org Admin Client an Schnittstelle <ApiName2A>
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "D" reserviert sich einen Test-Client an der Schnittstelle <ApiName2B> mit dem Benutzer "OrgUser_B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "C"
+    Und        "B" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "D"
+    Und        "D" loggt sich im TI-Messenger aus
+    Und        "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "C" findet "D" im Healthcare-Service "HealthcareServiceName1"
+    Und        "C" lädt "D" in Chat-Raum "TIM Testraum 1" ein
+    Und        "C" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Wenn       "D" loggt sich im TI-Messenger ein
+    Dann       "D" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "D" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "D" empfängt eine Nachricht "Hello from the other site" von "C" im Raum "TIM Testraum 1"
+
+  @Shuffle(true)
+  #@MaxSameColumnProperty(ApiName2B,homeserver,2)
+  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+  @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
+  @DistinctColumn(ApiName2B)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName2A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName2B.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_1020 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 10.20 Events außerhalb einer Organisation - Raum - HBA-User "B" sendet ein Attachment
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" findet "B" in FHIR
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Wenn       "B" sendet ein Attachment "datei.txt" an den Raum "TIM Testraum 1"
+    Dann       "A" empfängt das Attachment "datei.txt" von "B" im Raum "TIM Testraum 1"
+
+  #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName2,homeserver,2)
+  @DistinctProperty(homeserver)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName1.hasTag("prefIOP"))
+  @Filter(ApiName2.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1 | ApiName2 |
+
+  @Ctl:BP_O2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_1021 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 10.21 Events außerhalb einer Organisation - Raum - Organisations-User "B" sendet ein Attachment
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Org Admin Client an Schnittstelle <ApiName2A>
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "D" reserviert sich einen Test-Client an der Schnittstelle <ApiName2B> mit dem Benutzer "OrgUser_B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "C"
+    Und        "B" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "D"
+    Und        "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "C" findet "D" im Healthcare-Service "HealthcareServiceName1"
+    Und        "C" lädt "D" in Chat-Raum "TIM Testraum 1" ein
+    Und        "D" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "D" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Wenn       "D" sendet ein Attachment "datei.txt" an den Raum "TIM Testraum 1"
+    Dann       "C" empfängt das Attachment "datei.txt" von "D" im Raum "TIM Testraum 1"
+
+  @Shuffle(true)
+  #@MaxSameColumnProperty(ApiName2B,homeserver,2)
+  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+  @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
+  @DistinctColumn(ApiName2B)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName2A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName2B.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_1022 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 10.22 Events außerhalb einer Organisation - Raum - HBA-User "A" sendet ein Attachment
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" findet "B" in FHIR
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Wenn       "A" sendet ein Attachment "bild.jpg" an den Raum "TIM Testraum 1"
+    Dann       "B" empfängt das Attachment "bild.jpg" von "A" im Raum "TIM Testraum 1"
+
+  #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName1,homeserver,2)
+  @DistinctProperty(homeserver)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName1.hasTag("prefIOP"))
+  @Filter(ApiName2.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1 | ApiName2 |
+
+  @Ctl:BP_O2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_1023 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 10.23 Events außerhalb einer Organisation - Raum - Organisations-User "A" sendet ein Attachment
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Org Admin Client an Schnittstelle <ApiName2A>
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "D" reserviert sich einen Test-Client an der Schnittstelle <ApiName2B> mit dem Benutzer "OrgUser_B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "C"
+    Und        "B" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "D"
+    Und        "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "C" findet "D" im Healthcare-Service "HealthcareServiceName1"
+    Und        "C" lädt "D" in Chat-Raum "TIM Testraum 1" ein
+    Und        "D" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "D" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Wenn       "C" sendet ein Attachment "bild.jpg" an den Raum "TIM Testraum 1"
+    Dann       "D" empfängt das Attachment "bild.jpg" von "C" im Raum "TIM Testraum 1"
+
+  @Shuffle(true)
+  #@MaxSameColumnProperty(ApiName1B,homeserver,2)
+  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+  @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
+  @DistinctColumn(ApiName1B)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName2A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName2B.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
+
+

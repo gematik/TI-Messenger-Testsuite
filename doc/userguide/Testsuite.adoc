@@ -1,0 +1,579 @@
+include::config.adoc[]
+
+= TI-Messenger-Dienst Release 1.1.0
+
+image::gematikLogoRight.png[float="right"]
+
+== TI-Messenger-Dienst Testsuite
+{empty} +
+
+image::Intro.png[float="left"]
+=== 1. Einführung
+{empty} +
+
+Im folgenden Kapitel finden sie alle nötigen Informationen zu den bereitgestellten Testfällen.
+{empty} +
+{empty} +
+
+image::TI-Messenger.png[float="left"]
+==== 1.1 TI-Messenger-Dienst Anwendungsfälle
+{empty} +
+
+Für jeden zu testenden Anwendungsfall wurde ein Feature File angelegt. In diesem Feature File befinden sich
+dann die einzelnen Tests für den jeweiligen Anwendungsfall.
+
+[cols='^1,1,6,4']
+|===
+| *Feature File* | *AF Nummer* | *Beschreibung*                                               | *Anmerkung*
+|                | AF_10103    | Authentisieren einer Organisation am TI-Messenger-Dienst     | wird nicht mit der Testsuite getestet ^1)^
+|                | AF_10060    | Bereitstellung eines Messenger-Service für eine Organisation | wird nicht mit der Testsuite getestet ^1)^
+| 03             | AF_10059    | Organisationsressourcen im Verzeichnisdienst hinzufügen      |
+| 04             | AF_10057    | Anmeldung eines Akteurs am Messenger-Service                 |
+| 05             | AF_10058    | Akteur (User-HBA) im Verzeichnisdienst hinzufügen            |
+|                | AF_10064    | Föderationszugehörigkeit eines Messenger-Service prüfen      | gilt für alle Anwendungsfälle ^2)^
+| 07             | AF_10104    | Einladung von Akteuren innerhalb eines Messenger-Service     |
+| 08             | AF_10063    | Austausch von Events innerhalb eines Messenger-Service       |
+| 09             | AF_10061    | Einladung von Akteuren anderer Messenger-Services            |
+| 10             | AF_10062    | Austausch von Events zwischen anderen Messenger-Services     |
+| 11             | ohne        | Einladung von Akteuren via Freigabeliste                     |
+|===
+
+^1)^ Die Schnittstelle am Registrierungs-Dienst wird nicht durch die gematik normativ vorgegeben. Sie bietet einem
+Akteur in der Rolle "Org-Admin" einer Organisation die Möglichkeit, Messenger-Services für seine Organisation zu
+administrieren. Bei dieser Schnittstelle bleibt es dem TI-Messenger-Anbieter überlassen diese in geeigneter Form
+bereitzustellen. Die gematik gibt lediglich grundlegende bereitzustellende Funktionen vor und führt auch keine Tests
+an dieser Schnittstelle durch.
+
+^2)^ Für diesen Anwendungsfall wurden kein Feature File angelegt. Der Anwendungsfall AF_10064 wird in allen anderen Szenarien implizit mit getestet.
+{empty} +
+{empty} +
+
+image::TI-Messenger.png[float="left"]
+
+==== 1.2 Zusätzliche Anwendungsfälle
+{empty} +
+
+Neben den Anwendungsfällen, die in der Spezifikation beschrieben sind, wurden noch zwei weitere Anwendungsfälle für die Tests definiert. In diesen Anwendungsfällen werden
+Gruppenchats und die Nutzung von mehreren Geräten getestet. Die Anfrage der Geräte-Information aller Schnittstellen hat nur informativen Charakter.
+
+[cols='^1,1,6,4']
+|===
+| *Feature File* | *AF Nummer* | *Beschreibung*                                               | *Anmerkung*
+| 00             | ohne        | Abfragen der Geräte-Information aller Schnittstellen         | nur zur Info
+| 12             | ohne        | Gruppen Chats                                                |
+| 13             | ohne        | Nutzung von mehreren Geräten                                 |
+|===
+{empty} +
+image:Akteur2.png[float="left"]image:Akteur1.png[float="left"]
+
+=== 2. Akteure des TI-Messenger-Dienst
+{empty} +
+
+image:UC_org_admin.png[float="center"]
+
+image:UC_user_HBA.png[]
+{empty} +
+
+image::Testsuite.png[float="left"]
+
+=== 3. Akteure in der TI-Messenger-Testsuite
+{empty} +
+
+image::HBA.png[float="left"]
+
+==== 3.1 HBA - User
+{empty} +
+
+
+Akteur(e) Practitioner werden in den Testfällen wie folgt benannt:
+
+[blue]#*HBA_A*# &#160; &#160; &#160; Practitioner mit allen Rechten
+
+[blue]#*HBA_B*# &#160; &#160; &#160; Practitioner mit allen Rechten
+
+[blue]#*HBA_C*# &#160; &#160; &#160; Practitioner mit allen Rechten
+
+[blue]#*HBA_D*# &#160; &#160; &#160;Practitioner mit allen Rechten
+
+[blue]#*HBA_E*# &#160; &#160; &#160; Practitioner mit allen Rechten
+
+[blue]#*HBA_X1*# &#160; &#160; Practitioner ohne Zugriff auf den Verzeichnisdienst
+
+[TIP]
+[black]#*_Für Akteure Practitioner müssen HBAs oder digitale Identitäten von den Herstellern beantragt werden._*#
+
+{empty} +
+image:Akteur2.png[float="left"]image:Akteur1.png[float="left"]
+
+==== 3.2 Organisations User
+{empty} +
+
+Akteur(e) Organisation werden in den Testfällen wie folgt benannt:
+
+[blue]#*OrgUser_A*#
+
+[blue]#*OrgUser_B*#
+
+[blue]#*OrgUser_C*#
+
+*#AW: Hier kommen noch Akteure hinzu.#*
+
+[TIP]
+[black]#*_Für die Einrichtung von Organisations User werden eine Domain und eine Organisation benötigt._*#
+siehe Kapitel [Messenger-Service für eine Organisation]
+
+{empty} +
+image:SMC-B.png[float="left"]
+
+==== 3.3 Org-Admin
+{empty} +
+
+Akteur(e) Org-Admin werden in den Testfällen wie folgt benannt:
+
+[blue]#*Org-Admin*#
+
+*#AW: Hier kommen noch Akteure hinzu.#*
+[TIP]
+[black]#*_Für die Akteure Org-Admins müssen SMC-Bs oder digitale Identitäten von den Herstellern beantragt werden._*#
+{empty} +
+{empty} +
+
+image:Hersteller.png[float="left"]
+
+=== 4. Bereitstellungen der Hersteller
+{empty} +
+
+Um die Testsuite ausführen zu können sind bestimmte Bereitstellungen durch die Hersteller erforderlich. Folgende
+Absätze beschreiben die benötigten Bereitstellungen der Hersteller.
+{empty} +
+{empty} +
+
+image:KH.png[float="left"]
+
+==== 4.1 Messenger-Service für eine Organisation
+{empty} +
+
+[TIP]
+[black]#*_Für die Ausführung der Testsuite werden eine Domain und eine Organisation benötigt. Diese Domain und Organisation
+müssen von den Herstellern vor Begin der Test Phase eingerichtet werden und die Daten an die gematik übermittelt werden._*#
+
+*#AW: Müssen die User auf dem Homeserver eingerichtet/freigeschaltet werden?#*
+
+image::TestKonfiguration.png[]
+{empty} +
+
+image:Smartphone.png[float="left"]
+
+==== 4.2 Test Clients mit Testtreiberschnittstelle
+{empty} +
+
+Das folgende Bild zeigt die Anschaltung der Testtreiberschnittstelle und der Clients. Die Clients können über eine
+externe oder interne Testtreiberschnittstelle mit der Testsuite remote oder local verbunden werden. Diese Leistung muss von
+jedem Hersteller erbracht werden. Welche Clients eingesetzt werden können die Hersteller selbstständig entscheiden.
+Es werden nur bereitgestellte Clients zugelassen. +
+Clients mit den gleichen Eigenschaften werden unter einer URL zusammengefasst. Diese URL wird dann in die Konfigurationsdatei
+'combine_items.json' eingetragen. In dieser Datei werden alle Testobjekte verwaltet.
+
+image:Clients.png[]
+
+image:Smartphone.png[float="left"]
+
+==== 4.3 Anforderungen an die Clients
+{empty} +
+
+Die Testsuite benötigt für die Ausführung der Test eine bestimmte Anzahl von Clients. Besonders die Tests für den Gruppen
+Chat benötigen diverse Endgeräte. +
+
+[TIP]
+[black]#*_Grundsätzlich sollten an jeder Schnittstelle mindestens drei Gräte zur Verfügung stehen. Ausgenommen von dieser Festlegung
+ist der Org-Admin, hier sind zwei Geräte ausreichend._*#
+
+[TIP]
+[black]#*_Wenn mehere Hersteller die Testresourcen gleichzeitig nutzen wollen, muss die Anzahl der Clients deutlich erhöht werden._*#
+
+{empty} +
+
+image:Server.png[float="left"]
+
+=== 5. Referenzimplementierung
+{empty} +
+
+Die gematik stellt eine TI-Messenger-Dienst Referenzimplementierung zur Verfügung. Zur Sicherstellung der Interoperabilität
+zwischen verschiedenen TI-Messenger-Fachdiensten innerhalb des TI-Messenger-Dienstes muss der TI-Messenger-Dienst (TI-Messenger-Client
+und TI-Messenger-Fachdienst)  eines  TI-Messenger-Anbieters gegen die Referenzimplementierung (TI-Messenger-Client und
+TI-Messenger-Fachdienst) getestet werden.
+
+[TIP]
+[black]#*_Die Referenzimplementierung wird nur Windows Clients für Practitioner zur Verfügung stellen. Die Mobilen Clients sind ausschließlich
+für OrgUser, da auf die Implementierung eines mobilen Authentikators verzichtet wurde._*#
+
+image::Referenzimplementierung.png[]
+{empty} +
+
+image::Tags.png[float="left"]
+
+=== 6. Tags
+{empty} +
+
+image::Tag.png[float="left"]
+
+==== 6.1 Tags zur Steuerung der Testsuite
+{empty} +
+
+*#AW: Tags noch einmal überprüfen und ändern.#*
+
+*Tags die auf die Spezifikation hinweisen:*
+
+[cols='1,3']
+|===
+| *Tag Name*            | *Beschreibung*
+| @Akzeptanz-Kriterium: | Verweis auf das Akzeptanz-Kriterium
+| @Anwendungsfall:      | Verweis auf den Anwendungsfalls
+|===
+
+*Tags die zur Steuerung der Testsuite verwendet werden:*
+
+[cols='1,3']
+|===
+| *Tag Name*              | *Beschreibung*
+| CI:MultiServerConfig    | diese Tests werden beim Profile ci-pipeline ausgeschlossen
+| @Ctl:Additional         | zusätzlichen Tests die keine direktes Akzeptanz-Kriterium bzw. Anwendungsfall haben
+| @Ctl:BP_                | Tests mit Berechtigungsprüfung
+| @Ctl:Freigabeliste      | Tests mit der Freigabeliste
+| @Ctl:Gruppenchat        | Gruppenchat
+| @Ctl:MultiDevices       | ein User verwendet mehrere Geräte
+| @Ctl:OneHomeServer      | Test die mit nur einem Homeserver ausgeführt werden können
+| @Ctl:OrgAdmin           | OrgAdmin Tests
+| @Ctl:SchnittstellenInfo | Tests die die Schnittstellen Informationen abfragen
+| @Ctl:UseCase            | Test die die UseCases aus der Spezifikation abbilden
+| @Ctl:Technical          | technische Tests der Entwicklung
+|===
+
+*Zusätzlichen Tag zur Unterscheidung der Feature-Files:*
+
+[cols='1,3']
+|===
+| *Tag Name* | *Beschreibung*
+| @File:     | Filename
+|===
+
+*Tags für Polarion:*
+
+[cols='1,3']
+|===
+|*Tag Name*            | *Beschreibung*
+| @PRIO:                | Testfall Priorität
+| @TCID:                | Testfall ID
+| @Testfall:Negativ     | Positiv Test
+| @Testfall:Positiv     | Negativ Test
+| @Status:Implementiert | der Testfall ist implementiert
+|===
+
+*Cucumber Tag:*
+
+[cols='1,3']
+|===
+| *Tag Name* | *Beschreibung*
+| @WIP       | Work in Progress
+|===
+{empty} +
+
+image::Tag.png[float="left"]
+
+==== 6.2 Tags für die Plugin Konfiguration
+{empty} +
+
+Der BDD-Parameterizer (auch Kombinations-Plugin genannt) wird dazu genutzt die Testdaten-Kombinationen, in diesem Fall die
+APIs, zu steuern.
+Somit wird gewährleistet, dass genau das richtige Set an Daten für den jeweiligen Fokus des Testfalls erzeugt wird
+und dann in Iterationen ausgeführt werden kann.
+Grundlage hierfür ist das kartesische Produkt aller möglichen Kombinationen der in der
+combine_items.json (src/test/resources/combine_items.json) enthaltenen Schnittstellen. Mit Hilfe von Filtern kann nun
+diese Liste verkleinert und fokussiert werden.
+
+*Info: In der combine_items.json (src/test/resources/combine_items.json) sind die Schnittstellen zu den Testtreibern
+der einzelnen Devices hinterlegt, mit denen dann die einzelnen Tests ausgeführt werden sollen.*
+
+Beispiel eines Eintrags:
+
+image::CombineItems.png[]
+
+Die einzelnen Schrittstellen können hier mit Tags und Properties versehen werden, um eine direkte Steuerung möglich
+zu machen. In unserem Beispiel haben wir einen:
+
+-	Client
+-	Welcher neu (new) zu testen ist (auf diesen Tag wird später noch genauer eingegangen)
+-	Dieser Client ist Preferred IOP (prefIOP) -> Wird also in den IOP Tests bevorzugt genutzt
+
+Außerdem:
+
+-	Befinden wir uns auf dem Homeserver „A“
+-	Der Client gehört zur company „A“
+-	Und sein OS ist „IOS“
+
+*Wichtig zu erwähnen ist hier, dass Tags für einzelne Einträge in der
+combine_items.json (src/test/resources/combine_items.json) vergeben werden können.
+Properties müssen immer in allen Einträgen vorhanden sein!*
+
+Anhand dieser Werte, die auch jederzeit erweiterbar sind, können wir nun unsere Testdaten erzeugen, die exakt zu dem
+Vorhaben des Testfalls passen.
+
+Ein Beispiel:
+
+Gehen wir an dieser Stelle einfach davon aus, dass wir *3 verschiedene Clients (IOS, Android, Windows)* und einen
+*Org-Admin Client* für Anbieter A vorliegen haben für diesen Testfall:
+
+image::TestCase.png[]
+
+Eine Chat-Kommunikation soll innerhalb einer Organisation über die Schittstellen <ApiName1A> und <ApiName1B>
+stattfinden.
+
+Um nun das kartesische Produkt aller möglichen Kombinationen anzupassen, sagen wir nun:
+
+-	Alle Devices müssen auf dem gleichen Homeserver sein
+-	Sie sollen sich auch selbst kombinieren dürfen (z.B. IOS mit IOS, Android mit Android)
+-	Sie dürfen auch vice versa vorkommen (z.B. IOS-Android, Android-IOS)
+-	ApiName1A soll ein Client sein (kein OrgAdmin)
+-	ApiName1B soll ein Client sein (kein OrgAdmin)
+
+Um dies zu erreichen werden nun folgende Filter mit Blick auf die combine_items.json angewandt:
+
+image::Filter.png[]
+
+Der fertige Testfall sieht dann wie folgt aus:
+
+image::TestCaseFertig.png[]
+
+Nach dem Run des Plug-Ins ist das Resultat zum Ausführen des Testfalls ist dann folgendes
+(hier zu finden: target/features/Zulassungstests/Testrun):
+
+image::Kombi1.png[]
+
+Wie wir nun sehen, wurde z.B. unser OrgAdmin Client ausgefiltert und eben die Kombinationen erzeugt, die wir brauchen
+bzw. oben beschrieben haben.
+
+Es gibt weitere Filtermöglichkeiten, die auch in der TestSuite zum Einsatz kommen und in der Dokumentation zu
+finden sind:
+
+*<Link zur DokuSeite>*
+
+Wie genau die Reihenfolge der Filterung funktioniert ist der Dokumentation zu entnehmen:
+
+*<Link zur PlugIn Doku>*
+{empty} +
+{empty} +
+
+image::Tag.png[float="left"]
+
+==== 6.3 Special Tags [ ‚new‘ tag,'newonly' Profil und 'Practitioner' Tag]
+{empty} +
+
+*#AW: 'Practitioner' Tag muss noch beschrieben werden & Pref ist immer Practitioner & pluin setzt @Plugin#*
+
+Wenn der Tag ‚new‘ in einer Schnittstelle in der combine-items.json (src/test/resources/combine_items.json) gesetzt
+wurde und das newonly Profil dazu gewählt wird, werden nach dem Durchlauf der Filter nur diejenigen Kombinationen
+genutzt, in denen eben der ‚new‘ Tag vorhanden ist.
+
+Zum Beispiel von zuvor:
+
+Unsere Beispiel Schnittstelle
+
+image::CombineItems.png[]
+
+hat den Tag ‚new‘. Alle anderen haben diesen nicht. Wenn wir nun das newonly Profil auswählen und die Kombinationen
+erzeugen, bekommen wir folgendes Ergebniss:
+
+image::KombiNew.png[]
+
+Wir sehen nun, dass nur Kombinationen erzeugt wurden, in denen unsere ‚new‘ Schnittstelle vorkommt.
+Hintergrund hierfür ist, dass so bestimmte Schnittstellen dediziert bzw. auch im IOP getestet werden können, wenn
+der Fokus nur diese Schnitstellen inkl. aller dazugehörigen Kombinationen sind.
+{empty} +
+{empty} +
+
+image::BP.png[float="left"]
+
+=== 7. Berechtigungsprüfung
+{empty} +
+
+- Teilnehmer "A" lädt Teilnehmer "B" ein (ohne Freigabelisteneintrag)
+
+[cols='1,1,2,1']
+|===
+| *A*                      |*B*                       | *Ergebnis*                                                                | *Tag*
+| Personenverzeichnis      | Personenverzeichnis      | ok                                                                       | @BP_P2P
+| Personenverzeichnis      | Organisationsverzeichnis | ok                                                                       | @BP_P2O
+| Organisationsverzeichnis | Organisationsverzeichnis | ok                                                                       | @BP_O2O
+| Organisationsverzeichnis | Personenverzeichnis      | ok, wenn beide auf dem gleichen Homeserver sind, ansonsten nicht erlaubt | @BP_O2P
+| ohne Eintrag             | Organisationsverzeichnis | ok                                                                       | @BP_N2O
+| ohne Eintrag             | Personenverzeichnis      | ok, wenn beide auf dem gleichen Homeserver sind, ansonsten nicht erlaubt | @BP_N2P
+|===
+
+- Teilnehmer "A" kann alle Teilnehmer "B" einladen wenn diese einen Eintrag für "A" in der Freigabeliste
+erstellt haben (Tag @BP_FL).
+{empty} +
+{empty} +
+
+image::Tests.png[float="left"]
+
+=== 8. Testfall Liste
+{empty} +
+
+////
+
+mit diesen grep Befehl kann eine neue/aktuelle Testfallliste erstellt werden
+
+cd <git_home>/ti-m-testsuite/src/test/resources/templates/Zulassungstests/Testrun
+
+grep Szenariogrundriss * |while read var; do   set -- $var ;   shift 2;   echo $*; done
+bzw.
+grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
+
+////
+
+*#AW: Wenn die Liste vollständig ist kommt alles in eine Tabelle.*#
+
+:hardbreaks:
+00.1 Abfragen der Schnittstellen-Information durch HBA-User-Client
+00.2 Abfragen der Schnittstellen-Information durch Organisations-User-Client
+00.3 Abfragen der Schnittstellen-Information durch Org-Admin-Client
+00.4 Abfragen der Geräte-Liste durch HBA-User-Client
+00.5 Abfragen der Geräte-Liste durch Organisations-User-Client
+00.6 Abfragen der Geräte-Liste durch Org-Admin-Client
+
+03.1 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen
+03.2 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen und Endpoint ändern
+03.3 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen/ändern, Location anlegen/ändern, Endpoint anlegen/ändern und löschen
+03.4 Organisationsressourcen im Verzeichnisdienst hinzufügen - Nicht validen Healthcare-Service durch Org-Admin anlegen
+03.5 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service anlegen und durch anderen OrgAdmin ändern
+
+04.1 Anmeldung eines Akteurs - Erfolgreiche Anmeldung eines Akteurs (HBA)
+04.2 Anmeldung eines Akteurs - Erfolgreiche Anmeldung eines Akteurs (OrgUser)
+
+05.1 Akteur im Verzeichnisdienst - Hinzufügen - HBA-User legt sich an und sucht seinen Eintrag
+05.2 Akteur im Verzeichnisdienst - Hinzufügen - HBA-User legt sich an und sucht anderen Eintrag
+05.3 Akteur im Verzeichnisdienst - Hinzufügen - HBA-User aus anderer Organisation sucht HBA-User Eintrag
+05.4 Akteur im Verzeichnisdienst - Löschen - HBA-User löscht Eintrag
+05.5 Akteur im Verzeichnisdienst - Löschen - HBA-User löscht Eintrag und ist nicht aufindbar für HBA-User anderer Organisation
+05.6 Akteur im Verzeichnisdienst - Hinzufügen - Nicht erfolgreich ohne Authencitation im Verzeichnisdienst
+
+07.1 Einladung innerhalb einer Organisation - Einladung in Chat - Volltextsuche (HBA-User an HBA-User)
+07.2 Einladung innerhalb einer Organisation - Einladung in Chat - unscharfe Suche (HBA-User an HBA-User)
+07.3 Einladung innerhalb einer Organisation - Einladung in Raum - Volltextsuche (HBA-User an HBA-User)
+07.4 Einladung innerhalb einer Organisation - Einladung in Raum - unscharfe Suche (HBA-User an HBA-User)
+07.5 Einladung innerhalb einer Organisation - Einladung in Chat - HBA-User lädt Organisations-User ein
+07.6 Einladung innerhalb einer Organisation - Einladung in Raum - Organisations-User lädt Organisations-User ein
+07.7 Einladung innerhalb einer Organisation - Einladung in Chat - Organisations-User lädt HBA-User ein
+07.8 Einladung innerhalb einer Organisation - Einladung in Chat - Ablehnung der Einladung (HBA-User an HBA-User)
+07.9 Einladung innerhalb einer Organisation - Einladung in Raum - Ablehnung der Einladung (HBA-User an HBA-User)
+07.10 Einladung innerhalb einer Organisation - Einladung in Chat - Ablehnung der Einladung (Organisations-User an Organisations-User)
+07.11 Einladung innerhalb einer Organisation - Einladung in Raum - Ablehnung der Einladung (Organisations-User an Organisations-User)
+07.12 Einladung innerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (HBA)
+07.13 Einladung innerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (OrgUser)
+07.14 Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch HBA-User
+07.15 Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch Organisations-User
+07.16 Einladung innerhalb einer Organisation - Einladung in Chat - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
+07.17 Einladung innerhalb einer Organisation - Einladung in Raum - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
+07.18 Einladung innerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
+07.19 Einladung innerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
+
+08.1 Events innerhalb einer Organisation - Chat - Test-Client "A" sendet und empfängt eine Nachricht
+08.2 Events innerhalb einer Organisation - Raum - Test-Client "A" sendet eine Nachricht
+08.3 Events innerhalb einer Organisation - Raum - Test-Client "B" sendet eine Nachricht
+08.4 Events innerhalb einer Organisation - Chat - HBA-User sendet Organisations-User eine Nachricht
+08.5 Events innerhalb einer Organisation - Raum - HBA-User sendet Organisations-User eine Nachricht
+08.6 Events innerhalb einer Organisation - Chat - Organisations-User sendet Organisations-User eine Nachricht
+08.7 Events innerhalb einer Organisation - Raum - Organisations-User sendet Organisations-User eine Nachricht
+08.8 Events innerhalb einer Organisation - Chat - Organisations-User sendet HBA-User eine Nachricht
+08.9 Events innerhalb einer Organisation - Raum - Organisations-User sendet HBA-User eine Nachricht
+08.10 Events innerhalb einer Organisation - Chat - Organisations-User sendet eine Nachricht an HealthCareService
+08.11 Events innerhalb einer Organisation - Chat - HBA-User sendet eine Nachricht an HealthCareService
+08.12 Events innerhalb einer Organisation - Raum - HBA-User ändert eine Nachricht
+08.13 Events innerhalb einer Organisation - Raum - Organisations-User ändert eine Nachricht
+08.14 Events innerhalb einer Organisation - Chat - HBA-User "B" löscht eine Nachricht
+08.15 Events innerhalb einer Organisation - Chat - Organisations-User "B" löscht eine Nachricht
+08.16 Events innerhalb einer Organisation - Raum - HBA-User "A" löscht eine Nachricht
+08.17 Events innerhalb einer Organisation - Raum - Organisations-User "A" löscht eine Nachricht
+08.18 Events innerhalb einer Organisation - Raum - HBA-User "A" sendet eine Nachricht an ausgeloggten Test-Client "B"
+08.19 Events innerhalb einer Organisation - Raum - Organisations-User "A" sendet eine Nachricht an ausgeloggten Test-Client "B"
+08.20 Events innerhalb einer Organisation - Raum - HBA-User "A" sendet ein Attachment
+08.21 Events innerhalb einer Organisation - Raum - Organisations-User "A" sendet ein Attachment
+08.22 Events innerhalb einer Organisation - Raum - HBA-User "B" sendet ein Attachment
+08.23 Events innerhalb einer Organisation - Raum - Organisations-User "B" sendet ein Attachment
+
+09.1 Einladung außerhalb einer Organisation - Einladung in Chat - Volltextsuche (HBA-User an HBA-User)
+09.2 Einladung außerhalb einer Organisation - Einladung in Chat - unscharfe Suche (HBA-User an HBA-User)
+09.3 Einladung außerhalb einer Organisation - Einladung in Raum - Volltextsuche (HBA-User an HBA-User)
+09.4 Einladung außerhalb einer Organisation - Einladung in Raum - unscharfe Suche (HBA-User an HBA-User)
+09.5 Einladung außerhalb einer Organisation - Einladung in Chat - HBA-User lädt Organisations-User ein
+09.6 Einladung außerhalb einer Organisation - Einladung in Raum - Organisations-User lädt Organisations-User ein
+09.7 Einladung außerhalb einer Organisation - Einladung in Chat - Organisations-User lädt HBA-User ein
+09.8 Einladung außerhalb einer Organisation - Einladung in Chat - Ablehnung der Einladung (HBA-User an HBA-User)
+09.9 Einladung außerhalb einer Organisation - Einladung in Raum - Ablehnung der Einladung (HBA-User an HBA-User)
+09.10 Einladung außerhalb einer Organisation - Einladung in Chat - Ablehnung der Einladung (Organisations-User an Organisations-User)
+09.11 Einladung außerhalb einer Organisation - Einladung in Raum - Ablehnung der Einladung (Organisations-User an Organisations-User)
+09.12 Einladung außerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (HBA)
+09.13 Einladung außerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (OrgUser)
+09.14 Einladung außerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch HBA-User
+09.15 Einladung außerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch Organisations-User
+09.16 Einladung außerhalb einer Organisation - Einladung in Chat - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
+09.17 Einladung außerhalb einer Organisation - Einladung in Raum - HBA-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
+09.18 Einladung außerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
+09.19 Einladung außerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
+
+10.1 Events außerhalb einer Organisation - Chat - Test-Client "A" sendet und empängt eine Nachricht
+10.2 Events außerhalb einer Organisation - Raum - Test-Client "A" sendet eine Nachricht
+10.3 Events außerhalb einer Organisation - Raum - Test-Client "B" sendet eine Nachricht
+10.4 Events außerhalb einer Organisation - Chat - HBA-User sendet Organisations-User eine Nachricht
+10.5 Events außerhalb einer Organisation - Raum - HBA-User sendet Organisations-User eine Nachricht
+10.6 Events außerhalb einer Organisation - Chat - Organisations-User sendet Organisations-User eine Nachricht
+10.7 Events außerhalb einer Organisation - Raum - Organisations-User sendet Organisations-User eine Nachricht
+10.8 Events außerhalb einer Organisation - Chat - Organisations-User sendet HBA-User eine Nachricht
+10.9 Events außerhalb einer Organisation - Raum - Organisations-User sendet HBA-User eine Nachricht
+10.10 Events außerhalb einer Organisation - Chat - Organisations-User sendet eine Nachricht an HealthCareService
+10.11 Events außerhalb einer Organisation - Chat - HBA-User sendet eine Nachricht an HealthCareService
+10.12 Events außerhalb einer Organisation - Raum - HBA_User ändert eine Nachricht
+10.13 Events außerhalb einer Organisation - Raum - Organisations-User ändert eine Nachricht
+10.14 Events außerhalb einer Organisation - Chat - HBA-User "B" löscht eine Nachricht
+10.15 Events außerhalb einer Organisation - Chat - Organisations-User "B" löscht eine Nachricht
+10.16 Events außerhalb einer Organisation - Raum - HBA-User "A" löscht eine Nachricht
+10.17 Events außerhalb einer Organisation - Raum - Organisations-User "A" löscht eine Nachricht
+10.18 Events außerhalb einer Organisation - Raum - HBA-User "A" sendet eine Nachricht an ausgeloggten "B"
+10.19 Events außerhalb einer Organisation - Raum - Organisations-User "A" sendet eine Nachricht an ausgeloggten "B"
+10.20 Events außerhalb einer Organisation - Raum - HBA-User "B" sendet ein Attachment
+10.21 Events außerhalb einer Organisation - Raum - Organisations-User "B" sendet ein Attachment
+10.22 Events außerhalb einer Organisation - Raum - HBA-User "A" sendet ein Attachment
+10.23 Events außerhalb einer Organisation - Raum - Organisations-User "A" sendet ein Attachment
+
+11.1 Einladung via Freigabeliste außerhalb einer Oganisation - Raum - Beide User jeweils in Freigabeliste (HBA-User an HBA-User)
+11.2 Einladung via Freigabeliste außerhalb einer Oganisation - Chat - Beide User jeweils in Freigabeliste (HBA-User an HBA-User)
+11.3 Einladung via Freigabeliste außerhalb einer Oganisation - Chat - Nur ein User in Freigabeliste (Organisations-User an HBA-User)
+11.4 Einladung via Freigabeliste außerhalb einer Oganisation - Raum - Nur ein User in Freigabeliste (HBA-User an HBA-User)
+11.5 Einladung via Freigabeliste außerhalb einer Oganisation - Chat - Nur User in eigener Freigabeliste (HBA-User an HBA-User)
+
+12.1 Events außerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht
+12.2 Events außerhalb einer Organisation - Gruppenchat - Test-Client "E" sendet eine Nachricht
+12.3 Events außerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht
+12.4 Events innerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht
+12.5 Events innerhalb einer Organisation - Gruppenchat - Test-Client "C" sendet eine Nachricht
+12.6 Events innerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht
+
+13.1 Events außerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices
+13.2 Events außerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices
+13.3 Events außerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices - Erhalt vorheriger Nachrichten
+13.4 Events außerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices - Erhalt vorheriger Nachrichten
+13.5 Events innerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices
+13.6 Events innerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices
+13.7 Events innerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices - Erhalt vorheriger Nachrichten
+13.8 Events innerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices - Erhalt vorheriger Nachrichten
+
+:!hardbreaks:
+{empty} +
+
+image::Tests.png[float="left"]
+=== 9. Testfall Beschreibungen
+{empty} +
+
+Die Beschreibung der Testfälle befindet sich direkt in den Feature Files. Durch die Verwendung von Gherkin sind die einzelnen Teststeps
+selbst erklärend.
+

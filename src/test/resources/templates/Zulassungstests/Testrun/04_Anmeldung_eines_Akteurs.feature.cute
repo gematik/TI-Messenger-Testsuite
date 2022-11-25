@@ -1,0 +1,50 @@
+# language: de
+@File:FeatureFile_04 @Ctl:UseCase @Ctl:OneHomeServer
+@Anwendungsfall:AF_10057
+@Akzeptanz-Kriterium:ML-123571 @Akzeptanz-Kriterium:ML-123576 @Akzeptanz-Kriterium:ML-123575
+@Anwendungsfall:AF_10064
+@Akzeptanz-Kriterium:ML-123672 @Akzeptanz-Kriterium:ML-123891 @Akzeptanz-Kriterium:ML-123893
+Funktionalität:  04. Anmeldung eines Akteurs am Messenger-Service
+  AF_10057 - Anmeldung eines Akteurs am Messenger-Service
+  Mit diesem Anwendungsfall meldet sich ein Akteur an einem in der TI-Föderation zuständigen Messenger-Service
+  an und registriert seinen TI-Messenger-Client als Endgerät. Der Akteur MUSS die Matrix-Domain des gewünschten
+  Messenger-Service direkt im TI-Messenger-Client eingeben können. Die Eingabe KANN dabei automatisiert oder durch
+  andere Hilfsmittel wie beispielweise durch ein QR-Code-Scan unterstützt werden. Die Authentifizierung erfolgt
+  hierbei nach den Vorgaben der jeweiligen Organisation. Nach der erfolgreichen Anmeldung eines Akteurs am Messenger-Service
+  KÖNNEN die von ihm angebotenen Dienste verwendet werden.
+
+  AF_10064 - Föderationszugehörigkeit eines Messenger-Service prüfen
+  Dieser Anwendungsfall prüft, ob ein Messenger-Service zugehörig zur TI-Messenger-Föderation ist und gilt
+  für alle Anwendungsfälle, welche die Matrix-Domain eines anderen Messenger-Services überprüfen müssen. Für die
+  Prüfung der Zugehörigkeit der Matrix-Domain zur TI-Messenger-Föderation, verwendet der Messenger-Proxy eine
+  Föderationsliste die vom Registrierungs-Dienst seines TI-Messenger-Fachdienstes bereitgestellt wird. Die Speicherdauer
+  der Föderationsliste des Messenger-Proxies ist limitiert. Die Aktualisierung der Föderationsliste erfolgt wie in Anhang
+  B 8.2 "Aktualisierung der Föderationsliste" beschrieben.
+
+  Inhalt
+  TF 1     Anmeldung eines Akteurs (HBA)
+  TF 2     Anmeldung eines Akteurs (OrgUser)
+
+  @TCID:TIM_11_AF_401 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 04.1 Anmeldung eines Akteurs - Erfolgreiche Anmeldung eines Akteurs (HBA)
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1>
+    Wenn       "A" den Benutzer "HBA_A" registriert
+    Dann       ist die Registrierung für "A" erfolgreich
+
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+
+  Beispiele:
+  | ApiName1 |
+
+  @TCID:TIM_11_AF_402 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 04.2 Anmeldung eines Akteurs - Erfolgreiche Anmeldung eines Akteurs (OrgUser)
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1>
+    Wenn       "A" den Benutzer "OrgUser_A" registriert
+    Dann       ist die Registrierung für "A" erfolgreich
+
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(!ApiName1.hasTag("practitioner"))
+
+    Beispiele:
+      | ApiName1 |

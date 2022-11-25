@@ -1,0 +1,669 @@
+# language: de
+@File:FeatureFile_08 @Ctl:UseCase @Ctl:OneHomeServer
+@Anwendungsfall:AF_10063
+@Akzeptanz-Kriterium:ML-123669 @Akzeptanz-Kriterium:ML-123670 @Akzeptanz-Kriterium:ML-132591
+Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Organisation
+  AF_10063 - Austausch von Events zwischen Akteuren innerhalb einer Organisation
+  Dieser Anwendungsfall ermöglicht es Akteuren, welche sich in einem gemeinsamen Raum innerhalb eines Messenger-Service
+  befinden, Nachrichten auszutauschen und weitere durch die Matrix-Spezifikation festgelegte Aktionen (Events)
+  auszuführen.
+
+  Inhalt
+  TF 1  -  3 HBA sendet Nachricht Chat/Raum (HBA an HBA)
+  TF 4  &  5 HBA sendet Nachricht Chat/Raum (HBA an OrgUser)
+  TF 6  &  7 OrgUser sendet Nachricht Chat/Raum (OrgUser an OrgUser)
+  TF 8  &  9 OrgUser sendet Nachricht Chat/Raum (OrgUser an HBA)
+  TF 10 & 11 Nachrichten an Healthcare Service (HBA an Healthcare Service & OrgUser an Healthcare Service)
+  TF 12 & 13 Ändern einer Nachricht von HBA/OrgUser
+  TF 14 - 17 Löschen einer Nachricht durch HBA/OrgUser in Chat/Raum
+  TF 18 & 19 Nachricht an ausgeloggten User senden durch HBA/OrgUser
+  TF 20 - 23 Attachment senden durch HBA/OrgUser
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_801 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 08.1 Events innerhalb einer Organisation - Chat - Test-Client "A" sendet und empfängt eine Nachricht
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" findet "B" in FHIR
+    Wenn       "A" schreibt "B" direkt "Hello from the other site"
+    Und        "B" erhält eine Einladung von "A"
+    Und        "B" bestätigt eine Einladung von "A"
+    Dann       "B" empfängt eine Nachricht "Hello from the other site" von "A"
+    Wenn       "B" schreibt "A" direkt "At least I can say that I have tried"
+    Dann       "A" empfängt eine Nachricht "At least I can say that I have tried" von "B"
+
+  #@Shuffle(true)
+  #@DistinctColumn(ApiName1A)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1A.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_802 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 08.2 Events innerhalb einer Organisation - Raum - Test-Client "A" sendet eine Nachricht
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" findet "B" in FHIR
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Wenn       "A" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Dann       "B" empfängt eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
+
+  #@Shuffle(true)
+  #@DistinctColumn(ApiName1A)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1A.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_803 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 08.3 Events innerhalb einer Organisation - Raum - Test-Client "B" sendet eine Nachricht
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" findet "B" in FHIR
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Wenn       "B" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Dann       "A" empfängt eine Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1"
+
+  #@Shuffle(true)
+  #@DistinctColumn(ApiName1B)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1A.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |
+
+  @Ctl:BP_P2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_804 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 08.4 Events innerhalb einer Organisation - Chat - HBA-User sendet Organisations-User eine Nachricht
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "HBA_A"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Wenn       "C" schreibt "B" direkt "Hello from the other site"
+    Und        "B" erhält eine Einladung von "C"
+    Und        "B" bestätigt eine Einladung von "C"
+    Dann       "B" empfängt eine Nachricht "Hello from the other site" von "C"
+
+  #@Shuffle(true)
+  #@DistinctColumn(ApiName1C)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+  @Filter(ApiName1C.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @Ctl:BP_P2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_805 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 08.5 Events innerhalb einer Organisation - Raum - HBA-User sendet Organisations-User eine Nachricht
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "HBA_A"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und        "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Wenn       "C" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Dann       "B" empfängt eine Nachricht "Hello from the other site" von "C" im Raum "TIM Testraum 1"
+
+  #@Shuffle(true)
+  #@DistinctColumn(ApiName1C)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+  @Filter(ApiName1C.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @Ctl:BP_O2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_806 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 08.6 Events innerhalb einer Organisation - Chat - Organisations-User sendet Organisations-User eine Nachricht
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
+    Und        "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Wenn       "C" schreibt "B" direkt "Hello from the other site"
+    Und        "B" erhält eine Einladung von "C"
+    Und        "B" bestätigt eine Einladung von "C"
+    Dann       "B" empfängt eine Nachricht "Hello from the other site" von "C"
+
+  #@Shuffle(true)
+  #@DistinctColumn(ApiName1C)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @Ctl:BP_O2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_807 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 08.7 Events innerhalb einer Organisation - Raum - Organisations-User sendet Organisations-User eine Nachricht
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
+    Und        "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "C" lädt "B" über den HealthcareService "HealthcareServiceName1" in den Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Wenn       "C" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Dann       "B" empfängt eine Nachricht "Hello from the other site" von "C" im Raum "TIM Testraum 1"
+
+  #@Shuffle(true)
+  #@DistinctColumn(ApiName1C)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @Ctl:BP_O2P @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_808 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 08.8 Events innerhalb einer Organisation - Chat - Organisations-User sendet HBA-User eine Nachricht
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "HBA_A"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "B" findet "C" in FHIR
+    Wenn       "B" schreibt "C" direkt "Hello from the other site"
+    Und        "C" erhält eine Einladung von "B"
+    Und        "C" bestätigt eine Einladung von "B"
+    Dann       "C" empfängt eine Nachricht "Hello from the other site" von "B"
+
+  #@Shuffle(true)
+  #@DistinctColumn(ApiName1B)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+  @Filter(ApiName1C.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @Ctl:BP_O2P @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_809 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 08.9 Events innerhalb einer Organisation - Raum - Organisations-User sendet HBA-User eine Nachricht
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "HBA_A"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "B" findet "C" in FHIR
+    Und        "B" lädt "C" in Chat-Raum "TIM Testraum 1" ein
+    Und        "C" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Wenn       "B" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Dann       "C" empfängt eine Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1"
+
+  #@Shuffle(true)
+  #@DistinctColumn(ApiName1B)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+  @Filter(ApiName1C.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @Ctl:BP_O2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_810 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 08.10 Events innerhalb einer Organisation - Chat - Organisations-User sendet eine Nachricht an HealthCareService
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
+    Und        "C" schreibt "B" über den Healthcare-Service "HealthcareServiceName1" direkt "Hello from the other site"
+    Und        "B" bestätigt eine Einladung von "C"
+    Und        "B" empfängt eine Nachricht "Hello from the other site" von "C"
+    Wenn       "B" schreibt "C" direkt "At least I can say that I have tried"
+    Dann       "C" empfängt eine Nachricht "At least I can say that I have tried" von "B"
+
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @Ctl:BP_P2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_811 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 08.11 Events innerhalb einer Organisation - Chat - HBA-User sendet eine Nachricht an HealthCareService
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "HBA_A"
+    Und        "C" hinterlegt seine MXID im Verzeichnis Dienst
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Wenn       "C" schreibt "B" über den Healthcare-Service "HealthcareServiceName1" direkt "Hello from the other site"
+    Und        "B" erhält eine Einladung von "C"
+    Und        "B" bestätigt eine Einladung von "C"
+    Dann       "B" empfängt eine Nachricht "Hello from the other site" von "C"
+    Wenn       "B" schreibt "C" direkt "At least I can say that I have tried"
+    Dann       "C" empfängt eine Nachricht "At least I can say that I have tried" von "B"
+
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+  @Filter(ApiName1C.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_812 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 08.12 Events innerhalb einer Organisation - Raum - HBA-User ändert eine Nachricht
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" findet "B" in FHIR
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "A" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Und        "B" empfängt eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
+    Dann       "A" ändert seine letzte Nachricht im Raum "TIM Testraum 1" in "At least I can say that I have tried"
+    Wenn       "B" empfängt eine Nachricht "At least I can say that I have tried" von "A" im Raum "TIM Testraum 1"
+    Und        "B" kann die Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1" nicht sehen
+
+  #@Shuffle(true)
+  #@DistinctColumn(ApiName1A)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1A.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |
+
+  @Ctl:BP_O2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_813 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 08.13 Events innerhalb einer Organisation - Raum - Organisations-User ändert eine Nachricht
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
+    Und        "B" findet "C" im Healthcare-Service "HealthcareServiceName2"
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "B" lädt "C" in Chat-Raum "TIM Testraum 1" ein
+    Und        "C" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Und        "C" empfängt eine Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1"
+    Wenn       "B" ändert seine letzte Nachricht im Raum "TIM Testraum 1" in "At least I can say that I have tried"
+    Dann       "C" empfängt eine Nachricht "At least I can say that I have tried" von "B" im Raum "TIM Testraum 1"
+    Und        "C" kann die Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1" nicht sehen
+
+  #@Shuffle(true)
+  #@DistinctColumn(ApiName1C)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_814 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 08.14 Events innerhalb einer Organisation - Chat - HBA-User "B" löscht eine Nachricht
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" findet "B" in FHIR
+    Und        "A" schreibt "B" direkt "Hello from the other site"
+    Und        "B" erhält eine Einladung von "A"
+    Und        "B" bestätigt eine Einladung von "A"
+    Und        "B" empfängt eine Nachricht "Hello from the other site" von "A"
+    Und        "B" schreibt "A" direkt "At least I can say that I have tried"
+    Und        "A" empfängt eine Nachricht "At least I can say that I have tried" von "B"
+    Wenn       "B" löscht seine Nachricht "At least I can say that I have tried" im Chat mit "A"
+    Dann       "A" kann die Nachricht "At least I can say that I have tried" von "B" im Chat mit "B" nicht sehen
+    Und        "B" kann die Nachricht "At least I can say that I have tried" von "B" im Chat mit "A" nicht sehen
+
+  #@Shuffle(true)
+  #@DistinctColumn(ApiName1B)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1A.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |
+
+  @Ctl:BP_O2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_815 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 08.15 Events innerhalb einer Organisation - Chat - Organisations-User "B" löscht eine Nachricht
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
+    Und        "B" findet "C" im Healthcare-Service "HealthcareServiceName1"
+    Und        "B" schreibt "C" direkt "Hello from the other site"
+    Und        "C" erhält eine Einladung von "B"
+    Und        "C" bestätigt eine Einladung von "B"
+    Und        "C" empfängt eine Nachricht "Hello from the other site" von "B"
+    Und        "C" schreibt "B" direkt "At least I can say that I have tried"
+    Und        "B" empfängt eine Nachricht "At least I can say that I have tried" von "C"
+    Wenn       "C" löscht seine Nachricht "At least I can say that I have tried" im Chat mit "B"
+    Dann       "B" kann die Nachricht "At least I can say that I have tried" von "C" im Chat mit "C" nicht sehen
+    Und        "C" kann die Nachricht "At least I can say that I have tried" von "C" im Chat mit "B" nicht sehen
+
+  #@Shuffle(true)
+  #@DistinctColumn(ApiName1C)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_816 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 08.16 Events innerhalb einer Organisation - Raum - HBA-User "A" löscht eine Nachricht
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" findet "B" in FHIR
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" bestätigt eine Einladung von "A"
+    Und        "A" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Und        "B" empfängt eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
+    Wenn       "A" löscht seine Nachricht "Hello from the other site" im Raum "TIM Testraum 1"
+    Dann       "A" kann die Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1" nicht sehen
+    Und        "B" kann die Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1" nicht sehen
+
+  #@Shuffle(true)
+  #@DistinctColumn(ApiName1A)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1A.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |
+
+  @Ctl:BP_O2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_817 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 08.17 Events innerhalb einer Organisation - Raum - Organisations-User "A" löscht eine Nachricht
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "B" findet "C" im Healthcare-Service "HealthcareServiceName1"
+    Und        "B" lädt "C" in Chat-Raum "TIM Testraum 1" ein
+    Und        "C" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "C" bestätigt eine Einladung von "B"
+    Und        "B" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Und        "C" empfängt eine Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1"
+    Wenn       "B" löscht seine Nachricht "Hello from the other site" im Raum "TIM Testraum 1"
+    Dann       "B" kann die Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1" nicht sehen
+    Und        "C" kann die Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1" nicht sehen
+
+  #@Shuffle(true)
+  #@DistinctColumn(ApiName1B)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_818 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 08.18 Events innerhalb einer Organisation - Raum - HBA-User "A" sendet eine Nachricht an ausgeloggten Test-Client "B"
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "B" loggt sich im TI-Messenger aus
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" findet "B" in FHIR
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "A" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Wenn       "B" loggt sich im TI-Messenger ein
+    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" empfängt eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
+
+  #@Shuffle(true)
+  #@DistinctColumn(ApiName1B)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1A.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |
+
+  @Ctl:BP_O2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_819 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 08.19 Events innerhalb einer Organisation - Raum - Organisations-User "A" sendet eine Nachricht an ausgeloggten Test-Client "B"
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
+    Und        "C" loggt sich im TI-Messenger aus
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "B" findet "C" im Healthcare-Service "HealthcareServiceName1"
+    Und        "B" lädt "C" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Wenn       "C" loggt sich im TI-Messenger ein
+    Dann       "C" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "C" empfängt eine Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1"
+
+  #@Shuffle(true)
+  #@DistinctColumn(ApiName1C)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @DistinctColumn(ApiName1C)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_820 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 08.20 Events innerhalb einer Organisation - Raum - HBA-User "A" sendet ein Attachment
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" findet "B" in FHIR
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Wenn       "A" sendet ein Attachment "datei.txt" an den Raum "TIM Testraum 1"
+    Dann       "B" empfängt das Attachment "datei.txt" von "A" im Raum "TIM Testraum 1"
+
+  #@Shuffle(true)
+  #@DistinctColumn(ApiName1A)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1A.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |
+
+  @Ctl:BP_O2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_821 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 08.21 Events innerhalb einer Organisation - Raum - Organisations-User "A" sendet ein Attachment
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "B" findet "C" im Healthcare-Service "HealthcareServiceName1"
+    Und        "B" lädt "C" in Chat-Raum "TIM Testraum 1" ein
+    Und        "C" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Wenn       "B" sendet ein Attachment "datei.txt" an den Raum "TIM Testraum 1"
+    Dann       "C" empfängt das Attachment "datei.txt" von "B" im Raum "TIM Testraum 1"
+
+  #@Shuffle(true)
+  #@DistinctColumn(ApiName1B)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_822 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 08.22 Events innerhalb einer Organisation - Raum - HBA-User "B" sendet ein Attachment
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" findet "B" in FHIR
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Wenn       "B" sendet ein Attachment "bild.jpg" an den Raum "TIM Testraum 1"
+    Dann       "A" empfängt das Attachment "bild.jpg" von "B" im Raum "TIM Testraum 1"
+
+  #@Shuffle(true)
+  #@DistinctColumn(ApiName1B)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1A.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |
+
+  @Ctl:BP_O2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_823 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 08.23 Events innerhalb einer Organisation - Raum - Organisations-User "B" sendet ein Attachment
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "B" findet "C" im Healthcare-Service "HealthcareServiceName1"
+    Und        "B" lädt "C" in Chat-Raum "TIM Testraum 1" ein
+    Und        "C" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Wenn       "C" sendet ein Attachment "bild.jpg" an den Raum "TIM Testraum 1"
+    Dann       "B" empfängt das Attachment "bild.jpg" von "C" im Raum "TIM Testraum 1"
+
+  #@Shuffle(true)
+  #@DistinctColumn(ApiName1C)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |

@@ -1,0 +1,13 @@
+@Ctl:Technical
+Feature: Fhir Search operations
+
+  Scenario Outline: SearchInFhirDirectoryController
+    Given "A" claims a device at interface <ApiName1> with user name "Dr. Müller"
+    And "B" claims a device at interface <ApiName1> with user name "Dr. Meier"
+    When "B" sets MXID in own TIPractitioner resource
+    And "A" can find "B" in directory
+    Then practitioner information is returned
+
+    @Filter(ApiName1.hasTag("client"))
+    Examples:
+      | ApiName1 |

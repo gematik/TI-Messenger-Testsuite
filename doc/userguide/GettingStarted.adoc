@@ -1,0 +1,35 @@
+== Erste Schritte
+
+=== Client-Zertifikat einrichten
+
+Die Testtreiberschnittstelle setzt auf mTls.
+Daher muss sowohl ein Client-Zertifikat, als auch ein Truststore konfiguriert werden.
+Dies geschieht durch das Einrichten dieser 4 Umgebungsvariablen:
+
+* TIM_KEYSTORE_PW
+* TIM_TRUSTSTORE_PW
+* TIM_TRUSTSTORE
+* TIM_KEYSTORE
+
+Für lokale/interne Entwicklung kann das Verwenden von TLS umgangen werden. Eine Anleitung hierzu ist link:DevGuide.adoc#Disable-TLS[hier] zu finden.
+
+=== Testtreiberschnittstelle hinzufügen
+
+Alle zu testenden Testtreiberschnittstellen werden in der Datei link:src/test/resources/combine_items.json[combine_items.json] verwaltet.
+Um eine neue Testtreiberschnittstelle zur Testsuite hinzuzufügen, muss ein entsprechender Eintrag in dieser Datei ergänzt werden.
+
+=== Starten der Testfälle
+
+Die Testsuite führt die Tests als Maven-Integrationstests aus.
+Gestartet wird die Testsuite mit diesem Befehl:
+
+----
+mvn verify
+----
+
+=== Auswerten der Testergebnisse
+
+Nach der Testausführung liegt der aktuelle Report unter link:target/site/serenity/index.html[target/site/serenity/index.html].
+Wiederholte Ausführungen werden in einem gemeinsamen Report zusammengefasst.
+
+Zusätzlich wird jeder Durchlauf mit seinem Report und den genutzten Feature-Dateien in dem Ordner link:reports[reports] gespeichert.

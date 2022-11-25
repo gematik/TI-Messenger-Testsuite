@@ -1,0 +1,141 @@
+# language: de
+@File:FeatureFile_03 @Ctl:UseCase @Ctl:OneHomeServer
+@Anwendungsfall:AF_10059
+@Akzeptanz-Kriterium:ML-123627 @Akzeptanz-Kriterium:ML-123626
+Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
+  AF_10059 - Organisationsressourcen im Verzeichnisdienst hinzufügen
+  Mit diesem Anwendungsfall macht ein Akteur in der Rolle "Org-Admin" Akteure seiner Organisation im
+  TI-Messenger-Dienst für andere Akteure auffindbar und erreichbar. Dafür werden FHIR-Ressourcen mit
+  ihrer jeweiligen MXID im Organisationsverzeichnis (HealthcareService) des VZD-FHIR-Directory
+  hinterlegt. Organisationen KÖNNEN mehrere FHIR-Ressourcen pro Organisation administrieren und somit
+  eingehende Kommunikationsprozesse organisatorisch und thematisch strukturieren.
+
+  Mit diesem Anwendungsfall werden Healthcare-Services anlegen, geändert und gelöscht (löschen wird bei den TFs 1 & 2
+  implizit mit getestet).
+
+  Inhalt
+  TF 1 Healthcare Service anlegen
+  TF 2 Healthcare Service Endpoint ändern
+  TF 3 Healthcare Service anlegen/ändern, Location anlegen/ändern, Endpoint anlegen/ändern und löschen
+  TF 4 Negativ Test Healthcare Service anlegen
+  TF 5 Healthcare-Service anlegen und durch anderen OrgAdmin ändern
+
+  @Ctl:BP_P2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_301 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 03.1 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "HBA_A"
+    Und        "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
+    Wenn       "C" schreibt "B" über den Healthcare-Service "HealthcareServiceName" direkt "Hello from the other site"
+    Und        "B" bestätigt eine Einladung von "C"
+    Dann       "B" empfängt eine Nachricht "Hello from the other site" von "C"
+    Und        "C" schreibt "B" direkt "At least I can say that I have tried"
+    Und        "B" empfängt eine Nachricht "At least I can say that I have tried" von "C"
+
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+  @Filter(ApiName1C.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @Ctl:BP_N2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_302 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 03.2 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen und Endpoint ändern
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Und        "D" reserviert sich einen Test-Client an der Schnittstelle <ApiName1D> mit dem Benutzer "OrgUser_C"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
+    Und        "D" schreibt "B" über den Healthcare-Service "HealthcareServiceName" direkt "Hello from the other site"
+    Und        "B" bestätigt eine Einladung von "D"
+    Und        "B" empfängt eine Nachricht "Hello from the other site" von "D"
+    Und        "D" schreibt "B" direkt "At least I can say that I have tried"
+    Und        "B" empfängt eine Nachricht "At least I can say that I have tried" von "D"
+    Wenn       "A" ändert den Endpunkt des Healthcare-Services "HealthcareServiceName" auf "C"
+    Dann       "D" schreibt "C" über den Healthcare-Service "HealthcareServiceName" direkt "Hello from the other site"
+    Und        "C" bestätigt eine Einladung von "D"
+    Und        "C" empfängt eine Nachricht "Hello from the other site" von "D"
+    Und        "D" schreibt "C" direkt "At least I can say that I have tried"
+    Und        "C" empfängt eine Nachricht "At least I can say that I have tried" von "D"
+
+  #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName1D,homeserver,2)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(false)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+  @Filter(ApiName1D.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C | ApiName1D |
+
+  @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_303 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 03.3 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen/ändern, Location anlegen/ändern, Endpoint anlegen/ändern und löschen
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName"
+    Wenn       "A" ändert die Daten des Healthcare-Service "HealthcareServiceName" mit JSON "03_AenderungEinesHealthcareService.json"
+    Dann       vergleicht "A" den Healthcare-Service "HealthcareServiceName" mit dem JSON "03_AenderungEinesHealthcareService.json"
+    Wenn       "A" fügt eine Location "Location1" zum Healthcare-Service "HealthcareServiceName" hinzu mit JSON "03_HinzufuegenLocationFuerHealthcareService.json"
+    Dann       entspricht die Location "Location1" zum Healthcare-Service "HealthcareServiceName" dem JSON "03_HinzufuegenLocationFuerHealthcareService.json"
+    Wenn       "A" ändert die Location "Location1" für den Healthcare-Service "HealthcareServiceName" mit JSON "03_AenderungLocationFuerHealthcareService.json"
+    Dann       entspricht die Location "Location1" zum Healthcare-Service "HealthcareServiceName" dem JSON "03_AenderungLocationFuerHealthcareService.json"
+    Wenn       "A" löscht die Location "Location1" für den Healthcare-Service "HealthcareServiceName"
+    Dann       existiert keine Location "Location1" für den Healthcare-Service "HealthcareServiceName"
+    Wenn       "A" erstellt Endpunkt für "B" auf Healthcare-Service "HealthcareServiceName"
+    Und        "A" ändert den Endpunkt von "B" im Healthcare-Service "HealthcareServiceName" mit dem JSON "03_AenderungEndpointFuerHealthcareService.json"
+    Und        entspricht der Endpunkt von "B" im Healthcare-Service "HealthcareServiceName" dem JSON "03_AenderungEndpointFuerHealthcareService.json"
+    Wenn       "A" löscht den Endpoint von "B" für den Healthcare-Service "HealthcareServiceName"
+    Dann       existiert kein Endpoint von "B" für den Healthcare-Service "HealthcareServiceName"
+    Wenn       "A" löscht den Healthcare-Service "HealthcareServiceName"
+    Dann       existiert kein Healthcare-Service "HealthcareServiceName"
+
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |
+
+  @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_304 @PRIO:2 @Testfall:Negativ @Status:Implementiert
+  Szenariogrundriss: 03.4 Organisationsressourcen im Verzeichnisdienst hinzufügen - Nicht validen Healthcare-Service durch Org-Admin anlegen
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Wenn       "A" versucht einen Healthcare-Service mit dem nicht validen JSON "03_ErstellenEinesHealthcareService_Negativ.json" zu erstellen
+    Dann       erhält "A" einen Responsecode 400
+
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+
+    Beispiele:
+    | ApiName1A |
+
+  @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_305 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 03.5 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service anlegen und durch anderen OrgAdmin ändern
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und "B" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1B>
+    Und "A" erstellt einen Healthcare-Service "HealthcareServiceName"
+    Wenn "B" ändert die Daten des von "A" angelegten Healthcare-Service "HealthcareServiceName" mit JSON "03_AenderungEinesHealthcareService.json"
+    Dann vergleicht "B" den Healthcare-Service "HealthcareServiceName" mit dem JSON "03_AenderungEinesHealthcareService.json"
+    Und vergleicht "A" den Healthcare-Service "HealthcareServiceName" mit dem JSON "03_AenderungEinesHealthcareService.json"
+
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("orgAdmin"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |

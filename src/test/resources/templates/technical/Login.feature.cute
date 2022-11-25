@@ -1,0 +1,19 @@
+@Ctl:Technical
+Feature: Login operations
+
+  Scenario Outline: Logout after sending a message and then Login and check if message is there
+    Given "A" claims a device at interface <ApiName1> with user name "Dr. Müller"
+    And "B" claims a device at interface <ApiName1> with user name "Dr. Meier"
+    And "A" creates a room with name "MyRoom"
+    And "A" invites "B" into room "MyRoom"
+    And "B" accepts the invitation to room "MyRoom"
+    And "A" sends message "hello world" in room "MyRoom"
+    And "B" sends message "hello universe" in room "MyRoom"
+    When "A" logs out
+    When "A" logs in
+    Then "A" can see message "hello world" from "A" in room "MyRoom"
+    Then "A" can see message "hello universe" from "B" in room "MyRoom"
+
+    @Filter(ApiName1.hasTag("client"))
+    Examples:
+      | ApiName1 |

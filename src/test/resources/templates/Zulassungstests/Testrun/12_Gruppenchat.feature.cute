@@ -1,0 +1,230 @@
+# language: de
+@File:FeatureFile_12 @Ctl:UseCase @Ctl:Additional @Ctl:Gruppenchat
+@Anwendungsfall:AF_Gruppenchat
+Funktionalität:  12. Gruppenchat
+  Zentrales Konzept beim Chatten in Matrix sind die "Räume". Die folgenden Testfälle sollen das Konzept 'Gruppenchat'
+  behandeln. Wenn ein Akteur mehrere Personen in einen "Raum" einlädt, erzeugt man einen Gruppenchat.
+
+  Inhalt
+  TF 1 & 2 Gruppenchat unterschiedliche Organisationen (HBA)
+  TF 3     Gruppenchat unterschiedliche Organisationen (OrgUser)
+  TF 4 & 5 Gruppenchat gleiche Organisation (HBA)
+  TF 6     Gruppenchat gleiche Organisation (OrgUser)
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_1201 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 12.1 Events außerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName3> mit dem Benutzer "HBA_C"
+    Und        "D" reserviert sich einen Test-Client an der Schnittstelle <ApiName4> mit dem Benutzer "HBA_D"
+    Und        "E" reserviert sich einen Test-Client an der Schnittstelle <ApiName5> mit dem Benutzer "HBA_E"
+    Und        "A", "B", "C", "D", "E" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" findet "B", "C", "D", "E" in FHIR
+    Und        "A" lädt "B","C","D","E" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B", "C", "D", "E" erhalten eine Einladung von "A"
+    Und        "B", "C", "D", "E" bestätigt eine Einladung von "A"
+    Wenn       "A" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Dann       "B", "C", "D", "E" empfangen eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
+
+  @Shuffle
+  @DistinctProperty(homeserver)
+  @MinimalTable(true)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName3.hasTag("client"))
+  @Filter(ApiName4.hasTag("client"))
+  @Filter(ApiName5.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName3.hasTag("practitioner"))
+  @Filter(ApiName4.hasTag("practitioner"))
+  @Filter(ApiName5.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1 | ApiName2 | ApiName3 | ApiName4 | ApiName5 |
+
+  @Ctl:BP_P2P
+  @TCID:TIM_11_AF_1202 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 12.2 Events außerhalb einer Organisation - Gruppenchat - Test-Client "E" sendet eine Nachricht
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName3> mit dem Benutzer "HBA_C"
+    Und        "D" reserviert sich einen Test-Client an der Schnittstelle <ApiName4> mit dem Benutzer "HBA_D"
+    Und        "E" reserviert sich einen Test-Client an der Schnittstelle <ApiName5> mit dem Benutzer "HBA_E"
+    Und        "A", "B", "C", "D", "E" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" findet "B", "C", "D", "E" in FHIR
+    Und        "A" lädt "B","C","D","E" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B", "C", "D", "E" erhalten eine Einladung von "A"
+    Und        "B", "C", "D", "E" bestätigt eine Einladung von "A"
+    Wenn       "E" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Dann       "A", "B", "C", "D" empfangen eine Nachricht "Hello from the other site" von "E" im Raum "TIM Testraum 1"
+
+  @Shuffle
+  @DistinctProperty(homeserver)
+  @MinimalTable(true)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName3.hasTag("client"))
+  @Filter(ApiName4.hasTag("client"))
+  @Filter(ApiName5.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName3.hasTag("practitioner"))
+  @Filter(ApiName4.hasTag("practitioner"))
+  @Filter(ApiName5.hasTag("practitioner"))
+
+
+    Beispiele:
+    | ApiName1 | ApiName2 | ApiName3 | ApiName4 | ApiName5 |
+
+  @WIP
+  @Ctl:BP_O2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_1203 @PRIO:1 @Testfall:Positiv @Status:InBearbeitung
+  Szenariogrundriss: 12.3 Events außerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht
+    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Org Admin Client an Schnittstelle <ApiName2A>
+    Und        "C" reserviert sich einen Org Admin Client an Schnittstelle <ApiName3A>
+    Und        "D" reserviert sich einen Org Admin Client an Schnittstelle <ApiName4A>
+    Und        "E" reserviert sich einen Org Admin Client an Schnittstelle <ApiName5A>
+    Und        "F" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "G" reserviert sich einen Test-Client an der Schnittstelle <ApiName2B> mit dem Benutzer "OrgUser_B"
+    Und        "H" reserviert sich einen Test-Client an der Schnittstelle <ApiName3B> mit dem Benutzer "OrgUser_C"
+    Und        "I" reserviert sich einen Test-Client an der Schnittstelle <ApiName4B> mit dem Benutzer "OrgUser_D"
+    Und        "J" reserviert sich einen Test-Client an der Schnittstelle <ApiName5B> mit dem Benutzer "OrgUser_E"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "F"
+    Und        "B" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "G"
+    Und        "C" erstellt einen Healthcare-Service "HealthcareServiceName3" und setzen einen Endpunkt auf "H"
+    Und        "D" erstellt einen Healthcare-Service "HealthcareServiceName4" und setzen einen Endpunkt auf "I"
+    Und        "E" erstellt einen Healthcare-Service "HealthcareServiceName5" und setzen einen Endpunkt auf "J"
+    Und        "F" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "F" findet "G" im Healthcare-Service "HealthcareServiceName2"
+    Und        "F" findet "H" im Healthcare-Service "HealthcareServiceName3"
+    Und        "F" findet "I" im Healthcare-Service "HealthcareServiceName4"
+    Und        "F" findet "J" im Healthcare-Service "HealthcareServiceName5"
+    Und        "F" lädt "G", "H", "I", "J" in Chat-Raum "TIM Testraum 1" ein
+    Und        "G", "H", "I", "J" erhalten eine Einladung von "F"
+    Und        "G", "H", "I", "J" bestätigt eine Einladung von "F"
+    Wenn       "F" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Dann       "G", "H", "I", "J" empfangen eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
+
+  @Shuffle
+  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+  @Filter(ApiName3A.properties["homeserver"].equals(ApiName3B.properties["homeserver"]))
+  @Filter(ApiName4A.properties["homeserver"].equals(ApiName4B.properties["homeserver"]))
+  @Filter(ApiName5A.properties["homeserver"].equals(ApiName5B.properties["homeserver"]))
+  @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
+  @Filter(!ApiName1A.properties["homeserver"].equals(ApiName3A.properties["homeserver"]))
+  @Filter(!ApiName1A.properties["homeserver"].equals(ApiName4A.properties["homeserver"]))
+  @Filter(!ApiName1A.properties["homeserver"].equals(ApiName5A.properties["homeserver"]))
+  @Filter(!ApiName2A.properties["homeserver"].equals(ApiName3A.properties["homeserver"]))
+  @Filter(!ApiName2A.properties["homeserver"].equals(ApiName4A.properties["homeserver"]))
+  @Filter(!ApiName2A.properties["homeserver"].equals(ApiName5A.properties["homeserver"]))
+  @Filter(!ApiName3A.properties["homeserver"].equals(ApiName4A.properties["homeserver"]))
+  @Filter(!ApiName3A.properties["homeserver"].equals(ApiName5A.properties["homeserver"]))
+  @Filter(!ApiName4A.properties["homeserver"].equals(ApiName5A.properties["homeserver"]))
+  #@MinimalTable(true)
+  #@DistinctColumn(ApiName1B)
+  #@MaxSameColumnProperty(ApiName1B,homeserver,1)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName2A.hasTag("orgAdmin"))
+  @Filter(ApiName3A.hasTag("orgAdmin"))
+  @Filter(ApiName4A.hasTag("orgAdmin"))
+  @Filter(ApiName5A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName2B.hasTag("client"))
+  @Filter(ApiName3B.hasTag("client"))
+  @Filter(ApiName4B.hasTag("client"))
+  @Filter(ApiName5B.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName2A | ApiName3A | ApiName4A | ApiName5A | ApiName1B | ApiName2B | ApiName3B | ApiName4B | ApiName5B |
+
+  @Ctl:BP_P2P @Ctl:OneHomeServer
+  @TCID:TIM_11_AF_1204 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 12.4 Events innerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "HBA_C"
+    Und        "A", "B", "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" findet "B", "C" in FHIR
+    Und        "A" lädt "B", "C" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B", "C" erhalten eine Einladung von "A"
+    Und        "B", "C" bestätigt eine Einladung von "A"
+    Wenn       "A" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Dann       "B", "C" empfangen eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
+
+  @Shuffle
+  @EqualProperty(homeserver)
+  @MinimalTable(true)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+  @Filter(ApiName1A.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("practitioner"))
+  @Filter(ApiName1C.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @Ctl:BP_P2P @Ctl:OneHomeServer
+  @TCID:TIM_11_AF_1205 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 12.5 Events innerhalb einer Organisation - Gruppenchat - Test-Client "C" sendet eine Nachricht
+    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "HBA_C"
+    Und        "A", "B", "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" findet "B", "C" in FHIR
+    Und        "A" lädt "B", "C" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B", "C" erhalten eine Einladung von "A"
+    Und        "B", "C" bestätigt eine Einladung von "A"
+    Wenn       "C" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Dann       "A", "B" empfangen eine Nachricht "Hello from the other site" von "C" im Raum "TIM Testraum 1"
+
+  @Shuffle
+  @EqualProperty(homeserver)
+  @MinimalTable(true)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+  @Filter(ApiName1A.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("practitioner"))
+  @Filter(ApiName1C.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @Ctl:BP_O2O @Ctl:OneHomeServer @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_1206 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  Szenariogrundriss: 12.6 Events innerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht
+  Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Und        "D" reserviert sich einen Test-Client an der Schnittstelle <ApiName1D> mit dem Benutzer "OrgUser_C"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName3" und setzen einen Endpunkt auf "D"
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "B" findet "C" im Healthcare-Service "HealthcareServiceName2"
+    Und        "B" findet "D" im Healthcare-Service "HealthcareServiceName3"
+    Und        "B" lädt "C", "D" in Chat-Raum "TIM Testraum 1" ein
+    Und        "C", "D" erhalten eine Einladung von "B"
+    Und        "C", "D" bestätigt eine Einladung von "B"
+    Wenn       "B" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Dann       "C", "D" empfangen eine Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1"
+
+  @Shuffle
+  @EqualProperty(homeserver)
+  @MinimalTable(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+  @Filter(ApiName1D.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C | ApiName1D |
