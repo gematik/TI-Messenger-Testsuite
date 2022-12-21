@@ -19,6 +19,7 @@ package de.gematik.tim.test.glue.api.utils;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static java.util.Arrays.stream;
 import static java.util.Objects.requireNonNull;
+import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,6 +35,7 @@ import java.util.Objects;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.http.HttpStatus;
 
 public class GlueUtils {
 
@@ -99,5 +101,17 @@ public class GlueUtils {
   public static String readJsonFile(String file) {
     FileReader fileReader = new FileReader(TEST_RESOURCES_JSON_PATH + file);
     return IOUtils.toString(fileReader);
+  }
+
+  public static boolean lastResponseWasSuccessful() {
+    return HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful();
+  }
+
+  public static String homeserverFromMxId(String mxId) {
+    String[] splitted = mxId.split(":");
+    if (splitted.length != 2) {
+      throw new IllegalArgumentException(mxId + " is not a valid MxId");
+    }
+    return splitted[1];
   }
 }

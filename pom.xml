@@ -6,7 +6,7 @@
 
   <groupId>de.gematik.tim.test</groupId>
   <artifactId>TI-Messenger-Testsuite</artifactId>
-  <version>0.1.1</version>
+  <version>0.2.0</version>
   <packaging>jar</packaging>
   <name>TI-Messenger-Testsuite</name>
   <description>Testsuite to check functionality of TI-Messenger-Clients</description>
@@ -29,6 +29,9 @@
     <maven.javadoc.plugin.version>3.0.1</maven.javadoc.plugin.version>
     <skip.saving.reports>false</skip.saving.reports>
     <tiger.config.file>tiger.yml</tiger.config.file>
+    <cutest.combine.break>true</cutest.combine.break>
+    <cutest.prepare.break>true</cutest.prepare.break>
+    <combine.items.file>${project.basedir}/src/test/resources/combine_items.json</combine.items.file>
     <cucumber.filter.tags/>
   </properties>
 
@@ -129,10 +132,12 @@
             </goals>
             <configuration>
               <url>
-                https://raw.githubusercontent.com/gematik/api-ti-messenger/develop/src/openapi/TiMessengerTestTreiber.yaml
+                https://raw.githubusercontent.com/gematik/api-ti-messenger/65135084c0f69bc4feb111afb804945454a83344/src/openapi/TiMessengerTestTreiber.yaml
               </url>
               <outputFileName>TiMessengerTestTreiber.yaml</outputFileName>
               <outputDirectory>${project.build.directory}</outputDirectory>
+              <overwrite>true</overwrite>
+              <skipCache>true</skipCache>
             </configuration>
           </execution>
         </executions>
@@ -181,14 +186,15 @@
       <plugin>
         <groupId>de.gematik</groupId>
         <artifactId>cucumber-test-combinations-maven-plugin</artifactId>
-        <version>2.4.3</version>
+        <version>2.5.0</version>
         <configuration>
           <!--          Global Config-->
-          <combineItemsFile>${project.basedir}/src/test/resources/combine_items.json
-          </combineItemsFile>
+          <combineItemsFile>${combine.items.file}</combineItemsFile>
           <!--          Prepare item config-->
           <truststore>${env.TIM_TRUSTSTORE}</truststore>
           <truststorePw>${env.TIM_TRUSTSTORE_PW}</truststorePw>
+          <hardFail>${cutest.prepare.break}</hardFail>
+          <configFail>${cutest.prepare.break}</configFail>
           <clientCertStore>${env.TIM_KEYSTORE}
           </clientCertStore>
           <clientCertStorePw>${env.TIM_KEYSTORE_PW}</clientCertStorePw>
@@ -229,6 +235,7 @@
             </propertyExpression>
           </propertyExpressions>
           <!--          Combine config-->
+          <breakIfTableToSmall>${cutest.combine.break}</breakIfTableToSmall>
           <outputDir>${feature_dir}</outputDir>
           <templateDir>${project.basedir}/src/test/resources/templates/</templateDir>
           <filterConfiguration>
@@ -443,33 +450,6 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.3.0</version>
-        <executions>
-          <execution>
-            <id>copy</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <artifactItems>
-            <artifactItem>
-              <groupId>de.gematik.tim.test</groupId>
-              <artifactId>TI-Messenger-TestdriverSim</artifactId>
-              <version>0.1.4-SNAPSHOT</version>
-              <type>jar</type>
-              <overWrite>true</overWrite>
-              <outputDirectory>${project.build.directory}</outputDirectory>
-              <destFileName>testdriverSim.jar</destFileName>
-            </artifactItem>
-          </artifactItems>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <version>${jacoco.version}</version>
@@ -501,7 +481,7 @@
             </goals>
             <configuration>
               <target>
-                <delete file="${project.build.directory}/generated-combine/combine_items.json"/>
+                <delete dir="${project.build.directory}/generated-combine"/>
               </target>
             </configuration>
           </execution>
@@ -515,13 +495,56 @@
   <profiles>
     <profile>
       <id>ci-pipeline</id>
+      <activation>
+        <property>
+          <name>profile.ci</name>
+        </property>
+      </activation>
       <properties>
         <feature.tables.max_rows>1</feature.tables.max_rows>
         <skip.saving.reports>true</skip.saving.reports>
+        <combine.items.file>${project.basedir}/src/test/resources/combine_items_ci.json</combine.items.file>
+        <tiger.config.file>tiger-ci.yml</tiger.config.file>
       </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>3.3.0</version>
+            <executions>
+              <execution>
+                <id>copy</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>copy</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>de.gematik.tim.test</groupId>
+                  <artifactId>TI-Messenger-TestdriverSim</artifactId>
+                  <version>0.3.1-SNAPSHOT</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                  <destFileName>testdriverSim.jar</destFileName>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
     <profile>
       <id>disable-prepare-items</id>
+      <activation>
+        <property>
+          <name>profile.ci</name>
+        </property>
+      </activation>
       <build>
         <plugins>
           <plugin>
@@ -544,8 +567,6 @@
     <profile>
       <id>dev</id>
       <properties>
-        <feature.tables.max_rows>1</feature.tables.max_rows>
-        <skip.saving.reports>true</skip.saving.reports>
         <tiger.config.file>tiger-dev.yml</tiger.config.file>
       </properties>
       <activation>

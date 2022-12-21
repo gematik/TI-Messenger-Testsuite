@@ -1,3 +1,19 @@
+:toc-title: Inhaltsverzeichnis
+:toc:
+:toclevels: 4
+
+:tip-caption:  pass:[&#128681;]
+
+:classdia-caption: Class diagram
+:seqdia-caption: Sequence diagram
+
+:source-highlighter: prettify
+
+:imagesdir: ../../doc/images
+:imagesoutdir: ../images
+:testdir: ../../Tests
+:sourcedir: ../../Sources
+:plantumldir: ../plantuml
 == Erste Schritte
 
 === Client-Zertifikat einrichten
@@ -11,12 +27,51 @@ Dies geschieht durch das Einrichten dieser 4 Umgebungsvariablen:
 * TIM_TRUSTSTORE
 * TIM_KEYSTORE
 
-Für lokale/interne Entwicklung kann das Verwenden von TLS umgangen werden. Eine Anleitung hierzu ist link:DevGuide.adoc#Disable-TLS[hier] zu finden.
+Für lokale/interne Entwicklung kann das Verwenden von TLS umgangen werden.
+Eine Anleitung hierzu ist link:DevGuide.adoc#Disable-TLS[hier] zu finden.
 
 === Testtreiberschnittstelle hinzufügen
 
-Alle zu testenden Testtreiberschnittstellen werden in der Datei link:src/test/resources/combine_items.json[combine_items.json] verwaltet.
+Alle zu testenden Testtreiberschnittstellen werden in der Datei link:../src/test/resources/combine_items.json[combine_items.json] verwaltet.
 Um eine neue Testtreiberschnittstelle zur Testsuite hinzuzufügen, muss ein entsprechender Eintrag in dieser Datei ergänzt werden.
+
+Der `value` in der link:../src/test/resources/combine_items.json[combine_items.json] kann entweder direkt die vollständige URL oder für die bessere Zuordnung einen Alias darstellen.
+Der Alias kann freie gewählt werden.
+Sollte ein Alias verwendet werden muss die entsprechende URL unter `url` eingetragen werden.
+
+.Ein Beispiel-Item mit Alias und URL
+[source,json]
+----
+{
+    "value": "http://ti-messenger-win-client",
+    "url": "https://<HOST_NAME>:<PORT>"
+}
+----
+
+IMPORTANT: Für die Verwendung eines `alias` ist es ebenfalls nötig diesen in die link:../tiger.yml[tiger.yml] nach folgendem Schema einzutragen!
+
+[source,yml]
+----
+# default local Tiger Proxy
+tigerProxy:
+  tls:
+    forwardMutualTlsIdentity: "${TIM_KEYSTORE};${TIM_KEYSTORE_PW};pkcs12" <1>
+
+servers:
+  SameAliasAsInCombineItemsJson: <2>
+    type: externalUrl <3>
+    source:
+      - https://127.0.0.1:8080 <4>
+    healthcheckUrl: https://127.0.0.1:8080/actuator/health <5>
+
+----
+
+<1> Default local Tiger muss bestehen bleiben.
+<2> Unter Servers können die einzelnen Services genannt werden.
+Alias muss mit alias in link:../src/test/resources/combine_items.json[combine_items.json] übereinstimmen.
+<3> Der Typ muss `externalUrl` sein.
+<4> Unter `source` muss die entsprechende URL stehen.
+<5> Ein Healthcheck ist optional (Führt ein GET aus und erwartet eine beliebige Antwort).
 
 === Starten der Testfälle
 

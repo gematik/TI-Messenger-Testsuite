@@ -19,42 +19,47 @@ package de.gematik.tim.test.glue.api.login;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.ACCOUNT_PASSWORD;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.LOGIN;
+import static de.gematik.tim.test.glue.api.login.IsLoggedInAbility.logOut;
 import static de.gematik.tim.test.models.AuthStageNameDTO.BASICAUTH;
+import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
+import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
+import de.gematik.tim.test.models.AccountDTO;
 import de.gematik.tim.test.models.LoginDTO;
+import java.util.Optional;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
-import org.apache.commons.lang3.StringUtils;
 
 public class LoginTask implements Task {
-
-  private String mxid;
-  private String password;
 
   public static LoginTask login() {
     return new LoginTask();
   }
 
-  public LoginTask withMxid(String mxid) {
-    this.mxid = mxid;
-    return this;
-  }
-
-  public LoginTask withPassword(String password) {
-    this.password = password;
-    return this;
-  }
-
   @Override
   public <T extends Actor> void performAs(T actor) {
-    String finalMxid = StringUtils.isEmpty(this.mxid) ? actor.recall(MX_ID) : this.mxid;
-    String finalPassword = StringUtils.isEmpty(this.password) ? ACCOUNT_PASSWORD : this.password;
-    LoginDTO loginDTO = new LoginDTO()
-        .authStage(BASICAUTH)
-        .username(finalMxid)
-        .password(finalPassword);
-    actor.attemptsTo(LOGIN.request().with(req -> req.body(loginDTO)));
+    Optional<LoginDTO> loginDto = getLoginDto(actor);
+    if (loginDto.isPresent()) {
+      actor.attemptsTo(LOGIN.request().with(req -> req.body(loginDto.get())));
+    } else {
+      actor.attemptsTo(LOGIN.request());
+    }
+    AccountDTO account = lastResponse().body().as(AccountDTO.class);
+    actor.remember(MX_ID, account.getMxid());
+    actor.remember(ACCOUNT_PASSWORD, account.getPassword());
+    actor.can(logOut());
 
+    RawDataStatistics.login();
+  }
+
+  private <T extends Actor> Optional<LoginDTO> getLoginDto(T actor) {
+    if (actor.recall(MX_ID) != null) {
+      return Optional.of(new LoginDTO()
+          .authStage(BASICAUTH)
+          .username(actor.recall(MX_ID))
+          .password(actor.recall(ACCOUNT_PASSWORD)));
+    }
+    return Optional.empty();
   }
 
 }

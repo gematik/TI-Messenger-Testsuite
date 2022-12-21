@@ -14,27 +14,33 @@
  * limitations under the License.
  */
 
-package de.gematik.tim.test.glue.api.account;
+package de.gematik.tim.test.glue.api.room.tasks;
 
-import static de.gematik.tim.test.glue.api.ActorMemoryKeys.ACCOUNT_PASSWORD;
-import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
-import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.DELETE_ACCOUNT;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import de.gematik.tim.test.glue.api.room.UseRoomAbility;
+import lombok.Getter;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 
-public class DeleteAccountTask implements Task {
+@Getter
+public abstract class RoomSpecificTask implements Task {
 
-  public static DeleteAccountTask deleteAccount() {
-    return new DeleteAccountTask();
+  private String roomName;
+
+  protected <T extends RoomSpecificTask> T forRoomName(String roomName) {
+    this.roomName = roomName;
+    return (T) this;
   }
 
   @Override
   public <T extends Actor> void performAs(T actor) {
+    UseRoomAbility useRoomAbility = actor.abilityTo(UseRoomAbility.class);
+    if (isNotBlank(getRoomName())) {
+      useRoomAbility.setActive(getRoomName());
+    } else {
+      roomName = useRoomAbility.getActiveKey();
+    }
 
-    actor.attemptsTo(DELETE_ACCOUNT.request());
-
-    actor.forget(MX_ID);
-    actor.forget(ACCOUNT_PASSWORD);
   }
 }

@@ -1,8 +1,9 @@
 # language: de
 @File:FeatureFile_07 @Ctl:UseCase @Ctl:OneHomeServer
-@Anwendungsfall:AF_10104
-@Akzeptanz-Kriterium:ML-123896 @Akzeptanz-Kriterium:ML-129415 @Akzeptanz-Kriterium:ML-129414
-@Akzeptanz-Kriterium:ML-132590
+@PRODUKT:TI-M
+@AF-ID:AF_10104
+@AK-ID:ML-123896 @AK-ID:ML-129415 @AK-ID:ML-129414
+@AK-ID:ML-132590
 Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
   AF_10104 - Einladung von Akteuren innerhalb einer Organisation
   In diesem Anwendungsfall wird ein Akteur der zu einer gemeinsamen Organisation gehört in einen Raum
@@ -12,7 +13,7 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
   der TI-Föderation sind (siehe Berechtigungskonzept - Stufe 1). Ist dies der Fall erfolgt die Weiterleitung
   an den zugehörigen Matrix-Homeserver. Dieser prüft ob die beteiligten Akteure bei ihm registriert sind. Ist
   dies nicht der Fall,  handelt es sich bei dem einzuladenden Akteur nicht um einen Akteur innerhalb der
-  Organisation und das Invite-Event wird an den Matrix- Homeserver des einzuladenden Akteurs weitergeleitet.
+  Organisation und das Invite-Event wird an den Matrix-Homeserver des einzuladenden Akteurs weitergeleitet.
   Der Anwendungsfall "AF_10061 - Einladung von Akteuren außerhalb einer Organisation" zeigt den sich daraus
   ergebenden Verlauf.
 
@@ -30,11 +31,13 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
   TF 16 & 17 Einladung durch nicht im Verzeichnisdienst registrierte User in Chat/Raum (HBA an HBA)
   TF 18 & 19 Einladung durch nicht im Verzeichnisdienst registrierte User in Chat/Raum (OrgUser und OrgUser)
 
-  @Ctl:BP_P2P
-  @TCID:TIM_11_AF_701 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  # TODO P2N_intern und O2N_intern haben noch keinen Testfall
+
+  @BP:P2P @Ctl:Chat
+  @TCID:TIM_11_AF_701 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.1 Einladung innerhalb einer Organisation - Einladung in Chat - Volltextsuche (HBA-User an HBA-User)
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" findet "B" in FHIR
     Wenn       "A" schreibt "B" direkt "Hello from the other site"
@@ -53,11 +56,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Beispiele:
     | ApiName1A | ApiName1B |
 
-  @Ctl:BP_P2P
-  @TCID:TIM_11_AF_702 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:P2P @Ctl:Chat @Ctl:SeachPart
+  @TCID:TIM_11_AF_702 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.2 Einladung innerhalb einer Organisation - Einladung in Chat - unscharfe Suche (HBA-User an HBA-User)
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" findet TI-Messenger-Nutzer "B" bei Suche nach Namen minus 0-1 (Anzahl vorne-hinten) Char(s) abgeschnitten
     Wenn       "A" schreibt "B" direkt "Hello from the other site"
@@ -76,11 +79,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Beispiele:
     | ApiName1A | ApiName1B |
 
-  @Ctl:BP_P2P
-  @TCID:TIM_11_AF_703 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:P2P @Ctl:Raum
+  @TCID:TIM_11_AF_703 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.3 Einladung innerhalb einer Organisation - Einladung in Raum - Volltextsuche (HBA-User an HBA-User)
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B" in FHIR
@@ -100,11 +103,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Beispiele:
     | ApiName1A | ApiName1B |
 
-  @Ctl:BP_P2P
-  @TCID:TIM_11_AF_704 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:P2P @Ctl:Raum @Ctl:SeachPart
+  @TCID:TIM_11_AF_704 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.4 Einladung innerhalb einer Organisation - Einladung in Raum - unscharfe Suche (HBA-User an HBA-User)
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet TI-Messenger-Nutzer "B" bei Suche nach Namen minus 0-1 (Anzahl vorne-hinten) Char(s) abgeschnitten
@@ -124,12 +127,12 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Beispiele:
     | ApiName1A | ApiName1B |
 
-  @Ctl:BP_P2O @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_705 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:P2O @Ctl:OrgAdmin @Ctl:Chat
+  @TCID:TIM_11_AF_705 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.5 Einladung innerhalb einer Organisation - Einladung in Chat - HBA-User lädt Organisations-User ein
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "HBA_A"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1C>
     Und        "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
     Und        "C" findet "B" im Healthcare-Service "HealthcareServiceName"
@@ -150,12 +153,12 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
-  @Ctl:BP_O2O  @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_706 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:O2O @Ctl:OrgAdmin @Ctl:Raum
+  @TCID:TIM_11_AF_706 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.6 Einladung innerhalb einer Organisation - Einladung in Raum - Organisations-User lädt Organisations-User ein
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
     Und        "C" erstellt einen Chat-Raum "TIM Testraum 1"
@@ -174,12 +177,12 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
-  @Ctl:BP_O2P @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_707 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:O2P_intern @Ctl:OrgAdmin @Ctl:Chat
+  @TCID:TIM_11_AF_707 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.7 Einladung innerhalb einer Organisation - Einladung in Chat - Organisations-User lädt HBA-User ein
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "HBA_A"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1C>
     Und        "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
     Und        "B" findet "C" in FHIR
@@ -200,11 +203,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
      Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
-  @Ctl:BP_P2P
-  @TCID:TIM_11_AF_708 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:P2P @Ctl:Chat @Ctl:InvitReject
+  @TCID:TIM_11_AF_708 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.8 Einladung innerhalb einer Organisation - Einladung in Chat - Ablehnung der Einladung (HBA-User an HBA-User)
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" findet "B" in FHIR
     Und        "A" schreibt "B" direkt "Hello from the other site"
@@ -223,11 +226,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Beispiele:
     | ApiName1A | ApiName1B |
 
-  @Ctl:BP_P2P
-  @TCID:TIM_11_AF_709 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:P2P @Ctl:Raum @Ctl:InvitReject
+  @TCID:TIM_11_AF_709 @PRIO:2 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.9 Einladung innerhalb einer Organisation - Einladung in Raum - Ablehnung der Einladung (HBA-User an HBA-User)
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A", "B" hinterlegt seine MXID im Verzeichnis Dienst
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B" in FHIR
@@ -247,12 +250,12 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Beispiele:
     | ApiName1A | ApiName1B |
 
-  @Ctl:BP_O2O @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_710 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:O2O @Ctl:OrgAdmin @Ctl:Chat @Ctl:InvitReject
+  @TCID:TIM_11_AF_710 @PRIO:2 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.10 Einladung innerhalb einer Organisation - Einladung in Chat - Ablehnung der Einladung (Organisations-User an Organisations-User)
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
     Und        "B" findet "C" im Healthcare-Service "HealthcareServiceName2"
@@ -272,12 +275,12 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
-  @Ctl:BP_O2O @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_711 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:O2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:InvitReject
+  @TCID:TIM_11_AF_711 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.11 Einladung innerhalb einer Organisation - Einladung in Raum - Ablehnung der Einladung (Organisations-User an Organisations-User)
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
     Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
@@ -298,12 +301,12 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
-  @Ctl:BP_P2P
-  @TCID:TIM_11_AF_712 @PRIO:1 @Testfall:Negativ @Status:Implementiert
+  @BP:P2P @Ctl:Chat @Ctl:RejectThird
+  @TCID:TIM_11_AF_712 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 07.12 Einladung innerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (HBA)
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "HBA_C"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1C>
     Und        "A", "B", "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" findet "B" in FHIR
     Und        "A" findet "C" in FHIR
@@ -329,13 +332,13 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
-  @Ctl:BP_O2O @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_713 @PRIO:1 @Testfall:Negativ @Status:Implementiert
+  @BP:O2O @Ctl:OrgAdmin @Ctl:Chat
+  @TCID:TIM_11_AF_713 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 07.13 Einladung innerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (OrgUser)
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
-    Und        "D" reserviert sich einen Test-Client an der Schnittstelle <ApiName1D> mit dem Benutzer "OrgUser_C"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
+    Und        "D" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1D>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "D"
@@ -362,11 +365,10 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     | ApiName1A | ApiName1B | ApiName1C | ApiName1D |
 
   @WIP
-  @Ctl:BP_P2P
-  @TCID:TIM_11_AF_714 @PRIO:1 @Testfall:Negativ @Status:InBearbeitung
+  @TCID:TIM_11_AF_714 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
   Szenariogrundriss: 07.14 Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch HBA-User
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A" hinterlegt seine MXID im Verzeichnis Dienst
     Dann       "A" findet TI-Messenger-Nutzer "B" bei Suche mit Namen "HBA_B" NICHT
 
@@ -383,12 +385,12 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     | ApiName1A | ApiName1B |
 
   @WIP
-  @Ctl:BP_O2P @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_715 @PRIO:1 @Testfall:Negativ @Status:InBearbeitung
+  @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_715 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
   Szenariogrundriss: 07.15 Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch Organisations-User
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1C>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
     Dann       "B" findet TI-Messenger-Nutzer "C" bei Suche mit Namen "HBA_B" NICHT
 
@@ -404,11 +406,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
-  @Ctl:BP_N2P
-  @TCID:TIM_11_AF_716 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:N2P_intern @Ctl:Chat
+  @TCID:TIM_11_AF_716 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.16 Einladung innerhalb einer Organisation - Einladung in Chat - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A" hinterlegt seine MXID im Verzeichnis Dienst
     Wenn       "B" schreibt "A" direkt "Hello from the other site"
     Dann       "A" erhält eine Einladung von "B"
@@ -427,11 +429,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Beispiele:
     | ApiName1A | ApiName1B |
 
-  @Ctl:BP_N2P @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_717 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:N2P_intern @Ctl:OrgAdmin @Ctl:Raum
+  @TCID:TIM_11_AF_717 @PRIO:2 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.17 Einladung innerhalb einer Organisation - Einladung in Raum - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A" hinterlegt seine MXID im Verzeichnis Dienst
     Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "B" findet "A" in FHIR
@@ -451,12 +453,12 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Beispiele:
     | ApiName1A | ApiName1B |
 
-  @Ctl:BP_N2O @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_718 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:N2O @Ctl:OrgAdmin @Ctl:Chat
+  @TCID:TIM_11_AF_718 @PRIO:2 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.18 Einladung innerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
     Wenn       "C" schreibt "B" direkt "Hello from the other site"
     Dann       "B" erhält eine Einladung von "C"
@@ -474,12 +476,12 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
-  @Ctl:BP_N2O @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_719 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:N2O @Ctl:OrgAdmin @Ctl:Raum
+  @TCID:TIM_11_AF_719 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
     Szenariogrundriss: 07.19 Einladung innerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
-      Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-      Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-      Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+      Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+      Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+      Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
       Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
       Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
       Und        "B" findet "C" im Healthcare-Service "HealthcareServiceName1"

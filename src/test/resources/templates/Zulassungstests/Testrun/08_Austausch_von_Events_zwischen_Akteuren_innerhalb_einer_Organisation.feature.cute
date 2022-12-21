@@ -1,7 +1,8 @@
 # language: de
 @File:FeatureFile_08 @Ctl:UseCase @Ctl:OneHomeServer
-@Anwendungsfall:AF_10063
-@Akzeptanz-Kriterium:ML-123669 @Akzeptanz-Kriterium:ML-123670 @Akzeptanz-Kriterium:ML-132591
+@PRODUKT:TI-M
+@AF-ID:AF_10063
+@AK-ID:ML-123669 @AK-ID:ML-123670 @AK-ID:ML-132591
 Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Organisation
   AF_10063 - Austausch von Events zwischen Akteuren innerhalb einer Organisation
   Dieser Anwendungsfall ermöglicht es Akteuren, welche sich in einem gemeinsamen Raum innerhalb eines Messenger-Service
@@ -19,11 +20,13 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
   TF 18 & 19 Nachricht an ausgeloggten User senden durch HBA/OrgUser
   TF 20 - 23 Attachment senden durch HBA/OrgUser
 
-  @Ctl:BP_P2P
-  @TCID:TIM_11_AF_801 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  # TODO Testfall 804/811 und 806/811 doppelt? wir nehmenn dann direkt
+
+  @BP:P2P @Ctl:Chat @Ctl:MsgForward
+  @TCID:TIM_11_AF_801 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.1 Events innerhalb einer Organisation - Chat - Test-Client "A" sendet und empfängt eine Nachricht
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" findet "B" in FHIR
     Wenn       "A" schreibt "B" direkt "Hello from the other site"
@@ -46,11 +49,11 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Beispiele:
     | ApiName1A | ApiName1B |
 
-  @Ctl:BP_P2P
-  @TCID:TIM_11_AF_802 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:P2P @Ctl:Raum @Ctl:MsgForward
+  @TCID:TIM_11_AF_802 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.2 Events innerhalb einer Organisation - Raum - Test-Client "A" sendet eine Nachricht
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B" in FHIR
@@ -73,11 +76,11 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Beispiele:
     | ApiName1A | ApiName1B |
 
-  @Ctl:BP_P2P
-  @TCID:TIM_11_AF_803 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:P2P @Ctl:Raum @Ctl:MsgBackward
+  @TCID:TIM_11_AF_803 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.3 Events innerhalb einer Organisation - Raum - Test-Client "B" sendet eine Nachricht
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B" in FHIR
@@ -100,12 +103,12 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Beispiele:
     | ApiName1A | ApiName1B |
 
-  @Ctl:BP_P2O @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_804 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:P2O @Ctl:OrgAdmin @Ctl:Chat @Ctl:MsgForward
+  @TCID:TIM_11_AF_804 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.4 Events innerhalb einer Organisation - Chat - HBA-User sendet Organisations-User eine Nachricht
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "HBA_A"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1C>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
     Und        "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
@@ -127,12 +130,12 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
-  @Ctl:BP_P2O @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_805 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:P2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgForward
+  @TCID:TIM_11_AF_805 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.5 Events innerhalb einer Organisation - Raum - HBA-User sendet Organisations-User eine Nachricht
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "HBA_A"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1C>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
     Und        "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
@@ -156,12 +159,12 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
-  @Ctl:BP_O2O @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_806 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:O2O @Ctl:OrgAdmin @Ctl:Chat @Ctl:MsgForward
+  @TCID:TIM_11_AF_806 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.6 Events innerhalb einer Organisation - Chat - Organisations-User sendet Organisations-User eine Nachricht
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
     Und        "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
@@ -182,12 +185,12 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
-  @Ctl:BP_O2O @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_807 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:O2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgForward
+  @TCID:TIM_11_AF_807 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.7 Events innerhalb einer Organisation - Raum - Organisations-User sendet Organisations-User eine Nachricht
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
     Und        "C" erstellt einen Chat-Raum "TIM Testraum 1"
@@ -209,12 +212,12 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
-  @Ctl:BP_O2P @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_808 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:O2P_intern @Ctl:OrgAdmin @Ctl:Chat @Ctl:MsgForward
+  @TCID:TIM_11_AF_808 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.8 Events innerhalb einer Organisation - Chat - Organisations-User sendet HBA-User eine Nachricht
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "HBA_A"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1C>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
     Und        "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "B" findet "C" in FHIR
@@ -236,12 +239,12 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
-  @Ctl:BP_O2P @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_809 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:O2P_intern @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgForward
+  @TCID:TIM_11_AF_809 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.9 Events innerhalb einer Organisation - Raum - Organisations-User sendet HBA-User eine Nachricht
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "HBA_A"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1C>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
     Und        "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
@@ -265,12 +268,12 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
-  @Ctl:BP_O2O @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_810 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:O2O @Ctl:OrgAdmin @Ctl:Chat @Ctl:MsgForward
+  @TCID:TIM_11_AF_810 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.10 Events innerhalb einer Organisation - Chat - Organisations-User sendet eine Nachricht an HealthCareService
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
     Und        "C" schreibt "B" über den Healthcare-Service "HealthcareServiceName1" direkt "Hello from the other site"
@@ -289,12 +292,12 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
-  @Ctl:BP_P2O @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_811 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:P2O @Ctl:OrgAdmin @Ctl:Chat @Ctl:MsgForward
+  @TCID:TIM_11_AF_811 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.11 Events innerhalb einer Organisation - Chat - HBA-User sendet eine Nachricht an HealthCareService
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "HBA_A"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1C>
     Und        "C" hinterlegt seine MXID im Verzeichnis Dienst
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
     Wenn       "C" schreibt "B" über den Healthcare-Service "HealthcareServiceName1" direkt "Hello from the other site"
@@ -315,11 +318,11 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
-  @Ctl:BP_P2P
-  @TCID:TIM_11_AF_812 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:P2P @Ctl:Raum @Ctl:MsgForward @Ctl:MsgChange
+  @TCID:TIM_11_AF_812 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.12 Events innerhalb einer Organisation - Raum - HBA-User ändert eine Nachricht
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" findet "B" in FHIR
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
@@ -345,12 +348,12 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Beispiele:
     | ApiName1A | ApiName1B |
 
-  @Ctl:BP_O2O @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_813 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:O2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgForward @Ctl:MsgChange
+  @TCID:TIM_11_AF_813 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.13 Events innerhalb einer Organisation - Raum - Organisations-User ändert eine Nachricht
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
     Und        "B" findet "C" im Healthcare-Service "HealthcareServiceName2"
@@ -376,11 +379,11 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
-  @Ctl:BP_P2P
-  @TCID:TIM_11_AF_814 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:P2P @Ctl:Chat @Ctl:MsgForward @Ctl:MsgDelete
+  @TCID:TIM_11_AF_814 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.14 Events innerhalb einer Organisation - Chat - HBA-User "B" löscht eine Nachricht
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" findet "B" in FHIR
     Und        "A" schreibt "B" direkt "Hello from the other site"
@@ -406,12 +409,12 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Beispiele:
     | ApiName1A | ApiName1B |
 
-  @Ctl:BP_O2O @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_815 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:O2O @Ctl:OrgAdmin @Ctl:Chat @Ctl:MsgForward @Ctl:MsgDelete
+  @TCID:TIM_11_AF_815 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.15 Events innerhalb einer Organisation - Chat - Organisations-User "B" löscht eine Nachricht
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
     Und        "B" findet "C" im Healthcare-Service "HealthcareServiceName1"
@@ -437,11 +440,11 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
-  @Ctl:BP_P2P
-  @TCID:TIM_11_AF_816 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:P2P @Ctl:Raum @Ctl:MsgForward @Ctl:MsgDelete
+  @TCID:TIM_11_AF_816 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.16 Events innerhalb einer Organisation - Raum - HBA-User "A" löscht eine Nachricht
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B" in FHIR
@@ -467,12 +470,12 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Beispiele:
     | ApiName1A | ApiName1B |
 
-  @Ctl:BP_O2O @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_817 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:O2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgForward @Ctl:MsgDelete
+  @TCID:TIM_11_AF_817 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.17 Events innerhalb einer Organisation - Raum - Organisations-User "A" löscht eine Nachricht
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
     Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
@@ -498,11 +501,11 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
-  @Ctl:BP_P2P
-  @TCID:TIM_11_AF_818 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:P2P @Ctl:Raum @Ctl:MsgForward @Ctl:MsgLogout
+  @TCID:TIM_11_AF_818 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.18 Events innerhalb einer Organisation - Raum - HBA-User "A" sendet eine Nachricht an ausgeloggten Test-Client "B"
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "B" loggt sich im TI-Messenger aus
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
@@ -527,12 +530,12 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Beispiele:
     | ApiName1A | ApiName1B |
 
-  @Ctl:BP_O2O @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_819 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:O2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgForward @Ctl:MsgLogout
+  @TCID:TIM_11_AF_819 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.19 Events innerhalb einer Organisation - Raum - Organisations-User "A" sendet eine Nachricht an ausgeloggten Test-Client "B"
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
     Und        "C" loggt sich im TI-Messenger aus
@@ -558,11 +561,11 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
-  @Ctl:BP_P2P
-  @TCID:TIM_11_AF_820 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:P2P @Ctl:Raum @Ctl:MsgForward @Ctl:Attachment
+  @TCID:TIM_11_AF_820 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.20 Events innerhalb einer Organisation - Raum - HBA-User "A" sendet ein Attachment
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B" in FHIR
@@ -585,12 +588,12 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Beispiele:
     | ApiName1A | ApiName1B |
 
-  @Ctl:BP_O2O @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_821 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:O2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgForward @Ctl:Attachment
+  @TCID:TIM_11_AF_821 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.21 Events innerhalb einer Organisation - Raum - Organisations-User "A" sendet ein Attachment
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
     Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
@@ -613,11 +616,11 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
-  @Ctl:BP_P2P
-  @TCID:TIM_11_AF_822 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:P2P @Ctl:Raum @Ctl:MsgBackward @Ctl:Attachment
+  @TCID:TIM_11_AF_822 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.22 Events innerhalb einer Organisation - Raum - HBA-User "B" sendet ein Attachment
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B" in FHIR
@@ -640,12 +643,12 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Beispiele:
     | ApiName1A | ApiName1B |
 
-  @Ctl:BP_O2O @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_823 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:O2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgBackward @Ctl:Attachment
+  @TCID:TIM_11_AF_823 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.23 Events innerhalb einer Organisation - Raum - Organisations-User "B" sendet ein Attachment
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
     Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"

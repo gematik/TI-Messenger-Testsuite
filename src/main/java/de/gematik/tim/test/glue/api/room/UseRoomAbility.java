@@ -17,6 +17,7 @@
 package de.gematik.tim.test.glue.api.room;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_ID_VARIABLE;
+import static de.gematik.tim.test.glue.api.room.tasks.DeleteRoomTask.deleteRoom;
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 import static lombok.AccessLevel.PRIVATE;
@@ -28,11 +29,13 @@ import io.restassured.specification.RequestSpecification;
 import java.util.List;
 import lombok.NoArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
+import net.serenitybdd.screenplay.HasTeardown;
+import net.serenitybdd.screenplay.RefersToActor;
+import net.serenitybdd.screenplay.Task;
 
 @NoArgsConstructor(access = PRIVATE)
 public class UseRoomAbility extends MultiTargetAbility<String, String> implements
-    TestdriverApiAbility {
-
+    TestdriverApiAbility, HasTeardown, RefersToActor {
 
   private UseRoomAbility(RoomDTO room) {
     addAndSetActive(room);
@@ -81,4 +84,10 @@ public class UseRoomAbility extends MultiTargetAbility<String, String> implement
   public String getRoomIdByName(String roomName) {
     return getTarget(roomName);
   }
+
+  @Override
+  protected Task tearDownPerTarget(String roomName) {
+   return deleteRoom().withName(roomName);
+  }
+
 }

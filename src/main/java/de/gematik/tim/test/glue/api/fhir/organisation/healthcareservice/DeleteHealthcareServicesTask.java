@@ -17,7 +17,6 @@
 package de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.DELETE_HEALTHCARE_SERVICE;
-import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility.removeHsFromActor;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import io.restassured.response.Response;
@@ -41,9 +40,7 @@ public class DeleteHealthcareServicesTask extends HealthcareSpecificTask {
 
     Response response = lastResponse();
     if (response.statusCode() == HttpStatus.NO_CONTENT.value()) {
-      String hsName = actor.abilityTo(UseHealthcareServiceAbility.class).getActive();
-      removeHsFromActor(hsName, actor);
+      actor.abilityTo(UseHealthcareServiceAbility.class).removeCurrent();
     }
-    actor.abilityTo(UseHealthcareServiceAbility.class).removeCurrent();
   }
 }

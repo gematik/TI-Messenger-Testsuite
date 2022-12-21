@@ -14,24 +14,11 @@
  * limitations under the License.
  */
 
-package de.gematik.tim.test.glue.api.login;
+package de.gematik.tim.test.glue.api.devices;
 
-import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.LOGOUT;
-import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirDeleteOwnMxidTask.deleteMxidFromFhir;
+public enum ClientKind {
 
-import de.gematik.tim.test.glue.api.fhir.practitioner.CanDeleteOwnMxidAbility;
-import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.Task;
-
-public class LogoutTask implements Task {
-
-  public static LogoutTask logout() {
-    return new LogoutTask();
-  }
-
-  @Override
-  public <T extends Actor> void performAs(T actor) {
-    actor.attemptsTo(LOGOUT.request());
-  }
-
+  PRACTITIONER,
+  MESSENGER_CLIENT,
+  ORG_ADMIN
 }

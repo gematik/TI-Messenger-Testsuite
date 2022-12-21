@@ -21,9 +21,13 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.CLAIMER_NAME;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_DEVICES;
-import static de.gematik.tim.test.glue.api.account.AccountControllerGlue.registerTestClient;
 import static de.gematik.tim.test.glue.api.devices.ClaimDeviceTask.claimDevice;
+import static de.gematik.tim.test.glue.api.devices.ClientKind.MESSENGER_CLIENT;
+import static de.gematik.tim.test.glue.api.devices.ClientKind.ORG_ADMIN;
+import static de.gematik.tim.test.glue.api.devices.ClientKind.PRACTITIONER;
 import static de.gematik.tim.test.glue.api.info.ApiInfoQuestion.apiInfo;
+import static de.gematik.tim.test.glue.api.login.LogInGlue.loginSuccess;
+import static de.gematik.tim.test.glue.api.login.LogInGlue.logsIn;
 import static de.gematik.tim.test.glue.api.login.LoginTask.login;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static net.serenitybdd.screenplay.actors.OnStage.setTheStage;
@@ -32,9 +36,9 @@ import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static net.serenitybdd.screenplay.actors.OnStage.withCurrentActor;
 import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasItem;
 
+import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.InfoObjectDTO;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -62,6 +66,7 @@ public class DevicesControllerGlue {
   @After
   public void teardown() {
     stage().drawTheCurtain();
+    RawDataStatistics.addToReport();
   }
 
   // Get devices
@@ -73,29 +78,37 @@ public class DevicesControllerGlue {
   }
 
   // Claim Device
-  @Given("{string} claims a device at interface {word} with user name {string}")
-  @Angenommen("{string} reserviert sich einen Test-Client an der Schnittstelle {word} mit dem Benutzer {string}")
-  public void reserveClientOnApiAndCreateAccount(String actorName, String apiName,
-      String userName) {
+  @Given("{string} claims a HBA user client at interface {word}")
+  @Angenommen("{string} reserviert sich einen Practitioner-Client an Schnittstelle {word}")
+  public void reserveClientOnApiAndCreateAccount(String actorName, String apiName) {
     Actor actor = reserveClientOnApi(actorName, apiName);
-
-    checkIs(actor, List.of("client", "practitioner"));
-    registerTestClient(actorName, userName);
-    registerSuccess(actorName);
+    checkIs(actor, List.of(MESSENGER_CLIENT, PRACTITIONER));
+    logsIn(actorName);
+    loginSuccess(actorName);
   }
 
   @Given("{string} reserves org admin client on api {word}")
-  @Angenommen("{string} reserviert sich einen Org Admin Client an Schnittstelle {word}")
+  @Angenommen("{string} reserviert sich einen Org-Admin-Client an Schnittstelle {word}")
   public void reserveOrgAdminClientOnApi(String actorName, String apiName) {
     Actor actor = reserveClientOnApi(actorName, apiName);
-    checkIs(actor, List.of("orgAdmin"));
+    checkIs(actor, List.of(ORG_ADMIN));
+    logsIn(actorName);
+    loginSuccess(actorName);
+  }
+
+  @Given("{string} reserves org user client on api {word}")
+  @Angenommen("{string} reserviert sich einen Messenger-Client an Schnittstelle {word}")
+  public void reserveOrgUserClientOnApi(String actorName, String apiName) {
+    Actor actor = reserveClientOnApi(actorName, apiName);
+    checkIs(actor, List.of(MESSENGER_CLIENT));
+    logsIn(actorName);
+    loginSuccess(actorName);
   }
 
   @Und("{string} meldet sich mit den Daten von {string} an der Schnittstelle {word} an")
   public void reserveClientOnApiAndLoginWithData(String actorName, String userName,
       String apiName) {
     Actor actor = reserveClientOnApi(actorName, apiName);
-    checkIs(actor, List.of("client", "practitioner"));
 
     String mxId = theActorCalled(userName).recall(MX_ID);
     String password = theActorCalled(userName).recall(ACCOUNT_PASSWORD);
@@ -132,36 +145,22 @@ public class DevicesControllerGlue {
   }
 
   // Assertions
-  @Then("registration successful for {string}")
-  @Dann("ist die Registrierung für {string} erfolgreich")
-  public void registerSuccess(String actorName) {
-    theActorCalled(actorName).should(seeThatResponse(res -> res.statusCode(201)));
-  }
-
-  @Then("registration failed for {string}")
-  @Dann("schlägt die Registrierung für {string} fehl")
-  public void registerFailure(String actorName) {
-    theActorCalled(actorName).should(
-        seeThatResponse(res -> res.statusCode(greaterThanOrEqualTo(400))));
-  }
-
-  private void checkIs(Actor actor, List<String> kind) {
+  public static void checkIs(Actor actor, List<ClientKind> kind) {
     InfoObjectDTO info = actor.asksFor(apiInfo());
-    if (kind.contains("orgAdmin")) {
+    if (kind.contains(ORG_ADMIN)) {
       assertThat(info.getClientInfo().getCanAdministrateFhirOrganization())
           .as("Claimed device have no org admin privileges! This information is got from the info endpoint.")
           .isTrue();
-    } else if (kind.contains("client")) {
+    }
+    if (kind.contains(MESSENGER_CLIENT)) {
       assertThat(info.getClientInfo().getCanSendMessages())
           .as("Claimed device have no write messages privileges! This information is got from the info endpoint.")
           .isTrue();
-    } else if (kind.contains("practitioner")) {
+    }
+    if (kind.contains(PRACTITIONER)) {
       assertThat(info.getClientInfo().getCanAdministrateFhirPractitioner())
           .as("Claimed device have no practitioner privileges! This information is got from the info endpoint.")
           .isTrue();
-    } else {
-      throw new IllegalArgumentException("This kind of client is unknown: " + kind);
     }
   }
-
 }

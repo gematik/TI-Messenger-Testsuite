@@ -1,7 +1,8 @@
 # language: de
 @File:FeatureFile_03 @Ctl:UseCase @Ctl:OneHomeServer
-@Anwendungsfall:AF_10059
-@Akzeptanz-Kriterium:ML-123627 @Akzeptanz-Kriterium:ML-123626
+@PRODUKT:TI-M
+@AF-ID:AF_10059
+@AK-ID:ML-123627 @AK-ID:ML-123626
 Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
   AF_10059 - Organisationsressourcen im Verzeichnisdienst hinzufügen
   Mit diesem Anwendungsfall macht ein Akteur in der Rolle "Org-Admin" Akteure seiner Organisation im
@@ -20,12 +21,12 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
   TF 4 Negativ Test Healthcare Service anlegen
   TF 5 Healthcare-Service anlegen und durch anderen OrgAdmin ändern
 
-  @Ctl:BP_P2O @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_301 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:P2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_301 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 03.1 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "HBA_A"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1C>
     Und        "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
     Wenn       "C" schreibt "B" über den Healthcare-Service "HealthcareServiceName" direkt "Hello from the other site"
@@ -45,13 +46,13 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
-  @Ctl:BP_N2O @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_302 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:N2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_302 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 03.2 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen und Endpoint ändern
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
-    Und        "D" reserviert sich einen Test-Client an der Schnittstelle <ApiName1D> mit dem Benutzer "OrgUser_C"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
+    Und        "D" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1D>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
     Und        "D" schreibt "B" über den Healthcare-Service "HealthcareServiceName" direkt "Hello from the other site"
     Und        "B" bestätigt eine Einladung von "D"
@@ -79,10 +80,10 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
     | ApiName1A | ApiName1B | ApiName1C | ApiName1D |
 
   @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_303 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @TCID:TIM_11_AF_303 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 03.3 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen/ändern, Location anlegen/ändern, Endpoint anlegen/ändern und löschen
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName"
     Wenn       "A" ändert die Daten des Healthcare-Service "HealthcareServiceName" mit JSON "03_AenderungEinesHealthcareService.json"
     Dann       vergleicht "A" den Healthcare-Service "HealthcareServiceName" mit dem JSON "03_AenderungEinesHealthcareService.json"
@@ -110,9 +111,9 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
     | ApiName1A | ApiName1B |
 
   @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_304 @PRIO:2 @Testfall:Negativ @Status:Implementiert
+  @TCID:TIM_11_AF_304 @PRIO:2 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 03.4 Organisationsressourcen im Verzeichnisdienst hinzufügen - Nicht validen Healthcare-Service durch Org-Admin anlegen
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
     Wenn       "A" versucht einen Healthcare-Service mit dem nicht validen JSON "03_ErstellenEinesHealthcareService_Negativ.json" zu erstellen
     Dann       erhält "A" einen Responsecode 400
 
@@ -122,10 +123,10 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
     | ApiName1A |
 
   @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_305 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @TCID:TIM_11_AF_305 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 03.5 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service anlegen und durch anderen OrgAdmin ändern
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und "B" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1B>
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und "B" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1B>
     Und "A" erstellt einen Healthcare-Service "HealthcareServiceName"
     Wenn "B" ändert die Daten des von "A" angelegten Healthcare-Service "HealthcareServiceName" mit JSON "03_AenderungEinesHealthcareService.json"
     Dann vergleicht "B" den Healthcare-Service "HealthcareServiceName" mit dem JSON "03_AenderungEinesHealthcareService.json"

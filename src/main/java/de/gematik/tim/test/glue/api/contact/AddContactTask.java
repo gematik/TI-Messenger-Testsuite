@@ -18,6 +18,7 @@ package de.gematik.tim.test.glue.api.contact;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.ADD_CONTACT;
 
+import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.ContactDTO;
 import de.gematik.tim.test.models.ContactInviteSettingsDTO;
 import java.time.Instant;
@@ -43,5 +44,6 @@ public class AddContactTask implements Task {
 
     actor.attemptsTo(ADD_CONTACT.request().with(req -> req.body(contact)));
 
+    RawDataStatistics.editContactManagement();
   }
 }

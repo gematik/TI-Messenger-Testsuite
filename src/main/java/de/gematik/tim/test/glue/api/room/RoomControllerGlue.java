@@ -34,6 +34,7 @@ import static de.gematik.tim.test.models.RoomMembershipStateDTO.INVITED;
 import static de.gematik.tim.test.models.RoomMembershipStateDTO.JOINED;
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
+import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static net.serenitybdd.screenplay.actors.OnStage.setTheStage;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorInTheSpotlight;
@@ -90,7 +91,8 @@ public class RoomControllerGlue {
 
   @When("{string} invites {string} into room with {string}")
   @Und("{string} lädt {string} in Chat mit {string} ein")
-  public void inviteUserToChatWith(String invitingActorName, String invitedActorName, String thirdActorName) {
+  public void inviteUserToChatWith(String invitingActorName, String invitedActorName,
+      String thirdActorName) {
 
     Actor invitingActor = theActorCalled(invitingActorName);
     String invitedMxid = theActorCalled(invitedActorName).recall(MX_ID);
@@ -244,7 +246,7 @@ public class RoomControllerGlue {
         .flatMap(e -> requireNonNull(e.getMembers()).stream())
         .filter(m -> requireNonNull(m.getMxid()).equals(actor.recall(MX_ID)))
         .toList();
-    members.forEach(m-> assertThat(m.getMembershipState()).isEqualTo(JOINED));
+    members.forEach(m -> assertThat(m.getMembershipState()).isEqualTo(JOINED));
   }
 
   @Und("{string} ist dem Raum {string} nicht beigetreten")
@@ -269,9 +271,12 @@ public class RoomControllerGlue {
   @Then("{string} receive invitation to room {string}")
   @Dann("{string} erhält eine Einladung in Raum {string}")
   public void receiveInvitationToRoom(String actorName, String roomName) {
-    List<RoomDTO> rooms = theActorCalled(actorName).asksFor(ownRooms());
+    Actor actor = theActorCalled(actorName);
+    List<RoomDTO> rooms = actor.asksFor(ownRooms());
     List<RoomDTO> filteredRooms = rooms.stream()
-        .filter(r -> requireNonNull(r.getName()).equals(roomName)).toList();
+        .filter(r -> requireNonNull(r.getName()).equals(roomName))
+        .filter(r -> actor.abilityTo(UseRoomAbility.class).getRoomIdByName(roomName)
+            .equals(requireNonNull(r.getRoomId()))).toList();
     assertThat(filteredRooms)
         .as(format("%s did not get invitation to room %s", actorName, roomName))
         .hasSize(1);

@@ -168,9 +168,6 @@ public enum TestdriverApiEndpoint {
 
   public TestdriverApiInteraction request() {
     RestInteraction restInteraction = httpMethod.creator.apply(path);
-
-    restInteraction.with(req -> req.header("X-Client-Certificate-Common-Name", "test"));
-
     return new TestdriverApiInteraction(restInteraction, neededAbilities);
   }
 

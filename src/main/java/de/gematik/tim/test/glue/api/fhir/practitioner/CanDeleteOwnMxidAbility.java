@@ -39,7 +39,6 @@ public class CanDeleteOwnMxidAbility implements Ability, HasTeardown, RefersToAc
     }
     this.actor.attemptsTo(deleteMxidFromFhir());
     tearedDown = true;
-
   }
 
   @Override

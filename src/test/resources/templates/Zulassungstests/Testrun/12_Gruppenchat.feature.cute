@@ -1,6 +1,7 @@
 # language: de
 @File:FeatureFile_12 @Ctl:UseCase @Ctl:Additional @Ctl:Gruppenchat
-@Anwendungsfall:AF_Gruppenchat
+@PRODUKT:TI-M
+@AF-ID:AF_Gruppenchat
 Funktionalität:  12. Gruppenchat
   Zentrales Konzept beim Chatten in Matrix sind die "Räume". Die folgenden Testfälle sollen das Konzept 'Gruppenchat'
   behandeln. Wenn ein Akteur mehrere Personen in einen "Raum" einlädt, erzeugt man einen Gruppenchat.
@@ -11,14 +12,16 @@ Funktionalität:  12. Gruppenchat
   TF 4 & 5 Gruppenchat gleiche Organisation (HBA)
   TF 6     Gruppenchat gleiche Organisation (OrgUser)
 
-  @Ctl:BP_P2P
-  @TCID:TIM_11_AF_1201 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  # TODO wir haben keine gemischten Räume Pri 3
+
+  @BP:P2P
+  @TCID:TIM_11_AF_1201 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @Ctl:MsgForward
   Szenariogrundriss: 12.1 Events außerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName3> mit dem Benutzer "HBA_C"
-    Und        "D" reserviert sich einen Test-Client an der Schnittstelle <ApiName4> mit dem Benutzer "HBA_D"
-    Und        "E" reserviert sich einen Test-Client an der Schnittstelle <ApiName5> mit dem Benutzer "HBA_E"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
+    Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName3>
+    Und        "D" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName4>
+    Und        "E" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName5>
     Und        "A", "B", "C", "D", "E" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B", "C", "D", "E" in FHIR
@@ -28,7 +31,8 @@ Funktionalität:  12. Gruppenchat
     Wenn       "A" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
     Dann       "B", "C", "D", "E" empfangen eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
 
-  @Shuffle
+  # Have to be in as soon as https://service.gematik.de/browse/BDDPAR-46 is done
+#  @Shuffle
   @DistinctProperty(homeserver)
   @MinimalTable(true)
   @Filter(ApiName1.hasTag("client"))
@@ -45,14 +49,14 @@ Funktionalität:  12. Gruppenchat
     Beispiele:
     | ApiName1 | ApiName2 | ApiName3 | ApiName4 | ApiName5 |
 
-  @Ctl:BP_P2P
-  @TCID:TIM_11_AF_1202 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:P2P
+  @TCID:TIM_11_AF_1202 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @Ctl:MsgBackward
   Szenariogrundriss: 12.2 Events außerhalb einer Organisation - Gruppenchat - Test-Client "E" sendet eine Nachricht
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName3> mit dem Benutzer "HBA_C"
-    Und        "D" reserviert sich einen Test-Client an der Schnittstelle <ApiName4> mit dem Benutzer "HBA_D"
-    Und        "E" reserviert sich einen Test-Client an der Schnittstelle <ApiName5> mit dem Benutzer "HBA_E"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
+    Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName3>
+    Und        "D" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName4>
+    Und        "E" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName5>
     Und        "A", "B", "C", "D", "E" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B", "C", "D", "E" in FHIR
@@ -62,7 +66,8 @@ Funktionalität:  12. Gruppenchat
     Wenn       "E" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
     Dann       "A", "B", "C", "D" empfangen eine Nachricht "Hello from the other site" von "E" im Raum "TIM Testraum 1"
 
-  @Shuffle
+  # Have to be in as soon as https://service.gematik.de/browse/BDDPAR-46 is done
+#  @Shuffle
   @DistinctProperty(homeserver)
   @MinimalTable(true)
   @Filter(ApiName1.hasTag("client"))
@@ -81,19 +86,19 @@ Funktionalität:  12. Gruppenchat
     | ApiName1 | ApiName2 | ApiName3 | ApiName4 | ApiName5 |
 
   @WIP
-  @Ctl:BP_O2O @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_1203 @PRIO:1 @Testfall:Positiv @Status:InBearbeitung
-  Szenariogrundriss: 12.3 Events außerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Org Admin Client an Schnittstelle <ApiName2A>
-    Und        "C" reserviert sich einen Org Admin Client an Schnittstelle <ApiName3A>
-    Und        "D" reserviert sich einen Org Admin Client an Schnittstelle <ApiName4A>
-    Und        "E" reserviert sich einen Org Admin Client an Schnittstelle <ApiName5A>
-    Und        "F" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "G" reserviert sich einen Test-Client an der Schnittstelle <ApiName2B> mit dem Benutzer "OrgUser_B"
-    Und        "H" reserviert sich einen Test-Client an der Schnittstelle <ApiName3B> mit dem Benutzer "OrgUser_C"
-    Und        "I" reserviert sich einen Test-Client an der Schnittstelle <ApiName4B> mit dem Benutzer "OrgUser_D"
-    Und        "J" reserviert sich einen Test-Client an der Schnittstelle <ApiName5B> mit dem Benutzer "OrgUser_E"
+  @BP:O2O @Ctl:OrgAdmin @Ctl:MsgForward
+  @TCID:TIM_11_AF_1203 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+  Szenariogrundriss: 12.3 Events außerhalb einer Organisation - Gruppenchat - Test-Client "F" sendet eine Nachricht
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName2A>
+    Und        "C" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName3A>
+    Und        "D" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName4A>
+    Und        "E" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName5A>
+    Und        "F" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "G" reserviert sich einen Messenger-Client an Schnittstelle <ApiName2B>
+    Und        "H" reserviert sich einen Messenger-Client an Schnittstelle <ApiName3B>
+    Und        "I" reserviert sich einen Messenger-Client an Schnittstelle <ApiName4B>
+    Und        "J" reserviert sich einen Messenger-Client an Schnittstelle <ApiName5B>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "F"
     Und        "B" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "G"
     Und        "C" erstellt einen Healthcare-Service "HealthcareServiceName3" und setzen einen Endpunkt auf "H"
@@ -110,7 +115,8 @@ Funktionalität:  12. Gruppenchat
     Wenn       "F" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
     Dann       "G", "H", "I", "J" empfangen eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
 
-  @Shuffle
+  # Have to be in as soon as https://service.gematik.de/browse/BDDPAR-46 is done
+#  @Shuffle
   @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
   @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
   @Filter(ApiName3A.properties["homeserver"].equals(ApiName3B.properties["homeserver"]))
@@ -143,12 +149,12 @@ Funktionalität:  12. Gruppenchat
     Beispiele:
     | ApiName1A | ApiName2A | ApiName3A | ApiName4A | ApiName5A | ApiName1B | ApiName2B | ApiName3B | ApiName4B | ApiName5B |
 
-  @Ctl:BP_P2P @Ctl:OneHomeServer
-  @TCID:TIM_11_AF_1204 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:P2P @Ctl:OneHomeServer @Ctl:MsgForward
+  @TCID:TIM_11_AF_1204 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 12.4 Events innerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "HBA_C"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1C>
     Und        "A", "B", "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B", "C" in FHIR
@@ -158,7 +164,8 @@ Funktionalität:  12. Gruppenchat
     Wenn       "A" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
     Dann       "B", "C" empfangen eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
 
-  @Shuffle
+  # Have to be in as soon as https://service.gematik.de/browse/BDDPAR-46 is done
+#  @Shuffle
   @EqualProperty(homeserver)
   @MinimalTable(true)
   @Filter(ApiName1A.hasTag("client"))
@@ -171,12 +178,12 @@ Funktionalität:  12. Gruppenchat
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
-  @Ctl:BP_P2P @Ctl:OneHomeServer
-  @TCID:TIM_11_AF_1205 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:P2P @Ctl:OneHomeServer @Ctl:MsgBackward
+  @TCID:TIM_11_AF_1205 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 12.5 Events innerhalb einer Organisation - Gruppenchat - Test-Client "C" sendet eine Nachricht
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "HBA_C"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1C>
     Und        "A", "B", "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B", "C" in FHIR
@@ -186,7 +193,8 @@ Funktionalität:  12. Gruppenchat
     Wenn       "C" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
     Dann       "A", "B" empfangen eine Nachricht "Hello from the other site" von "C" im Raum "TIM Testraum 1"
 
-  @Shuffle
+  # Have to be in as soon as https://service.gematik.de/browse/BDDPAR-46 is done
+#  @Shuffle
   @EqualProperty(homeserver)
   @MinimalTable(true)
   @Filter(ApiName1A.hasTag("client"))
@@ -199,13 +207,13 @@ Funktionalität:  12. Gruppenchat
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
-  @Ctl:BP_O2O @Ctl:OneHomeServer @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_1206 @PRIO:1 @Testfall:Positiv @Status:Implementiert
-  Szenariogrundriss: 12.6 Events innerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht
-  Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName1C> mit dem Benutzer "OrgUser_B"
-    Und        "D" reserviert sich einen Test-Client an der Schnittstelle <ApiName1D> mit dem Benutzer "OrgUser_C"
+  @BP:O2O @Ctl:OneHomeServer @Ctl:OrgAdmin @Ctl:MsgForward
+  @TCID:TIM_11_AF_1206 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 12.6 Events innerhalb einer Organisation - Gruppenchat - Test-Client "B" sendet eine Nachricht
+  Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
+    Und        "D" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1D>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName3" und setzen einen Endpunkt auf "D"
@@ -218,7 +226,8 @@ Funktionalität:  12. Gruppenchat
     Wenn       "B" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
     Dann       "C", "D" empfangen eine Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1"
 
-  @Shuffle
+  # Have to be in as soon as https://service.gematik.de/browse/BDDPAR-46 is done
+#  @Shuffle
   @EqualProperty(homeserver)
   @MinimalTable(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))

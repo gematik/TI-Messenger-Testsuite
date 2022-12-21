@@ -14,24 +14,28 @@
  * limitations under the License.
  */
 
-package de.gematik.tim.test.glue.api.login;
+package de.gematik.tim.test.glue.api.rawdata;
 
-import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.LOGOUT;
-import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirDeleteOwnMxidTask.deleteMxidFromFhir;
+import java.util.Collection;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
+import lombok.Getter;
 
-import de.gematik.tim.test.glue.api.fhir.practitioner.CanDeleteOwnMxidAbility;
-import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.Task;
+public class RawDataEventCounter {
 
-public class LogoutTask implements Task {
+  private final AtomicInteger success = new AtomicInteger();
+  @Getter
+  private final Collection<String> errors = new LinkedBlockingQueue<>();
 
-  public static LogoutTask logout() {
-    return new LogoutTask();
+  public void countSuccess() {
+    success.incrementAndGet();
   }
 
-  @Override
-  public <T extends Actor> void performAs(T actor) {
-    actor.attemptsTo(LOGOUT.request());
+  public int getSuccessCount() {
+    return success.get();
   }
 
+  public void addError(String info) {
+    errors.add(info);
+  }
 }

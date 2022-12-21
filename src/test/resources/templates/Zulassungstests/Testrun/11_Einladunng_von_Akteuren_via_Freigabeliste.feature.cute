@@ -1,6 +1,7 @@
 # language: de
 @File:FeatureFile_11 @Ctl:UseCase @Ctl:Additional @Ctl:Freigabeliste
-@Anwendungsfall:AF_Freigabeliste
+@PRODUKT:TI-M
+@AF-ID:AF_Freigabeliste
 Funktionalität: 11. Einladung von Akteuren via Freigabeliste
   Die folgenden Testfälle sollen die Funktionalität der Freigabeliste zur Einladung von Akteuren sicher stellen,
   die nicht weiter in der Spezifikationen des TI-Messengers beschrieben sind aber trotzdem für den Betrieb des
@@ -13,11 +14,11 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
 
   # TODO Bei mehreren Anbietern MaxSameColumnProperty & Shuffle anschalten
 
-  @Ctl:BP_P2P @Ctl:BP_FL
-  @TCID:TIM_11_AF_1101 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:FL
+  @TCID:TIM_11_AF_1101 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 11.1 Einladung via Freigabeliste außerhalb einer Oganisation - Raum - Beide User jeweils in Freigabeliste (HBA-User an HBA-User)
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "A" hinterlegt "B" in seiner Freigabeliste
     Und        "B" hinterlegt "A" in seiner Freigabeliste
     Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
@@ -46,11 +47,11 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
     Beispiele:
     | ApiName1 | ApiName2 |
 
-  @Ctl:BP_P2P @Ctl:BP_FL
-  @TCID:TIM_11_AF_1102 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:FL
+  @TCID:TIM_11_AF_1102 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 11.2 Einladung via Freigabeliste außerhalb einer Oganisation - Chat - Beide User jeweils in Freigabeliste (HBA-User an HBA-User)
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "A" hinterlegt "B" in seiner Freigabeliste
     Und        "B" hinterlegt "A" in seiner Freigabeliste
     Wenn       "B" schreibt "A" direkt "Hello from the other site"
@@ -77,12 +78,12 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
     Beispiele:
     | ApiName1 | ApiName2 |
 
-  @Ctl:BP_O2P @Ctl:BP_FL @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_1103 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @BP:FL @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_1103 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 11.3 Einladung via Freigabeliste außerhalb einer Oganisation - Chat - Nur ein User in Freigabeliste (Organisations-User an HBA-User)
-    Angenommen "A" reserviert sich einen Org Admin Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "OrgUser_A"
-    Und        "C" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_A"
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "C" hinterlegt "B" in seiner Freigabeliste
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
     Wenn       "B" schreibt "C" direkt "Hello from the other site"
@@ -108,11 +109,11 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
     Beispiele:
     | ApiName1A | ApiName1B | ApiName2 |
 
-  @Ctl:BP_P2P @Ctl:BP_FL @CI:MultiServerConfig
-  @TCID:TIM_11_AF_1104 @PRIO:1 @Testfall:Negativ @Status:Implementiert
+  @BP:FL
+  @TCID:TIM_11_AF_1104 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 11.4 Einladung via Freigabeliste außerhalb einer Oganisation - Raum - Nur ein User in Freigabeliste (HBA-User an HBA-User)
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "B" hinterlegt "A" in seiner Freigabeliste
     Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
     Wenn       "B" lädt "A" in Chat-Raum "TIM Testraum 1" ein
@@ -134,11 +135,11 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
     Beispiele:
     | ApiName1 | ApiName2 |
 
-  @Ctl:BP_P2P @Ctl:BP_FL @CI:MultiServerConfig
-  @TCID:TIM_11_AF_1105 @PRIO:1 @Testfall:Negativ @Status:Implementiert
+  @BP:FL
+  @TCID:TIM_11_AF_1105 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 11.5 Einladung via Freigabeliste außerhalb einer Oganisation - Chat - Nur User in eigener Freigabeliste (HBA-User an HBA-User)
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "B" hinterlegt "A" in seiner Freigabeliste
     Wenn       "B" schreibt "A" direkt "Hello from the other site"
     Dann       "B" ist nicht berechtigt "A" zu kontaktieren

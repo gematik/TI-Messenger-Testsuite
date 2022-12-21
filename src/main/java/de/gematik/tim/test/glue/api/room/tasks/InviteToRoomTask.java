@@ -16,9 +16,12 @@
 
 package de.gematik.tim.test.glue.api.room.tasks;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.INVITE_TO_ROOM;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.homeserverFromMxId;
 import static java.util.Objects.requireNonNull;
 
+import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.MxIdDTO;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -50,5 +53,22 @@ public class InviteToRoomTask implements Task {
 
     actor.attemptsTo(INVITE_TO_ROOM.request()
         .with(req -> req.body(invitees)));
+
+    sendRawDataEvent(actor.recall(MX_ID));
+  }
+
+  @SuppressWarnings("java:S5411")
+  private void sendRawDataEvent(String actorMxId) {
+    String actorHomeserver = homeserverFromMxId(actorMxId);
+    invitees.stream()
+        .map(mxid -> homeserverFromMxId(mxid.getMxid()))
+        .map(actorHomeserver::equals)
+        .forEach(sameHomeserver -> {
+          if (sameHomeserver) {
+            RawDataStatistics.inviteToRoomSameHomeserver();
+          } else {
+            RawDataStatistics.inviteToRoomMultiHomeserver();
+          }
+        });
   }
 }

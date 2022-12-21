@@ -14,43 +14,37 @@
  * limitations under the License.
  */
 
-package de.gematik.tim.test.glue.api.account;
+package de.gematik.tim.test.glue.api.login;
 
-import static de.gematik.tim.test.glue.api.account.DeleteAccountTask.deleteAccount;
-import static java.util.Objects.nonNull;
+import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.clearAllBeforeLogoutAndUnclaim;
+import static de.gematik.tim.test.glue.api.login.LogoutTask.logout;
 
-import de.gematik.tim.test.glue.api.fhir.practitioner.CanDeleteOwnMxidAbility;
 import net.serenitybdd.screenplay.Ability;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.HasTeardown;
 import net.serenitybdd.screenplay.RefersToActor;
 
-public class CanDeleteAccountAbility implements Ability, HasTeardown, RefersToActor {
+public class IsLoggedInAbility implements Ability, HasTeardown, RefersToActor {
 
   private Actor actor;
   private boolean tearedDown = false;
 
-  public static CanDeleteAccountAbility deleteHisAccount() {
-    return new CanDeleteAccountAbility();
+  public static IsLoggedInAbility logOut() {
+    return new IsLoggedInAbility();
   }
 
   @Override
   public void tearDown() {
+    clearAllBeforeLogoutAndUnclaim(actor);
     if (tearedDown) {
       return;
     }
-
-    CanDeleteOwnMxidAbility delOwnFhirIdAbility = actor.abilityTo(CanDeleteOwnMxidAbility.class);
-    if (nonNull(delOwnFhirIdAbility)) {
-      delOwnFhirIdAbility.tearDown();
-    }
-
-    actor.attemptsTo(deleteAccount());
+    this.actor.attemptsTo(logout());
     tearedDown = true;
   }
 
   @Override
-  public CanDeleteAccountAbility asActor(Actor actor) {
+  public IsLoggedInAbility asActor(Actor actor) {
     this.actor = actor;
     return this;
   }

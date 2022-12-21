@@ -21,9 +21,10 @@ import static de.gematik.tim.test.glue.api.TestdriverApiPath.DEVICE_ID_VARIABLE;
 import static java.util.Objects.nonNull;
 
 import de.gematik.tim.test.glue.api.TestdriverApiAbility;
-import de.gematik.tim.test.glue.api.account.CanDeleteAccountAbility;
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility;
 import de.gematik.tim.test.glue.api.fhir.practitioner.CanDeleteOwnMxidAbility;
+import de.gematik.tim.test.glue.api.login.IsLoggedInAbility;
+import de.gematik.tim.test.glue.api.room.UseRoomAbility;
 import io.restassured.specification.RequestSpecification;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -55,17 +56,10 @@ public class UseDeviceAbility implements TestdriverApiAbility, HasTeardown, Refe
 
   @Override
   public void tearDown() {
-    CanDeleteOwnMxidAbility delOwnFhirIdAbility = actor.abilityTo(CanDeleteOwnMxidAbility.class);
-    if (nonNull(delOwnFhirIdAbility)) {
-      delOwnFhirIdAbility.tearDown();
-    }
-    CanDeleteAccountAbility ability = actor.abilityTo(CanDeleteAccountAbility.class);
-    if (nonNull(ability)) {
-      ability.tearDown();
-    }
-    UseHealthcareServiceAbility hsAbility = actor.abilityTo(UseHealthcareServiceAbility.class);
-    if (nonNull(hsAbility)) {
-      hsAbility.tearDown();
+    clearAllBeforeLogoutAndUnclaim(actor);
+    IsLoggedInAbility loggedInAbility = actor.abilityTo(IsLoggedInAbility.class);
+    if (nonNull(loggedInAbility)) {
+      loggedInAbility.tearDown();
     }
     UNCLAIM_DEVICE.request().performAs(actor);
   }
@@ -74,5 +68,20 @@ public class UseDeviceAbility implements TestdriverApiAbility, HasTeardown, Refe
   public UseDeviceAbility asActor(Actor actor) {
     this.actor = actor;
     return this;
+  }
+
+  public static void clearAllBeforeLogoutAndUnclaim(Actor actor) {
+    CanDeleteOwnMxidAbility delOwnFhirIdAbility = actor.abilityTo(CanDeleteOwnMxidAbility.class);
+    if (nonNull(delOwnFhirIdAbility)) {
+      delOwnFhirIdAbility.tearDown();
+    }
+    UseRoomAbility useRoomAbility = actor.abilityTo(UseRoomAbility.class);
+    if (nonNull(useRoomAbility)) {
+      useRoomAbility.tearDown();
+    }
+    UseHealthcareServiceAbility hsAbility = actor.abilityTo(UseHealthcareServiceAbility.class);
+    if (nonNull(hsAbility)) {
+      hsAbility.tearDown();
+    }
   }
 }

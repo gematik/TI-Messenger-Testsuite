@@ -20,6 +20,7 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEARCH_ORG;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
+import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.FhirOrganizationSearchResultListDTO;
 import io.restassured.specification.RequestSpecification;
 import net.serenitybdd.screenplay.Actor;
@@ -92,6 +93,9 @@ public class FhirSearchOrgQuestion implements Question<FhirOrganizationSearchRes
   public FhirOrganizationSearchResultListDTO answeredBy(Actor actor) {
     actor.attemptsTo(
         SEARCH_ORG.request().with(this::prepareQuery));
+
+    RawDataStatistics.search();
+
     FhirOrganizationSearchResultListDTO resp = lastResponse().body()
         .as(FhirOrganizationSearchResultListDTO.class);
     actor.remember(LAST_RESPONSE, lastResponse());

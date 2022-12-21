@@ -15,9 +15,9 @@ Die Testsuite nutzt [Maven](https://maven.apache.org/) und [Tiger](https://githu
 
 Für die Ausführung der Tests werden aus einer Liste von [Testinstanzen](src/test/resources/combine_items.json) mittels eines [Maven-Plugins](https://github.com/gematik/cucumber-test-combinations-maven-plugin) Testkombinationen erstellt und in den [Cucumber-Templates](src/test/resources/templates) eingetragen.
 
-### Release Notes
+### Releaseinformationen
 
-See [ReleaseNotes](ReleaseNotes.md) for all information regarding the (newest) releases.
+In [ReleaseNotes.md](ReleaseNotes.md) befinden sich alle Informationen zu unseren (neuesten) Releases.
 
 ## Verwendung
 

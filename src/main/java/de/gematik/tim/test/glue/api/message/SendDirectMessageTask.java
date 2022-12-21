@@ -16,8 +16,11 @@
 
 package de.gematik.tim.test.glue.api.message;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEND_DIRECT_MESSAGE;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.homeserverFromMxId;
 
+import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.DirectMessageDTO;
 import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
@@ -40,5 +43,11 @@ public class SendDirectMessageTask implements Task {
         .msgtype("m.text")
         .toAccount(this.toAccount);
     actor.attemptsTo(SEND_DIRECT_MESSAGE.request().with(req -> req.body(directMessage)));
+
+    if (homeserverFromMxId(toAccount).equals(homeserverFromMxId(actor.recall(MX_ID)))) {
+      RawDataStatistics.exchangeMessageSameHomeserver();
+    } else {
+      RawDataStatistics.exchangeMessageMultiHomeserver();
+    }
   }
 }

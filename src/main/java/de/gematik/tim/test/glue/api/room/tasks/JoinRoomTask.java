@@ -19,6 +19,7 @@ package de.gematik.tim.test.glue.api.room.tasks;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.JOIN_ROOM;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_ID_VARIABLE;
 import static de.gematik.tim.test.glue.api.room.UseRoomAbility.addRoomToActor;
+import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.models.RoomDTO;
 import java.util.Objects;
@@ -42,10 +43,11 @@ public class JoinRoomTask implements Task {
   @Override
   public <T extends Actor> void performAs(T actor) {
     Objects.requireNonNull(roomId,
-        "roomId of JoinRoomTask hast to bes set with #withRoomId(roomId)");
+        "roomId of JoinRoomTask hast to be set with #withRoomId(roomId)");
 
     actor.attemptsTo(JOIN_ROOM.request()
         .with(req -> req.pathParam(ROOM_ID_VARIABLE, roomId)));
+
     RoomDTO room = SerenityRest.lastResponse().body().as(RoomDTO.class);
     addRoomToActor(room, actor);
 

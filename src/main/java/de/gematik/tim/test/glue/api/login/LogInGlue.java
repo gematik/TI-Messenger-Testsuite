@@ -16,16 +16,25 @@
 
 package de.gematik.tim.test.glue.api.login;
 
+import static de.gematik.tim.test.glue.api.devices.ClientKind.MESSENGER_CLIENT;
+import static de.gematik.tim.test.glue.api.devices.ClientKind.PRACTITIONER;
+import static de.gematik.tim.test.glue.api.devices.DevicesControllerGlue.checkIs;
 import static de.gematik.tim.test.glue.api.login.LoginTask.login;
 import static de.gematik.tim.test.glue.api.login.LogoutTask.logout;
 import static net.serenitybdd.screenplay.actors.OnStage.setTheStage;
 import static net.serenitybdd.screenplay.actors.OnStage.stage;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
+import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Wenn;
+import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import java.util.List;
+import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.actors.Cast;
 
 public class LogInGlue {
@@ -48,7 +57,35 @@ public class LogInGlue {
 
   @When("{string} logs in")
   @Wenn("{string} loggt sich im TI-Messenger ein")
-  public void logsIn(String actorName) {
+  public static void logsIn(String actorName) {
     theActorCalled(actorName).attemptsTo(login());
   }
+
+  @Wenn("{string} sich als HBA_A-User einloggt")
+  public void logsInAsHbaUser(String actorName) {
+    Actor actor = theActorCalled(actorName);
+    logsIn(actorName);
+    checkIs(actor, List.of(MESSENGER_CLIENT, PRACTITIONER));
+  }
+
+  @Wenn("{string} sich als OrgUser registriert")
+  public void logsInAsOrgUser(String actorName) {
+    Actor actor = theActorCalled(actorName);
+    logsIn(actorName);
+    checkIs(actor, List.of(MESSENGER_CLIENT));
+  }
+
+  @Then("registration successful for {string}")
+  @Dann("ist das Login für {string} erfolgreich")
+  public static void loginSuccess(String actorName) {
+    theActorCalled(actorName).should(seeThatResponse(res -> res.statusCode(200)));
+  }
+
+  @Then("registration failed for {string}")
+  @Dann("schlägt das Login für {string} fehl")
+  public static void loginFailure(String actorName) {
+    theActorCalled(actorName).should(
+        seeThatResponse(res -> res.statusCode(greaterThanOrEqualTo(400))));
+  }
+
 }

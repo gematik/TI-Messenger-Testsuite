@@ -17,21 +17,34 @@
 package de.gematik.tim.test.glue.api.room.tasks;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.DELETE_ROOM;
+import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility.removeHsFromActor;
+import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
+import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility;
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
+import io.restassured.response.Response;
 import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.Task;
+import org.springframework.http.HttpStatus;
 
-public class DeleteRoomTask implements Task {
+public class DeleteRoomTask extends RoomSpecificTask {
 
   public static DeleteRoomTask deleteRoom() {
     return new DeleteRoomTask();
   }
 
+  public DeleteRoomTask withName(String roomName) {
+    return forRoomName(roomName);
+  }
+
   @Override
   public <T extends Actor> void performAs(T actor) {
-
+    super.performAs(actor);
     actor.attemptsTo(DELETE_ROOM.request());
     actor.abilityTo(UseRoomAbility.class).removeCurrent();
+    Response response = lastResponse();
+    if (response.statusCode() == HttpStatus.NO_CONTENT.value()) {
+      String roomName = actor.abilityTo(UseRoomAbility.class).getActive();
+      removeHsFromActor(roomName, actor);
+    }
   }
 }

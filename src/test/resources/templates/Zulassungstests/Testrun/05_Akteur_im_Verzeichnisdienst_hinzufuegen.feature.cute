@@ -1,7 +1,8 @@
 # language: de
 @File:FeatureFile_05 @Ctl:UseCase
-@Anwendungsfall:AF_10058
-@Akzeptanz-Kriterium:ML-123611 @Akzeptanz-Kriterium:ML-123612
+@PRODUKT:TI-M
+@AF-ID:AF_10058
+@AK-ID:ML-123611 @AK-ID:ML-123612
 Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
   AF_10058 Akteur (User-HBA) im Verzeichnisdienst hinzufügen
   Mit diesem Anwendungsfall wird ein Akteur in der Rolle "User-HBA" für andere Akteure anderer Messenger-Services
@@ -16,9 +17,9 @@ Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
   TF 6     Negativ-Tests User hinzufügen
 
   @Ctl:OneHomeServer
-  @TCID:TIM_11_AF_501 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @TCID:TIM_11_AF_501 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 05.1 Akteur im Verzeichnisdienst - Hinzufügen - HBA-User legt sich an und sucht seinen Eintrag
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
     Und        "A" hinterlegt seine MXID im Verzeichnis Dienst
     Wenn       "A" sucht die MXID des Benutzers "A" im Verzeichnis Dienst
     Dann       "A" findet seine MXID im Verzeichnis Dienst
@@ -30,10 +31,10 @@ Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
     | ApiName1 |
 
   @Ctl:OneHomeServer
-  @TCID:TIM_11_AF_502 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @TCID:TIM_11_AF_502 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 05.2 Akteur im Verzeichnisdienst - Hinzufügen - HBA-User legt sich an und sucht anderen Eintrag
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Wenn       "A" sucht die MXID des Benutzers "A" im Verzeichnis Dienst
     Und        "A" findet seine MXID im Verzeichnis Dienst
@@ -51,10 +52,10 @@ Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
     Beispiele:
     | ApiName1A | ApiName1B |
 
-  @TCID:TIM_11_AF_503 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @TCID:TIM_11_AF_503 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 05.3 Akteur im Verzeichnisdienst - Hinzufügen - HBA-User aus anderer Organisation sucht HBA-User Eintrag
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Wenn       "A" sucht die MXID des Benutzers "A" im Verzeichnis Dienst
     Und        "A" findet seine MXID im Verzeichnis Dienst
@@ -74,11 +75,12 @@ Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
     Beispiele:
     | ApiName1 | ApiName2 |
 
+  @WIP
   @Ctl:OneHomeServer
-  @TCID:TIM_11_AF_504 @PRIO:1 @Testfall:Positiv @Status:Implementiert
+  @TCID:TIM_11_AF_504 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
   Szenariogrundriss: 05.4 Akteur im Verzeichnisdienst - Löschen - HBA-User löscht Eintrag
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1A> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName1B> mit dem Benutzer "HBA_B"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "B" findet "A" in FHIR
     Wenn       "A" löscht seine MXID im Verzeichnis Dienst
@@ -95,10 +97,10 @@ Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
     Beispiele:
     | ApiName1A | ApiName1B |
 
-  @TCID:TIM_11_AF_505 @PRIO:1 @Testfall:Positiv @Status:Implementiert
-  Szenariogrundriss: 05.5 Akteur im Verzeichnisdienst - Löschen - HBA-User löscht Eintrag und ist nicht aufindbar für HBA-User anderer Organisation
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_A"
-    Und        "B" reserviert sich einen Test-Client an der Schnittstelle <ApiName2> mit dem Benutzer "HBA_B"
+  @TCID:TIM_11_AF_505 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.5 Akteur im Verzeichnisdienst - Löschen - HBA-User löscht Eintrag und ist nicht auffindbar für HBA-User anderer Organisation
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "B" findet "A" in FHIR
     Wenn       "A" löscht seine MXID im Verzeichnis Dienst
@@ -118,9 +120,9 @@ Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
     | ApiName1 | ApiName2 |
 
   @Ctl:OneHomeServer
-  @TCID:TIM_11_AF_506 @PRIO:1 @Testfall:Negativ @Status:Implementiert
+  @TCID:TIM_11_AF_506 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 05.6 Akteur im Verzeichnisdienst - Hinzufügen - Nicht erfolgreich ohne Authencitation im Verzeichnisdienst
-    Angenommen "A" reserviert sich einen Test-Client an der Schnittstelle <ApiName1> mit dem Benutzer "HBA_X1"
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
     Wenn       "A" versucht seine MXID im Verzeichnis Dienst ohne Authencitation zu hinterlegen
     Dann       erhält "A" einen Responsecode 401
 
