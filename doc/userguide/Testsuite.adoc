@@ -249,7 +249,7 @@ image::Response_Login.png[]
 [black]#*_Wenn es sich um einen Practitioner-Client Device handelt, muss der User mit dem auf der hinterlegten HBA übereinstimmen_*#
 
 [TIP]
-[black]#*_Wie Verwaltung der Domain, der Organisationen und der User liegt in der Verantwortung der Hersteller._*#
+[black]#*_Die Verwaltung der Domain, der Organisationen und der User liegt in der Verantwortung der Hersteller._*#
 
 [TIP]
 [black]#*_Weiterhin müssen die Hersteller die Schnittstellen für die TI-Messenger-Testsuite aktuell halten._*#
@@ -412,16 +412,20 @@ Beispiel:
 
 *Vergleichsoptionen Properties*
 
-Geben wir z.B. die Property ‚os‘ (wie im obrigen Beispiel) mit einem entsprechenden Wert mit, so wird geprüft, ob das Device hinter der URL des Testtreibers tatsächlich dieses ‚os‘ hinterlegt hat, wenn diese Property ebenfalls in der pom.xml definiert ist. Die Überprüfung erfolgt hier nicht case sensitive (IOS – iOS – usw).
+Geben wir z.B. die Property ‚os‘ (wie im obrigen Beispiel) mit einem entsprechenden Wert mit, so wird geprüft, ob das Device hinter der URL des Testtreibers tatsächlich dieses ‚os‘ hinterlegt hat, wenn diese Property ebenfalls in der pom.xml definiert ist. Die Überprüfung erfolgt hier case sensitive (iOS – iOS; usw).
 
 [cols='40%,40%,20%']
 |===
 | *Source combine_items.json* |*Daten aus der TesttreiberSchnittstelle* | *Ergebnis Vergleich*
-| IOS                         | Windwos, Linux, Android, ...            | Abbruch - Error
-| IOS                         | iOS, ios                                | OK
-| IOS                         | IOS                                     | OK
-| IOS                         | null                                    | Abbruch - Error
+| iOS                         | Windwos, Linux, Android, ...            | Abbruch - Error
+| iOS                         | iOS                                     | OK
+| iOS                         | IOS, ios                                | Abbruch - Error
+| iOS                         | null                                    | Abbruch - Error
 |===
+
+Die potenitell möglichen Enum Werte sind in der Testtreiber Schnittstellenbeschreibung zu finden:
+
+image::OS_Info.PNG[]
 
 Die Daten, die von dem jeweiligen Device ausgelesen werden und die combine_items.json im Target Folder (target/generated-combine/combine_items.json) anreichern, werden in der pom.xml unter ‚cucumber-test-combinations-maven-plugin‘ definiert. Dies können Tags oder auch Properties sein.
 

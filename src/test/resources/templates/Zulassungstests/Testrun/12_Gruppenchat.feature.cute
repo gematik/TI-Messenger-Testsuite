@@ -9,14 +9,14 @@ Funktionalität:  12. Gruppenchat
   Inhalt
   TF 1 & 2 Gruppenchat unterschiedliche Organisationen (HBA)
   TF 3     Gruppenchat unterschiedliche Organisationen (OrgUser)
-  TF 4 & 5 Gruppenchat gleiche Organisation (HBA)
-  TF 6     Gruppenchat gleiche Organisation (OrgUser)
+  TF 4     Gruppenchat unterschiedliche Organisationen (HBA lädt OrgUser ein)
+  TF 5 & 6 Gruppenchat gleiche Organisation (HBA)
+  TF 7     Gruppenchat gleiche Organisation (OrgUser)
+  TF 8     Gruppenchat gleiche Organisation (HBA lädt OrgUser ein)
 
-  # TODO wir haben keine gemischten Räume Pri 3
-
-  @BP:P2P
-  @TCID:TIM_11_AF_1201 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @Ctl:MsgForward
-  Szenariogrundriss: 12.1 Events außerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht
+  @BP:P2P @Ctl:MsgForward
+  @TCID:TIM_11_AF_1201 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 12.1 Events außerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht (HBA-User)
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName3>
@@ -31,8 +31,7 @@ Funktionalität:  12. Gruppenchat
     Wenn       "A" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
     Dann       "B", "C", "D", "E" empfangen eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
 
-  # Have to be in as soon as https://service.gematik.de/browse/BDDPAR-46 is done
-#  @Shuffle
+  @Shuffle
   @DistinctProperty(homeserver)
   @MinimalTable(true)
   @Filter(ApiName1.hasTag("client"))
@@ -49,9 +48,9 @@ Funktionalität:  12. Gruppenchat
     Beispiele:
     | ApiName1 | ApiName2 | ApiName3 | ApiName4 | ApiName5 |
 
-  @BP:P2P
-  @TCID:TIM_11_AF_1202 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @Ctl:MsgBackward
-  Szenariogrundriss: 12.2 Events außerhalb einer Organisation - Gruppenchat - Test-Client "E" sendet eine Nachricht
+  @BP:P2P @Ctl:MsgBackward
+  @TCID:TIM_11_AF_1202 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 12.2 Events außerhalb einer Organisation - Gruppenchat - Test-Client "E" sendet eine Nachricht (HBA-User)
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName3>
@@ -66,8 +65,7 @@ Funktionalität:  12. Gruppenchat
     Wenn       "E" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
     Dann       "A", "B", "C", "D" empfangen eine Nachricht "Hello from the other site" von "E" im Raum "TIM Testraum 1"
 
-  # Have to be in as soon as https://service.gematik.de/browse/BDDPAR-46 is done
-#  @Shuffle
+  @Shuffle
   @DistinctProperty(homeserver)
   @MinimalTable(true)
   @Filter(ApiName1.hasTag("client"))
@@ -87,8 +85,8 @@ Funktionalität:  12. Gruppenchat
 
   @WIP
   @BP:O2O @Ctl:OrgAdmin @Ctl:MsgForward
-  @TCID:TIM_11_AF_1203 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
-  Szenariogrundriss: 12.3 Events außerhalb einer Organisation - Gruppenchat - Test-Client "F" sendet eine Nachricht
+  @TCID:TIM_11_AF_1203 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 12.3 Events außerhalb einer Organisation - Gruppenchat - Test-Client "F" sendet eine Nachricht (Organisations-User)
     Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName2A>
     Und        "C" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName3A>
@@ -113,10 +111,9 @@ Funktionalität:  12. Gruppenchat
     Und        "G", "H", "I", "J" erhalten eine Einladung von "F"
     Und        "G", "H", "I", "J" bestätigt eine Einladung von "F"
     Wenn       "F" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
-    Dann       "G", "H", "I", "J" empfangen eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
+    Dann       "G", "H", "I", "J" empfangen eine Nachricht "Hello from the other site" von "F" im Raum "TIM Testraum 1"
 
-  # Have to be in as soon as https://service.gematik.de/browse/BDDPAR-46 is done
-#  @Shuffle
+  @Shuffle
   @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
   @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
   @Filter(ApiName3A.properties["homeserver"].equals(ApiName3B.properties["homeserver"]))
@@ -132,7 +129,7 @@ Funktionalität:  12. Gruppenchat
   @Filter(!ApiName3A.properties["homeserver"].equals(ApiName4A.properties["homeserver"]))
   @Filter(!ApiName3A.properties["homeserver"].equals(ApiName5A.properties["homeserver"]))
   @Filter(!ApiName4A.properties["homeserver"].equals(ApiName5A.properties["homeserver"]))
-  #@MinimalTable(true)
+  @MinimalTable(true)
   #@DistinctColumn(ApiName1B)
   #@MaxSameColumnProperty(ApiName1B,homeserver,1)
   @Filter(ApiName1A.hasTag("orgAdmin"))
@@ -149,9 +146,48 @@ Funktionalität:  12. Gruppenchat
     Beispiele:
     | ApiName1A | ApiName2A | ApiName3A | ApiName4A | ApiName5A | ApiName1B | ApiName2B | ApiName3B | ApiName4B | ApiName5B |
 
+  @BP:P2O @Ctl:OrgAdmin @Ctl:MsgBackward
+  @TCID:TIM_11_AF_1204 @PRIO:3 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 12.4 Events außerhalb einer Organisation - Gruppenchat - Test-Client "C" sendet eine Nachricht (HBA-User lädt Organisations-User ein)
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName2A>
+    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "D" reserviert sich einen Messenger-Client an Schnittstelle <ApiName2B>
+    Und        "E" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName3>
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
+    Und        "B" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "D"
+    Und        "E" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "E" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "E" findet "C" im Healthcare-Service "HealthcareServiceName1"
+    Und        "E" findet "D" im Healthcare-Service "HealthcareServiceName2"
+    Und        "E" lädt "C","D" in Chat-Raum "TIM Testraum 1" ein
+    Und        "C", "D" erhalten eine Einladung von "E"
+    Und        "C", "D" bestätigt eine Einladung von "E"
+    Wenn       "C" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Dann       "D", "E" empfangen eine Nachricht "Hello from the other site" von "C" im Raum "TIM Testraum 1"
+
+  @Shuffle
+  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+  @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
+  @Filter(!ApiName1A.properties["homeserver"].equals(ApiName3.properties["homeserver"]))
+  @Filter(!ApiName2A.properties["homeserver"].equals(ApiName3.properties["homeserver"]))
+  @MaxSameColumnProperty(ApiName3,homeserver,2)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName2A.hasTag("orgAdmin"))
+  @Filter(ApiName2B.hasTag("client"))
+  @Filter(ApiName3.hasTag("client"))
+  @Filter(ApiName3.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName2A | ApiName2B | ApiName3 |
+
+
+
   @BP:P2P @Ctl:OneHomeServer @Ctl:MsgForward
-  @TCID:TIM_11_AF_1204 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
-  Szenariogrundriss: 12.4 Events innerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht
+  @TCID:TIM_11_AF_1205 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 12.5 Events innerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1C>
@@ -164,10 +200,10 @@ Funktionalität:  12. Gruppenchat
     Wenn       "A" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
     Dann       "B", "C" empfangen eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
 
-  # Have to be in as soon as https://service.gematik.de/browse/BDDPAR-46 is done
-#  @Shuffle
+  @Shuffle
   @EqualProperty(homeserver)
   @MinimalTable(true)
+  @AllowSelfCombine(true)
   @Filter(ApiName1A.hasTag("client"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName1C.hasTag("client"))
@@ -179,8 +215,8 @@ Funktionalität:  12. Gruppenchat
     | ApiName1A | ApiName1B | ApiName1C |
 
   @BP:P2P @Ctl:OneHomeServer @Ctl:MsgBackward
-  @TCID:TIM_11_AF_1205 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
-  Szenariogrundriss: 12.5 Events innerhalb einer Organisation - Gruppenchat - Test-Client "C" sendet eine Nachricht
+  @TCID:TIM_11_AF_1206 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 12.6 Events innerhalb einer Organisation - Gruppenchat - Test-Client "C" sendet eine Nachricht
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1C>
@@ -193,10 +229,10 @@ Funktionalität:  12. Gruppenchat
     Wenn       "C" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
     Dann       "A", "B" empfangen eine Nachricht "Hello from the other site" von "C" im Raum "TIM Testraum 1"
 
-  # Have to be in as soon as https://service.gematik.de/browse/BDDPAR-46 is done
-#  @Shuffle
+  @Shuffle
   @EqualProperty(homeserver)
   @MinimalTable(true)
+  @AllowSelfCombine(true)
   @Filter(ApiName1A.hasTag("client"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName1C.hasTag("client"))
@@ -208,8 +244,8 @@ Funktionalität:  12. Gruppenchat
     | ApiName1A | ApiName1B | ApiName1C |
 
   @BP:O2O @Ctl:OneHomeServer @Ctl:OrgAdmin @Ctl:MsgForward
-  @TCID:TIM_11_AF_1206 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
-  Szenariogrundriss: 12.6 Events innerhalb einer Organisation - Gruppenchat - Test-Client "B" sendet eine Nachricht
+  @TCID:TIM_11_AF_1207 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 12.7 Events innerhalb einer Organisation - Gruppenchat - Test-Client "B" sendet eine Nachricht
   Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
     Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
@@ -226,12 +262,45 @@ Funktionalität:  12. Gruppenchat
     Wenn       "B" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
     Dann       "C", "D" empfangen eine Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1"
 
-  # Have to be in as soon as https://service.gematik.de/browse/BDDPAR-46 is done
-#  @Shuffle
+  @Shuffle
   @EqualProperty(homeserver)
   @MinimalTable(true)
+  @AllowSelfCombine(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+  @Filter(ApiName1D.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C | ApiName1D |
+
+  @BP:P2O @Ctl:OneHomeServer @Ctl:OrgAdmin @Ctl:MsgBackward
+  @TCID:TIM_11_AF_1208 @PRIO:3 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 12.8 Events innerhalb einer Organisation - Gruppenchat - Test-Client "B" sendet eine Nachricht (HBA-User lädt Organisations-User ein)
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
+    Und        "D" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1D>
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "D"
+    Und        "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "B" findet "C" im Healthcare-Service "HealthcareServiceName1"
+    Und        "B" findet "D" im Healthcare-Service "HealthcareServiceName2"
+    Und        "B" lädt "C","D" in Chat-Raum "TIM Testraum 1" ein
+    Und        "C", "D" erhalten eine Einladung von "B"
+    Und        "C", "D" bestätigt eine Einladung von "B"
+    Wenn       "C" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Dann       "B", "D" empfangen eine Nachricht "Hello from the other site" von "C" im Raum "TIM Testraum 1"
+
+  @Shuffle
+  @EqualProperty(homeserver)
+  @MinimalTable(true)
+  #@MaxSameColumnProperty(ApiName1D,homeserver,2)
+  @AllowSelfCombine(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1B.hasTag("practitioner"))
   @Filter(ApiName1C.hasTag("client"))
   @Filter(ApiName1D.hasTag("client"))
 

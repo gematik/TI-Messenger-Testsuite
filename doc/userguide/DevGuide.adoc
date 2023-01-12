@@ -51,7 +51,11 @@ tigerProxy:
 
 Mit dieser Konfiguration müssen alle Links in der link:src/test/resources/combine_items.json[combine_items.json] auf `http` gesetzt werden.
 
-=== Disable prepare-items (autofill combine_items.json)
+=== Cucumber-Test-Combinations-Maven-Plugin
+
+Das Parameter-Plugin befüllt die Featurefiles. Bei einer geringen Anzahl von Schnittstellen mit zu wenig Variation in ihren Eigenschaften, kann es schnell dazu führen, dass das Plugin den Buildvorgang abbricht. Um dies zu ignorieren können die Schritte konfiguriert werden.
+
+==== Disable prepare-items (autofill combine_items.json)
 
 Per default fragt das Plugin die Info-Schnittstelle ab und fügt notwendige Tags und Properties hinzu.
 Für eine genauere Steuerung oder sollte die Info-Schnittstelle noch nicht vollständig implementiert sein, kann die `combine_items.json` händisch erstellt und verwendet werden. Hierzu kann maven mit dem Profil `disable-prepare-items` verwendet werden.
@@ -59,3 +63,11 @@ Für eine genauere Steuerung oder sollte die Info-Schnittstelle noch nicht volls
 ----
 maven clean install -P disable-prepare-items
 ----
+
+==== Disable break
+
+Mit dem Profil `dont-break-preperation` kann das Plugin so eingestellt werden, dass es bei Fehlern den Buildprozess nicht mehr abbricht. Alle möglichen Informationen und Kombinationen werden erstellt. Ein Fehlerlog kann später link:target/generated-combine/errorLog.txt[hier] eingesehen werden.
+
+=== Known issues
+
+. Es kann beim Generieren des Codes aus der link:https://github.com/gematik/api-ti-messenger/blob/main/src/openapi/TiMessengerTestTreiber.yaml[Testtreiberschnittstelle] passieren, dass zusätzliche `/` in den Requestpath erstellt werden. Diese können zu Inkompatibilitäten führen. Dies kann auf Seiten der Testsuite umgangen werden indem in der Klasse link:src/main/java/de/gematik/tim/test/glue/api/TestdriverApiPath.java[TestdriverApiPath] bei INFO_PATH und DEVICES_PATH der vorgestellte `/` entfernt wird.

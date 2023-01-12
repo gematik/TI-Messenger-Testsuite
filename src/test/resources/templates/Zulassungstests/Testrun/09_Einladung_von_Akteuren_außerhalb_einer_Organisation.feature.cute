@@ -27,7 +27,7 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
   TF 18 & 19 Einladung durch nicht im Verzeichnisdienst registrierte User in Chat/Raum (OrgUser und OrgUser)
 
   # TODO Bei mehreren Anbiertern MaxSameColumnProperty & Shuffle anschalten
-  # TODO TCID:TIM_11_AF_915
+  # TODO TF 14 & 15 Search HBA raus nehmen - Search prüfen (einmal suche im OrgaVZ und PratVZ & Lokal)
 
   @BP:P2P @Ctl:Chat
   @TCID:TIM_11_AF_901 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
@@ -441,17 +441,16 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Beispiele:
     | ApiName1 | ApiName2 |
 
-  # besser mit OrgUser O2P geht sowieso nicht
   @BP:O2N_extern @Ctl:OrgAdmin
   @TCID:TIM_11_AF_915 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 09.15 Einladung außerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch Organisations-User
     Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
-    Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
+    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName2>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
     Dann       "B" findet TI-Messenger-Nutzer "C" bei Suche mit Namen "HBA_B" NICHT
 
-  #@Shuffle(true)
+  @Shuffle(true)
   #@MaxSameColumnProperty(ApiName1B,homeserver,2)
   @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
   @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
@@ -461,7 +460,6 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName2.hasTag("client"))
-  @Filter(ApiName2.hasTag("practitioner"))
   @Filter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:

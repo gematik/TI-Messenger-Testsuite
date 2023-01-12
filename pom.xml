@@ -6,7 +6,7 @@
 
   <groupId>de.gematik.tim.test</groupId>
   <artifactId>TI-Messenger-Testsuite</artifactId>
-  <version>0.2.0</version>
+  <version>0.3.0</version>
   <packaging>jar</packaging>
   <name>TI-Messenger-Testsuite</name>
   <description>Testsuite to check functionality of TI-Messenger-Clients</description>
@@ -31,7 +31,8 @@
     <tiger.config.file>tiger.yml</tiger.config.file>
     <cutest.combine.break>true</cutest.combine.break>
     <cutest.prepare.break>true</cutest.prepare.break>
-    <combine.items.file>${project.basedir}/src/test/resources/combine_items.json</combine.items.file>
+    <combine.items.file>${project.basedir}/src/test/resources/combine_items.json
+    </combine.items.file>
     <cucumber.filter.tags/>
   </properties>
 
@@ -100,7 +101,11 @@
       <artifactId>tiger-test-lib</artifactId>
       <version>${version.tiger}</version>
     </dependency>
-
+    <dependency>
+      <groupId>net.sf.supercsv</groupId>
+      <artifactId>super-csv</artifactId>
+      <version>2.4.0</version>
+    </dependency>
     <!-- screenplay -->
     <dependency>
       <groupId>net.serenity-bdd</groupId>
@@ -186,7 +191,7 @@
       <plugin>
         <groupId>de.gematik</groupId>
         <artifactId>cucumber-test-combinations-maven-plugin</artifactId>
-        <version>2.5.0</version>
+        <version>2.5.2</version>
         <configuration>
           <!--          Global Config-->
           <combineItemsFile>${combine.items.file}</combineItemsFile>
@@ -503,7 +508,8 @@
       <properties>
         <feature.tables.max_rows>1</feature.tables.max_rows>
         <skip.saving.reports>true</skip.saving.reports>
-        <combine.items.file>${project.basedir}/src/test/resources/combine_items_ci.json</combine.items.file>
+        <combine.items.file>${project.basedir}/src/test/resources/combine_items_ci.json
+        </combine.items.file>
         <tiger.config.file>tiger-ci.yml</tiger.config.file>
       </properties>
       <build>
@@ -645,6 +651,13 @@
           </plugin>
         </plugins>
       </build>
+    </profile>
+    <profile>
+      <id>dont-break-preperation</id>
+      <properties>
+        <cutest.combine.break>false</cutest.combine.break>
+        <cutest.prepare.break>false</cutest.prepare.break>
+      </properties>
     </profile>
   </profiles>
 
