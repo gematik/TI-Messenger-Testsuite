@@ -29,6 +29,7 @@ import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UseEndpoin
 import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.CreateHealthcareServiceTask.createHealthcareService;
 import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.DeleteHealthcareServicesTask.deleteHealthcareService;
 import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.FhirGetHealthcareServiceListQuestion.getHealthcareServiceList;
+import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.FhirGetHealthcareServiceQuestion.getHealthcareService;
 import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UpdateHealthcareServiceTask.updateHealthcareService;
 import static de.gematik.tim.test.glue.api.fhir.organisation.location.CreateLocationTask.addHealthcareServiceLocation;
 import static de.gematik.tim.test.glue.api.fhir.organisation.location.DeleteLocationTask.deleteLocation;
@@ -133,7 +134,7 @@ public class FhirOrgAdminGlue {
     Actor actor = theActorCalled(actorName);
     String mxId = theActorCalled(userName).recall(MX_ID);
     FhirOrganizationSearchResultListDTO resultList = actor.asksFor(
-        organizationEndpoints().withHsName(hsName));
+        organizationEndpoints().withHsName(hsName).havingMxidInEndpoint(mxId));
     List<String> mxIds = requireNonNull(resultList.getSearchResults()).stream()
         .map(res -> requireNonNull(res.getEndpoint()).getAddress())
         .filter(Objects::nonNull)
@@ -149,8 +150,8 @@ public class FhirOrgAdminGlue {
       String userName) {
     Actor admin = theActorCalled(adminName);
     admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hsName);
-    FhirEndpointDTO endpoint = admin.asksFor(
-        organizationEndpoints().withHsName(hsName)).getSearchResults().get(0).getEndpoint();
+    FhirEndpointDTO endpoint = requireNonNull(admin.asksFor(
+        organizationEndpoints().withHsName(hsName)).getSearchResults()).get(0).getEndpoint();
     Actor endpointActor = theActorCalled(userName);
     endpoint.setAddress(endpointActor.recall(MX_ID));
     addEndpointToActor(userName, endpoint.getEndpointId(), admin);
@@ -260,7 +261,7 @@ public class FhirOrgAdminGlue {
   public void compareHealthcareServiceWithJson(String adminName, String hsName, String fileName) {
     Actor actor = theActorCalled(adminName);
     FhirHealthcareServiceDTO healthcareService = actor.asksFor(
-        FhirGetHealthcareServiceQuestion.getHealthcareService().withName(hsName));
+        getHealthcareService().withName(hsName));
     FhirHealthcareServiceDTO jsonHs = readJsonFile(fileName, FhirHealthcareServiceDTO.class);
 
     jsonHs.setEndpoint(jsonHs.getEndpoint() == null ? List.of() : jsonHs.getEndpoint());

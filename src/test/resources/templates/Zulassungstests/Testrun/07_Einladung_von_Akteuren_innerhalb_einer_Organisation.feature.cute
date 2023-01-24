@@ -28,11 +28,9 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
   TF 10 & 11 Ablehnung der Einladung in Chat/Raum (OrgUser an OrgUser)
   TF 12 & 13 Negativ-Tests zur Einladung - Dritter Nutzer soll in Chat eingeladen werden (HBA & OrgUser)
   TF 14 & 15 Negativ-Tests zur Einladung - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht (HBA & OrgUser)
-  TF 16 & 17 Einladung durch nicht im Verzeichnisdienst registrierte User in Chat/Raum (HBA an HBA)
-  TF 18 & 19 Einladung durch nicht im Verzeichnisdienst registrierte User in Chat/Raum (OrgUser und OrgUser)
-
-  # TODO P2N_intern und O2N_intern haben noch keinen Testfall
-  # TODO TF 14 & 15 Search HBA raus nehmen - Search prüfen (einmal suche im OrgaVZ und PratVZ & Lokal)
+  TF 16 & 17 Einladung von nicht im Verzeichnisdienst nicht registrierter User in Chat (HBA & OrgUser)
+  TF 18 & 19 Einladung durch nicht im Verzeichnisdienst registrierte User in Chat/Raum (HBA an HBA)
+  TF 20 & 21 Einladung durch nicht im Verzeichnisdienst registrierte User in Chat/Raum (OrgUser und OrgUser)
 
   @BP:P2P @Ctl:Chat
   @TCID:TIM_11_AF_701 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
@@ -366,12 +364,14 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     | ApiName1A | ApiName1B | ApiName1C | ApiName1D |
 
   @WIP
+  @BP:P2N_intern
   @TCID:TIM_11_AF_714 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
   Szenariogrundriss: 07.14 Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch HBA-User
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A" hinterlegt seine MXID im Verzeichnis Dienst
-    Dann       "A" findet TI-Messenger-Nutzer "B" bei Suche mit Namen "HBA_B" NICHT
+    Dann       "A" findet TI-Messenger-Nutzer "B" bei Suche im Practitioner-Verzeichnis im VZD NICHT
+    Und        "A" findet TI-Messenger-Nutzer "B" bei Suche im Organisations-Verzeichnis im VZD NICHT
 
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
@@ -386,14 +386,15 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     | ApiName1A | ApiName1B |
 
   @WIP
-  @Ctl:OrgAdmin
+  @BP:O2N_intern @Ctl:OrgAdmin
   @TCID:TIM_11_AF_715 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
   Szenariogrundriss: 07.15 Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch Organisations-User
     Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
-    Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1C>
+    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
-    Dann       "B" findet TI-Messenger-Nutzer "C" bei Suche mit Namen "HBA_B" NICHT
+    Dann       "B" findet TI-Messenger-Nutzer "C" bei Suche im Practitioner-Verzeichnis im VZD NICHT
+    Und        "B" findet TI-Messenger-Nutzer "C" bei Suche im Organisations-Verzeichnis im VZD NICHT
 
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
@@ -402,14 +403,61 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName1C.hasTag("client"))
-  @Filter(ApiName1C.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @BP:P2N_intern
+  @TCID:TIM_11_AF_716 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 07.16 Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch HBA-User
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
+    Und        "A" hinterlegt seine MXID im Verzeichnis Dienst
+    Wenn       "A" schreibt "B" direkt "Hello from the other site"
+    Dann       "B" erhält eine Einladung von "A"
+    Und        "B" bestätigt eine Einladung von "A"
+    Und        "B" empfängt eine Nachricht "Hello from the other site" von "A"
+
+  @Shuffle(true)
+  @EqualProperty(homeserver)
+  @DistinctColumn(ApiName1A)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1A.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |
+
+  @BP:O2N_intern @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_717 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 07.17 Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch Organisations-User
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
+    Wenn       "B" schreibt "C" direkt "Hello from the other site"
+    Dann       "C" erhält eine Einladung von "B"
+    Und        "C" bestätigt eine Einladung von "B"
+    Und        "C" empfängt eine Nachricht "Hello from the other site" von "B"
+
+  @Shuffle(true)
+  @EqualProperty(homeserver)
+  @DistinctColumn(ApiName1B)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
 
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
 
   @BP:N2P_intern @Ctl:Chat
-  @TCID:TIM_11_AF_716 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
-  Szenariogrundriss: 07.16 Einladung innerhalb einer Organisation - Einladung in Chat - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
+  @TCID:TIM_11_AF_718 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 07.18 Einladung innerhalb einer Organisation - Einladung in Chat - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A" hinterlegt seine MXID im Verzeichnis Dienst
@@ -431,8 +479,8 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     | ApiName1A | ApiName1B |
 
   @BP:N2P_intern @Ctl:OrgAdmin @Ctl:Raum
-  @TCID:TIM_11_AF_717 @PRIO:2 @TESTFALL:Positiv @STATUS:Implementiert
-  Szenariogrundriss: 07.17 Einladung innerhalb einer Organisation - Einladung in Raum - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
+  @TCID:TIM_11_AF_719 @PRIO:2 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 07.19 Einladung innerhalb einer Organisation - Einladung in Raum - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A" hinterlegt seine MXID im Verzeichnis Dienst
@@ -455,8 +503,8 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     | ApiName1A | ApiName1B |
 
   @BP:N2O @Ctl:OrgAdmin @Ctl:Chat
-  @TCID:TIM_11_AF_718 @PRIO:2 @TESTFALL:Positiv @STATUS:Implementiert
-  Szenariogrundriss: 07.18 Einladung innerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
+  @TCID:TIM_11_AF_720 @PRIO:2 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 07.20 Einladung innerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
     Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
     Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
@@ -478,8 +526,8 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     | ApiName1A | ApiName1B | ApiName1C |
 
   @BP:N2O @Ctl:OrgAdmin @Ctl:Raum
-  @TCID:TIM_11_AF_719 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
-    Szenariogrundriss: 07.19 Einladung innerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
+  @TCID:TIM_11_AF_721 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    Szenariogrundriss: 07.21 Einladung innerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
       Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
       Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
       Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>

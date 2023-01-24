@@ -56,11 +56,24 @@ public class FhirSearchGlue {
 
   @When("{string} can not find {string}")
   @Wenn("{string} kann {string} nicht finden in FHIR")
-  public void dontFindUser(String actorName, String userName) {
+  public void dontFindPractitionerInFhir(String actorName, String userName) {
+    FhirSearchQuestion question = practitionerInFhirDirectory()
+        .withMxid(theActorCalled(userName).recall(MX_ID));
+    dontFindPractitionerInFhir(question, actorName);
+  }
+
+  @Wenn("{string} kann {string} nicht finden in FHIR [Retry {long} - {long}]")
+  public void dontFindPractitionerInFhir(String actorName, String userName, Long timeout,
+      Long pollInterval) {
+    FhirSearchQuestion question = practitionerInFhirDirectory()
+        .withMxid(theActorCalled(userName).recall(MX_ID))
+        .withCustomInterval(timeout, pollInterval);
+    dontFindPractitionerInFhir(question, actorName);
+  }
+
+  private void dontFindPractitionerInFhir(FhirSearchQuestion question, String actorName) {
     Actor actor1 = theActorCalled(actorName);
-    Actor actor2 = theActorCalled(userName);
-    FhirPractitionerSearchResultDTO response = actor1.asksFor(
-        practitionerInFhirDirectory().withMxid(actor2.recall(MX_ID)));
+    FhirPractitionerSearchResultDTO response = actor1.asksFor(question);
     assertThat(response).isNotNull();
     assertThat(response.getTotalSearchResults()).isEqualTo(0);
   }
@@ -71,12 +84,11 @@ public class FhirSearchGlue {
   public void findUserWithSearchParam(String actorName, String userName, int begin, int end) {
     Actor actor = theActorCalled(actorName);
     Actor searchedActor = theActorCalled(userName);
-    String displayName = searchedActor.asksFor(ownAccountInfos()).getDisplayName();
+    String displayName = requireNonNull(searchedActor.asksFor(ownAccountInfos()).getDisplayName());
 
     assertThat(begin + end).as("You cut to much of the displayname: " + displayName)
         .isLessThan(displayName.length());
     String cutName = displayName.substring(begin, displayName.length() - end);
-    System.err.println(cutName);
 
     FhirPractitionerSearchResultDTO response = actor.asksFor(
         practitionerInFhirDirectory().withName(cutName));

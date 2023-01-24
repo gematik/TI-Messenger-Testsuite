@@ -17,6 +17,7 @@
 package de.gematik.tim.test.glue.api.login;
 
 import static de.gematik.tim.test.glue.api.devices.ClientKind.MESSENGER_CLIENT;
+import static de.gematik.tim.test.glue.api.devices.ClientKind.ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.PRACTITIONER;
 import static de.gematik.tim.test.glue.api.devices.DevicesControllerGlue.checkIs;
 import static de.gematik.tim.test.glue.api.login.LoginTask.login;
@@ -75,6 +76,13 @@ public class LogInGlue {
     checkIs(actor, List.of(MESSENGER_CLIENT));
   }
 
+  @Wenn("{string} sich als OrgAdmin registriert")
+  public void sichAlsOrgAdminRegistriert(String actorName) {
+    Actor actor = theActorCalled(actorName);
+    logsIn(actorName);
+    checkIs(actor, List.of(ORG_ADMIN));
+  }
+
   @Then("registration successful for {string}")
   @Dann("ist das Login für {string} erfolgreich")
   public static void loginSuccess(String actorName) {
@@ -87,5 +95,4 @@ public class LogInGlue {
     theActorCalled(actorName).should(
         seeThatResponse(res -> res.statusCode(greaterThanOrEqualTo(400))));
   }
-
 }

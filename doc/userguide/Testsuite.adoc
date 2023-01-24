@@ -538,9 +538,9 @@ Wir sehen nun, dass nur Kombinationen erzeugt wurden, in denen unsere ‚new‘ 
 [black]#*_Der ‚new‘ Tag wird nicht automatisch erzeugt, sondern muss nach Bedarf manuell vergeben bzw. entfernt werden in der Source combine_items.json (src/test/resources/combine_items.json)._*#
 
 
-*Der 'practionioner' Tag*
+*Der 'practitioner' Tag*
 
-Der ‚practionioner Tag‘ ist derzeit (kann auch erweitert werden) eines von drei Tags, die über die Testtreiber Schnittstelle vom jeweiligen Device abgefragt werden. Diese drei Tags sind in der pom.xml definiert (Erklärung zur pom.xml weiter oben) und sind folgende:
+Der ‚practitioner Tag‘ ist derzeit (kann auch erweitert werden) eines von drei Tags, die über die Testtreiber Schnittstelle vom jeweiligen Device abgefragt werden. Diese drei Tags sind in der pom.xml definiert (Erklärung zur pom.xml weiter oben) und sind folgende:
 
 - client – Es handelt sich um einen User Client, der Nachrichten versenden darf
 - orgAdmin – Es handelt sich um einen OrgAdmin Client, der auf das Organisationsverzeichnis im VZD zugreifen darf
@@ -981,6 +981,7 @@ maven clean verify
 | oneonly     | jeder Testfall wird nur einmal ausgeführt
 | usetags     | es werden nur bestimmte Tags ausgeführt, default @Ctl:UseCase
 |===
+
 *Im Terminal kann dieses Tag und Konfigfiles überschrieben werden:*
 
 mvn clean verify -Dcucumber.filter.tags=@FeatureFile_04 -Poneonly,usetags
@@ -989,11 +990,23 @@ mvn clean verify -Dcucumber.filter.tags=@TCID:TIM_11_AF_401 -Pusetags
 
 mvn clean verify -Dtiger.config.file=tiger-dev.yml -Pusetags
 
+*Im Terminal können Timeout und PollIntervall eingestellt werden*
+
+mvn clean verify -Dtimeout=_<Timeout in Sekunden>_ -DpollInterval=_<PollIntervall in Sekunden>_
+
+Default:
+
+* Timeout = 10 Sekunden
+* PollInterval = 1 Sekunde
+
+[WARNING]
+Das Timeout muss immer größer als das PollInterval sein!
+
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
 
 image::Tests.png[float="left"]
-=== 9. Testfall Beschreibungen
+=== 10. Testfall Beschreibungen
 {empty} +
 
 Die Beschreibung der Testfälle befindet sich direkt in den Feature Files. Durch die Verwendung von Gherkin sind die einzelnen Teststeps

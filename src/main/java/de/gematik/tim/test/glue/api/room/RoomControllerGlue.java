@@ -20,6 +20,8 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DIRECT_CHAT_NAME;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.fhir.organisation.FhirOrgAdminGlue.findsAddressInHealthcareService;
 import static de.gematik.tim.test.glue.api.room.UseRoomAbility.addRoomToActor;
+import static de.gematik.tim.test.glue.api.room.questions.GetRoomQuestion.ownRoomWithMembers;
+import static de.gematik.tim.test.glue.api.room.questions.GetRoomQuestion.ownRoomWithName;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
 import static de.gematik.tim.test.glue.api.room.questions.RoomIdForRoomNameQuestion.roomIdForRoomName;
 import static de.gematik.tim.test.glue.api.room.tasks.CreateRoomTask.createRoom;
@@ -34,7 +36,6 @@ import static de.gematik.tim.test.models.RoomMembershipStateDTO.INVITED;
 import static de.gematik.tim.test.models.RoomMembershipStateDTO.JOINED;
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
-import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static net.serenitybdd.screenplay.actors.OnStage.setTheStage;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorInTheSpotlight;
@@ -125,8 +126,7 @@ public class RoomControllerGlue {
       Actor actor1 = theActorCalled(actorName);
       String actor1Id = actor1.recall(MX_ID);
 
-      List<RoomDTO> rooms = theActorCalled(actorName).asksFor(ownRooms());
-      RoomDTO room = requireNonNull(filterForRoomWithSpecificMembers(rooms, chatMembersIds));
+      RoomDTO room = theActorCalled(actorName).asksFor(ownRoomWithMembers(chatMembersIds));
       RoomMemberDTO member = requireNonNull(room.getMembers()).stream()
           .filter(m -> requireNonNull(m.getMxid()).equals(actor1Id)).findFirst().orElseThrow();
       assertThat(member.getMembershipState()).isEqualTo(INVITED);
@@ -149,9 +149,8 @@ public class RoomControllerGlue {
       String actor1Id = actor1.recall(MX_ID);
       Actor actor2 = theActorCalled(inviter);
       String actor2Id = actor2.recall(MX_ID);
-      List<RoomDTO> rooms = theActorCalled(actorName).asksFor(ownRooms());
-      RoomDTO room = requireNonNull(
-          filterForRoomWithSpecificMembers(rooms, List.of(actor1Id, actor2Id)));
+      RoomDTO room = theActorCalled(actorName).asksFor(
+          ownRoomWithMembers(List.of(actor1Id, actor2Id)));
       actor1.attemptsTo(joinRoom().withRoomId(room.getRoomId()));
     }
   }
@@ -272,15 +271,8 @@ public class RoomControllerGlue {
   @Dann("{string} erhält eine Einladung in Raum {string}")
   public void receiveInvitationToRoom(String actorName, String roomName) {
     Actor actor = theActorCalled(actorName);
-    List<RoomDTO> rooms = actor.asksFor(ownRooms());
-    List<RoomDTO> filteredRooms = rooms.stream()
-        .filter(r -> requireNonNull(r.getName()).equals(roomName))
-        .filter(r -> actor.abilityTo(UseRoomAbility.class).getRoomIdByName(roomName)
-            .equals(requireNonNull(r.getRoomId()))).toList();
-    assertThat(filteredRooms)
-        .as(format("%s did not get invitation to room %s", actorName, roomName))
-        .hasSize(1);
-    RoomMemberDTO member = filteredRooms.get(0).getMembers().stream()
+    RoomDTO room = actor.asksFor(ownRoomWithName(roomName));
+    RoomMemberDTO member = room.getMembers().stream()
         .filter(m -> m.getMxid().equals(theActorCalled(actorName).recall(MX_ID)))
         .findAny()
         .orElseThrow();

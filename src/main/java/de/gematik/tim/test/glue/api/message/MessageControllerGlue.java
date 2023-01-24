@@ -23,10 +23,12 @@ import static de.gematik.tim.test.glue.api.fhir.organisation.FhirOrgAdminGlue.fi
 import static de.gematik.tim.test.glue.api.message.DeleteMessageTask.deleteMessageWithId;
 import static de.gematik.tim.test.glue.api.message.EditMessageTask.editMessage;
 import static de.gematik.tim.test.glue.api.message.GetLastOwnMessageFromRoomQuestion.lastOwnMessage;
+import static de.gematik.tim.test.glue.api.message.GetRoomMessageQuestion.messageFromSenderWithTextInActiveRoom;
 import static de.gematik.tim.test.glue.api.message.GetRoomMessagesQuestion.messagesInActiveRoom;
 import static de.gematik.tim.test.glue.api.message.SendDirectMessageTask.sendDirectMessageTo;
 import static de.gematik.tim.test.glue.api.message.SendMessageTask.sendMessage;
 import static de.gematik.tim.test.glue.api.room.UseRoomAbility.addRoomToActor;
+import static de.gematik.tim.test.glue.api.room.questions.GetRoomQuestion.ownRoomWithMembers;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.filterForRoomWithSpecificMembers;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.filterMessageForSenderAndText;
@@ -79,10 +81,8 @@ public class MessageControllerGlue {
         || lastResponse().statusCode() != 200) {
       return;
     }
-    List<String> membersIds = List.of(actor1Id, actor2Id);
-    List<RoomDTO> rooms = theActorCalled(actorName).asksFor(ownRooms());
-    RoomDTO room = filterForRoomWithSpecificMembers(rooms, membersIds);
-    assertThat(room).isNotNull();
+    RoomDTO room = theActorCalled(actorName).asksFor(
+        ownRoomWithMembers(List.of(actor1Id, actor2Id)));
     actor1.remember(DIRECT_CHAT_NAME + actor2Id, room.getName());
     actor2.remember(DIRECT_CHAT_NAME + actor1Id, room.getName());
     addRoomToActor(room, actor1);
@@ -126,12 +126,10 @@ public class MessageControllerGlue {
     actorNames.forEach(a -> {
       Actor actor = theActorCalled(a);
       actor.abilityTo(UseRoomAbility.class).setActive(roomName);
-      List<MessageDTO> messages = actor.asksFor(messagesInActiveRoom());
-
-      assertThat(messages)
-          .filteredOn(msg -> authorId.equals(msg.getAuthor()))
-          .extracting(MessageDTO::getBody)
-          .containsExactlyInAnyOrder(messageTexts.toArray(new String[0]));
+      for (String message : messageTexts) {
+        assertThat(
+            actor.asksFor(messageFromSenderWithTextInActiveRoom(message, authorId))).isNotNull();
+      }
     });
   }
 
@@ -145,9 +143,7 @@ public class MessageControllerGlue {
     RoomDTO room = requireNonNull(filterForRoomWithSpecificMembers(rooms, membersIds));
 
     actor.abilityTo(UseRoomAbility.class).setActive(room.getName());
-    List<MessageDTO> messages = actor.asksFor(messagesInActiveRoom());
-    List<MessageDTO> message = filterMessagesForSenderAndText(textMessage, senderName, messages);
-    assertThat(message).hasSize(1);
+    actor.asksFor(messageFromSenderWithTextInActiveRoom(textMessage, senderId));
   }
 
   @Then("{string} sees {int} messages in room {string}")
@@ -174,7 +170,8 @@ public class MessageControllerGlue {
     Actor actor = theActorCalled(actorName);
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
     List<MessageDTO> messages = actor.asksFor(messagesInActiveRoom());
-    List<MessageDTO> filteredMessages = filterMessagesForSenderAndText(messageText, userName,
+    List<MessageDTO> filteredMessages = filterMessagesForSenderAndText(messageText,
+        theActorCalled(userName).recall(MX_ID),
         messages);
     assertThat(filteredMessages).as("Expected that no message should be found").hasSize(0);
   }

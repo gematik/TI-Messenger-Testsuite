@@ -17,11 +17,11 @@
 package de.gematik.tim.test.glue.api.media;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MEDIA_ID;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.media.DownloadMediaQuestion.downloadMedia;
 import static de.gematik.tim.test.glue.api.media.UploadMediaTask.uploadMedia;
-import static de.gematik.tim.test.glue.api.message.GetRoomMessagesQuestion.messagesInActiveRoom;
+import static de.gematik.tim.test.glue.api.message.GetRoomMessageQuestion.messageFromSenderWithTextInActiveRoom;
 import static de.gematik.tim.test.glue.api.message.SendMessageTask.sendMessage;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.filterMessageForSenderAndText;
 import static net.serenitybdd.screenplay.actors.OnStage.setTheStage;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,7 +37,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import lombok.SneakyThrows;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.actors.Cast;
@@ -104,16 +103,16 @@ public class MediaGlue {
       String roomName) {
     Actor actor = theActorCalled(actorName);
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
-    List<MessageDTO> messages = actor.asksFor(messagesInActiveRoom());
-    MessageDTO filteredMessages = filterMessageForSenderAndText(fileName, userName, messages);
+    String senderMxId = theActorCalled(userName).recall(MX_ID);
+    MessageDTO message = actor.asksFor(messageFromSenderWithTextInActiveRoom(fileName, senderMxId));
 
-    byte[] receivedMedia = actor.asksFor(downloadMedia().withFileId(filteredMessages.getFileId()));
+    byte[] receivedMedia = actor.asksFor(downloadMedia().withFileId(message.getFileId()));
 
     Path path = Path.of(RESOURCES_PATH + fileName);
     try (FileInputStream fis = new FileInputStream(path.toFile())) {
       assertThat(receivedMedia).isEqualTo(fis.readAllBytes());
     }
-    assertThat(filteredMessages.getBody()).isEqualTo(fileName);
+    assertThat(message.getBody()).isEqualTo(fileName);
   }
 
 }

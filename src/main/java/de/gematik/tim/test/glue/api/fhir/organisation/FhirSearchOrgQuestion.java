@@ -18,11 +18,16 @@ package de.gematik.tim.test.glue.api.fhir.organisation;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEARCH_ORG;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.repeatedRequest;
+import static java.util.Objects.requireNonNull;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.FhirOrganizationSearchResultListDTO;
 import io.restassured.specification.RequestSpecification;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 import org.apache.commons.lang3.StringUtils;
@@ -38,6 +43,8 @@ public class FhirSearchOrgQuestion implements Question<FhirOrganizationSearchRes
   private String contactMxid;
   private String contactName;
   private String contactPurpose;
+  private String mxIdInEndpoint;
+  private int minimalSearchResults = 1;
 
 
   public static FhirSearchOrgQuestion organizationEndpoints() {
@@ -89,8 +96,22 @@ public class FhirSearchOrgQuestion implements Question<FhirOrganizationSearchRes
     return this;
   }
 
+  public FhirSearchOrgQuestion havingMxidInEndpoint(String mxId) {
+    this.mxIdInEndpoint = mxId;
+    return this;
+  }
+
+  public FhirSearchOrgQuestion havingAtLeastXResults(int amount) {
+    this.minimalSearchResults = amount;
+    return this;
+  }
+
   @Override
   public FhirOrganizationSearchResultListDTO answeredBy(Actor actor) {
+    return repeatedRequest(() -> searchForOrganization(actor),"organization");
+  }
+
+  private Optional<FhirOrganizationSearchResultListDTO> searchForOrganization(Actor actor) {
     actor.attemptsTo(
         SEARCH_ORG.request().with(this::prepareQuery));
 
@@ -99,7 +120,26 @@ public class FhirSearchOrgQuestion implements Question<FhirOrganizationSearchRes
     FhirOrganizationSearchResultListDTO resp = lastResponse().body()
         .as(FhirOrganizationSearchResultListDTO.class);
     actor.remember(LAST_RESPONSE, lastResponse());
-    return resp;
+
+    return checkConditions(resp);
+  }
+
+  private Optional<FhirOrganizationSearchResultListDTO> checkConditions(
+      FhirOrganizationSearchResultListDTO resp) {
+    if (mxIdInEndpoint == null
+        && requireNonNull(resp.getTotalSearchResults()) >= minimalSearchResults) {
+      return Optional.of(resp);
+    }
+
+    List<String> ids = requireNonNull(resp.getSearchResults()).stream()
+        .map(res -> requireNonNull(res.getEndpoint()).getAddress())
+        .filter(Objects::nonNull)
+        .toList();
+    if (ids.contains(mxIdInEndpoint)
+        && requireNonNull(resp.getTotalSearchResults()) >= minimalSearchResults) {
+      return Optional.of(resp);
+    }
+    return Optional.empty();
   }
 
   private RequestSpecification prepareQuery(RequestSpecification request) {

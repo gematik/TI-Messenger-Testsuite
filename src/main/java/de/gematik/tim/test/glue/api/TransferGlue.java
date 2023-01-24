@@ -22,4 +22,19 @@ public class TransferGlue {
 
   public static final String ERROR_MESSAGE = "Have to be implemented";
 
+  @Dann("{string} findet TI-Messenger-Nutzer {string} bei Suche im Practitioner-Verzeichnis im VZD NICHT")
+  public void dontFindUserWithNameInPractitionerVz(String actorName, String userName) {
+    //implement me
+  }
+
+  @Dann("{string} findet TI-Messenger-Nutzer {string} bei Suche im Organisations-Verzeichnis im VZD NICHT")
+  public void dontFindUserWithNameInOrgVz(String actorName, String userName) {
+    //implement me
+  }
+
+  @Dann("{string} findet TI-Messenger-Nutzer {string} bei Suche im VZD NICHT")
+  public void dontFindUserWithNameInAllVz(String actorName, String userName) {
+    //implement me
+  }
+
 }
