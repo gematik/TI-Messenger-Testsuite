@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.18">
+<meta name="generator" content="Asciidoctor 2.0.17">
 <title>TI-Messenger-Dienst Release 1.1.0</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -84,10 +84,10 @@ code{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;
 ul,ol,dl{line-height:1.6;margin-bottom:1.25em;list-style-position:outside;font-family:inherit}
 ul,ol{margin-left:1.5em}
 ul li ul,ul li ol{margin-left:1.25em;margin-bottom:0}
+ul.square li ul,ul.circle li ul,ul.disc li ul{list-style:inherit}
+ul.square{list-style-type:square}
 ul.circle{list-style-type:circle}
 ul.disc{list-style-type:disc}
-ul.square{list-style-type:square}
-ul.circle ul:not([class]),ul.disc ul:not([class]),ul.square ul:not([class]){list-style:inherit}
 ol li ul,ol li ol{margin-left:1.25em;margin-bottom:0}
 dl dt{margin-bottom:.3125em;font-weight:bold}
 dl dd{margin-bottom:1.25em}
@@ -462,9 +462,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_4_bereitstellungen_der_hersteller">4. Bereitstellungen der Hersteller</a>
 <ul class="sectlevel3">
-<li><a href="#_4_1_messenger_service_für_eine_organisation">4.1 Messenger-Service für eine Organisation</a></li>
+<li><a href="#id41">4.1 Messenger-Service für eine Organisation</a></li>
 <li><a href="#_4_2_test_clients_mit_testtreiberschnittstelle">4.2 Test Clients mit Testtreiberschnittstelle</a></li>
-<li><a href="#_4_3_anforderungen_an_die_clients">4.3 Anforderungen an die Clients</a></li>
+<li><a href="#id43">4.3 Anforderungen an die Clients</a></li>
 <li><a href="#_4_4_verwaltung_der_resourcen">4.4 Verwaltung der Resourcen</a></li>
 </ul>
 </li>
@@ -483,9 +483,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#id2">7.3 Tags für die nicht erfolgreichen Berechtigungsprüfungen</a></li>
 </ul>
 </li>
-<li><a href="#id3">8. Testfall Liste</a></li>
+<li><a href="#id8">8. Testfall Liste</a></li>
 <li><a href="#_9_testausführung">9. Testausführung</a></li>
-<li><a href="#_9_testfall_beschreibungen">9. Testfall Beschreibungen</a></li>
+<li><a href="#_10_testfall_beschreibungen">10. Testfall Beschreibungen</a></li>
 </ul>
 </li>
 </ul>
@@ -754,6 +754,13 @@ Gruppenchats und die Nutzung von mehreren Geräten getestet. Die Anfrage der Ger
 <div class="paragraph">
 <p><br></p>
 </div>
+<div class="paragraph">
+<p>Die Rolle "User-HBA" kann ausschließlich von einem Leistungserbringer eingenommen werden. Die
+Authentifizierung des Akteurs erfolgt hierbei über seinen HBA. Ein Akteur in der Rolle "User-HBA"
+kann seine MXID im Personenverzeichnis im VZD-FHIR-Directory hinterlegen, damit andere Akteure in
+der Rolle "User-HBA", die ebenfalls die eigene MXID auf dem VZD-FHIR-Directory hinterlegt haben,
+ihn kontaktieren können.</p>
+</div>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -761,7 +768,7 @@ Gruppenchats und die Nutzung von mehreren Geräten getestet. Die Anfrage der Ger
 <div class="title">&#128681;</div>
 </td>
 <td class="content">
-<span class="black"><strong><em>Für Akteure Practitioner müssen HBAs oder digitale Identitäten von den Herstellern beantragt werden.</em></strong></span>
+<span class="black"><strong><em>Für Akteure Practitioner müssen HBAs von den Herstellern bestellt werden <a href="#id43">Anforderungen an die Clients</a>.</em></strong></span>
 </td>
 </tr>
 </table>
@@ -778,6 +785,16 @@ Gruppenchats und die Nutzung von mehreren Geräten getestet. Die Anfrage der Ger
 <div class="paragraph">
 <p><br></p>
 </div>
+<div class="paragraph">
+<p>Die Rolle "User" kann von einem Leistungserbringer sowie von einem Mitarbeiter im Gesundheitswesen
+eingenommen werden. Die Authentifizierung des Akteurs erfolgt hierbei nicht über eine SMC-B oder
+einen HBA, sondern über ein vom Messenger-Service bereitgestelltes Authentifizierungsverfahren.
+Für einen Akteur in der Rolle "User" kann dessen MXID im Organisationsverzeichnis auf dem
+VZD-FHIR-Directory hinterlegt werden, um für Akteure außerhalb seiner Organisation auffindbar zu werden.<br>
+<br>
+Die Oragnisations User können auch gleichzeitig HBA-User sein. Das bedeutet die Organisation trägt die MXID
+der HBA-User in den Endpoint des Healthcare Services ein.</p>
+</div>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -785,7 +802,7 @@ Gruppenchats und die Nutzung von mehreren Geräten getestet. Die Anfrage der Ger
 <div class="title">&#128681;</div>
 </td>
 <td class="content">
-<span class="black"><strong><em>Für die Einrichtung von Organisations User werden eine Domain und eine Organisation benötigt.</em></strong></span>
+<span class="black"><strong><em>Für die Einrichtung von Organisations User werden eine Domain und eine Organisation benötigt <a href="#id41">Messenger-Service für eine Organisation</a>.</em></strong></span>
 </td>
 </tr>
 </table>
@@ -802,6 +819,15 @@ Gruppenchats und die Nutzung von mehreren Geräten getestet. Die Anfrage der Ger
 <div class="paragraph">
 <p><br></p>
 </div>
+<div class="paragraph">
+<p>Die Rolle "Org-Admin" stellt eine besondere Rolle im TI-Messenger Kontext dar. Leistungserbringer
+oder Mitarbeiter einer Organisation können diese Rolle einnehmen, nachdem sie ihre Organisation zuvor
+erfolgreich am Registrierungs-Dienst unter Verwendung ihrer SMC-B authentifiziert haben. Nach der
+erfolgreichen Authentifizierung wird ein Admin-Account am Registrierungs-Dienst vom
+TI-Messenger-Fachdienst angelegt. Mit der Anmeldung am Registrierungs-Dienst über den Admin-Account
+nimmt ein Akteur die Rolle "Org-Admin" ein. Dieser kann Messenger-Services für seine Organisation
+registrieren und Einträge im VZD-FHIR-Directory verwalten.</p>
+</div>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -809,7 +835,7 @@ Gruppenchats und die Nutzung von mehreren Geräten getestet. Die Anfrage der Ger
 <div class="title">&#128681;</div>
 </td>
 <td class="content">
-<span class="black"><strong><em>Für die Akteure Org-Admins müssen SMC-Bs oder digitale Identitäten von den Herstellern beantragt werden.</em></strong></span>
+<span class="black"><strong><em>Für die Akteure Org-Admins müssen SMC-Bs von den Herstellern bestellt werden <a href="#id43">Anforderungen an die Clients</a>.</em></strong></span>
 </td>
 </tr>
 </table>
@@ -837,9 +863,21 @@ Absätze beschreiben die benötigten Bereitstellungen der Hersteller.
 <p><span class="image left"><img src="../../doc/images/KH.png" alt="KH"></span></p>
 </div>
 <div class="sect3">
-<h4 id="_4_1_messenger_service_für_eine_organisation">4.1 Messenger-Service für eine Organisation</h4>
+<h4 id="id41">4.1 Messenger-Service für eine Organisation</h4>
 <div class="paragraph">
 <p><br></p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">&#128681;</div>
+</td>
+<td class="content">
+<span class="black"><strong><em>Testkarten (HBA/SMC-B) müssen von den Herstellern bestellt werden siehe <a href="#id43">Anforderungen an die Clients</a>.</em></strong></span>
+</td>
+</tr>
+</table>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -902,7 +940,7 @@ Clients mit den gleichen Eigenschaften werden unter einer URL zusammengefasst. D
 </div>
 </div>
 <div class="sect3">
-<h4 id="_4_3_anforderungen_an_die_clients">4.3 Anforderungen an die Clients</h4>
+<h4 id="id43">4.3 Anforderungen an die Clients</h4>
 <div class="paragraph">
 <p><br></p>
 </div>
@@ -917,8 +955,36 @@ Chat benötigen diverse Endgeräte.<br></p>
 <div class="title">&#128681;</div>
 </td>
 <td class="content">
-<span class="black"><strong><em>Grundsätzlich sollten an jeder Schnittstelle mindestens drei Gräte zur Verfügung stehen. Ausgenommen von dieser Festlegung
-ist der Org-Admin, hier sind zwei Geräte ausreichend.</em></strong></span>
+<span class="black"><strong><em>Grundsätzlich müssen an jeder Schnitttelle mindestens drei Gräte zur Verfügung stehen (z.B. 3 x IOS Clients usw.).
+Ausgenommen von dieser Festlegung ist der Org-Admin, hier ist ein Geräte ausreichend.</em></strong></span>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">&#128681;</div>
+</td>
+<td class="content">
+<span class="black"><strong><em>Kartenbestellung über das gematik Fachportal:<br>
+<a href="https://fachportal.gematik.de/gematik-onlineshop/testkarten?ai%5Baction%5D=detail&amp;ai%5Bcontroller%5D=Catalog&amp;ai%5Bd_name%5D=Testkarte-eGK-G2&amp;ai%5Bd_pos%5D=1" class="bare">https://fachportal.gematik.de/gematik-onlineshop/testkarten?ai%5Baction%5D=detail&amp;ai%5Bcontroller%5D=Catalog&amp;ai%5Bd_name%5D=Testkarte-eGK-G2&amp;ai%5Bd_pos%5D=1</a></em></strong></span>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">&#128681;</div>
+</td>
+<td class="content">
+<span class="black"><strong><em>Welche Testkarten müssen bestellt werden:<br>
+1. "TestKarte SMC-B G2.1 Krankenhaus" oder "TestKarte SMC-B G2.1 Arztpraxis"<br>
+   &nbsp; &nbsp; &nbsp;(1x für OrgAdmin Achnittstelle)<br>
+2. "TestKarte HBA G2.1 Arzt" (3x pro Schnittstelle)</em></strong></span>
 </td>
 </tr>
 </table>
@@ -1039,7 +1105,7 @@ ist der Org-Admin, hier sind zwei Geräte ausreichend.</em></strong></span>
 <div class="title">&#128681;</div>
 </td>
 <td class="content">
-<span class="black"><strong><em>Wie Verwaltung der Domain, der Organisationen und der User liegt in der Verantwortung der Hersteller.</em></strong></span>
+<span class="black"><strong><em>Die Verwaltung der Domain, der Organisationen und der User liegt in der Verantwortung der Hersteller.</em></strong></span>
 </td>
 </tr>
 </table>
@@ -1074,24 +1140,6 @@ ist der Org-Admin, hier sind zwei Geräte ausreichend.</em></strong></span>
 zwischen verschiedenen TI-Messenger-Fachdiensten innerhalb des TI-Messenger-Dienstes muss der TI-Messenger-Dienst (TI-Messenger-Client
 und TI-Messenger-Fachdienst)  eines  TI-Messenger-Anbieters gegen die Referenzimplementierung (TI-Messenger-Client und
 TI-Messenger-Fachdienst) getestet werden.</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">&#128681;</div>
-</td>
-<td class="content">
-<span class="black"><strong><em>Die Referenzimplementierung wird nur Windows Clients für Practitioner zur Verfügung stellen. Die Mobilen Clients sind ausschließlich
-für OrgUser, da auf die Implementierung eines mobilen Authentikators verzichtet wurde.</em></strong></span>
-</td>
-</tr>
-</table>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="../../doc/images/Referenzimplementierung.png" alt="Referenzimplementierung">
-</div>
 </div>
 <div class="paragraph text-right">
 <p><a href="#id0">Inhaltsverzeichnis</a></p>
@@ -1470,7 +1518,7 @@ Beispiel:</p>
 <p><strong>Vergleichsoptionen Properties</strong></p>
 </div>
 <div class="paragraph">
-<p>Geben wir z.B. die Property ‚os‘ (wie im obrigen Beispiel) mit einem entsprechenden Wert mit, so wird geprüft, ob das Device hinter der URL des Testtreibers tatsächlich dieses ‚os‘ hinterlegt hat, wenn diese Property ebenfalls in der pom.xml definiert ist. Die Überprüfung erfolgt hier nicht case sensitive (IOS – iOS – usw).</p>
+<p>Geben wir z.B. die Property ‚os‘ (wie im obrigen Beispiel) mit einem entsprechenden Wert mit, so wird geprüft, ob das Device hinter der URL des Testtreibers tatsächlich dieses ‚os‘ hinterlegt hat, wenn diese Property ebenfalls in der pom.xml definiert ist. Die Überprüfung erfolgt hier case sensitive (iOS – iOS; usw).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1485,27 +1533,35 @@ Beispiel:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Ergebnis Vergleich</strong></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">IOS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">iOS</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Windwos, Linux, Android, &#8230;&#8203;</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Abbruch - Error</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">IOS</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">iOS, ios</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">iOS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">iOS</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">OK</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">IOS</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">IOS</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">OK</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">iOS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IOS, ios</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Abbruch - Error</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">IOS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">iOS</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Abbruch - Error</p></td>
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>Die potenitell möglichen Enum Werte sind in der Testtreiber Schnittstellenbeschreibung zu finden:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../doc/images/OS_Info.PNG" alt="OS Info">
+</div>
+</div>
 <div class="paragraph">
 <p>Die Daten, die von dem jeweiligen Device ausgelesen werden und die combine_items.json im Target Folder (target/generated-combine/combine_items.json) anreichern, werden in der pom.xml unter ‚cucumber-test-combinations-maven-plugin‘ definiert. Dies können Tags oder auch Properties sein.</p>
 </div>
@@ -1514,7 +1570,7 @@ Beispiel:</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="../../doc/images/tagsPom.png" alt="tagsPom">
+<img src="../../doc/images/TagsPom.png" alt="TagsPom">
 </div>
 </div>
 <div class="paragraph">
@@ -1656,7 +1712,7 @@ Beispiel:</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="../../doc/images/Kombi1.png" alt="Kombi1">
+<img src="../../doc/images/Kombi1.PNG" alt="Kombi1">
 </div>
 </div>
 <div class="paragraph">
@@ -1713,7 +1769,7 @@ finden sind:</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="../../doc/images/KombiNew.png" alt="KombiNew">
+<img src="../../doc/images/KombiNew.PNG" alt="KombiNew">
 </div>
 </div>
 <div class="paragraph">
@@ -1732,10 +1788,10 @@ finden sind:</p>
 </table>
 </div>
 <div class="paragraph">
-<p><strong>Der 'practionioner' Tag</strong></p>
+<p><strong>Der 'practitioner' Tag</strong></p>
 </div>
 <div class="paragraph">
-<p>Der ‚practionioner Tag‘ ist derzeit (kann auch erweitert werden) eines von drei Tags, die über die Testtreiber Schnittstelle vom jeweiligen Device abgefragt werden. Diese drei Tags sind in der pom.xml definiert (Erklärung zur pom.xml weiter oben) und sind folgende:</p>
+<p>Der ‚practitioner Tag‘ ist derzeit (kann auch erweitert werden) eines von drei Tags, die über die Testtreiber Schnittstelle vom jeweiligen Device abgefragt werden. Diese drei Tags sind in der pom.xml definiert (Erklärung zur pom.xml weiter oben) und sind folgende:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -2086,12 +2142,12 @@ erstellt hat.</strong></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="id3">8. Testfall Liste</h3>
+<h3 id="id8">8. Testfall Liste</h3>
 <div class="paragraph">
 <p><br></p>
 </div>
 <div class="paragraph">
-<p><a id="id4"></a> <strong>Abfragen der Geräte-Information aller Schnittstellen</strong></p>
+<p><a id="id81"></a> <strong>Abfragen der Geräte-Information aller Schnittstellen</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2126,14 +2182,14 @@ erstellt hat.</strong></p>
 </tbody>
 </table>
 <div class="paragraph text-center">
-<p><a href="#id4">Zurück</a>
+<p><a href="#id81">Zurück</a>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<a href="#id3">Testfall Liste</a></p>
+<a href="#id8">Testfall Liste</a></p>
 </div>
 <div class="paragraph">
-<p><a id="id5"></a> <strong>AF_1005 Organisationsressourcen im Verzeichnisdienst hinzufügen</strong></p>
+<p><a id="id82"></a> <strong>AF_1005 Organisationsressourcen im Verzeichnisdienst hinzufügen</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2164,14 +2220,14 @@ erstellt hat.</strong></p>
 </tbody>
 </table>
 <div class="paragraph text-center">
-<p><a href="#id4">Zurück</a>
+<p><a href="#id81">Zurück</a>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<a href="#id3">Testfall Liste</a></p>
+<a href="#id8">Testfall Liste</a></p>
 </div>
 <div class="paragraph">
-<p><a id="id6"></a> <strong>AF_10057 Anmeldung eines Akteurs am Messenger-Service</strong></p>
+<p><a id="id83"></a> <strong>AF_10057 Anmeldung eines Akteurs am Messenger-Service</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2190,14 +2246,14 @@ erstellt hat.</strong></p>
 </tbody>
 </table>
 <div class="paragraph text-center">
-<p><a href="#id5">Zurück</a>
+<p><a href="#id82">Zurück</a>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<a href="#id3">Testfall Liste</a></p>
+<a href="#id8">Testfall Liste</a></p>
 </div>
 <div class="paragraph">
-<p><a id="id7"></a> <strong>AF_10058 Akteur (User-HBA) im Verzeichnisdienst hinzufügen</strong></p>
+<p><a id="id84"></a> <strong>AF_10058 Akteur (User-HBA) im Verzeichnisdienst hinzufügen</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2232,14 +2288,14 @@ erstellt hat.</strong></p>
 </tbody>
 </table>
 <div class="paragraph text-center">
-<p><a href="#id6">Zurück</a>
+<p><a href="#id83">Zurück</a>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<a href="#id3">Testfall Liste</a></p>
+<a href="#id8">Testfall Liste</a></p>
 </div>
 <div class="paragraph">
-<p><a id="id8"></a> <strong>AF_10104 Einladung von Akteuren innerhalb eines Messenger-Service</strong></p>
+<p><a id="id85"></a> <strong>AF_10104 Einladung von Akteuren innerhalb eines Messenger-Service</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2326,14 +2382,14 @@ erstellt hat.</strong></p>
 </tbody>
 </table>
 <div class="paragraph text-center">
-<p><a href="#id7">Zurück</a>
+<p><a href="#id84">Zurück</a>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<a href="#id3">Testfall Liste</a></p>
+<a href="#id8">Testfall Liste</a></p>
 </div>
 <div class="paragraph">
-<p><a id="id9"></a> <strong>AF_10063 Austausch von Events innerhalb eines Messenger-Service</strong></p>
+<p><a id="id86"></a> <strong>AF_10063 Austausch von Events innerhalb eines Messenger-Service</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2436,14 +2492,14 @@ erstellt hat.</strong></p>
 </tbody>
 </table>
 <div class="paragraph text-center">
-<p><a href="#id8">Zurück</a>
+<p><a href="#id85">Zurück</a>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<a href="#id3">Testfall Liste</a></p>
+<a href="#id8">Testfall Liste</a></p>
 </div>
 <div class="paragraph">
-<p><a id="id10"></a> <strong>AF_10061 Einladung von Akteuren anderer Messenger-Services</strong></p>
+<p><a id="id87"></a> <strong>AF_10061 Einladung von Akteuren anderer Messenger-Services</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2530,14 +2586,14 @@ erstellt hat.</strong></p>
 </tbody>
 </table>
 <div class="paragraph text-center">
-<p><a href="#id9">Zurück</a>
+<p><a href="#id86">Zurück</a>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<a href="#id3">Testfall Liste</a></p>
+<a href="#id8">Testfall Liste</a></p>
 </div>
 <div class="paragraph">
-<p><a id="id11"></a> <strong>AF_10062 Austausch von Events zwischen anderen Messenger-Services</strong></p>
+<p><a id="id88"></a> <strong>AF_10062 Austausch von Events zwischen anderen Messenger-Services</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2640,14 +2696,14 @@ erstellt hat.</strong></p>
 </tbody>
 </table>
 <div class="paragraph text-center">
-<p><a href="#id10">Zurück</a>
+<p><a href="#id87">Zurück</a>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<a href="#id3">Testfall Liste</a></p>
+<a href="#id8">Testfall Liste</a></p>
 </div>
 <div class="paragraph">
-<p><a id="id12"></a> <strong>Einladung von Akteuren via Freigabeliste</strong></p>
+<p><a id="id89"></a> <strong>Einladung von Akteuren via Freigabeliste</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2678,14 +2734,14 @@ erstellt hat.</strong></p>
 </tbody>
 </table>
 <div class="paragraph text-center">
-<p><a href="#id11">Zurück</a>
+<p><a href="#id88">Zurück</a>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<a href="#id3">Testfall Liste</a></p>
+<a href="#id8">Testfall Liste</a></p>
 </div>
 <div class="paragraph">
-<p><a id="id13"></a> <strong>Gruppen Chats</strong></p>
+<p><a id="id810"></a> <strong>Gruppen Chats</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2720,14 +2776,14 @@ erstellt hat.</strong></p>
 </tbody>
 </table>
 <div class="paragraph text-center">
-<p><a href="#id12">Zurück</a>
+<p><a href="#id89">Zurück</a>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<a href="#id3">Testfall Liste</a></p>
+<a href="#id8">Testfall Liste</a></p>
 </div>
 <div class="paragraph">
-<p><a id="id14"></a> <strong>Nutzung von mehreren Geräten</strong></p>
+<p><a id="id811"></a> <strong>Nutzung von mehreren Geräten</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2770,11 +2826,11 @@ erstellt hat.</strong></p>
 </tbody>
 </table>
 <div class="paragraph text-center">
-<p><a href="#id13">Zurück</a>
+<p><a href="#id810">Zurück</a>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<a href="#id3">Testfall Liste</a></p>
+<a href="#id8">Testfall Liste</a></p>
 </div>
 <div class="paragraph text-right">
 <p><a href="#id0">Inhaltsverzeichnis</a></p>
@@ -2835,6 +2891,37 @@ erstellt hat.</strong></p>
 <div class="paragraph">
 <p>mvn clean verify -Dtiger.config.file=tiger-dev.yml -Pusetags</p>
 </div>
+<div class="paragraph">
+<p><strong>Im Terminal können Timeout und PollIntervall eingestellt werden</strong></p>
+</div>
+<div class="paragraph">
+<p>mvn clean verify -Dtimeout=<em>&lt;Timeout in Sekunden&gt;</em> -DpollInterval=<em>&lt;PollIntervall in Sekunden&gt;</em></p>
+</div>
+<div class="paragraph">
+<p>Default:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Timeout = 10 Sekunden</p>
+</li>
+<li>
+<p>PollInterval = 1 Sekunde</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+Das Timeout muss immer größer als das PollInterval sein!
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph text-right">
 <p><a href="#id0">Inhaltsverzeichnis</a></p>
 </div>
@@ -2845,7 +2932,7 @@ erstellt hat.</strong></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_9_testfall_beschreibungen">9. Testfall Beschreibungen</h3>
+<h3 id="_10_testfall_beschreibungen">10. Testfall Beschreibungen</h3>
 <div class="paragraph">
 <p><br></p>
 </div>
@@ -2862,7 +2949,7 @@ selbst erklärend.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-12-20 14:14:22 +0100
+Last updated 2023-01-27 11:36:17 +0100
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/run_prettify.min.js"></script>

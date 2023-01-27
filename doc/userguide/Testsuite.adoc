@@ -120,8 +120,14 @@ image::HBA.png[float="left"]
 ==== 3.1 HBA - User
 {empty} +
 
+Die Rolle "User-HBA" kann ausschließlich von einem Leistungserbringer eingenommen werden. Die
+Authentifizierung des Akteurs erfolgt hierbei über seinen HBA. Ein Akteur in der Rolle "User-HBA"
+kann seine MXID im Personenverzeichnis im VZD-FHIR-Directory hinterlegen, damit andere Akteure in
+der Rolle "User-HBA", die ebenfalls die eigene MXID auf dem VZD-FHIR-Directory hinterlegt haben,
+ihn kontaktieren können.
+
 [TIP]
-[black]#*_Für Akteure Practitioner müssen HBAs oder digitale Identitäten von den Herstellern beantragt werden._*#
+[black]#*_Für Akteure Practitioner müssen HBAs von den Herstellern bestellt werden <<id43,Anforderungen an die Clients>>._*#
 
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
@@ -131,8 +137,17 @@ image:Akteur2.png[float="left"]image:Akteur1.png[float="left"]
 ==== 3.2 Organisations User
 {empty} +
 
+Die Rolle "User" kann von einem Leistungserbringer sowie von einem Mitarbeiter im Gesundheitswesen
+eingenommen werden. Die Authentifizierung des Akteurs erfolgt hierbei nicht über eine SMC-B oder
+einen HBA, sondern über ein vom Messenger-Service bereitgestelltes Authentifizierungsverfahren.
+Für einen Akteur in der Rolle "User" kann dessen MXID im Organisationsverzeichnis auf dem
+VZD-FHIR-Directory hinterlegt werden, um für Akteure außerhalb seiner Organisation auffindbar zu werden. +
+{empty} +
+Die Oragnisations User können auch gleichzeitig HBA-User sein. Das bedeutet die Organisation trägt die MXID
+der HBA-User in den Endpoint des Healthcare Services ein.
+
 [TIP]
-[black]#*_Für die Einrichtung von Organisations User werden eine Domain und eine Organisation benötigt._*#
+[black]#*_Für die Einrichtung von Organisations User werden eine Domain und eine Organisation benötigt <<id41,Messenger-Service für eine Organisation>>._*#
 
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
@@ -142,8 +157,16 @@ image:SMC-B.png[float="left"]
 ==== 3.3 Org-Admin
 {empty} +
 
+Die Rolle "Org-Admin" stellt eine besondere Rolle im TI-Messenger Kontext dar. Leistungserbringer
+oder Mitarbeiter einer Organisation können diese Rolle einnehmen, nachdem sie ihre Organisation zuvor
+erfolgreich am Registrierungs-Dienst unter Verwendung ihrer SMC-B authentifiziert haben. Nach der
+erfolgreichen Authentifizierung wird ein Admin-Account am Registrierungs-Dienst vom
+TI-Messenger-Fachdienst angelegt. Mit der Anmeldung am Registrierungs-Dienst über den Admin-Account
+nimmt ein Akteur die Rolle "Org-Admin" ein. Dieser kann Messenger-Services für seine Organisation
+registrieren und Einträge im VZD-FHIR-Directory verwalten.
+
 [TIP]
-[black]#*_Für die Akteure Org-Admins müssen SMC-Bs oder digitale Identitäten von den Herstellern beantragt werden._*#
+[black]#*_Für die Akteure Org-Admins müssen SMC-Bs von den Herstellern bestellt werden <<id43,Anforderungen an die Clients>>._*#
 
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
@@ -160,8 +183,12 @@ Absätze beschreiben die benötigten Bereitstellungen der Hersteller.
 
 image:KH.png[float="left"]
 
+[[id41,Messenger-Service für eine Organisation]]
 ==== 4.1 Messenger-Service für eine Organisation
 {empty} +
+
+[TIP]
+[black]#*_Testkarten (HBA/SMC-B) müssen von den Herstellern bestellt werden siehe <<id43,Anforderungen an die Clients>>._*#
 
 [TIP]
 [black]#*_Für die Ausführung der Testsuite werden eine Domain und eine Organisation benötigt. Diese Domain und Organisation
@@ -169,7 +196,6 @@ müssen von den Herstellern vor Begin der Test Phase eingerichtet werden und die
 
 [TIP]
 [black]#*_Die verwendeten Akteure/User müssen von den Herstellern auf dem Homeserver eingerichtet werden._*#
-
 
 image::TestKonfiguration.png[]
 
@@ -195,6 +221,8 @@ image:Clients.png[]
 
 image:Smartphone.png[float="left"]
 
+
+[[id43,Anforderungen an die Clients]]
 ==== 4.3 Anforderungen an die Clients
 {empty} +
 
@@ -202,8 +230,19 @@ Die Testsuite benötigt für die Ausführung der Test eine bestimmte Anzahl von 
 Chat benötigen diverse Endgeräte. +
 
 [TIP]
-[black]#*_Grundsätzlich sollten an jeder Schnittstelle mindestens drei Gräte zur Verfügung stehen. Ausgenommen von dieser Festlegung
-ist der Org-Admin, hier sind zwei Geräte ausreichend._*#
+[black]#*_Grundsätzlich müssen an jeder Schnitttelle mindestens drei Gräte zur Verfügung stehen (z.B. 3 x IOS Clients usw.).
+Ausgenommen von dieser Festlegung ist der Org-Admin, hier ist ein Geräte ausreichend._*#
+
+[TIP]
+[black]#*_Kartenbestellung über das gematik Fachportal: +
+https://fachportal.gematik.de/gematik-onlineshop/testkarten?ai%5Baction%5D=detail&ai%5Bcontroller%5D=Catalog&ai%5Bd_name%5D=Testkarte-eGK-G2&ai%5Bd_pos%5D=1_*#
+
+
+[TIP]
+[black]#*_Welche Testkarten müssen bestellt werden: +
+1. "TestKarte SMC-B G2.1 Krankenhaus" oder "TestKarte SMC-B G2.1 Arztpraxis" +
+   &nbsp; &nbsp; &nbsp;(1x für OrgAdmin Achnittstelle) +
+2. "TestKarte HBA G2.1 Arzt" (3x pro Schnittstelle)_*#
 
 [TIP]
 [black]#*_Wenn mehere Hersteller die Testresourcen gleichzeitig nutzen wollen, muss die Anzahl der Clients deutlich erhöht werden._*#
@@ -267,11 +306,7 @@ zwischen verschiedenen TI-Messenger-Fachdiensten innerhalb des TI-Messenger-Dien
 und TI-Messenger-Fachdienst)  eines  TI-Messenger-Anbieters gegen die Referenzimplementierung (TI-Messenger-Client und
 TI-Messenger-Fachdienst) getestet werden.
 
-[TIP]
-[black]#*_Die Referenzimplementierung wird nur Windows Clients für Practitioner zur Verfügung stellen. Die Mobilen Clients sind ausschließlich
-für OrgUser, da auf die Implementierung eines mobilen Authentikators verzichtet wurde._*#
 
-image::Referenzimplementierung.png[]
 
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
@@ -431,7 +466,7 @@ Die Daten, die von dem jeweiligen Device ausgelesen werden und die combine_items
 
 Beispiel für die Erzeugung von Tags:
 
-image::tagsPom.png[]
+image::TagsPom.png[]
 
 Tags werden erzeugt, wenn der eingegebene JSON-Path im "expression"-Teil true zurückliefert.
 
@@ -495,7 +530,7 @@ image::TestCaseFertig.png[]
 Nach dem Run des Plug-Ins ist das Resultat zum Ausführen des Testfalls dann folgendes
 (hier zu finden: target/features/Zulassungstests/Testrun):
 
-image::Kombi1.png[]
+image::Kombi1.PNG[]
 
 Wie wir nun sehen, wurde z.B. unser OrgAdmin Client ausgefiltert und eben die Kombinationen erzeugt, die wir brauchen
 bzw. oben beschrieben haben.
@@ -530,7 +565,7 @@ image::target_combine_items.png[]
 
 hat den Tag ‚new‘. Alle anderen haben diesen nicht (Android und Win). Wenn wir nun das newonly Profil auswählen und die Kombinationen erzeugen, bekommen wir folgendes Ergebniss:
 
-image::KombiNew.png[]
+image::KombiNew.PNG[]
 
 Wir sehen nun, dass nur Kombinationen erzeugt wurden, in denen unsere ‚new‘ Schnittstelle vorkommt. Hintergrund hierfür ist, dass so bestimmte Schnittstellen dediziert bzw. auch im IOP getestet werden können, wenn der Fokus nur diese Schnittstellen inkl. aller dazugehörigen Kombinationen ist.
 
@@ -690,7 +725,7 @@ image::Firewall.png[float="left"]
 
 image::Tests.png[float="left"]
 
-[[id3,Testfall Liste]]
+[[id8,Testfall Liste]]
 === 8. Testfall Liste
 {empty} +
 
@@ -707,7 +742,7 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 ////
 
 
-[[id4,Zurück]] *Abfragen der Geräte-Information aller Schnittstellen*
+[[id81,Zurück]] *Abfragen der Geräte-Information aller Schnittstellen*
 [cols='^6%,90%']
 |===
 |00.1 | Abfragen der Schnittstellen-Information durch HBA-User-Client
@@ -719,13 +754,13 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 |===
 
 [.text-center]
-<<id4,Zurück>>
+<<id81,Zurück>>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id3,Testfall Liste>>
+<<id8,Testfall Liste>>
 
-[[id5,Zurück]] *AF_1005 Organisationsressourcen im Verzeichnisdienst hinzufügen*
+[[id82,Zurück]] *AF_1005 Organisationsressourcen im Verzeichnisdienst hinzufügen*
 [cols='^6%,90%']
 |===
 |03.1 | Organisa tionsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen
@@ -736,27 +771,28 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 |===
 
 [.text-center]
-<<id4,Zurück>>
+<<id81,Zurück>>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id3,Testfall Liste>>
+<<id8,Testfall Liste>>
 
-[[id6,Zurück]] *AF_10057 Anmeldung eines Akteurs am Messenger-Service*
+[[id83,Zurück]] *AF_10057 Anmeldung eines Akteurs am Messenger-Service*
 [cols=' ^6%,90%']
 |===
 |04.1 | Anmeldung eines Akteurs - Erfolgreiche Anmeldung eines Akteurs (HBA)
 |04.2 | Anmeldung eines Akteurs - Erfolgreiche Anmeldung eines Akteurs (OrgUser)
+|04.3 | Anmeldung eines Akteurs - Erfolgreiche Anmeldung eines Akteurs (OrgAdmin)
 |===
 
 [.text-center]
-<<id5,Zurück>>
+<<id82,Zurück>>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id3,Testfall Liste>>
+<<id8,Testfall Liste>>
 
-[[id7,Zurück]] *AF_10058 Akteur (User-HBA) im Verzeichnisdienst hinzufügen*
+[[id84,Zurück]] *AF_10058 Akteur (User-HBA) im Verzeichnisdienst hinzufügen*
 [cols='^6%,90%']
 |===
 |05.1 | Akteur im Verzeichnisdienst - Hinzufügen - HBA-User legt sich an und sucht seinen Eintrag
@@ -768,13 +804,13 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 |===
 
 [.text-center]
-<<id6,Zurück>>
+<<id83,Zurück>>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id3,Testfall Liste>>
+<<id8,Testfall Liste>>
 
-[[id8,Zurück]] *AF_10104 Einladung von Akteuren innerhalb eines Messenger-Service*
+[[id85,Zurück]] *AF_10104 Einladung von Akteuren innerhalb eines Messenger-Service*
 [cols='^6%,90%']
 |===
 |07.1 | Einladung innerhalb einer Organisation - Einladung in Chat - Volltextsuche (HBA-User an HBA-User)
@@ -792,20 +828,22 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 |07.13| Einladung innerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (OrgUser)
 |07.14| Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch HBA-User
 |07.15| Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch Organisations-User
-|07.16|  Einladung innerhalb einer Organisation - Einladung in Chat - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
-|07.17|  Einladung innerhalb einer Organisation - Einladung in Raum - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
-|07.18|  Einladung innerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
-|07.19|  Einladung innerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
+|07.16| Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch HBA-User
+|07.17| Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch Organisations-User
+|07.18|  Einladung innerhalb einer Organisation - Einladung in Chat - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
+|07.19|  Einladung innerhalb einer Organisation - Einladung in Raum - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
+|07.20|  Einladung innerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
+|07.21|  Einladung innerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
 |===
 
 [.text-center]
-<<id7,Zurück>>
+<<id84,Zurück>>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id3,Testfall Liste>>
+<<id8,Testfall Liste>>
 
-[[id9,Zurück]] *AF_10063 Austausch von Events innerhalb eines Messenger-Service*
+[[id86,Zurück]] *AF_10063 Austausch von Events innerhalb eines Messenger-Service*
 [cols=' ^6%,90%']
 |===
 |08.1 | Events innerhalb einer Organisation - Chat - Test-Client "A" sendet und empfängt eine Nachricht
@@ -817,30 +855,28 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 |08.7 | Events innerhalb einer Organisation - Raum - Organisations-User sendet Organisations-User eine Nachricht
 |08.8 | Events innerhalb einer Organisation - Chat - Organisations-User sendet HBA-User eine Nachricht
 |08.9 | Events innerhalb einer Organisation - Raum - Organisations-User sendet HBA-User eine Nachricht
-|08.10| Events innerhalb einer Organisation - Chat - Organisations-User sendet eine Nachricht an HealthCareService
-|08.11| Events innerhalb einer Organisation - Chat - HBA-User sendet eine Nachricht an HealthCareService
-|08.12| Events innerhalb einer Organisation - Raum - HBA-User ändert eine Nachricht
-|08.13| Events innerhalb einer Organisation - Raum - Organisations-User ändert eine Nachricht
-|08.14| Events innerhalb einer Organisation - Chat - HBA-User "B" löscht eine Nachricht
-|08.15| Events innerhalb einer Organisation - Chat - Organisations-User "B" löscht eine Nachricht
-|08.16| Events innerhalb einer Organisation - Raum - HBA-User "A" löscht eine Nachricht
-|08.17| Events innerhalb einer Organisation - Raum - Organisations-User "A" löscht eine Nachricht
-|08.18| Events innerhalb einer Organisation - Raum - HBA-User "A" sendet eine Nachricht an ausgeloggten Test-Client "B"
-|08.19| Events innerhalb einer Organisation - Raum - Organisations-User "A" sendet eine Nachricht an ausgeloggten Test-Client "B"
-|08.20| Events innerhalb einer Organisation - Raum - HBA-User "A" sendet ein Attachment
-|08.21| Events innerhalb einer Organisation - Raum - Organisations-User "A" sendet ein Attachment
-|08.22| Events innerhalb einer Organisation - Raum - HBA-User "B" sendet ein Attachment
-|08.23| Events innerhalb einer Organisation - Raum - Organisations-User "B" sendet ein Attachment
+|08.10| Events innerhalb einer Organisation - Raum - HBA-User ändert eine Nachricht
+|08.11| Events innerhalb einer Organisation - Raum - Organisations-User ändert eine Nachricht
+|08.12| Events innerhalb einer Organisation - Chat - HBA-User "B" löscht eine Nachricht
+|08.13| Events innerhalb einer Organisation - Chat - Organisations-User "B" löscht eine Nachricht
+|08.14| Events innerhalb einer Organisation - Raum - HBA-User "A" löscht eine Nachricht
+|08.15| Events innerhalb einer Organisation - Raum - Organisations-User "A" löscht eine Nachricht
+|08.16| Events innerhalb einer Organisation - Raum - HBA-User "A" sendet eine Nachricht an ausgeloggten Test-Client "B"
+|08.17| Events innerhalb einer Organisation - Raum - Organisations-User "A" sendet eine Nachricht an ausgeloggten Test-Client "B"
+|08.18| Events innerhalb einer Organisation - Raum - HBA-User "A" sendet ein Attachment
+|08.19| Events innerhalb einer Organisation - Raum - Organisations-User "A" sendet ein Attachment
+|08.20| Events innerhalb einer Organisation - Raum - HBA-User "B" sendet ein Attachment
+|08.21| Events innerhalb einer Organisation - Raum - Organisations-User "B" sendet ein Attachment
 |===
 
 [.text-center]
-<<id8,Zurück>>
+<<id85,Zurück>>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id3,Testfall Liste>>
+<<id8,Testfall Liste>>
 
-[[id10,Zurück]] *AF_10061 Einladung von Akteuren anderer Messenger-Services*
+[[id87,Zurück]] *AF_10061 Einladung von Akteuren anderer Messenger-Services*
 [cols='^6%,90%']
 |===
 |09.1 | Einladung außerhalb einer Organisation - Einladung in Chat - Volltextsuche (HBA-User an HBA-User)
@@ -858,20 +894,22 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 |09.13| Einladung außerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (OrgUser)
 |09.14| Einladung außerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch HBA-User
 |09.15| Einladung außerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch Organisations-User
-|09.16| Einladung außerhalb einer Organisation - Einladung in Chat - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
-|09.17| Einladung außerhalb einer Organisation - Einladung in Raum - HBA-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
-|09.18|  Einladung außerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
-|09.19|  Einladung außerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
+|09.16| Einladung außerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch HBA-User
+|09.17| Einladung außerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch Organisations-User
+|09.18| Einladung außerhalb einer Organisation - Einladung in Chat - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
+|09.19| Einladung außerhalb einer Organisation - Einladung in Raum - HBA-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
+|09.20|  Einladung außerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
+|09.21|  Einladung außerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
 |===
 
 [.text-center]
-<<id9,Zurück>>
+<<id86,Zurück>>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id3,Testfall Liste>>
+<<id8,Testfall Liste>>
 
-[[id11,Zurück]] *AF_10062 Austausch von Events zwischen anderen Messenger-Services*
+[[id88,Zurück]] *AF_10062 Austausch von Events zwischen anderen Messenger-Services*
 [cols='^6%,90%']
 |===
 |10.1 | Events außerhalb einer Organisation - Chat - Test-Client "A" sendet und empängt eine Nachricht
@@ -883,30 +921,28 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 |10.7 | Events außerhalb einer Organisation - Raum - Organisations-User sendet Organisations-User eine Nachricht
 |10.8 | Events außerhalb einer Organisation - Chat - Organisations-User sendet HBA-User eine Nachricht
 |10.9 | Events außerhalb einer Organisation - Raum - Organisations-User sendet HBA-User eine Nachricht
-|10.10| Events außerhalb einer Organisation - Chat - Organisations-User sendet eine Nachricht an HealthCareService
-|10.11| Events außerhalb einer Organisation - Chat - HBA-User sendet eine Nachricht an HealthCareService
-|10.12| Events außerhalb einer Organisation - Raum - HBA_User ändert eine Nachricht
-|10.13| Events außerhalb einer Organisation - Raum - Organisations-User ändert eine Nachricht
-|10.14| Events außerhalb einer Organisation - Chat - HBA-User "B" löscht eine Nachricht
-|10.15| Events außerhalb einer Organisation - Chat - Organisations-User "B" löscht eine Nachricht
-|10.16| Events außerhalb einer Organisation - Raum - HBA-User "A" löscht eine Nachricht
-|10.17| Events außerhalb einer Organisation - Raum - Organisations-User "A" löscht eine Nachricht
-|10.18| Events außerhalb einer Organisation - Raum - HBA-User "A" sendet eine Nachricht an ausgeloggten "B"
-|10.19| Events außerhalb einer Organisation - Raum - Organisations-User "A" sendet eine Nachricht an ausgeloggten "B"
-|10.20| Events außerhalb einer Organisation - Raum - HBA-User "B" sendet ein Attachment
-|10.21| Events außerhalb einer Organisation - Raum - Organisations-User "B" sendet ein Attachment
-|10.22| Events außerhalb einer Organisation - Raum - HBA-User "A" sendet ein Attachment
-|10.23| Events außerhalb einer Organisation - Raum - Organisations-User "A" sendet ein Attachment
+|10.10| Events außerhalb einer Organisation - Raum - HBA_User ändert eine Nachricht
+|10.11| Events außerhalb einer Organisation - Raum - Organisations-User ändert eine Nachricht
+|10.12| Events außerhalb einer Organisation - Chat - HBA-User "B" löscht eine Nachricht
+|10.13| Events außerhalb einer Organisation - Chat - Organisations-User "B" löscht eine Nachricht
+|10.14| Events außerhalb einer Organisation - Raum - HBA-User "A" löscht eine Nachricht
+|10.15| Events außerhalb einer Organisation - Raum - Organisations-User "A" löscht eine Nachricht
+|10.16| Events außerhalb einer Organisation - Raum - HBA-User "A" sendet eine Nachricht an ausgeloggten "B"
+|10.17| Events außerhalb einer Organisation - Raum - Organisations-User "A" sendet eine Nachricht an ausgeloggten "B"
+|10.18| Events außerhalb einer Organisation - Raum - HBA-User "B" sendet ein Attachment
+|10.19| Events außerhalb einer Organisation - Raum - Organisations-User "B" sendet ein Attachment
+|10.20| Events außerhalb einer Organisation - Raum - HBA-User "A" sendet ein Attachment
+|10.21| Events außerhalb einer Organisation - Raum - Organisations-User "A" sendet ein Attachment
 |===
 
 [.text-center]
-<<id10,Zurück>>
+<<id87,Zurück>>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id3,Testfall Liste>>
+<<id8,Testfall Liste>>
 
-[[id12,Zurück]] *Einladung von Akteuren via Freigabeliste*
+[[id89,Zurück]] *Einladung von Akteuren via Freigabeliste*
 [cols='^6%,90%']
 |===
 |11.1 | Einladung via Freigabeliste außerhalb einer Oganisation - Raum - Beide User jeweils in Freigabeliste (HBA-User an HBA-User)
@@ -917,31 +953,33 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 |===
 
 [.text-center]
-<<id11,Zurück>>
+<<id88,Zurück>>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id3,Testfall Liste>>
+<<id8,Testfall Liste>>
 
-[[id13,Zurück]] *Gruppen Chats*
+[[id810,Zurück]] *Gruppen Chats*
 [cols='^6%,90%']
 |===
-|12.1 | Events außerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht
-|12.2 | Events außerhalb einer Organisation - Gruppenchat - Test-Client "E" sendet eine Nachricht
-|12.3 | Events außerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht
-|12.4 | Events innerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht
-|12.5 | Events innerhalb einer Organisation - Gruppenchat - Test-Client "C" sendet eine Nachricht
-|12.6 | Events innerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht
+|12.1 | Events außerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht (HBA-User)
+|12.2 | Events außerhalb einer Organisation - Gruppenchat - Test-Client "E" sendet eine Nachricht (HBA-User)
+|12.3 | Events außerhalb einer Organisation - Gruppenchat - Test-Client "F" sendet eine Nachricht (Organisations-User)
+|12.4 | Events außerhalb einer Organisation - Gruppenchat - Test-Client "C" sendet eine Nachricht (HBA-User lädt Organisations-User ein)
+|12.5 | Events innerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht (HBA-User)
+|12.6 | Events innerhalb einer Organisation - Gruppenchat - Test-Client "C" sendet eine Nachricht (HBA-User)
+|12.7 | Events innerhalb einer Organisation - Gruppenchat - Test-Client "B" sendet eine Nachricht (Organisations-User)
+|12.8 | Events innerhalb einer Organisation - Gruppenchat - Test-Client "B" sendet eine Nachricht (HBA-User lädt Organisations-User ein)
 |===
 
 [.text-center]
-<<id12,Zurück>>
+<<id89,Zurück>>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id3,Testfall Liste>>
+<<id8,Testfall Liste>>
 
-[[id14,Zurück]] *Nutzung von mehreren Geräten*
+[[id811,Zurück]] *Nutzung von mehreren Geräten*
 [cols='^6%,90%']
 |===
 |13.1 | Events außerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices
@@ -955,11 +993,11 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 |===
 
 [.text-center]
-<<id13,Zurück>>
+<<id810,Zurück>>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id3,Testfall Liste>>
+<<id8,Testfall Liste>>
 
 [.text-right]
 <<id0,Inhaltsverzeichnis>>

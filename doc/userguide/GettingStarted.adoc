@@ -16,16 +16,38 @@
 :plantumldir: ../plantuml
 == Erste Schritte
 
-=== Client-Zertifikat einrichten
+=== Zertifikate einrichten
 
-Die Testtreiberschnittstelle setzt auf mTls.
-Daher muss sowohl ein Client-Zertifikat, als auch ein Truststore konfiguriert werden.
-Dies geschieht durch das Einrichten dieser 4 Umgebungsvariablen:
+==== Tiger Proxy für externe Kommunikation konfigurieren
 
-* TIM_KEYSTORE_PW
-* TIM_TRUSTSTORE_PW
-* TIM_TRUSTSTORE
+Damit die Kommunikation zwischen Testsuite und Tiger Proxy gelingt muss ein alternativer Name in das Zertifikat des Tiger Proxy mit aufgenommen werden. Dies geschieht über die link:../../tiger.yml[tiger.yml].
+
+Die Konfiguration könnte dann wie folgt aussehen:
+
+[source,yaml]
+----
+tigerProxy:
+  alternativeNames:
+    - gematik.test
+    - ...
+----
+
+Die Liste kann beliebig erweitert werden. Alle angesprochenen Testtreiberschnittstellen müssen hier aufgeführt werden.
+
+==== Client-Zertifikat für mTLS einrichten
+
+Die Testtreiberschnittstelle setzt auf mTLS.
+Daher muss ein Client-Zertifikat bereitgestellt und dem Tiger Proxy übergebenwerden. Die Testsuite ist so vorbereitet, dass Sie den Path und das Passwort unter folgenden Umgebungsvariablen erwartet:
+
 * TIM_KEYSTORE
+* TIM_KEYSTORE_PW
+
+Sollte für Testzwecke ein selbstsigniertes Zertifikat verwendet werden muss zusätzlich noch ein Truststore konfiguriert werden. Dies geschieht über die Angabe der 2 Umgebungsvariablen:
+
+* TIM_TRUSTSTORE
+* TIM_TRUSTSTORE_PW
+
+Die jeweiligen Stores sollten im .p12-Format sein.
 
 Für lokale/interne Entwicklung kann das Verwenden von TLS umgangen werden.
 Eine Anleitung hierzu ist link:DevGuide.adoc#Disable-TLS[hier] zu finden.

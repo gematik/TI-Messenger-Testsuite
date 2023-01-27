@@ -16,12 +16,19 @@
 
 package de.gematik.tim.test.glue.api.message;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DIRECT_CHAT_NAME;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEND_DIRECT_MESSAGE;
+import static de.gematik.tim.test.glue.api.room.UseRoomAbility.addRoomToActor;
+import static de.gematik.tim.test.glue.api.room.questions.GetRoomQuestion.ownRoomWithMembers;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.homeserverFromMxId;
+import static net.serenitybdd.rest.SerenityRest.lastResponse;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.DirectMessageDTO;
+import de.gematik.tim.test.models.RoomDTO;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
@@ -29,25 +36,54 @@ import net.serenitybdd.screenplay.Task;
 @RequiredArgsConstructor
 public class SendDirectMessageTask implements Task {
 
-  private final String toAccount;
+  private final Actor toActor;
   private final String message;
 
-  public static SendDirectMessageTask sendDirectMessageTo(String toAccount, String message) {
-    return new SendDirectMessageTask(toAccount, message);
+  public static SendDirectMessageTask sendDirectMessageTo(Actor toActor, String message) {
+    return new SendDirectMessageTask(toActor, message);
   }
 
   @Override
   public <T extends Actor> void performAs(T actor) {
+    String actorMxId = actor.recall(MX_ID);
+    String toMxId = toActor.recall(MX_ID);
+
     DirectMessageDTO directMessage = new DirectMessageDTO()
         .body(this.message)
         .msgtype("m.text")
-        .toAccount(this.toAccount);
+        .toAccount(toMxId);
     actor.attemptsTo(SEND_DIRECT_MESSAGE.request().with(req -> req.body(directMessage)));
 
-    if (homeserverFromMxId(toAccount).equals(homeserverFromMxId(actor.recall(MX_ID)))) {
+    logEventsAndSaveRoomToActor(actor, actorMxId, toMxId);
+
+  }
+
+  private <T extends Actor> void logEventsAndSaveRoomToActor(T actor, String actorMxId,
+      String toMxId) {
+    boolean roomAlreadyExist = isNotBlank(actor.recall(DIRECT_CHAT_NAME + toMxId))
+        || lastResponse().statusCode() != 200;
+    boolean isSameHomeServer = homeserverFromMxId(toMxId).equals(homeserverFromMxId(actorMxId));
+    if (isSameHomeServer) {
       RawDataStatistics.exchangeMessageSameHomeserver();
+      if (!roomAlreadyExist) {
+        RawDataStatistics.inviteToRoomSameHomeserver();
+        handleNewRoom(actor, actorMxId, toMxId);
+      }
     } else {
       RawDataStatistics.exchangeMessageMultiHomeserver();
+      if (!roomAlreadyExist) {
+        RawDataStatistics.inviteToRoomMultiHomeserver();
+        handleNewRoom(actor, actorMxId, toMxId);
+      }
     }
+  }
+
+  private void handleNewRoom(Actor actor, String actorMxId, String toMxId) {
+    RoomDTO room = actor.asksFor(
+        ownRoomWithMembers(List.of(actorMxId, toMxId)));
+    actor.remember(DIRECT_CHAT_NAME + toMxId, room.getName());
+    toActor.remember(DIRECT_CHAT_NAME + actorMxId, room.getName());
+    addRoomToActor(room, actor);
+    addRoomToActor(room, toActor);
   }
 }

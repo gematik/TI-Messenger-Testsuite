@@ -184,6 +184,7 @@ public class GlueUtils {
     }
     return await()
         .atMost(Duration.of(customTimeout, SECONDS))
+        .pollInSameThread()
         .pollInterval(Duration.of(customPollInterval, SECONDS))
         .until(request::get, Optional::isPresent)
         .orElseThrow(

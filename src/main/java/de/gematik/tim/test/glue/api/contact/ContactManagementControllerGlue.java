@@ -68,7 +68,7 @@ public class ContactManagementControllerGlue {
   public void triesToContactDirectly(String actorName, String userName, String message) {
     Actor actor = theActorCalled(actorName);
     Actor user = theActorCalled(userName);
-    actor.attemptsTo(sendDirectMessageTo(user.recall(MX_ID), message));
+    actor.attemptsTo(sendDirectMessageTo(user, message));
   }
 
   @Dann("{string} löscht {string} in seiner Freigabeliste")

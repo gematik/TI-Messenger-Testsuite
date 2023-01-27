@@ -62,21 +62,21 @@ public class LogInGlue {
     theActorCalled(actorName).attemptsTo(login());
   }
 
-  @Wenn("{string} sich als HBA_A-User einloggt")
+  @Wenn("{string} sich als HBA-User einloggt")
   public void logsInAsHbaUser(String actorName) {
     Actor actor = theActorCalled(actorName);
     logsIn(actorName);
     checkIs(actor, List.of(MESSENGER_CLIENT, PRACTITIONER));
   }
 
-  @Wenn("{string} sich als OrgUser registriert")
+  @Wenn("{string} sich als Org-User einloggt")
   public void logsInAsOrgUser(String actorName) {
     Actor actor = theActorCalled(actorName);
     logsIn(actorName);
     checkIs(actor, List.of(MESSENGER_CLIENT));
   }
 
-  @Wenn("{string} sich als OrgAdmin registriert")
+  @Wenn("{string} sich als OrgAdmin einloggt")
   public void sichAlsOrgAdminRegistriert(String actorName) {
     Actor actor = theActorCalled(actorName);
     logsIn(actorName);

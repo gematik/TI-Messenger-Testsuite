@@ -27,17 +27,13 @@ import static de.gematik.tim.test.glue.api.message.GetRoomMessageQuestion.messag
 import static de.gematik.tim.test.glue.api.message.GetRoomMessagesQuestion.messagesInActiveRoom;
 import static de.gematik.tim.test.glue.api.message.SendDirectMessageTask.sendDirectMessageTo;
 import static de.gematik.tim.test.glue.api.message.SendMessageTask.sendMessage;
-import static de.gematik.tim.test.glue.api.room.UseRoomAbility.addRoomToActor;
-import static de.gematik.tim.test.glue.api.room.questions.GetRoomQuestion.ownRoomWithMembers;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.filterForRoomWithSpecificMembers;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.filterMessageForSenderAndText;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.filterMessagesForSenderAndText;
 import static java.util.Objects.requireNonNull;
-import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static net.serenitybdd.screenplay.actors.OnStage.setTheStage;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
@@ -73,20 +69,8 @@ public class MessageControllerGlue {
   @Wenn("{string} schreibt {string} direkt {string}")
   public void sendDirectMessage(String actorName, String userName, String message) {
     Actor actor1 = theActorCalled(actorName);
-    String actor1Id = actor1.recall(MX_ID);
     Actor actor2 = theActorCalled(userName);
-    String actor2Id = actor2.recall(MX_ID);
-    actor1.attemptsTo(sendDirectMessageTo(actor2.recall(MX_ID), message));
-    if (isNotBlank(actor1.recall(DIRECT_CHAT_NAME + actor2Id))
-        || lastResponse().statusCode() != 200) {
-      return;
-    }
-    RoomDTO room = theActorCalled(actorName).asksFor(
-        ownRoomWithMembers(List.of(actor1Id, actor2Id)));
-    actor1.remember(DIRECT_CHAT_NAME + actor2Id, room.getName());
-    actor2.remember(DIRECT_CHAT_NAME + actor1Id, room.getName());
-    addRoomToActor(room, actor1);
-    addRoomToActor(room, actor2);
+    actor1.attemptsTo(sendDirectMessageTo(actor2, message));
   }
 
   @When("{string} writes {string} via healthcare service {string} directly {string}")
@@ -101,7 +85,7 @@ public class MessageControllerGlue {
   public void triesToWriteDirectly(String actorName, String userName, String message) {
     Actor actor1 = theActorCalled(actorName);
     Actor actor2 = theActorCalled(userName);
-    actor1.attemptsTo(sendDirectMessageTo(actor2.recall(MX_ID), message));
+    actor1.attemptsTo(sendDirectMessageTo(actor2, message));
     checkResponseCode(actorName, 403);
   }
 
