@@ -12,8 +12,9 @@
 :imagesdir: ../../doc/images
 :imagesoutdir: ../images
 :testdir: ../../Tests
-:sourcedir: ../../Sources
+:sourcedir: ../../src
 :plantumldir: ../plantuml
+:rootdir: ../../
 
 [[id0,Inhaltsverzeichnis]]
 = TI-Messenger-Dienst Release 1.1.0
@@ -40,7 +41,12 @@ image::TI-Messenger.png[float="left"]
 ==== 1.1 TI-Messenger-Dienst Systemübersicht
 {empty} +
 
+Bei der Umsetzung der Funktionalitäten des TI-Messenger-Dienstes sind mehrere Komponenten beteiligt,
+die durch verschiedene Anbieter bereitgestellt werden. Die folgende Abbildung zeigt alle an der
+TI-Messenger-Architektur beteiligten Komponenten mit deren Schnittstellen.
+
 image:System.png[float="center"]
+&nbsp; &nbsp; &nbsp;Abbildung : Komponenten der TI-Messenger-Architektur und deren Schnittstellen (gemSpec_TI-Messenger-Dienst)
 
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
@@ -54,18 +60,18 @@ dann die einzelnen Tests für den jeweiligen Anwendungsfall.
 
 [cols='^1,1,6,4']
 |===
-| *Feature File* | *AF Nummer* | *Beschreibung*                                               | *Anmerkung*
-|                | AF_10103    | Authentisieren einer Organisation am TI-Messenger-Dienst     | wird nicht mit der Testsuite getestet ^1)^
-|                | AF_10060    | Bereitstellung eines Messenger-Service für eine Organisation | wird nicht mit der Testsuite getestet ^1)^
-| 03             | AF_10059    | Organisationsressourcen im Verzeichnisdienst hinzufügen      |
-| 04             | AF_10057    | Anmeldung eines Akteurs am Messenger-Service                 |
-| 05             | AF_10058    | Akteur (User-HBA) im Verzeichnisdienst hinzufügen            |
-|                | AF_10064    | Föderationszugehörigkeit eines Messenger-Service prüfen      | gilt für alle Anwendungsfälle ^2)^
-| 07             | AF_10104    | Einladung von Akteuren innerhalb eines Messenger-Service     |
-| 08             | AF_10063    | Austausch von Events innerhalb eines Messenger-Service       |
-| 09             | AF_10061    | Einladung von Akteuren anderer Messenger-Services            |
-| 10             | AF_10062    | Austausch von Events zwischen anderen Messenger-Services     |
-| 11             | ohne        | Einladung von Akteuren via Freigabeliste                     |
+| *Feature File* | *AF Nummer*               | *Beschreibung*                                               | *Anmerkung*
+|                | AF_10103                  | Authentisieren einer Organisation am TI-Messenger-Dienst     | wird nicht mit der Testsuite getestet ^1)^
+|                | AF_10060                  | Bereitstellung eines Messenger-Service für eine Organisation | wird nicht mit der Testsuite getestet ^1)^
+| 03             | AF_10059                  | Organisationsressourcen im Verzeichnisdienst hinzufügen      |
+| 04             | AF_10057                  | Anmeldung eines Akteurs am Messenger-Service                 |
+| 05             | AF_10058                  | Akteur (User-HBA) im Verzeichnisdienst hinzufügen            |
+|                | AF_10064                  | Föderationszugehörigkeit eines Messenger-Service prüfen      | wird im AF_10104 und AF_10061 mit getestet ^2)^
+| 07             | AF_10104                  | Einladung von Akteuren innerhalb eines Messenger-Service     |
+| 08             | AF_10063                  | Austausch von Events innerhalb eines Messenger-Service       |
+| 09             | AF_10061                  | Einladung von Akteuren anderer Messenger-Services            |
+| 10             | AF_10062                  | Austausch von Events zwischen anderen Messenger-Services     |
+| 11             | AF_10061                  | Einladung von Akteuren via Freigabeliste                     |
 |===
 
 ^1)^ Die Schnittstelle am Registrierungs-Dienst wird nicht durch die gematik normativ vorgegeben. Sie bietet einem
@@ -74,7 +80,7 @@ administrieren. Bei dieser Schnittstelle bleibt es dem TI-Messenger-Anbieter üb
 bereitzustellen. Die gematik gibt lediglich grundlegende bereitzustellende Funktionen vor und führt auch keine Tests
 an dieser Schnittstelle durch.
 
-^2)^ Für diesen Anwendungsfall wurden kein Feature File angelegt. Der Anwendungsfall AF_10064 wird in allen anderen Szenarien implizit mit getestet.
+^2)^ Für diesen Anwendungsfall wurden kein Feature File angelegt.
 
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
@@ -192,7 +198,7 @@ image:KH.png[float="left"]
 
 [TIP]
 [black]#*_Für die Ausführung der Testsuite werden eine Domain und eine Organisation benötigt. Diese Domain und Organisation
-müssen von den Herstellern vor Begin der Test Phase eingerichtet werden und die Daten an die gematik übermittelt werden._*#
+müssen von den Herstellern vor Beginn der Testphase eingerichtet werden und die Daten an die gematik übermittelt werden._*#
 
 [TIP]
 [black]#*_Die verwendeten Akteure/User müssen von den Herstellern auf dem Homeserver eingerichtet werden._*#
@@ -209,7 +215,7 @@ image:Smartphone.png[float="left"]
 
 Das folgende Bild zeigt die Anschaltung der Testtreiberschnittstelle und der Clients. Die Clients können über eine
 externe oder interne Testtreiberschnittstelle mit der Testsuite remote oder local verbunden werden. Diese Leistung muss von
-jedem Hersteller erbracht werden. Welche Clients eingesetzt werden können die Hersteller selbstständig entscheiden.
+jedem Hersteller erbracht werden. Welche Clients eingesetzt werden, können die Hersteller selbstständig entscheiden.
 Es werden nur bereitgestellte Clients zugelassen. +
 Clients mit den gleichen Eigenschaften werden unter einer URL zusammengefasst. Diese URL wird dann in die Konfigurationsdatei
 'combine_items.json' eingetragen. In dieser Datei werden alle Testobjekte verwaltet.
@@ -226,33 +232,34 @@ image:Smartphone.png[float="left"]
 ==== 4.3 Anforderungen an die Clients
 {empty} +
 
-Die Testsuite benötigt für die Ausführung der Test eine bestimmte Anzahl von Clients. Besonders die Tests für den Gruppen
+Die Testsuite benötigt für die Ausführung der Tests eine bestimmte Anzahl von Clients. Besonders die Tests für den Gruppen
 Chat benötigen diverse Endgeräte. +
 
 [TIP]
-[black]#*_Grundsätzlich müssen an jeder Schnitttelle mindestens drei Gräte zur Verfügung stehen (z.B. 3 x IOS Clients usw.).
+[black]#*_Grundsätzlich müssen an jeder Schnittstelle mindestens drei Gräte zur Verfügung stehen
+(z.B. 3 x IOS Clients, 3 x Android Clients, 3 x Windows Clients usw.).
 Ausgenommen von dieser Festlegung ist der Org-Admin, hier ist ein Geräte ausreichend._*#
 
 [TIP]
-[black]#*_Kartenbestellung über das gematik Fachportal: +
+[black]#*_Die Clients benötigen Testidentitäten (SMC-B/HBA karten). Die Kartenbestellung erfolgt über das gematik Fachportal: +
 https://fachportal.gematik.de/gematik-onlineshop/testkarten?ai%5Baction%5D=detail&ai%5Bcontroller%5D=Catalog&ai%5Bd_name%5D=Testkarte-eGK-G2&ai%5Bd_pos%5D=1_*#
 
 
 [TIP]
 [black]#*_Welche Testkarten müssen bestellt werden: +
 1. "TestKarte SMC-B G2.1 Krankenhaus" oder "TestKarte SMC-B G2.1 Arztpraxis" +
-   &nbsp; &nbsp; &nbsp;(1x für OrgAdmin Achnittstelle) +
+   &nbsp; &nbsp; &nbsp;(1x für OrgAdmin Schnittstelle) +
 2. "TestKarte HBA G2.1 Arzt" (3x pro Schnittstelle)_*#
 
 [TIP]
-[black]#*_Wenn mehere Hersteller die Testresourcen gleichzeitig nutzen wollen, muss die Anzahl der Clients deutlich erhöht werden._*#
+[black]#*_Wenn mehere Hersteller die Testressourcen gleichzeitig nutzen wollen, muss die Anzahl der Clients deutlich erhöht werden._*#
 
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
 
 image:User.png[float="left"]
 
-==== 4.4 Verwaltung der Resourcen
+==== 4.4 Verwaltung der Ressourcen
 {empty} +
 
 Hinter jeder Schnittstelle des Testtreiber Moduls verbergen sich ggf. mehrere Devices (siehe 4.3) mit der gleichen Grundkonfiguration. Diese Grundkonfiguration betrifft:
@@ -337,8 +344,8 @@ für die <<id2,nicht erfolgreiche>> Berechtigungsprüfung.
 | *Tag Name*              | *Beschreibung*
 | @Ctl:Additional         | zusätzlichen Tests die kein direktes Akzeptanz-Kriterium bzw. keinen
                             Anwendungsfall haben
-| @Ctl:UseCase            | Test die UseCases aus der Spezifikation abbilden
-| @Ctl:OneHomeServer      | Test die mit nur einem Homeserver ausgeführt werden können
+| @Ctl:UseCase            | Tests die UseCases aus der Spezifikation abbilden
+| @Ctl:OneHomeServer      | Tests die mit nur einem Homeserver ausgeführt werden können
 | @Ctl:SchnittstellenInfo | Tests die Schnittstellen Informationen abfragen
 | @Ctl:OrgAdmin           | OrgAdmin Tests
 | @Ctl:Chat               | Tests die einen Chat benutzen
@@ -350,12 +357,13 @@ für die <<id2,nicht erfolgreiche>> Berechtigungsprüfung.
 | @Ctl:MsgBackward        | Tests senden Nachrichten von B nach A
 | @Ctl:MsgChange          | Tests mit geänderten Nachrichten
 | @Ctl:MsgDelete          | Tests mit gelöschten Nachrichten
-| @Ctl:MsgLogout          | Test mit Offline-Geräten
+| @Ctl:MsgLogout          | Tests mit Offline-Geräten
 | @Ctl:Attachment         | Tests mit Attachments
 | @Ctl:Forbidden          | Berechtigungsprüfung lehnt Verbindung ab
 | @Ctl:Freigabeliste      | Tests mit der Freigabeliste
 | @Ctl:Gruppenchat        | Gruppenchat
 | @Ctl:MultiDevices       | ein User verwendet mehrere Geräte
+| @Ctl:NOVZD              | Tests die den VZD nicht benötigen
 |===
 
 *Zusätzlichen Tag zur Unterscheidung der Feature-Files:*
@@ -371,7 +379,7 @@ für die <<id2,nicht erfolgreiche>> Berechtigungsprüfung.
 [cols='1,3']
 |===
 |*Tag Name*  | *Beschreibung*
-| @AF-ID:    | Verweis auf den Anwendungsfalls (Spec und Polarion)
+| @AF-ID:    | Verweis auf den Anwendungsfall (Spec und Polarion)
 | @AK-ID:    | Verweis auf das Akzeptanz-Kriterium (Spec und Polarion)
 | @PRIO:     | Testfall Priorität
 | @PRODUKT:  | Verknüpft das Szenario oder das Feature zu einem Produkt
@@ -385,7 +393,7 @@ für die <<id2,nicht erfolgreiche>> Berechtigungsprüfung.
 [cols='1,3']
 |===
 | *Tag Name* | *Beschreibung*
-| @Plugin:   | Steuern das cucumber-test-combinations Plugin
+| @Plugin:   | Steuerung des cucumber-test-combinations Plugins
 
 |===
 
@@ -409,7 +417,7 @@ Der BDD-Parameterizer (auch Kombinations-Plugin genannt) wird dazu genutzt die T
 
 Grundlage hierfür ist das kartesische Produkt aller möglichen Kombinationen der in der generierten Target combine_items.json (target/generated-combine/combine_items.json) enthaltenen Schnittstellen. Mit Hilfe von Filtern, die direkt im .cute-File (später feature-File) gesetzt werden, kann nun diese Liste verkleinert und fokussiert werden.
 
-Die *combine_items.json im Target Folder* (target/generated-combine/combine_items.json) wird aus der *Source combin_items.json* (src/test/resources/combine_items.json) und den aus der *Testtreiber Schnittstelle zum Device ausgelesenen Daten* (definiert in der pom.xml) erzeugt.
+Die *combine_items.json im Target Folder* (target/generated-combine/combine_items.json) wird aus der *Source combine_items.json* (src/test/resources/combine_items.json) und den aus der *Testtreiber Schnittstelle zum Device ausgelesenen Daten* (definiert in der pom.xml) erzeugt.
 
 - Source combine_items.json - Bereitstellen der Schnittstelle (url). Evtl. zusätzliche Tags und Properties.
 - pom.xml - Tags und Properties, die über die Testtreiber-Schnittstelle vom Device als Info-Daten (im Folgenden als "Info-Daten" bezeichnet) ausgelesen werden und für alle Schnittstellen gelten.
@@ -420,7 +428,7 @@ Beispiel einer Source combine_items.json:
 image::Source_combine_items.png[]
 
 
-In der Source combin_items.json (src/test/resources/combine_items.json) enthalten sind:
+In der Source combine_items.json (src/test/resources/combine_items.json) enthalten sind:
 
 - (Pflicht) *„value“*: Frei wählbarer Text (muss die URL zur Testtreiber Schnittstelle des jeweiligen Devices enthalten, wenn die Variable „url“ nicht befüllt wird)
 - (Optional) *„url“*: URL zur Testtreiber Schnittstelle des jeweiligen Devices
@@ -431,7 +439,8 @@ Hintergrund der Vergleichsoptionen von Tags und Properties ist, dass so z.B. sch
 
 *Vergleichsoptionen Tags*
 
-Tags, die in der Source combine_itmes.json angegeben sind und ebenfalls aus einem Device ausgelesen werden sollen (definiert in der pom.xml), können miteinander vergleichen werden. Dies geschieht case sensitive (1:1 Beziehung). Sollte der Tag in der combine_items.json und der definierte in der pom.xml sich unterscheiden, wird der Tag aus der Source combine_items.json als zusätzlicher Tag gewertet und in die Target combine_items.json übernommen
+Tags, die in der Source combine_itmes.json angegeben sind und ebenfalls aus einem Device ausgelesen werden sollen (definiert in der pom.xml), können miteinander verglichen werden. Dies geschieht case sensitive (1:1 Beziehung). Sollte sich der Tag in der combine_items.json und von dem in der pom.xml definierten unterscheiden, wird der Tag aus der Source combine_items.json als zusätzlicher Tag gewertet und in die Target combine_items.json übernommen.
+
 Beispiel:
 
 [cols='20%,20%,20%,20%,20%']
@@ -452,7 +461,7 @@ Geben wir z.B. die Property ‚os‘ (wie im obrigen Beispiel) mit einem entspre
 [cols='40%,40%,20%']
 |===
 | *Source combine_items.json* |*Daten aus der TesttreiberSchnittstelle* | *Ergebnis Vergleich*
-| iOS                         | Windwos, Linux, Android, ...            | Abbruch - Error
+| iOS                         | Windows, Linux, Android, ...            | Abbruch - Error
 | iOS                         | iOS                                     | OK
 | iOS                         | IOS, ios                                | Abbruch - Error
 | iOS                         | null                                    | Abbruch - Error
@@ -460,7 +469,7 @@ Geben wir z.B. die Property ‚os‘ (wie im obrigen Beispiel) mit einem entspre
 
 Die potenitell möglichen Enum Werte sind in der Testtreiber Schnittstellenbeschreibung zu finden:
 
-image::OS_Info.PNG[]
+image::OS_Info.png[]
 
 Die Daten, die von dem jeweiligen Device ausgelesen werden und die combine_items.json im Target Folder (target/generated-combine/combine_items.json) anreichern, werden in der pom.xml unter ‚cucumber-test-combinations-maven-plugin‘ definiert. Dies können Tags oder auch Properties sein.
 
@@ -485,7 +494,7 @@ image::target_combine_items.png[]
 Diese Tags und Properties dienen der direkten Steuerung der Testdaten, die zu einem bestimmten Testfall passen. In unserem Beispiel haben wir einen:
 
 - Client
-- Welcher neu (new) zu testen ist (auf diesen Tag wird später noch genauer eingegangen)
+- Welcher neu (new) zu testen ist (dieser Tag wird in Kapitel 6.3 noch genauer erläutert)
 - Dieser Client ist Preferred IOP (prefIOP) → Wird also in den IOP Tests bevorzugt genutzt
 - Hinter diesem Client liegt eine HBA, somit sind auch ‚Practitioner‘ Handlungen z.B. im VZD möglich
 
@@ -511,7 +520,7 @@ Um nun das kartesische Produkt aller möglichen Kombinationen anzupassen, sagen 
 
 - Alle Devices müssen auf dem gleichen Homeserver sein
 - Sie sollen sich auch selbst kombinieren dürfen (z.B. IOS mit IOS, Android mit Android)
-- Sie dürfen auch vice versa vorkommen (z.B. IOS-Andro``id``, Android-IOS)
+- Sie dürfen auch vice versa vorkommen (z.B. IOS-Android, Android-IOS)
 - ApiName1A soll ein Client sein (kein OrgAdmin)
 - ApiName1B soll ein Client sein (kein OrgAdmin)
 - ApiName1A soll eine HBA hinterliegen, um Practitioner Handlungen durchzuühren
@@ -530,7 +539,7 @@ image::TestCaseFertig.png[]
 Nach dem Run des Plug-Ins ist das Resultat zum Ausführen des Testfalls dann folgendes
 (hier zu finden: target/features/Zulassungstests/Testrun):
 
-image::Kombi1.PNG[]
+image::Kombi1.png[]
 
 Wie wir nun sehen, wurde z.B. unser OrgAdmin Client ausgefiltert und eben die Kombinationen erzeugt, die wir brauchen
 bzw. oben beschrieben haben.
@@ -565,7 +574,7 @@ image::target_combine_items.png[]
 
 hat den Tag ‚new‘. Alle anderen haben diesen nicht (Android und Win). Wenn wir nun das newonly Profil auswählen und die Kombinationen erzeugen, bekommen wir folgendes Ergebniss:
 
-image::KombiNew.PNG[]
+image::KombiNew.png[]
 
 Wir sehen nun, dass nur Kombinationen erzeugt wurden, in denen unsere ‚new‘ Schnittstelle vorkommt. Hintergrund hierfür ist, dass so bestimmte Schnittstellen dediziert bzw. auch im IOP getestet werden können, wenn der Fokus nur diese Schnittstellen inkl. aller dazugehörigen Kombinationen ist.
 
@@ -763,11 +772,10 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 [[id82,Zurück]] *AF_1005 Organisationsressourcen im Verzeichnisdienst hinzufügen*
 [cols='^6%,90%']
 |===
-|03.1 | Organisa tionsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen
+|03.1 | Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen
 |03.2 | Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen und Endpoint ändern
-|03.3 | Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen/ändern, Location anlegen/ändern, Endpoint anlegen/ändern und löschen
+|03.3 | Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen/ändern, Endpoints anlegen/ändern und löschen
 |03.4 | Organisationsressourcen im Verzeichnisdienst hinzufügen - Nicht validen Healthcare-Service durch Org-Admin anlegen
-|03.5 | Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service anlegen und durch anderen OrgAdmin ändern
 |===
 
 [.text-center]
@@ -830,10 +838,14 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 |07.15| Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch Organisations-User
 |07.16| Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch HBA-User
 |07.17| Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch Organisations-User
-|07.18|  Einladung innerhalb einer Organisation - Einladung in Chat - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
-|07.19|  Einladung innerhalb einer Organisation - Einladung in Raum - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
-|07.20|  Einladung innerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
-|07.21|  Einladung innerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
+|07.18| Einladung innerhalb einer Organisation - Einladung in Chat - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
+|07.19| Einladung innerhalb einer Organisation - Einladung in Raum - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
+|07.20| Einladung innerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
+|07.21| Einladung innerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
+|07.22| Einladung innerhalb einer Organisation - Einladung in Chat - Volltextsuche auf dem Homeserver
+|07.23| Einladung innerhalb einer Organisation - Einladung in Chat - unscharfe Suche auf dem Homeserver
+|07.24| Einladung innerhalb einer Organisation - Einladung in Raum - Volltextsuche auf dem Homeserver
+|07.25| Einladung innerhalb einer Organisation - Einladung in Raum - unscharfe Suche auf dem Homeserver
 |===
 
 [.text-center]
@@ -867,6 +879,8 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 |08.19| Events innerhalb einer Organisation - Raum - Organisations-User "A" sendet ein Attachment
 |08.20| Events innerhalb einer Organisation - Raum - HBA-User "B" sendet ein Attachment
 |08.21| Events innerhalb einer Organisation - Raum - Organisations-User "B" sendet ein Attachment
+|08.22| Events innerhalb einer Organisation - Chat - Eventaustausch auf dem HomeServer
+|08.23| Events innerhalb einer Organisation - Raum - Eventaustausch auf dem HomeServer
 |===
 
 [.text-center]
@@ -898,8 +912,9 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 |09.17| Einladung außerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch Organisations-User
 |09.18| Einladung außerhalb einer Organisation - Einladung in Chat - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
 |09.19| Einladung außerhalb einer Organisation - Einladung in Raum - HBA-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
-|09.20|  Einladung außerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
-|09.21|  Einladung außerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
+|09.20| Einladung außerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
+|09.21| Einladung außerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
+|09.22| Einladung außerhalb einer Organisation - Negativ Suche - Volltextsuche auf dem Homeserver
 |===
 
 [.text-center]

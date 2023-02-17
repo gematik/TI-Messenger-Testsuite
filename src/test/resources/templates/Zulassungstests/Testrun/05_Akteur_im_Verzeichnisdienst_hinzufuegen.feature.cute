@@ -2,13 +2,21 @@
 @File:FeatureFile_05 @Ctl:UseCase
 @PRODUKT:TI-M
 @AF-ID:AF_10058
-@AK-ID:ML-123611 @AK-ID:ML-123612
+@AK-ID:ML-123612 @AK-ID:ML-123611 @AK-ID:ML-132588
 Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
   AF_10058 Akteur (User-HBA) im Verzeichnisdienst hinzufügen
-  Mit diesem Anwendungsfall wird ein Akteur in der Rolle "User-HBA" für andere Akteure anderer Messenger-Services
-  auffindbar und erreichbar. Dafür werden FHIR-Ressourcen mit ihrer jeweiligen MXID im Personenverzeichnis
-  (PractitionerRole) des VZD-FHIR-Directory hinterlegt. Zusätzlich besteht die Möglichkeit die Sichtbarkeit für
-  andere Akteure einzuschränken.
+  Mit diesem Anwendungsfall wird ein Akteur in der Rolle "User-HBA" für andere Akteure anderer
+  Messenger-Services auffindbar und erreichbar. Dafür werden FHIR-Ressourcen mit ihrer jeweiligen
+  MXID im Personenverzeichnis (PractitionerRole) des VZD-FHIR-Directory hinterlegt. Zusätzlich
+  besteht die Möglichkeit die Sichtbarkeit für andere Akteure einzuschränken. Dieser Anwendungsfall
+  KANN direkt mit dem initialen Anmeldevorgang eines Akteurs am Messenger Service
+  (siehe Anwendungsfall: "AF_10057 - Anmeldung eines Akteurs am Messenger-Service") kombiniert werden.
+  Hierfür wird der Akteur in der Rolle "User-HBA" während des Anmeldevorgangs durch den
+  TI-Messenger-Client gefragt, ob dieser im Besitz eines HBAs ist.
+
+  ML-123612 - Akteur als Practitioner hinzufügen
+  ML-123611 - MXID-Eintrag nur für eigenen Practitioner-FHIR-Datensatz
+  ML-132588 - TI-M Rohdatenerfassung und -lieferung
 
   Inhalt
   TF 1 & 2 User im VZD hinzufügen
@@ -38,8 +46,7 @@ Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Wenn       "A" sucht die MXID des Benutzers "A" im Verzeichnis Dienst
     Und        "A" findet seine MXID im Verzeichnis Dienst
-    Dann       "A" sucht die MXID des Benutzers "B" im Verzeichnis Dienst
-    Und        "A" findet "B" in FHIR
+    Dann       "A" findet "B" in FHIR
 
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
@@ -59,8 +66,7 @@ Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Wenn       "A" sucht die MXID des Benutzers "A" im Verzeichnis Dienst
     Und        "A" findet seine MXID im Verzeichnis Dienst
-    Dann       "B" sucht die MXID des Benutzers "A" im Verzeichnis Dienst
-    Und        "B" findet "A" in FHIR
+    Dann       "B" findet "A" in FHIR
 
   @DistinctProperty(homeserver)
   @AllowSelfCombine(false)
@@ -75,16 +81,15 @@ Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
     Beispiele:
     | ApiName1 | ApiName2 |
 
-  @WIP
   @Ctl:OneHomeServer
-  @TCID:TIM_11_AF_504 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
-  Szenariogrundriss: 05.4 Akteur im Verzeichnisdienst - Löschen - HBA-User löscht Eintrag
+  @TCID:TIM_11_AF_504 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.4 Akteur im Verzeichnisdienst - Löschen - HBA-User löscht Eintrag und ist nicht auffindbar für HBA-User gleicher Organisation
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "B" findet "A" in FHIR
     Wenn       "A" löscht seine MXID im Verzeichnis Dienst
-    Dann       "B" kann "A" nicht finden in FHIR
+    Dann       "B" kann "A" nicht finden in FHIR [Retry 11 - 5]
 
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
@@ -104,7 +109,7 @@ Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "B" findet "A" in FHIR
     Wenn       "A" löscht seine MXID im Verzeichnis Dienst
-    Dann       "B" kann "A" nicht finden in FHIR
+    Dann       "B" kann "A" nicht finden in FHIR [Retry 11 - 5]
 
   @DistinctProperty(homeserver)
   @AllowSelfCombine(false)

@@ -65,6 +65,12 @@ public final class TestdriverApiPath {
   public static final String LOGIN_PATH = DEVICE_ID_PATH + "/login";
   public static final String LOGOUT_PATH = DEVICE_ID_PATH + "/logout";
 
+  // HOMESERVER
+
+  public static final String HOMESERVER_BASE_PATH = "/homeserver";
+  public static final String HOMESERVER_SEARCH_PATH =
+      DEVICE_ID_PATH + HOMESERVER_BASE_PATH + "/search";
+
   // FHIR PRACTIONER
   public static final String FHIR_BASE_PATH = DEVICE_ID_PATH + "/fhir";
   public static final String FHIR_SEARCH_PRACTITIONER_PATH =
@@ -75,6 +81,7 @@ public final class TestdriverApiPath {
   // FHIR ORG_ADMIN
   public static final String FHIR_SEARCH_ORG_PATH =
       FHIR_BASE_PATH + "/searchTIOrganizationInFhirDirectory";
+  public static final String FHIR_SEARCH_ENDPOINT_PATH = FHIR_BASE_PATH + "/searchHealthcareServiceEndpontInFhirDirectory";
   public static final String FHIR_HEALTHCARE_SERVICE_PATH =
       FHIR_BASE_PATH + "/org/healthcareService";
   public static final String FHIR_HS_ADMIN_PATH =

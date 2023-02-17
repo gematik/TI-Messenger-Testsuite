@@ -20,8 +20,7 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DIRECT_CHAT_NAME;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.fhir.organisation.FhirOrgAdminGlue.findsAddressInHealthcareService;
 import static de.gematik.tim.test.glue.api.room.UseRoomAbility.addRoomToActor;
-import static de.gematik.tim.test.glue.api.room.questions.GetRoomQuestion.ownRoomWithMembers;
-import static de.gematik.tim.test.glue.api.room.questions.GetRoomQuestion.ownRoomWithName;
+import static de.gematik.tim.test.glue.api.room.questions.GetRoomQuestion.ownRoom;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
 import static de.gematik.tim.test.glue.api.room.questions.RoomIdForRoomNameQuestion.roomIdForRoomName;
 import static de.gematik.tim.test.glue.api.room.tasks.CreateRoomTask.createRoom;
@@ -49,6 +48,7 @@ import io.cucumber.java.Before;
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Und;
 import io.cucumber.java.de.Wenn;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import java.util.ArrayList;
@@ -126,7 +126,7 @@ public class RoomControllerGlue {
       Actor actor1 = theActorCalled(actorName);
       String actor1Id = actor1.recall(MX_ID);
 
-      RoomDTO room = theActorCalled(actorName).asksFor(ownRoomWithMembers(chatMembersIds));
+      RoomDTO room = theActorCalled(actorName).asksFor(ownRoom().withMembers(chatMembersIds));
       RoomMemberDTO member = requireNonNull(room.getMembers()).stream()
           .filter(m -> requireNonNull(m.getMxid()).equals(actor1Id)).findFirst().orElseThrow();
       assertThat(member.getMembershipState()).isEqualTo(INVITED);
@@ -149,8 +149,8 @@ public class RoomControllerGlue {
       String actor1Id = actor1.recall(MX_ID);
       Actor actor2 = theActorCalled(inviter);
       String actor2Id = actor2.recall(MX_ID);
-      RoomDTO room = theActorCalled(actorName).asksFor(
-          ownRoomWithMembers(List.of(actor1Id, actor2Id)));
+      RoomDTO room = theActorCalled(actorName).asksFor(ownRoom().
+          withMembers(List.of(actor1Id, actor2Id)));
       actor1.attemptsTo(joinRoom().withRoomId(room.getRoomId()));
     }
   }
@@ -248,11 +248,24 @@ public class RoomControllerGlue {
     members.forEach(m -> assertThat(m.getMembershipState()).isEqualTo(JOINED));
   }
 
+  @And("{string} has not joined the room {string}")
   @Und("{string} ist dem Raum {string} nicht beigetreten")
   public void userNotInRoom(String actorName, String roomName) {
     Actor actor = theActorCalled(actorName);
     List<RoomDTO> rooms = actor.asksFor(ownRooms());
     assertThat(rooms).extracting(RoomDTO::getName).doesNotContain(roomName);
+  }
+
+  @And("{string} has not joined the room {string} [Retry {long} - {long}]")
+  @Und("{string} ist dem Raum {string} nicht beigetreten [Retry {long} - {long}]")
+  public void userNotInRoom(String actorName, String roomName, Long timeout, Long pollInterval) {
+    Actor actor = theActorCalled(actorName);
+    RoomDTO room = actor.asksFor(
+        ownRoom()
+            .withName(roomName)
+            .withMemberHaveStatus(actor.recall(MX_ID), JOINED)
+            .withCustomInterval(timeout, pollInterval));
+    assertThat(room).isNull();
   }
 
   @Then("{string} did not joined chat with {string}")
@@ -261,6 +274,26 @@ public class RoomControllerGlue {
   public void userDidNotEnterChat(String actorName, String userName) {
     Actor actor = theActorCalled(actorName);
     List<RoomDTO> rooms = actor.asksFor(ownRooms());
+    userDidNotEnterChat(userName, actor, rooms);
+  }
+
+  @Then("{string} did not joined chat with {string} [Retry {long} - {long}]")
+  @Dann("{string} ist dem Chat mit {string} nicht beigetreten [Retry {long} - {long}]")
+  @Dann("{string} erhält KEINE Einladung von {string} [Retry {long} - {long}]")
+  public void userDidNotEnterChat(String actorName, String userName, Long timeout,
+      Long pollInterval) {
+    Actor actor = theActorCalled(actorName);
+    String actorMxid = actor.recall(MX_ID);
+    String userMxid = theActorCalled(userName).recall(MX_ID);
+    RoomDTO room = actor.asksFor(
+        ownRoom()
+            .withMembers(List.of(actorMxid, userMxid))
+            .withMemberHaveStatus(actorMxid, JOINED)
+            .withCustomInterval(timeout, pollInterval));
+    assertThat(room).isNull();
+  }
+
+  private void userDidNotEnterChat(String userName, Actor actor, List<RoomDTO> rooms) {
     List<RoomDTO> filteredRooms = filterForRoomsWithSpecificMembers(rooms,
         List.of(actor.recall(MX_ID), theActorCalled(userName).recall(MX_ID)));
     assertThat(filteredRooms).as(format("%s have chat-room left with %s", actor, userName))
@@ -271,7 +304,7 @@ public class RoomControllerGlue {
   @Dann("{string} erhält eine Einladung in Raum {string}")
   public void receiveInvitationToRoom(String actorName, String roomName) {
     Actor actor = theActorCalled(actorName);
-    RoomDTO room = actor.asksFor(ownRoomWithName(roomName));
+    RoomDTO room = actor.asksFor(ownRoom().withName(roomName));
     RoomMemberDTO member = room.getMembers().stream()
         .filter(m -> m.getMxid().equals(theActorCalled(actorName).recall(MX_ID)))
         .findAny()
@@ -290,9 +323,31 @@ public class RoomControllerGlue {
             res -> res.statusCode(403)));
   }
 
+  @And("{string} gets no invitation from {string} for the room {string}")
   @Und("{string} erhält KEINE Einladung von {string} für den Raum {string}")
   public void noInvitationForRoomReceived(String actorName, String clientName, String roomName) {
     List<RoomDTO> rooms = theActorCalled(actorName).asksFor(ownRooms());
+    noInvitationForRoomReceived(actorName, clientName, roomName, rooms);
+  }
+
+  @And("{string} gets no invitation from {string} for the room {string} [Retry {long} - {long}]")
+  @Und("{string} erhält KEINE Einladung von {string} für den Raum {string} [Retry {long} - {long}]")
+  public void noInvitationForRoomReceived(String actorName, String userName, String roomName,
+      Long timeout, Long pollInterval) {
+    Actor actor = theActorCalled(actorName);
+    String actorMxid = actor.recall(MX_ID);
+    String userMxid = theActorCalled(userName).recall(MX_ID);
+    RoomDTO room = theActorCalled(actorName).asksFor(
+        ownRoom()
+            .withMembers(List.of(actorMxid, userMxid))
+            .withName(roomName)
+            .withCustomInterval(timeout, pollInterval));
+    assertThat(room).isNull();
+  }
+
+  private static void noInvitationForRoomReceived(String actorName, String clientName,
+      String roomName,
+      List<RoomDTO> rooms) {
     String inviterMxid = theActorCalled(clientName).recall(MX_ID);
     List<RoomDTO> filteredRooms = rooms.stream()
         .filter(r -> requireNonNull(r.getName()).equals(roomName))

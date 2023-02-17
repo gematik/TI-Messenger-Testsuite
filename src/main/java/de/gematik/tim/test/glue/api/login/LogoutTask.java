@@ -17,9 +17,7 @@
 package de.gematik.tim.test.glue.api.login;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.LOGOUT;
-import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirDeleteOwnMxidTask.deleteMxidFromFhir;
 
-import de.gematik.tim.test.glue.api.fhir.practitioner.CanDeleteOwnMxidAbility;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 

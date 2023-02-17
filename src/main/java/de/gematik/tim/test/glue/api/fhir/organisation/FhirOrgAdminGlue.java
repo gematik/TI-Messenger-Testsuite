@@ -51,7 +51,6 @@ import static org.hamcrest.collection.IsEmptyCollection.empty;
 import de.gematik.tim.test.glue.api.fhir.organisation.endpoint.FhirGetEndpointListQuestion;
 import de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UseEndpointAbility;
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.FhirGetHealthcareServiceListQuestion;
-import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.FhirGetHealthcareServiceQuestion;
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility;
 import de.gematik.tim.test.glue.api.fhir.organisation.location.FhirGetLocationListQuestion;
 import de.gematik.tim.test.models.FhirEndpointDTO;

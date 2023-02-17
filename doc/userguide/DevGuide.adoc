@@ -1,4 +1,4 @@
-:toc-title: Inhaltsverzeichnis
+cd :toc-title: Inhaltsverzeichnis
 :toc:
 :toclevels: 4
 
@@ -12,8 +12,9 @@
 :imagesdir: ../../doc/images
 :imagesoutdir: ../images
 :testdir: ../../Tests
-:sourcedir: ../../Sources
+:sourcedir: ../../src
 :plantumldir: ../plantuml
+:rootdir: ../../
 == Entwickler-Guide
 
 === Starte Cucumber-Scenario innerhalb der IDE (IntelliJ IDEA)
@@ -38,7 +39,7 @@ für weitere Informationen.
 
 === Disable TLS
 
-Um TLS zu deaktivieren dürfen die Umgebungsvariablen nicht gesetzt werden und in der link:tiger.yml[tiger.yml] müssen folgende Zeilen 2 und 3. gelöscht werden
+Um TLS zu deaktivieren dürfen die Umgebungsvariablen nicht gesetzt werden und in der link:{rootdir}tiger.yml[tiger.yml] müssen folgende Zeilen 2 und 3. gelöscht werden
 
 IMPORTANT: Zeile 1 "tigerProxy:" muss weiterhin stehen bleiben
 
@@ -49,11 +50,13 @@ tigerProxy:
     forwardMutualTlsIdentity: "${TIM_KEYSTORE};${TIM_KEYSTORE_PW};pkcs12"
 ----
 
-Mit dieser Konfiguration müssen alle Links in der link:src/test/resources/combine_items.json[combine_items.json] auf `http` gesetzt werden.
+Mit dieser Konfiguration müssen alle Links in der link:{sourcedir}/test/resources/combine_items.json[combine_items.json] auf `http` gesetzt werden.
 
 === Cucumber-Test-Combinations-Maven-Plugin
 
-Das Parameter-Plugin befüllt die Featurefiles. Bei einer geringen Anzahl von Schnittstellen mit zu wenig Variation in ihren Eigenschaften, kann es schnell dazu führen, dass das Plugin den Buildvorgang abbricht. Um dies zu ignorieren können die Schritte konfiguriert werden.
+Das Parameter-Plugin erstellt aus den bereitgestellten Schnittstellen aus dem link:{sourcedir}/test/resources/combine_items.json[combine_items.json] alle nach den Filtern mögliche Kombinationen für jeden einzelnen Testfall. Hierzu werden alle Templates aus dem Testordner in den Buildordner kopiert und mit den jeweiligen Tabellen befüllt. Die so bearbeiteten Files werden beim starten der Testsuite herangezogen.
+
+Bei einer geringen Anzahl von Schnittstellen mit zu wenig Variation in ihren Eigenschaften, kann es schnell dazu führen, dass das Plugin den Buildvorgang abbricht. Um dies zu ignorieren können die Schritte konfiguriert werden.
 
 ==== Disable prepare-items (autofill combine_items.json)
 
@@ -66,8 +69,8 @@ maven clean install -P disable-prepare-items
 
 ==== Disable break
 
-Mit dem Profil `dont-break-preperation` kann das Plugin so eingestellt werden, dass es bei Fehlern den Buildprozess nicht mehr abbricht. Alle möglichen Informationen und Kombinationen werden erstellt. Ein Fehlerlog kann später link:target/generated-combine/errorLog.txt[hier] eingesehen werden.
+Mit dem Profil `dont-break-preperation` kann das Plugin so eingestellt werden, dass es bei Fehlern den Buildprozess nicht mehr abbricht. Alle möglichen Informationen und Kombinationen werden erstellt. Ein Fehlerlog kann später `./target/generated-combine/errorLog.txt` eingesehen werden.
 
 === Known issues
 
-. Es kann beim Generieren des Codes aus der link:https://github.com/gematik/api-ti-messenger/blob/main/src/openapi/TiMessengerTestTreiber.yaml[Testtreiberschnittstelle] passieren, dass zusätzliche `/` in den Requestpath erstellt werden. Diese können zu Inkompatibilitäten führen. Dies kann auf Seiten der Testsuite umgangen werden indem in der Klasse link:src/main/java/de/gematik/tim/test/glue/api/TestdriverApiPath.java[TestdriverApiPath] bei INFO_PATH und DEVICES_PATH der vorgestellte `/` entfernt wird.
+. Es kann beim Generieren des Codes aus der link:https://github.com/gematik/api-ti-messenger/blob/main/src/openapi/TiMessengerTestTreiber.yaml[Testtreiberschnittstelle] passieren, dass zusätzliche `/` in den Requestpath erstellt werden. Diese können zu Inkompatibilitäten führen. Dies kann auf Seiten der Testsuite umgangen werden indem in der Klasse link:{sourcedir}/main/java/de/gematik/tim/test/glue/api/TestdriverApiPath.java[TestdriverApiPath] bei INFO_PATH und DEVICES_PATH der vorgestellte `/` entfernt wird.

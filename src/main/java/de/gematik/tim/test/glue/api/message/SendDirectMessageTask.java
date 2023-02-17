@@ -20,7 +20,7 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DIRECT_CHAT_NAME;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEND_DIRECT_MESSAGE;
 import static de.gematik.tim.test.glue.api.room.UseRoomAbility.addRoomToActor;
-import static de.gematik.tim.test.glue.api.room.questions.GetRoomQuestion.ownRoomWithMembers;
+import static de.gematik.tim.test.glue.api.room.questions.GetRoomQuestion.ownRoom;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.homeserverFromMxId;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -80,7 +80,7 @@ public class SendDirectMessageTask implements Task {
 
   private void handleNewRoom(Actor actor, String actorMxId, String toMxId) {
     RoomDTO room = actor.asksFor(
-        ownRoomWithMembers(List.of(actorMxId, toMxId)));
+        ownRoom().withMembers(List.of(actorMxId, toMxId)));
     actor.remember(DIRECT_CHAT_NAME + toMxId, room.getName());
     toActor.remember(DIRECT_CHAT_NAME + actorMxId, room.getName());
     addRoomToActor(room, actor);

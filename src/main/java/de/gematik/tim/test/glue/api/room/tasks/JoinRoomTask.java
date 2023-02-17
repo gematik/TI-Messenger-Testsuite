@@ -19,7 +19,6 @@ package de.gematik.tim.test.glue.api.room.tasks;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.JOIN_ROOM;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_ID_VARIABLE;
 import static de.gematik.tim.test.glue.api.room.UseRoomAbility.addRoomToActor;
-import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.models.RoomDTO;
 import java.util.Objects;

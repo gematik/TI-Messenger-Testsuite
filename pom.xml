@@ -6,7 +6,7 @@
 
   <groupId>de.gematik.tim.test</groupId>
   <artifactId>TI-Messenger-Testsuite</artifactId>
-  <version>0.3.2</version>
+  <version>0.4.1</version>
   <packaging>jar</packaging>
   <name>TI-Messenger-Testsuite</name>
   <description>Testsuite to check functionality of TI-Messenger-Clients</description>
@@ -34,6 +34,8 @@
     <combine.items.file>${project.basedir}/src/test/resources/combine_items.json
     </combine.items.file>
     <cucumber.filter.tags/>
+    <timeout/>
+    <pollInterval/>
   </properties>
 
   <distributionManagement>
@@ -137,7 +139,7 @@
             </goals>
             <configuration>
               <url>
-                https://raw.githubusercontent.com/gematik/api-ti-messenger/65135084c0f69bc4feb111afb804945454a83344/src/openapi/TiMessengerTestTreiber.yaml
+                https://raw.githubusercontent.com/gematik/api-ti-messenger/6a8978211ca18d602c38534e4a02ceccb2a14df4/src/openapi/TiMessengerTestTreiber.yaml
               </url>
               <outputFileName>TiMessengerTestTreiber.yaml</outputFileName>
               <outputDirectory>${project.build.directory}</outputDirectory>
@@ -492,6 +494,22 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>properties-maven-plugin</artifactId>
+        <version>1.0.0</version>
+        <executions>
+          <execution>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>write-project-properties</goal>
+            </goals>
+            <configuration>
+              <outputFile>${project.build.outputDirectory}/mvn.properties</outputFile>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -510,6 +528,7 @@
         <combine.items.file>${project.basedir}/src/test/resources/combine_items_ci.json
         </combine.items.file>
         <tiger.config.file>tiger-ci.yml</tiger.config.file>
+        <runWithoutRetry>true</runWithoutRetry>
       </properties>
       <build>
         <plugins>
@@ -531,7 +550,7 @@
                 <artifactItem>
                   <groupId>de.gematik.tim.test</groupId>
                   <artifactId>TI-Messenger-TestdriverSim</artifactId>
-                  <version>0.3.1-SNAPSHOT</version>
+                  <version>3.1.0</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}</outputDirectory>
@@ -569,6 +588,7 @@
       <id>dev</id>
       <properties>
         <tiger.config.file>tiger-dev.yml</tiger.config.file>
+        <runWithoutRetry>false</runWithoutRetry>
       </properties>
       <activation>
         <activeByDefault>true</activeByDefault>

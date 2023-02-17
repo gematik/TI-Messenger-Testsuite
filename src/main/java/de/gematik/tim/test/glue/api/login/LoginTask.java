@@ -17,6 +17,7 @@
 package de.gematik.tim.test.glue.api.login;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.ACCOUNT_PASSWORD;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DISPLAY_NAME;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.LOGIN;
 import static de.gematik.tim.test.glue.api.login.IsLoggedInAbility.logOut;
@@ -47,6 +48,7 @@ public class LoginTask implements Task {
     AccountDTO account = lastResponse().body().as(AccountDTO.class);
     actor.remember(MX_ID, account.getMxid());
     actor.remember(ACCOUNT_PASSWORD, account.getPassword());
+    actor.remember(DISPLAY_NAME, account.getDisplayName());
     actor.can(logOut());
 
     RawDataStatistics.login();

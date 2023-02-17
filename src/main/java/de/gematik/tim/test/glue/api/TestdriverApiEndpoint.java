@@ -34,8 +34,10 @@ import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_HS_ADMIN_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_LOCATION_ADMIN_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_LOCATION_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_PRACTITIONER_PATH;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_SEARCH_ENDPOINT_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_SEARCH_ORG_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_SEARCH_PRACTITIONER_PATH;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.HOMESERVER_SEARCH_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.INFO_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.LOGIN_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.LOGOUT_PATH;
@@ -101,6 +103,10 @@ public enum TestdriverApiEndpoint {
   GET_MESSAGES(GET, MESSAGE_PATH, UseDeviceAbility.class, UseRoomAbility.class),
   DELETE_MESSAGE(DELETE, MESSAGE_ID_PATH, UseDeviceAbility.class, UseRoomAbility.class),
 
+  // HOMESERVER SEARCH
+
+  SEARCH_ON_HOMESERVER(GET, HOMESERVER_SEARCH_PATH, UseDeviceAbility.class),
+
   // FHIR PRACTITIONER
   SEARCH_PRACTITIONER(GET, FHIR_SEARCH_PRACTITIONER_PATH, UseDeviceAbility.class),
   AUTHENTICATE_PRACTITIONER(POST, FHIR_AUTHENTICATE_PATH, UseDeviceAbility.class),
@@ -110,6 +116,7 @@ public enum TestdriverApiEndpoint {
 
   // FHIR ORG_ADMIN
   SEARCH_ORG(GET, FHIR_SEARCH_ORG_PATH, UseDeviceAbility.class),
+  SEARCH_ENDPOINT(GET, FHIR_SEARCH_ENDPOINT_PATH, UseDeviceAbility.class),
 
   // FHIR ORG_ADMIN HEALTHCARE SERVICE
   GET_HEALTHCARE_SERVICES(GET, FHIR_HEALTHCARE_SERVICE_PATH, UseDeviceAbility.class),

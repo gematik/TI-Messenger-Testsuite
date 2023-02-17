@@ -34,9 +34,10 @@ import io.cucumber.java.de.Wenn;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import java.util.List;
+import net.serenitybdd.core.Serenity;
 import net.serenitybdd.screenplay.Actor;
 
-public class FhirSearchGlue {
+public class FhirPractitionerSearchGlue {
 
   // MXID search
   @When("{string} can find {listOfStrings} in directory")
@@ -56,26 +57,30 @@ public class FhirSearchGlue {
 
   @When("{string} can not find {string}")
   @Wenn("{string} kann {string} nicht finden in FHIR")
-  public void dontFindPractitionerInFhir(String actorName, String userName) {
-    FhirSearchQuestion question = practitionerInFhirDirectory()
-        .withMxid(theActorCalled(userName).recall(MX_ID));
-    dontFindPractitionerInFhir(question, actorName);
+  @Dann("{string} findet TI-Messenger-Nutzer {string} bei Suche im Practitioner-Verzeichnis im VZD NICHT")
+  public static Void dontFindPractitionerInFhir(String actorName, String userName) {
+    return dontFindPractitionerInFhir(actorName, userName, null, null);
   }
 
   @Wenn("{string} kann {string} nicht finden in FHIR [Retry {long} - {long}]")
-  public void dontFindPractitionerInFhir(String actorName, String userName, Long timeout,
+  @Dann("{string} findet TI-Messenger-Nutzer {string} bei Suche im Practitioner-Verzeichnis im VZD NICHT [Retry {long} - {long}]")
+  public static Void dontFindPractitionerInFhir(String actorName, String userName, Long timeout,
       Long pollInterval) {
-    FhirSearchQuestion question = practitionerInFhirDirectory()
-        .withMxid(theActorCalled(userName).recall(MX_ID))
-        .withCustomInterval(timeout, pollInterval);
-    dontFindPractitionerInFhir(question, actorName);
+    Actor actor = theActorCalled(actorName);
+    Actor user = theActorCalled(userName);
+    dontFindPractitionerInFhir(actor, user, timeout, pollInterval);
+    return null;
   }
 
-  private void dontFindPractitionerInFhir(FhirSearchQuestion question, String actorName) {
-    Actor actor1 = theActorCalled(actorName);
-    FhirPractitionerSearchResultDTO response = actor1.asksFor(question);
+  public static Void dontFindPractitionerInFhir(Actor actor, Actor user, Long timeout,
+      Long pollInterval) {
+    Serenity.recordReportData();
+    FhirPractitionerSearchResultDTO response = actor.asksFor(practitionerInFhirDirectory()
+        .withMxid(user.recall(MX_ID))
+        .withCustomInterval(timeout, pollInterval));
     assertThat(response).isNotNull();
-    assertThat(response.getTotalSearchResults()).isEqualTo(0);
+    assertThat(response.getTotalSearchResults()).isZero();
+    return null;
   }
 
   // Parameter search

@@ -24,26 +24,35 @@ import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import de.gematik.tim.test.models.MessageDTO;
 import java.util.List;
 import java.util.Optional;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 import org.awaitility.core.ConditionTimeoutException;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class GetRoomMessageQuestion implements Question<MessageDTO> {
 
-  String msg;
-  String mxIdSender;
+  private final String msg;
+  private final String mxIdSender;
+  private Long customTimeout;
+  private Long customPollInterval;
 
   public static GetRoomMessageQuestion messageFromSenderWithTextInActiveRoom(String msg,
       String mxIdSender) {
     return new GetRoomMessageQuestion(msg, mxIdSender);
   }
 
+  public GetRoomMessageQuestion withCustomInterval(Long timeout, Long pollInterval) {
+    this.customTimeout = timeout;
+    this.customPollInterval = pollInterval;
+    return this;
+  }
+
   @Override
   public MessageDTO answeredBy(Actor actor) {
     try {
-      return repeatedRequest(() -> getMessage(actor),"room");
+      return repeatedRequest(() -> getMessage(actor), "message", customTimeout,
+          customPollInterval);
     } catch (ConditionTimeoutException ex) {
       return null;
     }

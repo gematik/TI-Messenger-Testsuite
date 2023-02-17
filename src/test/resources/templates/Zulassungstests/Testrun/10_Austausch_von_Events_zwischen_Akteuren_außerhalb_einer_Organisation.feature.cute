@@ -2,20 +2,26 @@
 @File:FeatureFile_10 @Ctl:UseCase
 @PRODUKT:TI-M
 @AF-ID:AF_10062
-@AK-ID:ML-123665 @AK-ID:ML-123666 @AK-ID:ML-123667
-@AK-ID:ML-123668
+@AK-ID:ML-123665 @AK-ID:ML-123666 @AK-ID:ML-123667 @AK-ID:ML-123668 @AK-ID:ML-132593
 Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Organisation
   AF_10062 - Austausch von Events zwischen Akteuren außerhalb einer Organisation
-  In diesem Anwendungsfall können Akteure welche sich in einem gemeinsamen Raum befinden Nachrichten austauschen und
-  andere durch die Matrix-Spezifikation festgelegte Aktionen ausführen. Dieser Anwendungsfall setzt ein erfolgreiches
-  Invite-Event eines oder mehrerer beteiligter Akteure voraus. In diesem Anwendungsfall sind die beteiligten Akteure
-  in einem gemeinsamen Chatraum und auf unterschiedlichen Messenger-Services verteilt.
+  In diesem Anwendungsfall können Akteure welche sich in einem gemeinsamen Raum befinden Nachrichten
+  austauschen und andere durch die Matrix-Spezifikation festgelegte Aktionen ausführen. Dieser
+  Anwendungsfall setzt ein erfolgreiches Invite-Event eines oder mehrerer beteiligter Akteure voraus.
+  In diesem Anwendungsfall sind die beteiligten Akteure in einem gemeinsamen Chatraum und auf
+  unterschiedlichen Messenger-Services verteilt.
+
+  ML-123665 - Messenger-Proxy des Senders prüft Domain des Empfängers
+  ML-123666 - Messenger-Proxy des Empfängers prüft Domain des Senders
+  ML-123667 - Auslösen einer Notifikation
+  ML-123668 - Nachricht wird angezeigt
+  ML-132593 - TI-M Rohdatenerfassung und -lieferung
 
   Inhalt
-  TF 1  -  3 HBA sendet Nachticht Chat/Raum (HBA an HBA)
-  TF 4  &  5 HBA sendet Nachticht Chat/Raum (HBA an OrgUser)
-  TF 6  &  7 OrgUser sendet Nachticht Chat/Raum (OrgUser an OrgUser)
-  TF 8  &  9 OrgUser sendet Nachticht Chat/Raum (OrgUser an HBA) (Negativ)
+  TF 1  -  3 HBA sendet Nachricht Chat/Raum (HBA an HBA)
+  TF 4  &  5 HBA sendet Nachricht Chat/Raum (HBA an OrgUser)
+  TF 6  &  7 OrgUser sendet Nachricht Chat/Raum (OrgUser an OrgUser)
+  TF 8  &  9 OrgUser sendet Nachricht Chat/Raum (OrgUser an HBA) (Negativ)
   TF 10 & 11 Ändern einer Nachricht von HBA/OrgUser
   TF 12 - 15 Löschen einer Nachricht durch HBA/OrgUser in Chat/Raum
   TF 16 & 17 Nachricht an ausgeloggten User senden durch HBA/OrgUser
@@ -251,7 +257,7 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Und        "B" findet "C" in FHIR
     Wenn       "B" versucht "C" direkt "Hello from the other site" zu schreiben
     Dann       erhält "B" einen Responsecode 403
-    Und        "C" erhält KEINE Einladung von "B"
+    Und        "C" erhält KEINE Einladung von "B" [Retry 10 - 3]
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1B,homeserver,2)
@@ -280,8 +286,8 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "B" findet "C" in FHIR
     Wenn       "B" versucht "C" in Chat-Raum "TIM Testraum 1" einzuladen
-    Dann        erhält "B" einen Responsecode 403
-    Und         "C" erhält KEINE Einladung von "B" für den Raum "TIM Testraum 1"
+    Dann       erhält "B" einen Responsecode 403
+    Und        "C" erhält KEINE Einladung von "B" für den Raum "TIM Testraum 1" [Retry 10 - 3]
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1B,homeserver,2)
@@ -314,7 +320,7 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Und        "B" empfängt eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
     Dann       "A" ändert seine letzte Nachricht im Raum "TIM Testraum 1" in "At least I can say that I have tried"
     Wenn       "B" empfängt eine Nachricht "At least I can say that I have tried" von "A" im Raum "TIM Testraum 1"
-    Und        "B" kann die Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1" nicht sehen
+    Und        "B" kann die Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1" nicht sehen [Retry 10 - 3]
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName2,homeserver,2)
@@ -348,7 +354,7 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Und        "D" empfängt eine Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1"
     Wenn       "B" ändert seine letzte Nachricht im Raum "TIM Testraum 1" in "At least I can say that I have tried"
     Dann       "D" empfängt eine Nachricht "At least I can say that I have tried" von "B" im Raum "TIM Testraum 1"
-    Und        "D" kann die Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1" nicht sehen
+    Und        "D" kann die Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1" nicht sehen [Retry 10 - 3]
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1B,homeserver,2)
@@ -381,8 +387,8 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Und        "B" schreibt "A" direkt "At least I can say that I have tried"
     Und        "A" empfängt eine Nachricht "At least I can say that I have tried" von "B"
     Wenn       "B" löscht seine Nachricht "At least I can say that I have tried" im Chat mit "A"
-    Dann       "A" kann die Nachricht "At least I can say that I have tried" von "B" im Chat mit "B" nicht sehen
-    Und        "B" kann die Nachricht "At least I can say that I have tried" von "B" im Chat mit "A" nicht sehen
+    Dann       "A" kann die Nachricht "At least I can say that I have tried" von "B" im Chat mit "B" nicht sehen [Retry 10 - 3]
+    Und        "B" kann die Nachricht "At least I can say that I have tried" von "B" im Chat mit "A" nicht sehen [Retry 10 - 3]
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName2,homeserver,2)
@@ -415,8 +421,8 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Und        "D" schreibt "C" direkt "At least I can say that I have tried"
     Und        "C" empfängt eine Nachricht "At least I can say that I have tried" von "D"
     Wenn       "D" löscht seine Nachricht "At least I can say that I have tried" im Chat mit "C"
-    Dann       "C" kann die Nachricht "At least I can say that I have tried" von "D" im Chat mit "D" nicht sehen
-    Und        "D" kann die Nachricht "At least I can say that I have tried" von "D" im Chat mit "C" nicht sehen
+    Dann       "C" kann die Nachricht "At least I can say that I have tried" von "D" im Chat mit "D" nicht sehen [Retry 10 - 3]
+    Und        "D" kann die Nachricht "At least I can say that I have tried" von "D" im Chat mit "C" nicht sehen [Retry 10 - 3]
 
   @Shuffle(true)
   #@MaxSameColumnProperty(ApiName2B,homeserver,2)
@@ -448,8 +454,8 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Und        "A" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
     Und        "B" empfängt eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
     Wenn       "A" löscht seine Nachricht "Hello from the other site" im Raum "TIM Testraum 1"
-    Dann       "A" kann die Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1" nicht sehen
-    Und        "B" kann die Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1" nicht sehen
+    Dann       "A" kann die Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1" nicht sehen [Retry 10 - 3]
+    Und        "B" kann die Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1" nicht sehen [Retry 10 - 3]
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1,homeserver,2)
@@ -482,8 +488,8 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Und        "C" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
     Und        "D" empfängt eine Nachricht "Hello from the other site" von "C" im Raum "TIM Testraum 1"
     Wenn       "C" löscht seine Nachricht "Hello from the other site" im Raum "TIM Testraum 1"
-    Dann       "C" kann die Nachricht "Hello from the other site" von "C" im Raum "TIM Testraum 1" nicht sehen
-    Und        "D" kann die Nachricht "Hello from the other site" von "C" im Raum "TIM Testraum 1" nicht sehen
+    Dann       "C" kann die Nachricht "Hello from the other site" von "C" im Raum "TIM Testraum 1" nicht sehen [Retry 10 - 3]
+    Und        "D" kann die Nachricht "Hello from the other site" von "C" im Raum "TIM Testraum 1" nicht sehen [Retry 10 - 3]
 
   @Shuffle(true)
   #@MaxSameColumnProperty(ApiName1B,homeserver,2)

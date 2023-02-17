@@ -18,76 +18,79 @@ package de.gematik.tim.test.glue.api.room.questions;
 
 import static de.gematik.tim.test.glue.api.room.UseRoomAbility.updateAvailableRooms;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.getRoomWithSpecificMembers;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.repeatedRequest;
-import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
 
 import de.gematik.tim.test.models.RoomDTO;
-import java.lang.reflect.Field;
+import de.gematik.tim.test.models.RoomMemberDTO;
+import de.gematik.tim.test.models.RoomMembershipStateDTO;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
-import lombok.SneakyThrows;
+import java.util.function.Predicate;
+import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
+import org.awaitility.core.ConditionTimeoutException;
 import org.jetbrains.annotations.NotNull;
 
+@Slf4j
 public class GetRoomQuestion implements Question<RoomDTO> {
 
-  private List<String> memberList;
-  private String roomName;
+  private final List<Predicate<RoomDTO>> filterList = new ArrayList<>();
 
-  public static GetRoomQuestion ownRoomWithMembers(List<String> memberList) {
-    GetRoomQuestion rq = new GetRoomQuestion();
-    rq.memberList = memberList;
-    return rq;
+  private Long customTimeout;
+  private Long customPollInterval;
+
+  public static GetRoomQuestion ownRoom() {
+    return new GetRoomQuestion();
   }
 
-  public static GetRoomQuestion ownRoomWithName(String roomName) {
-    GetRoomQuestion rq = new GetRoomQuestion();
-    rq.roomName = roomName;
-    return rq;
+  public GetRoomQuestion withMembers(List<String> memberList) {
+    this.filterList.add(m -> new HashSet<>(
+        requireNonNull(m.getMembers()).stream().map(RoomMemberDTO::getMxid).toList()).containsAll(
+        memberList));
+    return this;
+  }
+
+  public GetRoomQuestion withName(String roomName) {
+    this.filterList.add(r -> requireNonNull(r.getName()).equals(roomName));
+    return this;
+  }
+
+  public GetRoomQuestion withMemberHaveStatus(String mxId, RoomMembershipStateDTO status) {
+    this.filterList.add(r -> requireNonNull(r.getMembers()).stream()
+        .anyMatch(m -> requireNonNull(m.getMxid()).equals(mxId)
+            && m.getMembershipState() == status));
+    return this;
+  }
+
+  public GetRoomQuestion withCustomInterval(Long timeout, Long pollInterval) {
+    this.customTimeout = timeout;
+    this.customPollInterval = pollInterval;
+    return this;
   }
 
 
   @Override
   public RoomDTO answeredBy(Actor actor) {
-    checkOnlyOneArgument();
-    RoomDTO room = null;
-    if (nonNull(memberList)) {
-      room = repeatedRequest(filterForMembers(actor), "room");
+    try {
+      RoomDTO room = repeatedRequest(() -> filterForResults(actor), "room", customTimeout,
+          customPollInterval);
+      updateAvailableRooms(List.of(room), actor);
+      return room;
+    } catch (ConditionTimeoutException ex) {
+      log.error("Room could not bee found with requested parameters");
     }
-    if (nonNull(roomName)) {
-      room = repeatedRequest(filterForRoomName(actor), "room");
-    }
-    updateAvailableRooms(List.of(room), actor);
-    return room;
+    return null;
   }
 
   @NotNull
-  private Supplier<Optional<RoomDTO>> filterForRoomName(Actor actor) {
-    return () -> actor.asksFor(ownRooms()).stream().filter(r -> r.getName().equals(roomName))
+  private Optional<RoomDTO> filterForResults(Actor actor) {
+    return actor.asksFor(ownRooms()).stream()
+        .filter(filterList.stream().reduce(Predicate::and).orElseThrow())
         .findFirst();
   }
 
-  @NotNull
-  private Supplier<Optional<RoomDTO>> filterForMembers(Actor actor) {
-    return () -> getRoomWithSpecificMembers(actor.asksFor(ownRooms()), memberList);
-  }
-
-  @SneakyThrows
-  private void checkOnlyOneArgument() throws IllegalArgumentException {
-    Field[] fields = this.getClass().getDeclaredFields();
-    int count = 0;
-    for (Field f : fields) {
-      if (f.get(this) != null) {
-        if (count != 0) {
-          throw new IllegalArgumentException(
-              "RoomQuestion is only allowed with exact one search parameter. You provided "
-                  + count);
-        }
-        count++;
-      }
-    }
-  }
 }

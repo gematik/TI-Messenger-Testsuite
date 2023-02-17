@@ -1,13 +1,16 @@
-# language: de
+#  language: de
 @File:FeatureFile_08 @Ctl:UseCase @Ctl:OneHomeServer
 @PRODUKT:TI-M
 @AF-ID:AF_10063
-@AK-ID:ML-123669 @AK-ID:ML-123670 @AK-ID:ML-132591
+@AK-ID:ML-123670 @AK-ID:ML-123669 @AK-ID:ML-132591
 Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Organisation
-  AF_10063 - Austausch von Events zwischen Akteuren innerhalb einer Organisation
-  Dieser Anwendungsfall ermöglicht es Akteuren, welche sich in einem gemeinsamen Raum innerhalb eines Messenger-Service
-  befinden, Nachrichten auszutauschen und weitere durch die Matrix-Spezifikation festgelegte Aktionen (Events)
-  auszuführen.
+  Dieser Anwendungsfall ermöglicht es Akteuren, welche sich in einem gemeinsamen Raum innerhalb
+  eines Messenger-Service befinden, Nachrichten auszutauschen und weitere durch die
+  Matrix-Spezifikation festgelegte Aktionen (Events) auszuführen.
+
+  ML-123670 - Chatnachricht wird verarbeitet
+  ML-123669 - Auslösen einer Benachrichtigung
+  ML-132591 - TI-M Rohdatenerfassung und -lieferung
 
   Inhalt
   TF 1  -  3 HBA sendet Nachricht Chat/Raum (HBA an HBA)
@@ -18,6 +21,7 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
   TF 12 - 15 Löschen einer Nachricht durch HBA/OrgUser in Chat/Raum
   TF 16 & 17 Nachricht an ausgeloggten User senden durch HBA/OrgUser
   TF 18 - 21 Attachment senden durch HBA/OrgUser
+  TF 22 & 23 Eventaustausch auf dem HomeServer Chat/Raum
 
   @BP:P2P @Ctl:Chat @Ctl:MsgForward
   @TCID:TIM_11_AF_801 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
@@ -280,9 +284,9 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
     Und        "A" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
     Und        "B" empfängt eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
-    Dann       "A" ändert seine letzte Nachricht im Raum "TIM Testraum 1" in "At least I can say that I have tried"
-    Wenn       "B" empfängt eine Nachricht "At least I can say that I have tried" von "A" im Raum "TIM Testraum 1"
-    Und        "B" kann die Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1" nicht sehen
+    Wenn       "A" ändert seine letzte Nachricht im Raum "TIM Testraum 1" in "At least I can say that I have tried"
+    Dann       "B" empfängt eine Nachricht "At least I can say that I have tried" von "A" im Raum "TIM Testraum 1"
+    Und        "B" kann die Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1" nicht sehen [Retry 10 - 3]
 
   #@Shuffle(true)
   #@DistinctColumn(ApiName1A)
@@ -313,7 +317,7 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Und        "C" empfängt eine Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1"
     Wenn       "B" ändert seine letzte Nachricht im Raum "TIM Testraum 1" in "At least I can say that I have tried"
     Dann       "C" empfängt eine Nachricht "At least I can say that I have tried" von "B" im Raum "TIM Testraum 1"
-    Und        "C" kann die Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1" nicht sehen
+    Und        "C" kann die Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1" nicht sehen [Retry 10 - 3]
 
   #@Shuffle(true)
   #@DistinctColumn(ApiName1C)
@@ -341,8 +345,8 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Und        "B" schreibt "A" direkt "At least I can say that I have tried"
     Und        "A" empfängt eine Nachricht "At least I can say that I have tried" von "B"
     Wenn       "B" löscht seine Nachricht "At least I can say that I have tried" im Chat mit "A"
-    Dann       "A" kann die Nachricht "At least I can say that I have tried" von "B" im Chat mit "B" nicht sehen
-    Und        "B" kann die Nachricht "At least I can say that I have tried" von "B" im Chat mit "A" nicht sehen
+    Dann       "A" kann die Nachricht "At least I can say that I have tried" von "B" im Chat mit "B" nicht sehen [Retry 10 - 3]
+    Und        "B" kann die Nachricht "At least I can say that I have tried" von "B" im Chat mit "A" nicht sehen [Retry 10 - 3]
 
   #@Shuffle(true)
   #@DistinctColumn(ApiName1B)
@@ -372,8 +376,8 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Und        "C" schreibt "B" direkt "At least I can say that I have tried"
     Und        "B" empfängt eine Nachricht "At least I can say that I have tried" von "C"
     Wenn       "C" löscht seine Nachricht "At least I can say that I have tried" im Chat mit "B"
-    Dann       "B" kann die Nachricht "At least I can say that I have tried" von "C" im Chat mit "C" nicht sehen
-    Und        "C" kann die Nachricht "At least I can say that I have tried" von "C" im Chat mit "B" nicht sehen
+    Dann       "B" kann die Nachricht "At least I can say that I have tried" von "C" im Chat mit "C" nicht sehen [Retry 10 - 3]
+    Und        "C" kann die Nachricht "At least I can say that I have tried" von "C" im Chat mit "B" nicht sehen [Retry 10 - 3]
 
   #@Shuffle(true)
   #@DistinctColumn(ApiName1C)
@@ -401,8 +405,8 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Und        "A" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
     Und        "B" empfängt eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
     Wenn       "A" löscht seine Nachricht "Hello from the other site" im Raum "TIM Testraum 1"
-    Dann       "A" kann die Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1" nicht sehen
-    Und        "B" kann die Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1" nicht sehen
+    Dann       "A" kann die Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1" nicht sehen [Retry 10 - 3]
+    Und        "B" kann die Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1" nicht sehen [Retry 10 - 3]
 
   #@Shuffle(true)
   #@DistinctColumn(ApiName1A)
@@ -432,8 +436,8 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Und        "B" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
     Und        "C" empfängt eine Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1"
     Wenn       "B" löscht seine Nachricht "Hello from the other site" im Raum "TIM Testraum 1"
-    Dann       "B" kann die Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1" nicht sehen
-    Und        "C" kann die Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1" nicht sehen
+    Dann       "B" kann die Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1" nicht sehen [Retry 10 - 3]
+    Und        "C" kann die Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1" nicht sehen [Retry 10 - 3]
 
   #@Shuffle(true)
   #@DistinctColumn(ApiName1B)
@@ -613,3 +617,53 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
 
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
+
+  @BP:N2N @Ctl:Chat @Ctl:MsgForward @@Ctl:NOVZD
+  @TCID:TIM_11_AF_822 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 08.22 Events innerhalb einer Organisation - Chat - Eventaustausch auf dem HomeServer
+    Angenommen "A" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "A" findet TI-Messenger-Nutzer "B" bei der Suche im HomeServer
+    Wenn       "A" schreibt "B" direkt "Hello from the other site"
+    Und        "B" erhält eine Einladung von "A"
+    Und        "B" bestätigt eine Einladung von "A"
+    Dann       "B" empfängt eine Nachricht "Hello from the other site" von "A"
+    Wenn       "B" schreibt "A" direkt "At least I can say that I have tried"
+    Dann       "A" empfängt eine Nachricht "At least I can say that I have tried" von "B"
+
+  #@Shuffle(true)
+  #@DistinctColumn(ApiName1A)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |
+
+  @BP:N2N @Ctl:Raum @Ctl:MsgForward @@Ctl:NOVZD
+  @TCID:TIM_11_AF_823 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 08.23 Events innerhalb einer Organisation - Raum - Eventaustausch auf dem HomeServer
+    Angenommen "A" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" findet TI-Messenger-Nutzer "B" bei der Suche im HomeServer
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Wenn       "A" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
+    Dann       "B" empfängt eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
+    Wenn       "B" sendet die Nachricht "At least I can say that I have tried" an den Raum "TIM Testraum 1"
+    Dann       "A" empfängt eine Nachricht "At least I can say that I have tried" von "B" im Raum "TIM Testraum 1"
+
+  #@Shuffle(true)
+  #@DistinctColumn(ApiName1A)
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("client"))
+  @Filter(ApiName1B.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |

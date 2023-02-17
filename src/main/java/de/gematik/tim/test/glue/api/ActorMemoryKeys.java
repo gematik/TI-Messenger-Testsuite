@@ -25,6 +25,7 @@ public final class ActorMemoryKeys {
   public static final String DEVICE_ID = "deviceId";
   public static final String MX_ID = "mxid";
   public static final String ACCOUNT_PASSWORD = "accountPassword";
+  public static final String DISPLAY_NAME = "displayName";
   public static final String LAST_RESPONSE = "lastResponse";
   public static final String DIRECT_CHAT_NAME = "directChatWith-";
   public static final String MEDIA_ID = "mediaId";

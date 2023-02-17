@@ -20,7 +20,6 @@ import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.DELETE_ROOM;
 import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility.removeHsFromActor;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
-import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility;
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
 import io.restassured.response.Response;
 import net.serenitybdd.screenplay.Actor;

@@ -30,7 +30,6 @@ import static de.gematik.tim.test.glue.api.message.SendMessageTask.sendMessage;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.filterForRoomWithSpecificMembers;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.filterMessageForSenderAndText;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.filterMessagesForSenderAndText;
 import static java.util.Objects.requireNonNull;
 import static net.serenitybdd.screenplay.actors.OnStage.setTheStage;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
@@ -138,26 +137,40 @@ public class MessageControllerGlue {
     assertThat(messages).hasSize(messagesCount);
   }
 
-  @Wenn("{string} could not see message {string} from {string} in chat with {string}")
+  @Then("{string} could not see message {string} from {string} in chat with {string}")
   @Dann("{string} kann die Nachricht {string} von {string} im Chat mit {string} nicht sehen")
-  public void canNotSeeMessage(String actorName, String message, String userName,
+  public void canNotSeeChatMessage(String actorName, String message, String messageAuthor,
       String chatPartner) {
-    String roomName = theActorCalled(actorName).recall(
+    canNotSeeChatMessage(actorName, message, messageAuthor, chatPartner, null, null);
+  }
+
+  @Wenn("{string} could not see message {string} from {string} in chat with {string} [Retry {long} - {long}]")
+  @Dann("{string} kann die Nachricht {string} von {string} im Chat mit {string} nicht sehen [Retry {long} - {long}]")
+  public void canNotSeeChatMessage(String actorName, String messageText, String messageAuthor,
+      String chatPartner, Long timeout, Long pollInterval) {
+    Actor actor = theActorCalled(actorName);
+    String roomName = actor.recall(
         DIRECT_CHAT_NAME + theActorCalled(chatPartner).recall(MX_ID));
-    cantFindMessageInRoom(actorName, message, userName, roomName);
+    cantFindMessageInRoom(actorName, messageText, messageAuthor, roomName, timeout, pollInterval);
   }
 
   @Then("{string} could not find message {string} from {string} in room {string}")
   @Dann("{string} kann die Nachricht {string} von {string} im Raum {string} nicht sehen")
-  public void cantFindMessageInRoom(String actorName, String messageText, String userName,
+  public void cantFindMessageInRoom(String actorName, String messageText, String messageAuthor,
       String roomName) {
+    cantFindMessageInRoom(actorName, messageText, messageAuthor, roomName, null, null);
+  }
+
+  @Then("{string} could not find message {string} from {string} in room {string} [Retry {long} - {long}]")
+  @Dann("{string} kann die Nachricht {string} von {string} im Raum {string} nicht sehen [Retry {long} - {long}]")
+  public void cantFindMessageInRoom(String actorName, String messageText, String userName,
+      String roomName, Long timeout, Long pollInterval) {
     Actor actor = theActorCalled(actorName);
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
-    List<MessageDTO> messages = actor.asksFor(messagesInActiveRoom());
-    List<MessageDTO> filteredMessages = filterMessagesForSenderAndText(messageText,
-        theActorCalled(userName).recall(MX_ID),
-        messages);
-    assertThat(filteredMessages).as("Expected that no message should be found").hasSize(0);
+    MessageDTO message = actor.asksFor(
+        messageFromSenderWithTextInActiveRoom(messageText, theActorCalled(userName).recall(MX_ID))
+            .withCustomInterval(timeout, pollInterval));
+    assertThat(message).isNull();
   }
   //</editor-fold>
 

@@ -19,6 +19,7 @@ package de.gematik.tim.test.glue.api.fhir.practitioner;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEARCH_PRACTITIONER;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.repeatedRequest;
+import static java.util.Objects.requireNonNull;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
@@ -39,7 +40,7 @@ public class FhirSearchQuestion implements Question<FhirPractitionerSearchResult
   String telematikId;
   String typeCode;
   String typeDisplay;
-  Integer expectedAmound;
+  Integer atLeastExpectedResults;
   Long customTimeout;
   Long customPollInterval;
 
@@ -79,7 +80,7 @@ public class FhirSearchQuestion implements Question<FhirPractitionerSearchResult
   }
 
   public FhirSearchQuestion withAtLeastExpectedEntries(Integer amount) {
-    this.expectedAmound = amount;
+    this.atLeastExpectedResults = amount;
     return this;
   }
 
@@ -92,11 +93,8 @@ public class FhirSearchQuestion implements Question<FhirPractitionerSearchResult
   @Override
   public FhirPractitionerSearchResultDTO answeredBy(Actor actor) {
     try {
-      if (customTimeout != null && customPollInterval != null) {
-        return repeatedRequest(() -> requestFhirPractitioner(actor), "practitioner", customTimeout,
-            customPollInterval);
-      }
-      return repeatedRequest(() -> requestFhirPractitioner(actor), "practitioner");
+      return repeatedRequest(() -> requestFhirPractitioner(actor), "practitioner", customTimeout,
+          customPollInterval);
     } catch (ConditionTimeoutException ex) {
       return ((Response) actor.recall(LAST_RESPONSE)).body()
           .as(FhirPractitionerSearchResultDTO.class);
@@ -104,14 +102,14 @@ public class FhirSearchQuestion implements Question<FhirPractitionerSearchResult
   }
 
   private Optional<FhirPractitionerSearchResultDTO> requestFhirPractitioner(Actor actor) {
-    actor.attemptsTo(
-        SEARCH_PRACTITIONER.request().with(this::prepareQuery));
+    actor.attemptsTo(SEARCH_PRACTITIONER.request().with(this::prepareQuery));
     RawDataStatistics.search();
     actor.remember(LAST_RESPONSE, lastResponse());
 
     FhirPractitionerSearchResultDTO res = lastResponse().body()
         .as(FhirPractitionerSearchResultDTO.class);
-    return res.getTotalSearchResults() >= expectedAmound ? Optional.of(res) : Optional.empty();
+    return requireNonNull(res.getTotalSearchResults()) >= atLeastExpectedResults ? Optional.of(res)
+        : Optional.empty();
   }
 
   private RequestSpecification prepareQuery(RequestSpecification request) {

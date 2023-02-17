@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.17">
+<meta name="generator" content="Asciidoctor 2.0.18">
 <title>TI-Messenger-Dienst Release 1.1.0</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -84,10 +84,10 @@ code{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;
 ul,ol,dl{line-height:1.6;margin-bottom:1.25em;list-style-position:outside;font-family:inherit}
 ul,ol{margin-left:1.5em}
 ul li ul,ul li ol{margin-left:1.25em;margin-bottom:0}
-ul.square li ul,ul.circle li ul,ul.disc li ul{list-style:inherit}
-ul.square{list-style-type:square}
 ul.circle{list-style-type:circle}
 ul.disc{list-style-type:disc}
+ul.square{list-style-type:square}
+ul.circle ul:not([class]),ul.disc ul:not([class]),ul.square ul:not([class]){list-style:inherit}
 ol li ul,ol li ol{margin-left:1.25em;margin-bottom:0}
 dl dt{margin-bottom:.3125em;font-weight:bold}
 dl dd{margin-bottom:1.25em}
@@ -465,7 +465,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#id41">4.1 Messenger-Service für eine Organisation</a></li>
 <li><a href="#_4_2_test_clients_mit_testtreiberschnittstelle">4.2 Test Clients mit Testtreiberschnittstelle</a></li>
 <li><a href="#id43">4.3 Anforderungen an die Clients</a></li>
-<li><a href="#_4_4_verwaltung_der_resourcen">4.4 Verwaltung der Resourcen</a></li>
+<li><a href="#_4_4_verwaltung_der_ressourcen">4.4 Verwaltung der Ressourcen</a></li>
 </ul>
 </li>
 <li><a href="#_5_referenzimplementierung">5. Referenzimplementierung</a></li>
@@ -547,7 +547,13 @@ Alle wichtigen Informationen für die Hersteller sind wie folgt gekennzeichnet.<
 <p><br></p>
 </div>
 <div class="paragraph">
-<p><span class="image center"><img src="../../doc/images/System.png" alt="System"></span></p>
+<p>Bei der Umsetzung der Funktionalitäten des TI-Messenger-Dienstes sind mehrere Komponenten beteiligt,
+die durch verschiedene Anbieter bereitgestellt werden. Die folgende Abbildung zeigt alle an der
+TI-Messenger-Architektur beteiligten Komponenten mit deren Schnittstellen.</p>
+</div>
+<div class="paragraph">
+<p><span class="image center"><img src="../../doc/images/System.png" alt="System"></span>
+&nbsp; &nbsp; &nbsp;Abbildung : Komponenten der TI-Messenger-Architektur und deren Schnittstellen (gemSpec_TI-Messenger-Dienst)</p>
 </div>
 <div class="paragraph text-right">
 <p><a href="#id0">Inhaltsverzeichnis</a></p>
@@ -615,7 +621,7 @@ dann die einzelnen Tests für den jeweiligen Anwendungsfall.</p>
 <td class="tableblock halign-center valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AF_10064</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Föderationszugehörigkeit eines Messenger-Service prüfen</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">gilt für alle Anwendungsfälle <sup>2)</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">wird im AF_10104 und AF_10061 mit getestet <sup>2)</sup></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">07</p></td>
@@ -643,7 +649,7 @@ dann die einzelnen Tests für den jeweiligen Anwendungsfall.</p>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">11</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ohne</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AF_10061</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Einladung von Akteuren via Freigabeliste</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
@@ -657,7 +663,7 @@ bereitzustellen. Die gematik gibt lediglich grundlegende bereitzustellende Funkt
 an dieser Schnittstelle durch.</p>
 </div>
 <div class="paragraph">
-<p><sup>2)</sup> Für diesen Anwendungsfall wurden kein Feature File angelegt. Der Anwendungsfall AF_10064 wird in allen anderen Szenarien implizit mit getestet.</p>
+<p><sup>2)</sup> Für diesen Anwendungsfall wurden kein Feature File angelegt.</p>
 </div>
 <div class="paragraph text-right">
 <p><a href="#id0">Inhaltsverzeichnis</a></p>
@@ -887,7 +893,7 @@ Absätze beschreiben die benötigten Bereitstellungen der Hersteller.
 </td>
 <td class="content">
 <span class="black"><strong><em>Für die Ausführung der Testsuite werden eine Domain und eine Organisation benötigt. Diese Domain und Organisation
-müssen von den Herstellern vor Begin der Test Phase eingerichtet werden und die Daten an die gematik übermittelt werden.</em></strong></span>
+müssen von den Herstellern vor Beginn der Testphase eingerichtet werden und die Daten an die gematik übermittelt werden.</em></strong></span>
 </td>
 </tr>
 </table>
@@ -924,7 +930,7 @@ müssen von den Herstellern vor Begin der Test Phase eingerichtet werden und die
 <div class="paragraph">
 <p>Das folgende Bild zeigt die Anschaltung der Testtreiberschnittstelle und der Clients. Die Clients können über eine
 externe oder interne Testtreiberschnittstelle mit der Testsuite remote oder local verbunden werden. Diese Leistung muss von
-jedem Hersteller erbracht werden. Welche Clients eingesetzt werden können die Hersteller selbstständig entscheiden.
+jedem Hersteller erbracht werden. Welche Clients eingesetzt werden, können die Hersteller selbstständig entscheiden.
 Es werden nur bereitgestellte Clients zugelassen.<br>
 Clients mit den gleichen Eigenschaften werden unter einer URL zusammengefasst. Diese URL wird dann in die Konfigurationsdatei
 'combine_items.json' eingetragen. In dieser Datei werden alle Testobjekte verwaltet.</p>
@@ -945,7 +951,7 @@ Clients mit den gleichen Eigenschaften werden unter einer URL zusammengefasst. D
 <p><br></p>
 </div>
 <div class="paragraph">
-<p>Die Testsuite benötigt für die Ausführung der Test eine bestimmte Anzahl von Clients. Besonders die Tests für den Gruppen
+<p>Die Testsuite benötigt für die Ausführung der Tests eine bestimmte Anzahl von Clients. Besonders die Tests für den Gruppen
 Chat benötigen diverse Endgeräte.<br></p>
 </div>
 <div class="admonitionblock tip">
@@ -955,7 +961,8 @@ Chat benötigen diverse Endgeräte.<br></p>
 <div class="title">&#128681;</div>
 </td>
 <td class="content">
-<span class="black"><strong><em>Grundsätzlich müssen an jeder Schnitttelle mindestens drei Gräte zur Verfügung stehen (z.B. 3 x IOS Clients usw.).
+<span class="black"><strong><em>Grundsätzlich müssen an jeder Schnittstelle mindestens drei Gräte zur Verfügung stehen
+(z.B. 3 x IOS Clients, 3 x Android Clients, 3 x Windows Clients usw.).
 Ausgenommen von dieser Festlegung ist der Org-Admin, hier ist ein Geräte ausreichend.</em></strong></span>
 </td>
 </tr>
@@ -968,7 +975,7 @@ Ausgenommen von dieser Festlegung ist der Org-Admin, hier ist ein Geräte ausrei
 <div class="title">&#128681;</div>
 </td>
 <td class="content">
-<span class="black"><strong><em>Kartenbestellung über das gematik Fachportal:<br>
+<span class="black"><strong><em>Die Clients benötigen Testidentitäten (SMC-B/HBA karten). Die Kartenbestellung erfolgt über das gematik Fachportal:<br>
 <a href="https://fachportal.gematik.de/gematik-onlineshop/testkarten?ai%5Baction%5D=detail&amp;ai%5Bcontroller%5D=Catalog&amp;ai%5Bd_name%5D=Testkarte-eGK-G2&amp;ai%5Bd_pos%5D=1" class="bare">https://fachportal.gematik.de/gematik-onlineshop/testkarten?ai%5Baction%5D=detail&amp;ai%5Bcontroller%5D=Catalog&amp;ai%5Bd_name%5D=Testkarte-eGK-G2&amp;ai%5Bd_pos%5D=1</a></em></strong></span>
 </td>
 </tr>
@@ -983,7 +990,7 @@ Ausgenommen von dieser Festlegung ist der Org-Admin, hier ist ein Geräte ausrei
 <td class="content">
 <span class="black"><strong><em>Welche Testkarten müssen bestellt werden:<br>
 1. "TestKarte SMC-B G2.1 Krankenhaus" oder "TestKarte SMC-B G2.1 Arztpraxis"<br>
-   &nbsp; &nbsp; &nbsp;(1x für OrgAdmin Achnittstelle)<br>
+   &nbsp; &nbsp; &nbsp;(1x für OrgAdmin Schnittstelle)<br>
 2. "TestKarte HBA G2.1 Arzt" (3x pro Schnittstelle)</em></strong></span>
 </td>
 </tr>
@@ -996,7 +1003,7 @@ Ausgenommen von dieser Festlegung ist der Org-Admin, hier ist ein Geräte ausrei
 <div class="title">&#128681;</div>
 </td>
 <td class="content">
-<span class="black"><strong><em>Wenn mehere Hersteller die Testresourcen gleichzeitig nutzen wollen, muss die Anzahl der Clients deutlich erhöht werden.</em></strong></span>
+<span class="black"><strong><em>Wenn mehere Hersteller die Testressourcen gleichzeitig nutzen wollen, muss die Anzahl der Clients deutlich erhöht werden.</em></strong></span>
 </td>
 </tr>
 </table>
@@ -1009,7 +1016,7 @@ Ausgenommen von dieser Festlegung ist der Org-Admin, hier ist ein Geräte ausrei
 </div>
 </div>
 <div class="sect3">
-<h4 id="_4_4_verwaltung_der_resourcen">4.4 Verwaltung der Resourcen</h4>
+<h4 id="_4_4_verwaltung_der_ressourcen">4.4 Verwaltung der Ressourcen</h4>
 <div class="paragraph">
 <p><br></p>
 </div>
@@ -1205,11 +1212,11 @@ für die <a href="#id2">nicht erfolgreiche</a> Berechtigungsprüfung.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">@Ctl:UseCase</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Test die UseCases aus der Spezifikation abbilden</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tests die UseCases aus der Spezifikation abbilden</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">@Ctl:OneHomeServer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Test die mit nur einem Homeserver ausgeführt werden können</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tests die mit nur einem Homeserver ausgeführt werden können</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">@Ctl:SchnittstellenInfo</p></td>
@@ -1257,7 +1264,7 @@ für die <a href="#id2">nicht erfolgreiche</a> Berechtigungsprüfung.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">@Ctl:MsgLogout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Test mit Offline-Geräten</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tests mit Offline-Geräten</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">@Ctl:Attachment</p></td>
@@ -1278,6 +1285,10 @@ für die <a href="#id2">nicht erfolgreiche</a> Berechtigungsprüfung.</p></td>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">@Ctl:MultiDevices</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ein User verwendet mehrere Geräte</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">@Ctl:NOVZD</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tests die den VZD nicht benötigen</p></td>
 </tr>
 </tbody>
 </table>
@@ -1315,7 +1326,7 @@ für die <a href="#id2">nicht erfolgreiche</a> Berechtigungsprüfung.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">@AF-ID:</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Verweis auf den Anwendungsfalls (Spec und Polarion)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verweis auf den Anwendungsfall (Spec und Polarion)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">@AK-ID:</p></td>
@@ -1358,7 +1369,7 @@ für die <a href="#id2">nicht erfolgreiche</a> Berechtigungsprüfung.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">@Plugin:</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Steuern das cucumber-test-combinations Plugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Steuerung des cucumber-test-combinations Plugins</p></td>
 </tr>
 </tbody>
 </table>
@@ -1402,7 +1413,7 @@ für die <a href="#id2">nicht erfolgreiche</a> Berechtigungsprüfung.</p></td>
 <p>Grundlage hierfür ist das kartesische Produkt aller möglichen Kombinationen der in der generierten Target combine_items.json (target/generated-combine/combine_items.json) enthaltenen Schnittstellen. Mit Hilfe von Filtern, die direkt im .cute-File (später feature-File) gesetzt werden, kann nun diese Liste verkleinert und fokussiert werden.</p>
 </div>
 <div class="paragraph">
-<p>Die <strong>combine_items.json im Target Folder</strong> (target/generated-combine/combine_items.json) wird aus der <strong>Source combin_items.json</strong> (src/test/resources/combine_items.json) und den aus der <strong>Testtreiber Schnittstelle zum Device ausgelesenen Daten</strong> (definiert in der pom.xml) erzeugt.</p>
+<p>Die <strong>combine_items.json im Target Folder</strong> (target/generated-combine/combine_items.json) wird aus der <strong>Source combine_items.json</strong> (src/test/resources/combine_items.json) und den aus der <strong>Testtreiber Schnittstelle zum Device ausgelesenen Daten</strong> (definiert in der pom.xml) erzeugt.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1426,7 +1437,7 @@ für die <a href="#id2">nicht erfolgreiche</a> Berechtigungsprüfung.</p></td>
 </div>
 </div>
 <div class="paragraph">
-<p>In der Source combin_items.json (src/test/resources/combine_items.json) enthalten sind:</p>
+<p>In der Source combine_items.json (src/test/resources/combine_items.json) enthalten sind:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1451,8 +1462,10 @@ für die <a href="#id2">nicht erfolgreiche</a> Berechtigungsprüfung.</p></td>
 <p><strong>Vergleichsoptionen Tags</strong></p>
 </div>
 <div class="paragraph">
-<p>Tags, die in der Source combine_itmes.json angegeben sind und ebenfalls aus einem Device ausgelesen werden sollen (definiert in der pom.xml), können miteinander vergleichen werden. Dies geschieht case sensitive (1:1 Beziehung). Sollte der Tag in der combine_items.json und der definierte in der pom.xml sich unterscheiden, wird der Tag aus der Source combine_items.json als zusätzlicher Tag gewertet und in die Target combine_items.json übernommen
-Beispiel:</p>
+<p>Tags, die in der Source combine_itmes.json angegeben sind und ebenfalls aus einem Device ausgelesen werden sollen (definiert in der pom.xml), können miteinander verglichen werden. Dies geschieht case sensitive (1:1 Beziehung). Sollte sich der Tag in der combine_items.json und von dem in der pom.xml definierten unterscheiden, wird der Tag aus der Source combine_items.json als zusätzlicher Tag gewertet und in die Target combine_items.json übernommen.</p>
+</div>
+<div class="paragraph">
+<p>Beispiel:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1534,7 +1547,7 @@ Beispiel:</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">iOS</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Windwos, Linux, Android, &#8230;&#8203;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Windows, Linux, Android, &#8230;&#8203;</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Abbruch - Error</p></td>
 </tr>
 <tr>
@@ -1559,7 +1572,7 @@ Beispiel:</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="../../doc/images/OS_Info.PNG" alt="OS Info">
+<img src="../../doc/images/OS_Info.png" alt="OS Info">
 </div>
 </div>
 <div class="paragraph">
@@ -1616,7 +1629,7 @@ Beispiel:</p>
 <p>Client</p>
 </li>
 <li>
-<p>Welcher neu (new) zu testen ist (auf diesen Tag wird später noch genauer eingegangen)</p>
+<p>Welcher neu (new) zu testen ist (dieser Tag wird in Kapitel 6.3 noch genauer erläutert)</p>
 </li>
 <li>
 <p>Dieser Client ist Preferred IOP (prefIOP) → Wird also in den IOP Tests bevorzugt genutzt</p>
@@ -1674,7 +1687,7 @@ Beispiel:</p>
 <p>Sie sollen sich auch selbst kombinieren dürfen (z.B. IOS mit IOS, Android mit Android)</p>
 </li>
 <li>
-<p>Sie dürfen auch vice versa vorkommen (z.B. IOS-Andro<code>id</code>, Android-IOS)</p>
+<p>Sie dürfen auch vice versa vorkommen (z.B. IOS-Android, Android-IOS)</p>
 </li>
 <li>
 <p>ApiName1A soll ein Client sein (kein OrgAdmin)</p>
@@ -1712,7 +1725,7 @@ Beispiel:</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="../../doc/images/Kombi1.PNG" alt="Kombi1">
+<img src="../../doc/images/Kombi1.png" alt="Kombi1">
 </div>
 </div>
 <div class="paragraph">
@@ -1769,7 +1782,7 @@ finden sind:</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="../../doc/images/KombiNew.PNG" alt="KombiNew">
+<img src="../../doc/images/KombiNew.png" alt="KombiNew">
 </div>
 </div>
 <div class="paragraph">
@@ -2199,7 +2212,7 @@ erstellt hat.</strong></p>
 <tbody>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">03.1</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Organisa tionsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">03.2</p></td>
@@ -2207,15 +2220,11 @@ erstellt hat.</strong></p>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">03.3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen/ändern, Location anlegen/ändern, Endpoint anlegen/ändern und löschen</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen/ändern, Endpoints anlegen/ändern und löschen</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">03.4</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Organisationsressourcen im Verzeichnisdienst hinzufügen - Nicht validen Healthcare-Service durch Org-Admin anlegen</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">03.5</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service anlegen und durch anderen OrgAdmin ändern</p></td>
 </tr>
 </tbody>
 </table>
@@ -2242,6 +2251,10 @@ erstellt hat.</strong></p>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">04.2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Anmeldung eines Akteurs - Erfolgreiche Anmeldung eines Akteurs (OrgUser)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">04.3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Anmeldung eines Akteurs - Erfolgreiche Anmeldung eines Akteurs (OrgAdmin)</p></td>
 </tr>
 </tbody>
 </table>
@@ -2365,19 +2378,43 @@ erstellt hat.</strong></p>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">07.16</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Einladung innerhalb einer Organisation - Einladung in Chat - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch HBA-User</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">07.17</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Einladung innerhalb einer Organisation - Einladung in Raum - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch Organisations-User</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">07.18</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Einladung innerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Einladung innerhalb einer Organisation - Einladung in Chat - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">07.19</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Einladung innerhalb einer Organisation - Einladung in Raum - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">07.20</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Einladung innerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">07.21</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Einladung innerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">07.22</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Einladung innerhalb einer Organisation - Einladung in Chat - Volltextsuche auf dem Homeserver</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">07.23</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Einladung innerhalb einer Organisation - Einladung in Chat - unscharfe Suche auf dem Homeserver</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">07.24</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Einladung innerhalb einer Organisation - Einladung in Raum - Volltextsuche auf dem Homeserver</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">07.25</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Einladung innerhalb einer Organisation - Einladung in Raum - unscharfe Suche auf dem Homeserver</p></td>
 </tr>
 </tbody>
 </table>
@@ -2435,59 +2472,59 @@ erstellt hat.</strong></p>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">08.10</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb einer Organisation - Chat - Organisations-User sendet eine Nachricht an HealthCareService</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">08.11</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb einer Organisation - Chat - HBA-User sendet eine Nachricht an HealthCareService</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">08.12</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb einer Organisation - Raum - HBA-User ändert eine Nachricht</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">08.13</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">08.11</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb einer Organisation - Raum - Organisations-User ändert eine Nachricht</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">08.14</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">08.12</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb einer Organisation - Chat - HBA-User "B" löscht eine Nachricht</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">08.15</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">08.13</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb einer Organisation - Chat - Organisations-User "B" löscht eine Nachricht</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">08.16</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">08.14</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb einer Organisation - Raum - HBA-User "A" löscht eine Nachricht</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">08.17</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">08.15</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb einer Organisation - Raum - Organisations-User "A" löscht eine Nachricht</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">08.18</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">08.16</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb einer Organisation - Raum - HBA-User "A" sendet eine Nachricht an ausgeloggten Test-Client "B"</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">08.19</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">08.17</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb einer Organisation - Raum - Organisations-User "A" sendet eine Nachricht an ausgeloggten Test-Client "B"</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">08.20</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">08.18</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb einer Organisation - Raum - HBA-User "A" sendet ein Attachment</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">08.21</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">08.19</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb einer Organisation - Raum - Organisations-User "A" sendet ein Attachment</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">08.22</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">08.20</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb einer Organisation - Raum - HBA-User "B" sendet ein Attachment</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">08.23</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">08.21</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb einer Organisation - Raum - Organisations-User "B" sendet ein Attachment</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">08.22</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb einer Organisation - Chat - Eventaustausch auf dem HomeServer</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">08.23</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb einer Organisation - Raum - Eventaustausch auf dem HomeServer</p></td>
 </tr>
 </tbody>
 </table>
@@ -2569,19 +2606,31 @@ erstellt hat.</strong></p>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">09.16</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Einladung außerhalb einer Organisation - Einladung in Chat - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Einladung außerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch HBA-User</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">09.17</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Einladung außerhalb einer Organisation - Einladung in Raum - HBA-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Einladung außerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch Organisations-User</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">09.18</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Einladung außerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Einladung außerhalb einer Organisation - Einladung in Chat - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">09.19</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Einladung außerhalb einer Organisation - Einladung in Raum - HBA-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">09.20</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Einladung außerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">09.21</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Einladung außerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">09.22</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Einladung außerhalb einer Organisation - Negativ Suche - Volltextsuche auf dem Homeserver</p></td>
 </tr>
 </tbody>
 </table>
@@ -2639,58 +2688,50 @@ erstellt hat.</strong></p>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">10.10</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Chat - Organisations-User sendet eine Nachricht an HealthCareService</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">10.11</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Chat - HBA-User sendet eine Nachricht an HealthCareService</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">10.12</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Raum - HBA_User ändert eine Nachricht</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">10.13</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">10.11</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Raum - Organisations-User ändert eine Nachricht</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">10.14</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">10.12</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Chat - HBA-User "B" löscht eine Nachricht</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">10.15</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">10.13</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Chat - Organisations-User "B" löscht eine Nachricht</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">10.16</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">10.14</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Raum - HBA-User "A" löscht eine Nachricht</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">10.17</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">10.15</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Raum - Organisations-User "A" löscht eine Nachricht</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">10.18</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">10.16</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Raum - HBA-User "A" sendet eine Nachricht an ausgeloggten "B"</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">10.19</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">10.17</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Raum - Organisations-User "A" sendet eine Nachricht an ausgeloggten "B"</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">10.20</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">10.18</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Raum - HBA-User "B" sendet ein Attachment</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">10.21</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">10.19</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Raum - Organisations-User "B" sendet ein Attachment</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">10.22</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">10.20</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Raum - HBA-User "A" sendet ein Attachment</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">10.23</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">10.21</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Raum - Organisations-User "A" sendet ein Attachment</p></td>
 </tr>
 </tbody>
@@ -2751,27 +2792,35 @@ erstellt hat.</strong></p>
 <tbody>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">12.1</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht (HBA-User)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">12.2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Gruppenchat - Test-Client "E" sendet eine Nachricht</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Gruppenchat - Test-Client "E" sendet eine Nachricht (HBA-User)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">12.3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Gruppenchat - Test-Client "F" sendet eine Nachricht (Organisations-User)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">12.4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Gruppenchat - Test-Client "C" sendet eine Nachricht (HBA-User lädt Organisations-User ein)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">12.5</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb einer Organisation - Gruppenchat - Test-Client "C" sendet eine Nachricht</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht (HBA-User)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">12.6</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb einer Organisation - Gruppenchat - Test-Client "C" sendet eine Nachricht (HBA-User)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">12.7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb einer Organisation - Gruppenchat - Test-Client "B" sendet eine Nachricht (Organisations-User)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">12.8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb einer Organisation - Gruppenchat - Test-Client "B" sendet eine Nachricht (HBA-User lädt Organisations-User ein)</p></td>
 </tr>
 </tbody>
 </table>
@@ -2949,7 +2998,7 @@ selbst erklärend.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-01-27 11:36:17 +0100
+Last updated 2023-02-17 10:46:58 +0100
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/run_prettify.min.js"></script>

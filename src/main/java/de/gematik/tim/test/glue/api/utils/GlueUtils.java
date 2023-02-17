@@ -32,15 +32,20 @@ import de.gematik.tim.test.models.MessageDTO;
 import de.gematik.tim.test.models.RoomDTO;
 import de.gematik.tim.test.models.RoomMemberDTO;
 import io.cucumber.java.ParameterType;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.function.Supplier;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.awaitility.core.ConditionTimeoutException;
@@ -51,23 +56,35 @@ import org.springframework.http.HttpStatus;
 public class GlueUtils {
 
   public static final String TEST_RESOURCES_JSON_PATH = "src/test/resources/json/";
+  public static final String MVN_PROPERTIES_LOCATION = "./target/classes/mvn.properties";
+  public static final String RUN_WITHOUT_RETRY_PROPERTY_NAME = "runWithoutRetry";
+  public static final String POLL_INTERVAL_PROPERTY_NAME = "pollInterval";
+  public static final String TIMEOUT_PROPERTY_NAME = "timeout";
 
-  private static Long timeout = 10L;
-  private static Long pollInterval = 1L;
+  private static Long timeout;
+  private static final Long TIMEOUT_DEFAULT = 10L;
+  private static Long pollInterval;
+  private static final Long POLL_INTERVAL_DEFAULT = 1L;
+  private static final boolean RUN_WITHOUT_RETRY;
 
   static {
-    String timeoutString = System.getProperty("timeout");
-    String pollIntervalString = System.getProperty("pollInterval");
+    Properties p = new Properties();
     try {
-      if (timeoutString != null && pollIntervalString != null) {
-        timeout = Long.parseLong(timeoutString);
-        pollInterval = Long.parseLong(pollIntervalString);
-      } else if (timeoutString != null || pollIntervalString != null) {
-        log.error(format(
-            "Please set timeout and pollInterval! Will use default -> timeout: %s, pollInterval: %s",
-            timeout, pollInterval));
-      }
+      FileInputStream is = FileUtils.openInputStream(new File(MVN_PROPERTIES_LOCATION));
+      p.load(is);
+    } catch (IOException e) {
+      log.error("Could not find any maven properties at " + MVN_PROPERTIES_LOCATION);
+      throw new IllegalArgumentException(e);
+    }
+    String timeoutString = p.getProperty(TIMEOUT_PROPERTY_NAME);
+    String pollIntervalString = p.getProperty(POLL_INTERVAL_PROPERTY_NAME);
+    RUN_WITHOUT_RETRY = Boolean.parseBoolean(p.getProperty(RUN_WITHOUT_RETRY_PROPERTY_NAME));
+    try {
+      timeout = Long.parseLong(timeoutString);
+      pollInterval = Long.parseLong(pollIntervalString);
     } catch (Exception ex) {
+      timeout = TIMEOUT_DEFAULT;
+      pollInterval = POLL_INTERVAL_DEFAULT;
       log.info(format(
           "Could not parse timeout (%s) or pollInterval (%s). Will use default -> timeout: %s, pollInterval: %s",
           timeoutString, pollIntervalString, timeout, pollInterval));
@@ -177,7 +194,11 @@ public class GlueUtils {
 
   public static <T> T repeatedRequest(Supplier<Optional<T>> request, String resourceType,
       Long customTimeout, Long customPollInterval) {
-    if (customTimeout <= 1) {
+    if (customTimeout == null || customPollInterval == null) {
+      customTimeout = timeout;
+      customPollInterval = pollInterval;
+    }
+    if (customTimeout <= 1 || RUN_WITHOUT_RETRY) {
       return request.get()
           .orElseThrow(() -> new ConditionTimeoutException(
               format("Asked for %s, but could not be found", resourceType)));

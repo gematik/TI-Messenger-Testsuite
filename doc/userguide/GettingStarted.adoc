@@ -12,15 +12,18 @@
 :imagesdir: ../../doc/images
 :imagesoutdir: ../images
 :testdir: ../../Tests
-:sourcedir: ../../Sources
+:sourcedir: ../../src
 :plantumldir: ../plantuml
+:rootdir: ../../
 == Erste Schritte
 
 === Zertifikate einrichten
 
+Die Testtreiberschnittstelle ist über mTls abgesichert. Da jegliche Kommunikation über den Tiger-Proxy läuft muss dem Tiger-Proxy ein Klient-Zertifikat mitgegeben werden. In diesem Kapitel wird beschrieben wie der Proxy richtig konfiguriert werden kenn.
+
 ==== Tiger Proxy für externe Kommunikation konfigurieren
 
-Damit die Kommunikation zwischen Testsuite und Tiger Proxy gelingt muss ein alternativer Name in das Zertifikat des Tiger Proxy mit aufgenommen werden. Dies geschieht über die link:../../tiger.yml[tiger.yml].
+Damit die Kommunikation zwischen Testsuite und Tiger-Proxy gelingt muss ein alternativer Name in das Zertifikat des Tiger Proxy mit aufgenommen werden. Dies geschieht über die link:{rootdir}tiger.yml[tiger.yml].
 
 Die Konfiguration könnte dann wie folgt aussehen:
 
@@ -37,7 +40,7 @@ Die Liste kann beliebig erweitert werden. Alle angesprochenen Testtreiberschnitt
 ==== Client-Zertifikat für mTLS einrichten
 
 Die Testtreiberschnittstelle setzt auf mTLS.
-Daher muss ein Client-Zertifikat bereitgestellt und dem Tiger Proxy übergebenwerden. Die Testsuite ist so vorbereitet, dass Sie den Path und das Passwort unter folgenden Umgebungsvariablen erwartet:
+Daher muss ein Client-Zertifikat bereitgestellt und dem Tiger Proxy übergeben werden. Die Testsuite ist so vorbereitet, dass Sie den Path und das Passwort unter folgenden Umgebungsvariablen erwartet:
 
 * TIM_KEYSTORE
 * TIM_KEYSTORE_PW
@@ -54,10 +57,10 @@ Eine Anleitung hierzu ist link:DevGuide.adoc#Disable-TLS[hier] zu finden.
 
 === Testtreiberschnittstelle hinzufügen
 
-Alle zu testenden Testtreiberschnittstellen werden in der Datei link:../src/test/resources/combine_items.json[combine_items.json] verwaltet.
+Alle zu testenden Testtreiberschnittstellen werden in der Datei link:{sourcedir}/test/resources/combine_items.json[combine_items.json] verwaltet.
 Um eine neue Testtreiberschnittstelle zur Testsuite hinzuzufügen, muss ein entsprechender Eintrag in dieser Datei ergänzt werden.
 
-Der `value` in der link:../src/test/resources/combine_items.json[combine_items.json] kann entweder direkt die vollständige URL oder für die bessere Zuordnung einen Alias darstellen.
+Der `value` in der link:{sourcedir}/test/resources/combine_items.json[combine_items.json] kann entweder direkt die vollständige URL oder für die bessere Zuordnung einen Alias darstellen.
 Der Alias kann freie gewählt werden.
 Sollte ein Alias verwendet werden muss die entsprechende URL unter `url` eingetragen werden.
 
@@ -70,7 +73,7 @@ Sollte ein Alias verwendet werden muss die entsprechende URL unter `url` eingetr
 }
 ----
 
-IMPORTANT: Für die Verwendung eines `alias` ist es ebenfalls nötig diesen in die link:../tiger.yml[tiger.yml] nach folgendem Schema einzutragen!
+IMPORTANT: Für die Verwendung eines `alias` ist es ebenfalls nötig diesen in die link:{rootdir}tiger.yml[tiger.yml] nach folgendem Schema einzutragen!
 
 [source,yml]
 ----
@@ -90,7 +93,7 @@ servers:
 
 <1> Default local Tiger muss bestehen bleiben.
 <2> Unter Servers können die einzelnen Services genannt werden.
-Alias muss mit alias in link:../src/test/resources/combine_items.json[combine_items.json] übereinstimmen.
+Alias muss mit alias in link:{sourcedir}/test/resources/combine_items.json[combine_items.json] übereinstimmen.
 <3> Der Typ muss `externalUrl` sein.
 <4> Unter `source` muss die entsprechende URL stehen.
 <5> Ein Healthcheck ist optional (Führt ein GET aus und erwartet eine beliebige Antwort).
@@ -106,7 +109,7 @@ mvn verify
 
 === Auswerten der Testergebnisse
 
-Nach der Testausführung liegt der aktuelle Report unter link:target/site/serenity/index.html[target/site/serenity/index.html].
+Nach der Testausführung liegt der aktuelle Report im Build-Verzeichnis unter link:{rootdir}target/site/serenity/index.html[target/site/serenity/index.html].
 Wiederholte Ausführungen werden in einem gemeinsamen Report zusammengefasst.
 
-Zusätzlich wird jeder Durchlauf mit seinem Report und den genutzten Feature-Dateien in dem Ordner link:reports[reports] gespeichert.
+Zusätzlich wird jeder Durchlauf mit seinem Report und den genutzten Feature-Dateien im Root-Verzeichnis im Ordner link:{rootdir}reports[reports] gespeichert.
