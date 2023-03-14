@@ -1,14 +1,14 @@
 /*
- * Copyright (c) 2023 gematik GmbH
- * 
- * Licensed under the Apache License, Version 2.0 (the License);
+ * Copyright 20023 gematik GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an 'AS IS' BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -27,8 +27,11 @@ import io.restassured.response.Response;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import net.serenitybdd.core.Serenity;
 import org.apache.commons.io.FileUtils;
@@ -38,13 +41,9 @@ import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RawDataStatistics {
 
-  private RawDataStatistics() {
-  }
-  public static final String YML_PATHNAME = "./target/generated-combine/rohdaten.yml";
-  public static final String JSON_PATHNAME = "./target/generated-combine/rohdaten.json";
-  public static final String CSV_PATHNAME = "./target/generated-combine/rohdaten.csv";
   private static final RawDataEventCounter login = new RawDataEventCounter();
   private static final RawDataEventCounter search = new RawDataEventCounter();
   private static final RawDataEventCounter inviteToRoomSameHomeserver = new RawDataEventCounter();
@@ -52,10 +51,35 @@ public class RawDataStatistics {
   private static final RawDataEventCounter editContactManagement = new RawDataEventCounter();
   private static final RawDataEventCounter inviteToRoomMultiHomeserver = new RawDataEventCounter();
   private static final RawDataEventCounter exchangeMessageMultiHomeserver = new RawDataEventCounter();
-  private static final String[] HEADERS = new String[]{"description", "success", "error",  "errors"};
-  public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-  public static final YAMLMapper YAML_MAPPER = new YAMLMapper();
 
+  private static final String YML_PATHNAME = "./target/generated-raw-data/rohdaten.yml";
+  private static final String JSON_PATHNAME = "./target/generated-raw-data/rohdaten.json";
+  private static final String CSV_PATHNAME = "./target/generated-raw-data/rohdaten.csv";
+
+  private static final String TIM_UC_10057_01 = "TIM.UC_10057_01 (Client-Login, Auswahl Authentifizierungsverfahren):";
+  private static final String TIM_UC_10057_02 = "TIM.UC_10057_02 (Erstellung Matrix-ACCESS_TOKEN):";
+  private static final String TIM_UC_10057_03 = "TIM.UC_10057_03 (Erstellung Matrix-OpenID-Token):";
+  private static final String TIM_UC_10104_01 = "TIM.UC_10104_01 (Akteur suchen):";
+  private static final String TIM_UC_10104_02 = "TIM.UC_10104_02 (Akteur einladen, gleicher Homeserver):";
+  private static final String TIM_UC_10063_01 = "TIM.UC_10063_01 (Austausch von Events innerhalb einer Organisation, gleicher Homeserver):";
+  private static final String TIM_UC_10061_01 = "TIM.UC_10061_01 (Eintrag in Freigabeliste erzeugen):";
+  private static final String TIM_UC_10061_02 = "TIM.UC_10061_02 (Einladung Sendersystem, unterschiedliche Homeserver):";
+  private static final String TIM_UC_10061_03 = "TIM.UC_10061_03 (Einladung Empfangssystem, unterschiedliche Homeserver):";
+  private static final String TIM_UC_10062_01 = "TIM.UC_10062_01 (Event Sendersystem, unterschiedliche Homeserver):";
+  private static final String TIM_UC_10062_02 = "TIM.UC_10062_02 (Event Empfangssystem, unterschiedliche Homeserver):";
+
+  private static final String[] HEADERS = new String[]{"description", "success", "error", "errors"};
+  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+  private static final YAMLMapper YAML_MAPPER = new YAMLMapper();
+
+  private static final String LOGIN_KEY = "login";
+  private static final String SEARCH_KEY = "search";
+  private static final String ITRSH_KEY = "inviteToRoomSameHomeserver";
+  private static final String EMSH_KEY = "exchangeMessageSameHomeserver";
+  private static final String ECM_KEY = "editContactManagement";
+  private static final String ITRMH_KEY = "inviteToRoomMultiHomeserver";
+  private static final String EMMH_KEY = "exchangeMessageMultiHomeserver";
+  private static final Map<String, RawDataEventCounter> copiedCounter = new HashMap<>();
 
 
   /**
@@ -133,38 +157,65 @@ public class RawDataStatistics {
   }
 
   public static void addToReport() {
-    List<RawDataObject> dataObjectList = new ArrayList<>();
-    dataObjectList.add(
-        new RawDataObject("TIM.UC_10057_01 (Client-Login, Auswahl Authentifizierungsverfahren):",
-            login));
-    dataObjectList.add(new RawDataObject("TIM.UC_10057_02 (Erstellung Matrix-ACCESS_TOKEN):", login));
-    dataObjectList.add(new RawDataObject("TIM.UC_10057_03 (Erstellung Matrix-OpenID-Token):", login));
-    dataObjectList.add(new RawDataObject("TIM.UC_10104_01 (Akteur suchen):", search));
-    dataObjectList.add(new RawDataObject("TIM.UC_10104_02 (Akteur einladen, gleicher Homeserver):",
-        inviteToRoomSameHomeserver));
-    dataObjectList.add(new RawDataObject(
-        "TIM.UC_10063_01 (Austausch von Events innerhalb einer Organisation, gleicher Homeserver):",
-        exchangeMessageSameHomeserver));
-    dataObjectList.add(new RawDataObject("TIM.UC_10061_01 (Eintrag in Freigabeliste erzeugen):",
-        editContactManagement));
-    dataObjectList.add(
-        new RawDataObject("TIM.UC_10061_02 (Einladung Sendersystem, unterschiedliche Homeserver):",
-            inviteToRoomMultiHomeserver));
-    dataObjectList.add(
-        new RawDataObject("TIM.UC_10061_03 (Einladung Empfangssystem, unterschiedliche Homeserver):",
-            inviteToRoomMultiHomeserver));
-    dataObjectList.add(
-        new RawDataObject("TIM.UC_10062_01 (Event Sendersystem, unterschiedliche Homeserver):",
-            exchangeMessageMultiHomeserver));
-    dataObjectList.add(
-        new RawDataObject("TIM.UC_10062_02 (Event Empfangssystem, unterschiedliche Homeserver):",
-            exchangeMessageMultiHomeserver));
-    rawToJson(dataObjectList);
-    rawToYaml(dataObjectList);
-    rawToCSV(dataObjectList);
+    List<RawDataObject> totalDataObjectList = buildTotalDataObjectList();
+    List<RawDataObject> currentDataObjectList = buildCurrentDataObjectList();
+
+    rawToJson(totalDataObjectList);
+    rawToYaml(totalDataObjectList);
+    rawToCSV(totalDataObjectList);
+    Serenity.recordReportData()
+        .withTitle("Rohdaten-Statistik-Total")
+        .andContents(join(totalDataObjectList, " "));
     Serenity.recordReportData()
         .withTitle("Rohdaten-Statistik")
-        .andContents(join(dataObjectList," "));
+        .andContents(join(currentDataObjectList, " "));
+  }
+
+  private static List<RawDataObject> buildTotalDataObjectList() {
+    return List.of(
+        new RawDataObject(TIM_UC_10057_01, login),
+        new RawDataObject(TIM_UC_10057_02, login),
+        new RawDataObject(TIM_UC_10057_03, login),
+        new RawDataObject(TIM_UC_10104_01, search),
+        new RawDataObject(TIM_UC_10104_02, inviteToRoomSameHomeserver),
+        new RawDataObject(TIM_UC_10063_01, exchangeMessageSameHomeserver),
+        new RawDataObject(TIM_UC_10061_01, editContactManagement),
+        new RawDataObject(TIM_UC_10061_02, inviteToRoomMultiHomeserver),
+        new RawDataObject(TIM_UC_10061_03, inviteToRoomMultiHomeserver),
+        new RawDataObject(TIM_UC_10062_01, exchangeMessageMultiHomeserver),
+        new RawDataObject(TIM_UC_10062_02, exchangeMessageMultiHomeserver));
+  }
+
+  private static List<RawDataObject> buildCurrentDataObjectList() {
+    return List.of(
+        new RawDataObject(TIM_UC_10057_01, login.getDiff(copiedCounter.get(LOGIN_KEY))),
+        new RawDataObject(TIM_UC_10057_02, login.getDiff(copiedCounter.get(LOGIN_KEY))),
+        new RawDataObject(TIM_UC_10057_03, login.getDiff(copiedCounter.get(LOGIN_KEY))),
+        new RawDataObject(TIM_UC_10104_01, search.getDiff(copiedCounter.get(SEARCH_KEY))),
+        new RawDataObject(TIM_UC_10104_02,
+            inviteToRoomSameHomeserver.getDiff(copiedCounter.get(ITRSH_KEY))),
+        new RawDataObject(TIM_UC_10063_01,
+            exchangeMessageSameHomeserver.getDiff(copiedCounter.get(EMSH_KEY))),
+        new RawDataObject(TIM_UC_10061_01,
+            editContactManagement.getDiff(copiedCounter.get(ECM_KEY))),
+        new RawDataObject(TIM_UC_10061_02,
+            inviteToRoomMultiHomeserver.getDiff(copiedCounter.get(ITRMH_KEY))),
+        new RawDataObject(TIM_UC_10061_03,
+            inviteToRoomMultiHomeserver.getDiff(copiedCounter.get(ITRMH_KEY))),
+        new RawDataObject(TIM_UC_10062_01,
+            exchangeMessageMultiHomeserver.getDiff(copiedCounter.get(EMMH_KEY))),
+        new RawDataObject(TIM_UC_10062_02,
+            exchangeMessageMultiHomeserver.getDiff(copiedCounter.get(EMMH_KEY))));
+  }
+
+  public static void startTest() {
+    copiedCounter.put(LOGIN_KEY, login.copy());
+    copiedCounter.put(SEARCH_KEY, search.copy());
+    copiedCounter.put(ITRSH_KEY, inviteToRoomSameHomeserver.copy());
+    copiedCounter.put(EMSH_KEY, exchangeMessageSameHomeserver.copy());
+    copiedCounter.put(ECM_KEY, editContactManagement.copy());
+    copiedCounter.put(ITRMH_KEY, inviteToRoomMultiHomeserver.copy());
+    copiedCounter.put(EMMH_KEY, exchangeMessageMultiHomeserver.copy());
   }
 
   @SneakyThrows
@@ -202,9 +253,9 @@ public class RawDataStatistics {
     Response response = lastResponse();
     if (HttpStatus.valueOf(response.statusCode()).is2xxSuccessful()) {
       counter.countSuccess();
-    } else {
-      counter.addError(response.getStatusLine());
+      return;
     }
+    counter.addError(response.getStatusLine());
   }
 
 }

@@ -1,14 +1,14 @@
 /*
- * Copyright (c) 2023 gematik GmbH
- * 
- * Licensed under the Apache License, Version 2.0 (the License);
+ * Copyright 20023 gematik GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an 'AS IS' BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -27,6 +27,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
 import com.google.gson.Gson;
+import de.gematik.test.tiger.common.data.config.tigerProxy.TigerRoute;
+import de.gematik.test.tiger.lib.TigerDirector;
+import de.gematik.test.tiger.proxy.TigerProxy;
 import de.gematik.tim.test.glue.api.exceptions.RequestedRessourceNotAvailable;
 import de.gematik.tim.test.models.MessageDTO;
 import de.gematik.tim.test.models.RoomDTO;
@@ -36,7 +39,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -61,6 +67,7 @@ public class GlueUtils {
   public static final String POLL_INTERVAL_PROPERTY_NAME = "pollInterval";
   public static final String TIMEOUT_PROPERTY_NAME = "timeout";
 
+  private static final List<String> knownUrls = new ArrayList<>();
   private static Long timeout;
   private static final Long TIMEOUT_DEFAULT = 10L;
   private static Long pollInterval;
@@ -211,5 +218,25 @@ public class GlueUtils {
         .orElseThrow(
             () -> new RequestedRessourceNotAvailable(
                 format("Asked for %s, but could not be found", resourceType)));
+  }
+
+  public static void addHostToTigerProxy(String url) {
+    if (knownUrls.contains(url)) {
+      return;
+    }
+    String host = getHost(url);
+    TigerProxy proxy = TigerDirector.getTigerTestEnvMgr().getLocalTigerProxy();
+    proxy.addAlternativeName(host);
+    knownUrls.add(url);
+  }
+
+  @SneakyThrows
+  public static String getHost(final String finalUrl) {
+    Optional<TigerRoute> route = TigerDirector.getTigerTestEnvMgr().getLocalTigerProxy().getRoutes()
+        .stream()
+        .filter(r -> r.getFrom().toLowerCase().endsWith(finalUrl.toLowerCase()))
+        .findFirst();
+    String domain = new URI(route.isPresent() ? route.get().getTo() : finalUrl).getHost();
+    return domain.startsWith("www.") ? domain.substring(4) : domain;
   }
 }

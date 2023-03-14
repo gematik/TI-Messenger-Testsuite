@@ -1,14 +1,14 @@
 /*
- * Copyright (c) 2023 gematik GmbH
- * 
- * Licensed under the Apache License, Version 2.0 (the License);
+ * Copyright 20023 gematik GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an 'AS IS' BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -74,14 +74,14 @@ public final class TestdriverApiPath {
   // FHIR PRACTIONER
   public static final String FHIR_BASE_PATH = DEVICE_ID_PATH + "/fhir";
   public static final String FHIR_SEARCH_PRACTITIONER_PATH =
-      FHIR_BASE_PATH + "/searchTIPractitionerInFhirDirectory";
+      FHIR_BASE_PATH + "/searchPractitionerInFhirDirectory";
   public static final String FHIR_PRACTITIONER_PATH = FHIR_BASE_PATH + "/mxidInFhirDirectory";
   public static final String FHIR_AUTHENTICATE_PATH = FHIR_BASE_PATH + "/fhirAuthenticate";
 
   // FHIR ORG_ADMIN
   public static final String FHIR_SEARCH_ORG_PATH =
-      FHIR_BASE_PATH + "/searchTIOrganizationInFhirDirectory";
-  public static final String FHIR_SEARCH_ENDPOINT_PATH = FHIR_BASE_PATH + "/searchHealthcareServiceEndpontInFhirDirectory";
+      FHIR_BASE_PATH + "/searchOrganizationInFhirDirectory";
+  public static final String FHIR_SEARCH_ENDPOINT_PATH = FHIR_BASE_PATH + "/searchHealthcareServiceEndpointInFhirDirectory";
   public static final String FHIR_HEALTHCARE_SERVICE_PATH =
       FHIR_BASE_PATH + "/org/healthcareService";
   public static final String FHIR_HS_ADMIN_PATH =

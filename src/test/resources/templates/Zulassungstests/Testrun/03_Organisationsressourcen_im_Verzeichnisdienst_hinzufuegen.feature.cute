@@ -21,8 +21,9 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
   Inhalt
   TF 1 Healthcare Service anlegen
   TF 2 Healthcare Service Endpoint ändern
-  TF 3 Healthcare Service anlegen/ändern, Endpoints anlegen/ändern und löschen
-  TF 4 Negativ Test Healthcare Service anlegen
+  TF 3 Healthcare Service anlegen/ändern, Endpoint anlegen/ändern und löschen
+  TF 4 Healthcare Service anlegen, zwei Endpoints anlegen und löschen
+  TF 5 Negativ Test Healthcare Service anlegen
 
   @BP:P2O @Ctl:OrgAdmin
   @TCID:TIM_11_AF_301 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
@@ -82,42 +83,63 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C | ApiName1D |
 
-  @WIP
   @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_303 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
-  Szenariogrundriss: 03.3 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen/ändern, Endpoints anlegen/ändern und löschen
+  @TCID:TIM_11_AF_303 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 03.3 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen/ändern, Endpoint anlegen/ändern und löschen
     Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
-    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName"
     Wenn       "A" ändert die Daten des Healthcare-Service "HealthcareServiceName" mit JSON "03_AenderungEinesHealthcareService.json"
     Dann       vergleicht "A" den Healthcare-Service "HealthcareServiceName" mit dem JSON "03_AenderungEinesHealthcareService.json"
     Wenn       "A" erstellt Endpunkt für "B" auf Healthcare-Service "HealthcareServiceName"
     Und        "A" ändert den Endpunkt von "B" im Healthcare-Service "HealthcareServiceName" mit dem JSON "03_AenderungEndpointFuerHealthcareService.json"
     Dann       entspricht der Endpunkt von "B" im Healthcare-Service "HealthcareServiceName" dem JSON "03_AenderungEndpointFuerHealthcareService.json"
-    Wenn       "A" erstellt Endpunkt für "C" auf Healthcare-Service "HealthcareServiceName"
-    Dann       "B", "C" hat einen Endpunkt im Healthcare-Service "HealthcareServiceName"
     Wenn       "A" löscht den Endpoint von "B" für den Healthcare-Service "HealthcareServiceName"
     Dann       existiert kein Endpoint von "B" für den Healthcare-Service "HealthcareServiceName"
-    Und        "C" hat einen Endpunkt im Healthcare-Service "HealthcareServiceName"
+    Wenn       "A" löscht den Healthcare-Service "HealthcareServiceName"
+    Dann       existiert kein Healthcare-Service "HealthcareServiceName"
+
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B |
+
+  @WIP
+  @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_304 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+  Szenariogrundriss: 03.4 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin mit zwei Endpoints anlegen und löschen
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName"
+    Wenn       "A" erstellt Endpunkt für "B" auf Healthcare-Service "HealthcareServiceName"
+    Wenn       "A" erstellt Endpunkt für "C" auf Healthcare-Service "HealthcareServiceName"
+    Dann       "B", "C" haben je einen Endpunkt im Healthcare-Service "HealthcareServiceName"
+    Wenn       "A" löscht den Endpoint von "B" für den Healthcare-Service "HealthcareServiceName"
+    Dann       existiert kein Endpoint von "B" für den Healthcare-Service "HealthcareServiceName"
+    Und        "C" hat genau einen Endpunkt im Healthcare-Service "HealthcareServiceName"
     Wenn       "A" löscht den Endpoint von "C" für den Healthcare-Service "HealthcareServiceName"
     Dann       existiert kein Endpoint von "C" für den Healthcare-Service "HealthcareServiceName"
     Wenn       "A" löscht den Healthcare-Service "HealthcareServiceName"
     Dann       existiert kein Healthcare-Service "HealthcareServiceName"
 
-    @EqualProperty(homeserver)
-    @AllowSelfCombine(true)
-    @AllowDoubleLineup(true)
-    @Filter(ApiName1A.hasTag("orgAdmin"))
-    @Filter(ApiName1B.hasTag("client"))
-    @Filter(ApiName1C.hasTag("client"))
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
 
     Beispiele:
-      | ApiName1A | ApiName1B | ApiName1C |
+    | ApiName1A | ApiName1B | ApiName1C |
 
   @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_304 @PRIO:2 @TESTFALL:Negativ @STATUS:Implementiert
-  Szenariogrundriss: 03.4 Organisationsressourcen im Verzeichnisdienst hinzufügen - Nicht validen Healthcare-Service durch Org-Admin anlegen
+  @TCID:TIM_11_AF_305 @PRIO:2 @TESTFALL:Negativ @STATUS:Implementiert
+  Szenariogrundriss: 03.5 Organisationsressourcen im Verzeichnisdienst hinzufügen - Nicht validen Healthcare-Service durch Org-Admin anlegen
     Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
     Wenn       "A" versucht einen Healthcare-Service mit dem nicht validen JSON "03_ErstellenEinesHealthcareService_Negativ.json" zu erstellen
     Dann       erhält "A" einen Responsecode 400
@@ -129,8 +151,8 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
 
 #  @WIP
 #  @Ctl:OrgAdmin
-#  @TCID:TIM_11_AF_305 @PRIO:1 @TESTFALL:Positiv @STATUS:BearbeitungGestoppt
-#  Szenariogrundriss: 03.5 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen/ändern, Location anlegen/ändern, Endpoint anlegen/ändern und löschen
+#  @TCID:TIM_11_AF_306 @PRIO:1 @TESTFALL:Positiv @STATUS:BearbeitungGestoppt
+#  Szenariogrundriss: 03.6 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen/ändern, Location anlegen/ändern, Endpoint anlegen/ändern und löschen
 #    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
 #    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
 #    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName"

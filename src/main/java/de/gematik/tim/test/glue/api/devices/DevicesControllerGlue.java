@@ -1,14 +1,14 @@
 /*
- * Copyright (c) 2023 gematik GmbH
- * 
- * Licensed under the Apache License, Version 2.0 (the License);
+ * Copyright 20023 gematik GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an 'AS IS' BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -29,6 +29,9 @@ import static de.gematik.tim.test.glue.api.info.ApiInfoQuestion.apiInfo;
 import static de.gematik.tim.test.glue.api.login.LogInGlue.loginSuccess;
 import static de.gematik.tim.test.glue.api.login.LogInGlue.logsIn;
 import static de.gematik.tim.test.glue.api.login.LoginTask.login;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.addHostToTigerProxy;
+import static de.gematik.tim.test.glue.api.utils.TestcaseIdProvider.startTest;
+import static de.gematik.tim.test.glue.api.utils.TestcaseIdProvider.stopTest;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static net.serenitybdd.screenplay.actors.OnStage.setTheStage;
 import static net.serenitybdd.screenplay.actors.OnStage.stage;
@@ -42,6 +45,7 @@ import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.InfoObjectDTO;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
 import io.cucumber.java.de.Angenommen;
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Und;
@@ -59,7 +63,9 @@ import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
 public class DevicesControllerGlue {
 
   @Before
-  public void setup() {
+  public void setup(Scenario scenario) {
+    startTest(scenario);
+    RawDataStatistics.startTest();
     setTheStage(Cast.ofStandardActors());
   }
 
@@ -67,6 +73,7 @@ public class DevicesControllerGlue {
   public void teardown() {
     stage().drawTheCurtain();
     RawDataStatistics.addToReport();
+    stopTest();
   }
 
   // Get devices
@@ -123,6 +130,7 @@ public class DevicesControllerGlue {
   public Actor reserveClientOnApi(String actorName, String apiName) {
     Actor actor = theActorCalled(actorName);
     actor.whoCan(CallAnApi.at(apiName)).entersTheScene();
+    addHostToTigerProxy(apiName);
     actor.attemptsTo(claimDevice());
     return actor;
   }

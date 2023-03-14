@@ -1,14 +1,14 @@
 /*
- * Copyright (c) 2023 gematik GmbH
- * 
- * Licensed under the Apache License, Version 2.0 (the License);
+ * Copyright 20023 gematik GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an 'AS IS' BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -56,6 +56,7 @@ import de.gematik.tim.test.glue.api.fhir.organisation.location.FhirGetLocationLi
 import de.gematik.tim.test.models.FhirEndpointDTO;
 import de.gematik.tim.test.models.FhirHealthcareServiceDTO;
 import de.gematik.tim.test.models.FhirLocationDTO;
+import de.gematik.tim.test.models.FhirOrganizationSearchResultDTO;
 import de.gematik.tim.test.models.FhirOrganizationSearchResultListDTO;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -140,6 +141,24 @@ public class FhirOrgAdminGlue {
         .toList();
     assertThat(mxIds).contains(mxId);
   }
+
+  @Wenn("{listOfStrings} hat genau einen Endpunkt im Healthcare-Service {string}")
+  @Wenn("{listOfStrings} haben je einen Endpunkt im Healthcare-Service {string}")
+  public void healthCareServiceEndpointSearch(List<String> actorNames, String hcsName) {
+    Actor actor = theActorCalled(actorNames.get(0));
+    String[] actorMxids = actorNames.stream()
+        .map(name -> (String) theActorCalled(name).recall(MX_ID))
+        .toList().toArray(new String[0]);
+    List<FhirOrganizationSearchResultDTO> results =
+        organizationEndpoints().withHsName(hcsName).havingAtLeastXResults(actorNames.size())
+            .answeredBy(actor).getSearchResults();
+    List<String> endpointMxids = requireNonNull(results).stream()
+        .map(res -> requireNonNull(res.getEndpoint()).getAddress())
+        .filter(Objects::nonNull)
+        .toList();
+    assertThat(endpointMxids).containsExactlyInAnyOrder(actorMxids);
+  }
+
   //</editor-fold>
 
   //<editor-fold desc="Change">
@@ -152,7 +171,7 @@ public class FhirOrgAdminGlue {
     FhirEndpointDTO endpoint = requireNonNull(admin.asksFor(
         organizationEndpoints().withHsName(hsName)).getSearchResults()).get(0).getEndpoint();
     Actor endpointActor = theActorCalled(userName);
-    endpoint.setAddress(endpointActor.recall(MX_ID));
+    requireNonNull(endpoint).setAddress(endpointActor.recall(MX_ID));
     addEndpointToActor(userName, endpoint.getEndpointId(), admin);
     admin.attemptsTo(updateEndpoint(endpoint).withAddress(endpointActor.recall(MX_ID)));
   }

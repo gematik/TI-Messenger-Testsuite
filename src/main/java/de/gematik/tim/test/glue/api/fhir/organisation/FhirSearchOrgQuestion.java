@@ -1,14 +1,14 @@
 /*
- * Copyright (c) 2023 gematik GmbH
- * 
- * Licensed under the Apache License, Version 2.0 (the License);
+ * Copyright 20023 gematik GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an 'AS IS' BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -22,7 +22,6 @@ import static de.gematik.tim.test.glue.api.utils.GlueUtils.repeatedRequest;
 import static java.util.Objects.requireNonNull;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
-import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.FhirOrganizationSearchResultListDTO;
 import io.restassured.specification.RequestSpecification;
 import java.util.List;
@@ -114,8 +113,6 @@ public class FhirSearchOrgQuestion implements Question<FhirOrganizationSearchRes
   private Optional<FhirOrganizationSearchResultListDTO> searchForOrganization(Actor actor) {
     actor.attemptsTo(
         SEARCH_ORG.request().with(this::prepareQuery));
-
-    RawDataStatistics.search();
 
     FhirOrganizationSearchResultListDTO resp = lastResponse().body()
         .as(FhirOrganizationSearchResultListDTO.class);

@@ -58,7 +58,7 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
   @AK-ID:ML-123654
   @BP:P2P @Ctl:Chat
   @TCID:TIM_11_AF_701 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
-  Szenariogrundriss: 07.1 Einladung innerhalb einer Organisation - Einladung in Chat - Volltextsuche (HBA-User an HBA-User)
+  Szenariogrundriss: 07.1 Einladung innerhalb einer Organisation - Einladung in Chat - Qualifizierte Suche (HBA-User an HBA-User)
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
@@ -82,7 +82,7 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
   @AK-ID:ML-123654
   @BP:P2P @Ctl:Chat @Ctl:SeachPart
   @TCID:TIM_11_AF_702 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
-  Szenariogrundriss: 07.2 Einladung innerhalb einer Organisation - Einladung in Chat - unscharfe Suche (HBA-User an HBA-User)
+  Szenariogrundriss: 07.2 Einladung innerhalb einer Organisation - Einladung in Chat - Teilqualifizierte Suche (HBA-User an HBA-User)
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
@@ -106,7 +106,7 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
   @AK-ID:ML-123654
   @BP:P2P @Ctl:Raum
   @TCID:TIM_11_AF_703 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
-  Szenariogrundriss: 07.3 Einladung innerhalb einer Organisation - Einladung in Raum - Volltextsuche (HBA-User an HBA-User)
+  Szenariogrundriss: 07.3 Einladung innerhalb einer Organisation - Einladung in Raum - Qualifizierte Suche (HBA-User an HBA-User)
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
@@ -131,7 +131,7 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
   @AK-ID:ML-123654
   @BP:P2P @Ctl:Raum @Ctl:SeachPart
   @TCID:TIM_11_AF_704 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
-  Szenariogrundriss: 07.4 Einladung innerhalb einer Organisation - Einladung in Raum - unscharfe Suche (HBA-User an HBA-User)
+  Szenariogrundriss: 07.4 Einladung innerhalb einer Organisation - Einladung in Raum - Teilqualifizierte Suche (HBA-User an HBA-User)
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
@@ -397,13 +397,12 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
 
   @AK-ID:ML-123654
   @BP:P2N_intern
-  @TCID:TIM_11_AF_714 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+  @TCID:TIM_11_AF_714 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 07.14 Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch HBA-User
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A" hinterlegt seine MXID im Verzeichnis Dienst
-    Dann       "A" findet TI-Messenger-Nutzer "B" bei Suche im Practitioner-Verzeichnis im VZD NICHT [Retry 13 - 4]
-    Und        "A" findet TI-Messenger-Nutzer "B" bei Suche im Organisations-Verzeichnis im VZD NICHT [Retry 13 - 4]
+    Dann       "A" findet TI-Messenger-Nutzer "B" bei Suche im VZD NICHT [Retry 10 - 4]
 
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
@@ -419,14 +418,13 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
 
   @AK-ID:ML-123654
   @BP:O2N_intern @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_715 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+  @TCID:TIM_11_AF_715 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 07.15 Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch Organisations-User
     Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
     Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
-    Dann       "B" findet TI-Messenger-Nutzer "C" bei Suche im Practitioner-Verzeichnis im VZD NICHT [Retry 13 - 4]
-    Und        "B" findet TI-Messenger-Nutzer "C" bei Suche im Organisations-Verzeichnis im VZD NICHT [Retry 13 - 4]
+    Dann       "B" findet TI-Messenger-Nutzer "C" bei Suche im VZD NICHT [Retry 10 - 4]
 
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
@@ -583,7 +581,7 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
 
   @BP:N2N_intern @@Ctl:NOVZD
   @TCID:TIM_11_AF_722 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
-  Szenariogrundriss: 07.22 Einladung innerhalb einer Organisation - Einladung in Chat - Volltextsuche auf dem Homeserver
+  Szenariogrundriss: 07.22 Einladung innerhalb einer Organisation - Einladung in Chat - Qualifizierte Suche auf dem Homeserver
     Angenommen "A" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
     Wenn       "A" findet TI-Messenger-Nutzer "B" bei der Suche im HomeServer
@@ -605,7 +603,7 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
 
   @BP:N2N_intern @@Ctl:NOVZD
   @TCID:TIM_11_AF_723 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
-  Szenariogrundriss: 07.23 Einladung innerhalb einer Organisation - Einladung in Chat - unscharfe Suche auf dem Homeserver
+  Szenariogrundriss: 07.23 Einladung innerhalb einer Organisation - Einladung in Chat - Teilqualifizierte Suche auf dem Homeserver
     Angenommen "A" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
     Wenn       "A" findet TI-Messenger-Nutzer "B" bei der Suche im HomeServer nach Namen minus 0-1 (Anzahl vorne-hinten) Char(s) abgeschnitten
@@ -627,7 +625,7 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
 
   @BP:N2N_intern @@Ctl:NOVZD
   @TCID:TIM_11_AF_724 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
-  Szenariogrundriss: 07.24 Einladung innerhalb einer Organisation -Einladung in Raum - Volltextsuche auf dem Homeserver
+  Szenariogrundriss: 07.24 Einladung innerhalb einer Organisation -Einladung in Raum - Qualifizierte Suche auf dem Homeserver
     Angenommen "A" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
     Wenn       "A" findet TI-Messenger-Nutzer "B" bei der Suche im HomeServer
@@ -650,7 +648,7 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
 
   @BP:N2N_intern @@Ctl:NOVZD
   @TCID:TIM_11_AF_725 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
-  Szenariogrundriss: 07.25 Einladung innerhalb einer Organisation - Einladung in Raum - unscharfe Suche auf dem Homeserver
+  Szenariogrundriss: 07.25 Einladung innerhalb einer Organisation - Einladung in Raum - Teilqualifizierte Suche Suche auf dem Homeserver
     Angenommen "A" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
