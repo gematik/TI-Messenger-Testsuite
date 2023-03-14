@@ -14,21 +14,11 @@
  * limitations under the License.
  */
 
-package de.gematik.tim.test.glue.api.fhir.practitioner;
+package de.gematik.tim.test.glue.api.utils;
 
-import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.AUTHENTICATE_PRACTITIONER;
+public class TestRunException extends RuntimeException {
 
-import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.Task;
-
-public class FhirAuthenticateTask implements Task {
-
-  public static FhirAuthenticateTask authenticateOnFhirVzd() {
-    return new FhirAuthenticateTask();
-  }
-
-  @Override
-  public <T extends Actor> void performAs(T actor) {
-    actor.attemptsTo(AUTHENTICATE_PRACTITIONER.request());
+  public TestRunException(String msg) {
+    super(msg);
   }
 }

@@ -6,7 +6,7 @@
 
   <groupId>de.gematik.tim.test</groupId>
   <artifactId>TI-Messenger-Testsuite</artifactId>
-  <version>0.4.1</version>
+  <version>0.4.3</version>
   <packaging>jar</packaging>
   <name>TI-Messenger-Testsuite</name>
   <description>Testsuite to check functionality of TI-Messenger-Clients</description>
@@ -36,6 +36,7 @@
     <cucumber.filter.tags/>
     <timeout/>
     <pollInterval/>
+    <cucumber.filter.version/>
   </properties>
 
   <distributionManagement>
@@ -139,7 +140,7 @@
             </goals>
             <configuration>
               <url>
-                https://raw.githubusercontent.com/gematik/api-ti-messenger/6a8978211ca18d602c38534e4a02ceccb2a14df4/src/openapi/TiMessengerTestTreiber.yaml
+                https://raw.githubusercontent.com/gematik/api-ti-messenger/8d078e54fec9331027df41ef2cf8d6356d049198/src/openapi/TiMessengerTestTreiber.yaml
               </url>
               <outputFileName>TiMessengerTestTreiber.yaml</outputFileName>
               <outputDirectory>${project.build.directory}</outputDirectory>
@@ -193,7 +194,7 @@
       <plugin>
         <groupId>de.gematik</groupId>
         <artifactId>cucumber-test-combinations-maven-plugin</artifactId>
-        <version>2.5.2</version>
+        <version>2.6.0</version>
         <configuration>
           <!--          Global Config-->
           <combineItemsFile>${combine.items.file}</combineItemsFile>
@@ -248,6 +249,10 @@
           <filterConfiguration>
             <maxTableRows>${feature.tables.max_rows}</maxTableRows>
           </filterConfiguration>
+          <projectFilters>
+            <version>${cucumber.filter.version}</version>
+          </projectFilters>
+          <versionProperty>clientVersion</versionProperty>
         </configuration>
 
         <executions>
@@ -407,6 +412,21 @@
             </configuration>
           </execution>
           <execution>
+            <id>save_raw-data-reports</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/reports/${build.time}/raw-data</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}/target/generated-raw-data</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
             <id>save_features</id>
             <phase>post-integration-test</phase>
             <goals>
@@ -550,7 +570,7 @@
                 <artifactItem>
                   <groupId>de.gematik.tim.test</groupId>
                   <artifactId>TI-Messenger-TestdriverSim</artifactId>
-                  <version>3.1.0</version>
+                  <version>3.2.0</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}</outputDirectory>
@@ -588,7 +608,7 @@
       <id>dev</id>
       <properties>
         <tiger.config.file>tiger-dev.yml</tiger.config.file>
-        <runWithoutRetry>false</runWithoutRetry>
+        <runWithoutRetry>true</runWithoutRetry>
       </properties>
       <activation>
         <activeByDefault>true</activeByDefault>

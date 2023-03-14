@@ -2,6 +2,18 @@
 
 # Release notes
 
+## Release 0.4.3
+
+### Features
+
+ - This release makes use of [cucumber-test-combinations-maven-plugin](https://github.com/gematik/cucumber-test-combinations-maven-plugin) v 2.6.0 features 
+   - Control runs for specific version (see specifics [here](https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc#project-filters))
+ - Remove/Comment Test Cases for editing messages in Feature Files 8 & 10
+ - To every request a header is attached. This header identifies the current testcase and can be used for debugging purpose
+    - The depending id can also be found in the serenity report
+ - The certificate of the tiger proxy get updated automatically. It is no longer necessary to name every host under `alterenativeNames` in `tiger.yml` 
+ - TestCase 3.3 splitted into two TestCases (new 3.3 & 3.4)
+
 ## Release 0.4.1
 
 This release matches testdriver api in version 0.4.1

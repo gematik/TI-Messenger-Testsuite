@@ -1,0 +1,34 @@
+:doctype: book
+:toc:
+:toclevels: 1
+:source-highlighter: rouge
+
+image::doc/images/Gematik_Logo_Flag.png[logo,width=200,height=37,role=right]
+= TI-Messenger-Testsuite
+
+== Über das Projekt
+Mit der TI-Messenger-Testsuite werden Instanzen von TI-Messengern über die https://github.com/gematik/api-ti-messenger/blob/main/src/openapi/TiMessengerTestTreiber.yaml[Testtreiberschnittstelle] gegeneinander getestet.
+
+Der Schwerpunkt der Testsuite liegt auf Interoperabilitätstests verschiedener TI-Messenger-Instanzen. Eine Beschreibung des Testkonzepts befindet sich
+link:doc/userguide/Testsuite.adoc[hier]
+
+Die Testsuite nutzt https://maven.apache.org/[Maven] und https://github.com/gematik/app-Tiger[Tiger] für die Ausführung der https://serenity-bdd.github.io/[Serenity-BDD]-Tests.
+
+Für die Ausführung der Tests werden aus einer Liste von link:src/test/resources/combine_items.json[Testinstanzen] mittels eines link:https://github.com/gematik/cucumber-test-combinations-maven-plugin[Maven-Plugins] Testkombinationen erstellt und in den link:src/test/resources/templates[Cucumber-Templates] eingetragen.
+
+=== Releaseinformationen
+In link:ReleaseNotes.md[ReleaseNotes.md] befinden sich alle Informationen zu unseren (neuesten) Releases.
+
+== Verwendung
+Die Testsuite führt die Tests als Maven-Integrationstests aus. Nach der initialen Konfiguration können die Tests mit `mvn verify` ausgeführt werden. Eine Beschreibung der benötigten initialen Konfiguration befindet sich link:doc/userguide/GettingStarted.adoc[hier]. Erweiterte Konfigurationen sind im link:doc/userguide/DevGuide.adoc[Entwicklerguide] zu finden.
+
+Nach der Testausführung befindet sich die Auswertung unter link:target/site/serenity/index.html[target/site/serenity/index.html]
+
+== Mitwirken
+Unsere Regeln für das Mitwirken an unserem Projekt befinden sich link:CONTRIBUTING.md[hier].
+
+== License
+
+Apache License Version 2.0
+
+See [LICENSE](./LICENSE).
