@@ -2,6 +2,12 @@
 
 # Release notes
 
+## Release 0.4.4
+
+### Features
+
+- Transaction-Id-header is send in every request
+
 ## Release 0.4.3
 
 ### Features
