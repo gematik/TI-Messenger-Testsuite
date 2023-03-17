@@ -20,8 +20,10 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.CLAIMER_NAME;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DEVICE_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.CLAIM_DEVICE;
 import static de.gematik.tim.test.glue.api.devices.UnclaimedDevicesQuestion.unclaimedDevices;
+import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.TEST_CASE_ID_HEADER;
 import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.useDevice;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.repeatedRequestWithLongerTimeout;
+import static de.gematik.tim.test.glue.api.utils.TestcaseIdProvider.getTestcaseId;
 import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
 import static org.hamcrest.CoreMatchers.equalTo;
 
@@ -82,6 +84,7 @@ public class ClaimDeviceTask implements Task {
             .pathParam("deviceId", deviceId)
             .header("Accept", "application/json")
             .header("Content-Type", "application/json")
+            .header(TEST_CASE_ID_HEADER, getTestcaseId())
             .body(claimRequest)));
 
     actor.should(
