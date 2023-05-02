@@ -42,6 +42,7 @@ public class FhirSearchQuestion implements Question<FhirPractitionerSearchResult
   Integer atLeastExpectedResults;
   Long customTimeout;
   Long customPollInterval;
+  boolean shouldWaitTillDeleted;
 
 
   public static FhirSearchQuestion practitionerInFhirDirectory() {
@@ -83,6 +84,11 @@ public class FhirSearchQuestion implements Question<FhirPractitionerSearchResult
     return this;
   }
 
+  public FhirSearchQuestion shouldWaitTillDeleted(boolean shouldWait) {
+    this.shouldWaitTillDeleted = shouldWait;
+    return this;
+  }
+
   public FhirSearchQuestion withCustomInterval(Long timeout, Long pollInterval) {
     this.customTimeout = timeout;
     this.customPollInterval = pollInterval;
@@ -103,11 +109,23 @@ public class FhirSearchQuestion implements Question<FhirPractitionerSearchResult
   private Optional<FhirPractitionerSearchResultDTO> requestFhirPractitioner(Actor actor) {
     actor.attemptsTo(SEARCH_PRACTITIONER.request().with(this::prepareQuery));
     actor.remember(LAST_RESPONSE, lastResponse());
+    if (shouldWaitTillDeleted) {
+      return dontFindPractitioner();
+    }
+    return findPractitioner();
+  }
 
+  private Optional<FhirPractitionerSearchResultDTO> findPractitioner() {
     FhirPractitionerSearchResultDTO res = lastResponse().body()
         .as(FhirPractitionerSearchResultDTO.class);
     return requireNonNull(res.getTotalSearchResults()) >= atLeastExpectedResults ? Optional.of(res)
         : Optional.empty();
+  }
+
+  private Optional<FhirPractitionerSearchResultDTO> dontFindPractitioner() {
+    FhirPractitionerSearchResultDTO res = lastResponse().body()
+        .as(FhirPractitionerSearchResultDTO.class);
+    return requireNonNull(res.getTotalSearchResults()) == 0 ? Optional.of(res) : Optional.empty();
   }
 
   private RequestSpecification prepareQuery(RequestSpecification request) {

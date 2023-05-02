@@ -17,26 +17,17 @@
 package de.gematik.tim.test.glue.api.info;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_INFO;
-import static net.serenitybdd.screenplay.actors.OnStage.setTheStage;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.not;
 
-import io.cucumber.java.Before;
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Wenn;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import net.serenitybdd.screenplay.actors.Cast;
 
 public class InfoControllerGlue {
-
-  @Before
-  public void setup() {
-    setTheStage(Cast.ofStandardActors());
-  }
-
 
   @When("{string} requests information about the test driver")
   @Wenn("{string} Informationen über den Testtreiber anfragt")

@@ -21,7 +21,6 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.CLAIMER_NAME;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_DEVICES;
-import static de.gematik.tim.test.glue.api.devices.ClaimDeviceTask.claimDevice;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.MESSENGER_CLIENT;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.PRACTITIONER;
@@ -44,6 +43,7 @@ import static org.hamcrest.Matchers.hasItem;
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.InfoObjectDTO;
 import io.cucumber.java.After;
+import io.cucumber.java.AfterAll;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 import io.cucumber.java.de.Angenommen;
@@ -74,6 +74,11 @@ public class DevicesControllerGlue {
     stage().drawTheCurtain();
     RawDataStatistics.addToReport();
     stopTest();
+  }
+
+  @AfterAll
+  public static void unclaimAllDevices() {
+    DeviceManager.getInstance().unclaimAll();
   }
 
   // Get devices
@@ -131,7 +136,7 @@ public class DevicesControllerGlue {
     Actor actor = theActorCalled(actorName);
     actor.whoCan(CallAnApi.at(apiName)).entersTheScene();
     addHostToTigerProxy(apiName);
-    actor.attemptsTo(claimDevice());
+    DeviceManager.getInstance().orderDeviceToActor(actor, apiName);
     return actor;
   }
 

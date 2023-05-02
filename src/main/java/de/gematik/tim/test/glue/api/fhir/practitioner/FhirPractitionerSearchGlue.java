@@ -39,7 +39,7 @@ import net.serenitybdd.screenplay.Actor;
 
 public class FhirPractitionerSearchGlue {
 
-  // MXID search
+  //<editor-fold, desc="MXID" search>
   @When("{string} can find {listOfStrings} in directory")
   @Wenn("{string} findet {listOfStrings} in FHIR")
   public void findUser(String actorName, List<String> actorNames) {
@@ -66,22 +66,37 @@ public class FhirPractitionerSearchGlue {
   @Dann("{string} findet TI-Messenger-Nutzer {string} bei Suche im Practitioner-Verzeichnis im VZD NICHT [Retry {long} - {long}]")
   public static Void dontFindPractitionerInFhir(String actorName, String userName, Long timeout,
       Long pollInterval) {
-    Actor actor = theActorCalled(actorName);
-    Actor user = theActorCalled(userName);
-    dontFindPractitionerInFhir(actor, user, timeout, pollInterval);
+    dontFindPractitionerInFhir(actorName, userName, timeout, pollInterval, false);
     return null;
   }
 
-  public static Void dontFindPractitionerInFhir(Actor actor, Actor user, Long timeout,
+  @Then("{string} can not find {string} in FHIR anymore")
+  @Dann("{string} kann {string} nicht mehr finden in FHIR")
+  public Void cantFindPractitionerInFhirAnymore(String actorName, String userName) {
+    return cantFindPractitionerInFhirAnymore(actorName, userName, null, null);
+  }
+
+  @Then("{string} can not find {string} in FHIR anymore [Retry {long} - {long}]")
+  @Dann("{string} kann {string} nicht mehr finden in FHIR [Retry {long} - {long}]")
+  public Void cantFindPractitionerInFhirAnymore(String actorName, String userName, Long timeout,
       Long pollInterval) {
+    return dontFindPractitionerInFhir(actorName, userName, timeout, pollInterval, true);
+  }
+
+  public static Void dontFindPractitionerInFhir(String actorName, String userName, Long timeout,
+      Long pollInterval, boolean shouldWaitTillDeleted) {
+    Actor actor = theActorCalled(actorName);
+    Actor user = theActorCalled(userName);
     Serenity.recordReportData();
     FhirPractitionerSearchResultDTO response = actor.asksFor(practitionerInFhirDirectory()
         .withMxid(user.recall(MX_ID))
-        .withCustomInterval(timeout, pollInterval));
+        .withCustomInterval(timeout, pollInterval)
+        .shouldWaitTillDeleted(shouldWaitTillDeleted));
     assertThat(response).isNotNull();
     assertThat(response.getTotalSearchResults()).isZero();
     return null;
   }
+  //</editor-fold>
 
   // Parameter search
   @When("{string} can find {string} by searching by name with cut {int}-{int} (amount front-back) char(s)")

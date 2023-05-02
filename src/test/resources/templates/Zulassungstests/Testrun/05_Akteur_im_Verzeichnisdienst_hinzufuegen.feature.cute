@@ -1,6 +1,6 @@
 # language: de
 @File:FeatureFile_05 @Ctl:UseCase
-@PRODUKT:TI-M
+@PRODUKT:TIM_FD @PRODUKT:TIM_Client
 @AF-ID:AF_10058
 @AK-ID:ML-123612 @AK-ID:ML-123611 @AK-ID:ML-132588
 Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
@@ -48,9 +48,11 @@ Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
     Und        "A" findet seine MXID im Verzeichnis Dienst
     Dann       "A" findet "B" in FHIR
 
+  @Shuffle(true) #
+  @DistinctColumn(ApiName1A) #
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
-  @AllowDoubleLineup(false)
+  @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("client"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName1A.hasTag("practitioner"))
@@ -68,20 +70,22 @@ Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
     Und        "A" findet seine MXID im Verzeichnis Dienst
     Dann       "B" findet "A" in FHIR
 
+  @Shuffle(true) #
+  #@DistinctColumn(ApiName2) #
+  @MaxSameColumnProperty(ApiName2,homeserver,1) #
   @DistinctProperty(homeserver)
-  @AllowSelfCombine(false)
+  @AllowSelfCombine(true)
   @AllowDoubleLineup(true)
   @Filter(ApiName1.hasTag("client"))
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName1.hasTag("practitioner"))
   @Filter(ApiName2.hasTag("practitioner"))
-  @Filter(ApiName1.hasTag("prefIOP"))
-  @Filter(ApiName2.hasTag("prefIOP"))
+  #@Filter(ApiName1.hasTag("prefIOP"))
+  #@Filter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1 | ApiName2 |
 
-  @WIP
   @Ctl:OneHomeServer
   @TCID:TIM_11_AF_504 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 05.4 Akteur im Verzeichnisdienst - Löschen - HBA-User löscht Eintrag und ist nicht auffindbar für HBA-User gleicher Organisation
@@ -92,9 +96,11 @@ Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
     Wenn       "A" löscht seine MXID im Verzeichnis Dienst
     Dann       "B" kann "A" nicht mehr finden in FHIR [Retry 11 - 5]
 
+  @Shuffle(true) ##
+  @DistinctColumn(ApiName1A) ##
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
-  @AllowDoubleLineup(false)
+  @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("client"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName1A.hasTag("practitioner"))
@@ -103,7 +109,6 @@ Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
     Beispiele:
     | ApiName1A | ApiName1B |
 
-  @WIP
   @TCID:TIM_11_AF_505 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 05.5 Akteur im Verzeichnisdienst - Löschen - HBA-User löscht Eintrag und ist nicht auffindbar für HBA-User anderer Organisation
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
@@ -113,6 +118,9 @@ Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
     Wenn       "A" löscht seine MXID im Verzeichnis Dienst
     Dann       "B" kann "A" nicht mehr finden in FHIR [Retry 11 - 5]
 
+  @Shuffle(true) #
+  #@DistinctColumn(ApiName2) #
+  @MaxSameColumnProperty(ApiName1,homeserver,1) #
   @DistinctProperty(homeserver)
   @AllowSelfCombine(false)
   @AllowDoubleLineup(true)
@@ -120,8 +128,8 @@ Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName1.hasTag("practitioner"))
   @Filter(ApiName2.hasTag("practitioner"))
-  @Filter(ApiName1.hasTag("prefIOP"))
-  @Filter(ApiName2.hasTag("prefIOP"))
+  #@Filter(ApiName1.hasTag("prefIOP"))
+  #@Filter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1 | ApiName2 |

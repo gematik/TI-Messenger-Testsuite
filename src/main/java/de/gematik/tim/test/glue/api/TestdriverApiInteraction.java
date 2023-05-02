@@ -19,8 +19,10 @@ package de.gematik.tim.test.glue.api;
 import static java.util.Objects.requireNonNull;
 
 import de.gematik.test.tiger.lib.TigerDirector;
+import de.gematik.test.tiger.proxy.TigerProxy;
 import io.restassured.RestAssured;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
@@ -34,8 +36,8 @@ public class TestdriverApiInteraction implements Performable {
   private final List<Class<? extends TestdriverApiAbility>> neededAbilities;
 
   static {
-    var proxy = TigerDirector.getTigerTestEnvMgr().getLocalTigerProxy();
-    RestAssured.trustStore(proxy.buildTruststore());
+    Optional<TigerProxy> proxy = TigerDirector.getTigerTestEnvMgr().getLocalTigerProxyOptional();
+    proxy.ifPresent(tigerProxy -> RestAssured.trustStore(tigerProxy.buildTruststore()));
   }
 
   public TestdriverApiInteraction with(RestQueryFunction restConfiguration) {

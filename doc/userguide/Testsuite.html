@@ -469,11 +469,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#_5_referenzimplementierung">5. Referenzimplementierung</a></li>
-<li><a href="#_6_tags">6. Tags</a>
+<li><a href="#_6_tags_und_filter">6. Tags und Filter</a>
 <ul class="sectlevel3">
 <li><a href="#_6_1_tags_zur_steuerung_der_testsuite">6.1 Tags zur Steuerung der Testsuite</a></li>
 <li><a href="#_6_2_tags_und_properties_für_die_plugin_konfiguration">6.2 Tags und Properties für die Plugin Konfiguration</a></li>
 <li><a href="#_6_3_special_tags_new_tagnewonly_profil_und_practitioner_perfiop_tag">6.3 Special Tags [ ‚new‘ tag,'newonly' Profil und 'Practitioner' &amp; 'perfIOP' Tag]</a></li>
+<li><a href="#_6_4_versionsfilter">6.4 Versionsfilter</a></li>
+<li><a href="#_6_5_pooling">6.5 Pooling</a></li>
 </ul>
 </li>
 <li><a href="#_7_berechtigungsprüfung">7. Berechtigungsprüfung</a>
@@ -486,6 +488,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#id8">8. Testfall Liste</a></li>
 <li><a href="#_9_testausführung">9. Testausführung</a></li>
 <li><a href="#_10_testfall_beschreibungen">10. Testfall Beschreibungen</a></li>
+<li><a href="#_11_zusätzliche_iop_feature_files_bzw_tests">11. Zusätzliche IOP Feature Files bzw Tests</a></li>
 </ul>
 </li>
 </ul>
@@ -1158,7 +1161,7 @@ TI-Messenger-Fachdienst) getestet werden.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_6_tags">6. Tags</h3>
+<h3 id="_6_tags_und_filter">6. Tags und Filter</h3>
 <div class="paragraph">
 <p><br></p>
 </div>
@@ -1207,8 +1210,13 @@ für die <a href="#id2">nicht erfolgreiche</a> Berechtigungsprüfung.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">@Ctl:Additional</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">zusätzlichen Tests die kein direktes Akzeptanz-Kriterium bzw. keinen
+<td class="tableblock halign-left valign-top"><p class="tableblock">zusätzliche Tests, die kein direktes Akzeptanz-Kriterium bzw. keinen
                             Anwendungsfall haben</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">@Ctl:AdditionalIOP</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zusätzliche Tests, die mehrere HomeServer benötigen und für IOP Tests
+                            genutzt werden</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">@Ctl:UseCase</p></td>
@@ -1281,6 +1289,14 @@ für die <a href="#id2">nicht erfolgreiche</a> Berechtigungsprüfung.</p></td>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">@Ctl:Gruppenchat</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Gruppenchat</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">@Ctl:GruppenchatGroß</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Gruppenchat mit mindestens 5 HomeServern</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">@Ctl:GruppenchatPool</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Gruppenchat mit 3 HomeServern</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">@Ctl:MultiDevices</p></td>
@@ -1433,7 +1449,7 @@ für die <a href="#id2">nicht erfolgreiche</a> Berechtigungsprüfung.</p></td>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="../../doc/images/Source_combine_items.png" alt="Source combine items">
+<img src="../../doc/images/Pooling_combine_items.png" alt="Pooling combine items">
 </div>
 </div>
 <div class="paragraph">
@@ -1446,6 +1462,21 @@ für die <a href="#id2">nicht erfolgreiche</a> Berechtigungsprüfung.</p></td>
 </li>
 <li>
 <p>(Optional) <strong>„url“</strong>: URL zur Testtreiber Schnittstelle des jeweiligen Devices</p>
+</li>
+<li>
+<p>(Optional) <strong>„groups“</strong>: Groups können gesetzt werden um ein Item einer oder mehrere Gruppen zuzuordnen. Sie helfen bei der Auswahl der zu verwendenden Schnittstellen und sind wichtig für das Pooling.</p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">&#128681;</div>
+</td>
+<td class="content">
+<span class="black"><strong><em>Obwohl optional, sollte der Gruppenname für alle Geräte angegeben werden, wenn ein Pooling-Test gewünscht wird.</em></strong></span>
+</td>
+</tr>
+</table>
+</div>
 </li>
 <li>
 <p>(Optional) <strong>„tags“</strong>: Tags, die nicht durch das Auslesen der Info-Daten gefüllt werden. Oder auch Tags, die durch das Auslesen der Info-Daten gefüllt werden und mit dem Wert in der combine_items.json verglichen werden sollen</p>
@@ -1605,7 +1636,7 @@ für die <a href="#id2">nicht erfolgreiche</a> Berechtigungsprüfung.</p></td>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="../../doc/images/target_combine_items.png" alt="target combine items">
+<img src="../../doc/images/Pooling_gen_combine_items.png" alt="Pooling gen combine items">
 </div>
 </div>
 <div class="admonitionblock tip">
@@ -1866,7 +1897,378 @@ finden sind:</p>
 </div>
 <div class="imageblock left">
 <div class="content">
-<img src="../../doc/images/BP.png" alt="BP">
+<img src="../../doc/images/Tag.png" alt="Tag">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_6_4_versionsfilter">6.4 Versionsfilter</h4>
+<div class="paragraph">
+<p><br></p>
+</div>
+<div class="paragraph">
+<p><strong>Versionsfilter</strong></p>
+</div>
+<div class="paragraph">
+<p>Das Feature ‚Versionsfilter‘ kann genutzt werden, um die Test Suite gegen eine vorher definierte Version des TI-Messengers laufen zu lassen. Weiter kann dieses Feature auch für einzelne Testfälle oder auch einzelne Parameter-Columns innerhalb eines Testfalls genutzt werden. Somit entsteht die Möglichkeit auch Versionen gegeneinander zu testen, was hier nun im Weiteren erläutert wird.</p>
+</div>
+<div class="paragraph">
+<p>Als Versionen werden in diesem Filter die Client Versionen betrachtet, die an den Testtreiberschnittstellen hinterlegt sind und für die combine_items ausgelesen werden:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../doc/images/VersionFilterCombineItems.png" alt="VersionFilterCombineItems">
+</div>
+</div>
+<div class="paragraph">
+<p>Welcher Wert hier für das Feature Versionsfilter genutzt wird, wird in der pom.xml konfiguriert:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../doc/images/VersionFilterPom.png" alt="VersionFilterPom">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">&#128681;</div>
+</td>
+<td class="content">
+<span class="black"><strong><em>Wichtig: Default ist die VersionProperties mit &gt;version&lt; befüllt und muss ggf. angepasst werden passend zu den tatsächlich ausgelesenen und in der pom.xml definierten Daten.</em></strong></span>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">&#128681;</div>
+</td>
+<td class="content">
+<span class="black"><strong><em>Der Versionsparameter muss in Form von X , X.X , X.X.X or X.X.X.X etc. vorhanden sein, wobei X ein Integer sein muss!</em></strong></span>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Um einen Versionsfilter <strong>global</strong> zu setzen, muss der entsprechende Wert in die pom.xml eingetragen werden. Per default ist dieser nicht befüllt.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../doc/images/CucumberFilterVersion.png" alt="CucumberFilterVersion">
+</div>
+</div>
+<div class="paragraph">
+<p>Wird hier nun ein Wert eingetragen, werden nur die Schnittstellen der combine_items für die Kombinatorik genutzt, die diesem Wert entsprechen. Ergo werden alle Schnittstellen die diesem Wert nicht entsprechen, an dem folgenden Testrun nicht teilnehmen.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../doc/images/CucumberFilterVersionBefuellt.png" alt="CucumberFilterVersionBefuellt">
+</div>
+</div>
+<div class="paragraph">
+<p>Wichtig an dieser Stelle ist zu erwähnen, dass vor der Version ein Standard ‚two-way comparison operator‘ gesetzt werden muss. Dies kann im mathematischen oder im bash Style erfolgen.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../doc/images/VersionFilterCompare.png" alt="VersionFilterCompare">
+</div>
+</div>
+<div class="paragraph">
+<p>Weitere Informationen hierzu sind hier zu finden:</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc" class="bare">https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc</a></p>
+</div>
+<div class="paragraph">
+<p>Man kann den Versionsfilter auch über die Kommandozeile ausführen. Ein Beispiel hierfür ist:</p>
+</div>
+<div class="paragraph">
+<p><strong>mvn clean verify -Dcucumber.filter.version=--EQ--&#8201;3.3.3</strong></p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">&#128681;</div>
+</td>
+<td class="content">
+<span class="black"><strong><em>Wichtig an dieser Stelle ist: Wenn in der pom.xml ein Versionsfilter und in der Kommandozeile ebenfalls ein Versionsfilter angegeben wird, so übersteuert der Wert in der Kommandozeile den globalen Wert in der pom.xml!</em></strong></span>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Auf Testfallebene kann dieser Filter ebenfalls genutzt werden. Hierzu können Versionsfilter für die Parameter genutzt werden, die dann im Nachgang die Kombinatorik bestimmen.</p>
+</div>
+<div class="paragraph">
+<p>Ein Beispiel:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../doc/images/VersionFilterTestCase.png" alt="VersionFilterTestCase">
+</div>
+</div>
+<div class="paragraph">
+<p>In diesem Testfall werden nun zwei Schnittstellen genutzt. Es besteht nun die Möglichkeit jeder Schnittstelle einen Versionswert zuzuordnen. In unserem Bespiel würden wir nun für die Kombinatorik lediglich Schnittstellen mit der Client Version 1.1.1 gegen die Client Version 3.3.3 herangezogen, um die auszuführenden Targetfiles zu generieren.</p>
+</div>
+<div class="paragraph">
+<p>Wollen wir nun einen separaten Testfall gänzlich gegen eine Version testen, können die Filter kombiniert werden.</p>
+</div>
+<div class="paragraph">
+<p>Beispiel:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../doc/images/VersionFilterTestCase2.png" alt="VersionFilterTestCase2">
+</div>
+</div>
+<div class="paragraph">
+<p>So würde in der Kombinatorik und anschließenden Ausführung für beide Parameter des Testfalls lediglich Schnittstellen der Version 3.3.3 berücksichtigt.</p>
+</div>
+<div class="paragraph">
+<p>Zwangsläufig müssen nicht alle Parameter mit einem Versionsfilter befüllt werden. Wir können in diesem Beispiel auch nur dem Parameter „ApiName1“ einen Versionsfilter geben. Für „ApiName2“ wird dann entweder der global gesetzte Filter in der pom.xml genutzt oder sollte dieser nicht befüllt sein, eben alle anderen Schnittstellen, da hier keine Beschränkung vorliegt.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../doc/images/VersionFilterTestCase3.png" alt="VersionFilterTestCase3">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">&#128681;</div>
+</td>
+<td class="content">
+<span class="black"><strong><em>Wichtig: Versionsfilter auf Testfallebene übersteuern gesetzte Filter in der pom.xml und auch in der Kommandozeile!!!</em></strong></span>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Die Hirarchie ist also wie folgt:</p>
+</div>
+<div class="paragraph">
+<p>Versionsfilter auf Testfallebene &gt; Versionsfilter in der Kommandozeile &gt; Versionsfilter in der pom.xml</p>
+</div>
+<div class="paragraph">
+<p>Weitere Informationen sind, wie zuvor erwähnt, an folgender Stelle zu finden:</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc" class="bare">https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc</a></p>
+</div>
+<div class="paragraph text-right">
+<p><a href="#id0">Inhaltsverzeichnis</a></p>
+</div>
+<div class="imageblock left">
+<div class="content">
+<img src="../../doc/images/Tag.png" alt="Tag">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_6_5_pooling">6.5 Pooling</h4>
+<div class="paragraph">
+<p><br></p>
+</div>
+<div class="paragraph">
+<p><strong>Pooling</strong></p>
+</div>
+<div class="paragraph">
+<p>Das Pooling Feature deint dazu, dass mehrere spezifizierte Gruppen von Schnittstellen gegeneinander getestet werden können.
+So besteht die Möglichkeit, dass z.B mehrere Hersteller Teilnehmer eines IOP Tests sein können, ohne wirklich alle Schnitstellen gegeneinander zu testen.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">&#128681;</div>
+</td>
+<td class="content">
+<span class="black"><strong><em>Ein Pool besteht aus mehreren Gruppen!</em></strong></span>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Um dieses Feature zu nutzen, muss in einem ersten Schritt allen Items in der Source combine_items.json, die genutzt werden sollen, eine Gruppe zugeordnet werden.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../doc/images/Pooling_combine_items.png" alt="Pooling combine items">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">&#128681;</div>
+</td>
+<td class="content">
+<span class="black"><strong><em>Nachdem die Kombinationen durch das PlugIn erzeugt wurden, wird ein LogFile in ./target/generated-combine/usedGroups.json erzeugt. Daraus wird dann ersichtlich welche Gruppen an dem Testrun teilgenommen haben und welche nicht.</em></strong></span>
+</td>
+</tr>
+</table>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../doc/images/usedGroups.png" alt="usedGroups">
+</div>
+</div>
+<div class="paragraph">
+<p>In der pom.xml können u.a. Pools definiert werden.</p>
+</div>
+<div class="paragraph">
+<p>Ein Beispiel:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../doc/images/PoolGroups.png" alt="PoolGroups">
+</div>
+</div>
+<div class="paragraph">
+<p>So kann an dieser Stelle folgendes definiert werden:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>groupPattern: Diese beschreiben welcher namentliche Wert einer Gruppe im Pool enthalten sein soll</p>
+</li>
+<li>
+<p>amount: Dieser Wert beschreib die Anzahl der Gruppen, die im Pool vorkommen dürfen</p>
+</li>
+<li>
+<p>strategy: Dieser Wert beschreibt die 'Matching' Strategie der groupPattern. In diesem Fall z.B. kann mit Wildcards gearbeitet werden</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Weitere Informationen zu diesen Werten und vor allem dem Möglichkeiten der 'Matching' Strategien ist hier zu entnehmen: <a href="https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc#pooling">Plugin/doc/userguide</a></p>
+</div>
+<div class="paragraph">
+<p>Die grundlegende Konfiguration des Poolings findet ebenfalls in der pom.xml statt</p>
+</div>
+<div class="paragraph">
+<p>Ein Beispiel:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../doc/images/PoolingPom.png" alt="PoolingPom">
+</div>
+</div>
+<div class="paragraph">
+<p>Neben den zuvor beschriebenen Pools können so nun folgende Werte bestimmt werden:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>defaultMatchStrategy: Hier wird der Default Wert für die 'Matching' Strategie definiert</p>
+</li>
+<li>
+<p>poolSize: Hier kann eine fixe Pool Größe definiert werden</p>
+</li>
+<li>
+<p>excludedGroups: Mit diesem Wert können Gruppen definiert werden, die NICHT im Pool berücksichtigt werden sollen.</p>
+</li>
+<li>
+<p>poolGroupString: Auf diesen Wert wird im Anschluss noch genauer eingegangen. An dieser Stelle kann dieser Wert auch fix gesetzt werden.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">&#128681;</div>
+</td>
+<td class="content">
+<span class="black"><strong><em>Wichtig: All diese Werte können auch flexibel genutzt werden, indem sie mit Parametern befüllt werden.</em></strong></span>
+</td>
+</tr>
+</table>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../doc/images/Pom_pooling.png" alt="Pom pooling">
+</div>
+</div>
+<div class="paragraph">
+<p>Zur Ausführung eines Pools kann die Kommandozeile genutzt werden.</p>
+</div>
+<div class="paragraph">
+<p>Zum Beispiel kann hier nun, wenn die Werte in der pom.xml als Parameter definiert sind, die größe des Pools und exkludierte Gruppen definiert werden:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>-DpoolSize=3 -DexcludedGroups='\*special'</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Des Weiteren ist es mittels poolGroupString möglich ganze Pools bzw deren Inhalt zu definieren:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>-DpoolGroupString='*approved|BBB*|CCC*,3,WILDCARD;*open,,REGEX'</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>An erster Stelle kann nun über die Pattern bestimmt werden, welche namentlichen Gruppen  im Pool inkludiert sein sollen. Mehrere Pattern werden mit einer '|' getrennt.
+Dieser Wert muss mindestens einmal befüllt sein. Die beiden folgenden Werte können auch leer gelassen werden. Dann greifen die Default Werte (amount=0 und default Matching Stragegie aus der pom.xml)</p>
+</div>
+<div class="paragraph">
+<p>Der zweite Wert definiert die Anzahl der Gruppen, die mit den zuvor genannten Pattern am Pool teilnehmen sollen.</p>
+</div>
+<div class="paragraph">
+<p>Der dritte Wert definiert die 'Matching' Strategie.</p>
+</div>
+<div class="paragraph">
+<p>Nach einem ';' können noch weitere Definitionen getroffen werden, z.B. für andere 'Matching' Strategien.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">&#128681;</div>
+</td>
+<td class="content">
+<span class="black"><strong><em>Wichtig: Sollte in der Kommandozeile oder in der Konfiguration poolGroupString genutzt werden, überschreibt diese andere in der pom.xml definierten Werte und Pools.</em></strong></span>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Wenn als Anzahl 0 oder nicht mitgegeben wird, werden alle passenden Gruppen genutzt.</p>
+</div>
+<div class="paragraph">
+<p>Wenn jedoch die Anzahl der Gruppen größer ist als die Größe des Pools, werden random Gruppen gewählt, bis die Größe des Pools erreicht ist.</p>
+</div>
+<div class="paragraph">
+<p>Ist die Anzahl der defnierten Gruppen kleiner als die Größe des Pool, wird dieser random mit weiteren Gruppen befüllt, bis die Anzahl der Gruppen und die Pool Größe zu einander passen.</p>
+</div>
+<div class="paragraph">
+<p>Ein solches Beispiel wäre:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>-DpoolSize=6  -DpoolGroupString='*approved|BBB*|CCC*,3,WILDCARD'</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wir wollen eine Poolsize von 6, haben aber in den Pattern des poolGroupString nur drei Gruppen definiert.
+Jetzt werden weitere drei Gruppen random hinzugefügt, um auf die Poolgröße 6 zu kommen.</p>
+</div>
+<div class="paragraph">
+<p>Weitere und tiefere Informationen sind unter <a href="https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc#pooling">Plugin/doc/userguide</a> zu finden.</p>
+</div>
+<div class="paragraph text-right">
+<p><a href="#id0">Inhaltsverzeichnis</a></p>
+</div>
+<div class="imageblock left">
+<div class="content">
+<img src="../../doc/images/Tag.png" alt="Tag">
 </div>
 </div>
 </div>
@@ -1972,7 +2374,7 @@ erstellt hat.</strong></p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">alle</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">alle mit Freigabe für A</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ok</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@BP_FL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">@BP:FL</p></td>
 </tr>
 </tbody>
 </table>
@@ -2000,19 +2402,19 @@ erstellt hat.</strong></p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Personenverzeichnis</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Organisationsverzeichnis</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ok</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@BP_P2O</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">@BP:P2O</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Organisationsverzeichnis</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Organisationsverzeichnis</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ok</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@BP_O2O</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">@BP:O2O</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ohne Eintrag</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Organisationsverzeichnis</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ok</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@BP_N2O</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">@BP:N2O</p></td>
 </tr>
 </tbody>
 </table>
@@ -2037,7 +2439,7 @@ erstellt hat.</strong></p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Personenverzeichnis</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Personenverzeichnis</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ok</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@BP_P2P</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">@BP:P2P</p></td>
 </tr>
 </tbody>
 </table>
@@ -2062,25 +2464,25 @@ erstellt hat.</strong></p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Personenverzeichnis</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ohne Eintrag</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ok</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@BP_P2N_intern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">@BP:P2N_intern</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Organisationsverzeichnis</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Personenverzeichnis</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ok</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@BP_O2P_intern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">@BP:O2P_intern</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Organisationsverzeichnis</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ohne Eintrag</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ok</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@BP_O2N_intern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">@BP:O2N_intern</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ohne Eintrag</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Personenverzeichnis</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ok</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@BP_N2P_intern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">@BP:N2P_intern</p></td>
 </tr>
 </tbody>
 </table>
@@ -2220,10 +2622,14 @@ erstellt hat.</strong></p>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">03.3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen/ändern, Endpoints anlegen/ändern und löschen</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen/ändern, Endpoint anlegen/ändern und löschen</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">03.4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin mit zwei Endpoints anlegen und löschen</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">03.5</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Organisationsressourcen im Verzeichnisdienst hinzufügen - Nicht validen Healthcare-Service durch Org-Admin anlegen</p></td>
 </tr>
 </tbody>
@@ -2780,11 +3186,11 @@ erstellt hat.</strong></p>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">12.2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Gruppenchat - Test-Client "E" sendet eine Nachricht (HBA-User)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Gruppenchat - Test-Client "C" sendet eine Nachricht (HBA-User)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">12.3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Gruppenchat - Test-Client "F" sendet eine Nachricht (Organisations-User)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Gruppenchat - Test-Client "D" sendet eine Nachricht (Organisations-User)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">12.4</p></td>
@@ -2805,6 +3211,14 @@ erstellt hat.</strong></p>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">12.8</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb einer Organisation - Gruppenchat - Test-Client "B" sendet eine Nachricht (HBA-User lädt Organisations-User ein)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">12.9</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb/außerhalb einer Organisation - Gruppenchat - Test-Client "C" sendet eine Nachricht (Organisations-User)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">12.10</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Events innerhalb/außerhalb einer Organisation - Gruppenchat - Test-Client "D" sendet eine Nachricht (HBA-User lädt HBA- und Organisations-User ein)</p></td>
 </tr>
 </tbody>
 </table>
@@ -2860,6 +3274,70 @@ erstellt hat.</strong></p>
 </table>
 <div class="paragraph text-center">
 <p><a href="#id810">Zurück</a>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<a href="#id8">Testfall Liste</a></p>
+</div>
+<div class="paragraph">
+<p><a id="id812"></a> <strong>Gruppenchat mit 5 HomeServern</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 6.25%;">
+<col style="width: 93.75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">14.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Gruppenchat mit 5 Teilnehmern - Test-Client "A" sendet eine Nachricht (HBA-User)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">14.2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Gruppenchat mit 5 Teilnehmern - Test-Client "E" sendet eine Nachricht (HBA-User)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">14.3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Gruppenchat mit 5 Teilnehmern - Test-Client "F" sendet eine Nachricht (Organisations-User)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph text-center">
+<p><a href="#id811">Zurück</a>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<a href="#id8">Testfall Liste</a></p>
+</div>
+<div class="paragraph">
+<p><a id="id813"></a> <strong>Gruppenchat mit 3 HomeServern</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 6.25%;">
+<col style="width: 93.75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">15.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Gruppenchat mit 3 Teilnehmern - Test-Client "A" sendet eine Nachricht (HBA-User)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">15.2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Gruppenchat mit 3 Teilnehmern - Test-Client "C" sendet eine Nachricht (HBA-User)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">15.3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Gruppenchat mit 3 Teilnehmern - Test-Client "D" sendet eine Nachricht (Organisations-User)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">15.4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Events außerhalb einer Organisation - Gruppenchat mit 3 Teilnehmern - Test-Client "C" sendet eine Nachricht (HBA-User lädt Organisations-User ein)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph text-center">
+<p><a href="#id812">Zurück</a>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
@@ -2955,6 +3433,15 @@ Das Timeout muss immer größer als das PollInterval sein!
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p><strong>Im Terminal kann das Pooling eingestellt werden</strong></p>
+</div>
+<div class="paragraph">
+<p>mvn clean install -DexcludedGroups='&lt;Pattern&gt;' -DpoolGroupString='&lt;Pattern&gt;,&lt;Amount&gt;,&lt;MatchingStrategy&gt;'</p>
+</div>
+<div class="paragraph">
+<p>Weitere Infos hierzu sind in Kapitel 6.5 vorhanden.</p>
+</div>
 <div class="paragraph text-right">
 <p><a href="#id0">Inhaltsverzeichnis</a></p>
 </div>
@@ -2976,13 +3463,65 @@ selbst erklärend.</p>
 <div class="paragraph text-right">
 <p><a href="#id0">Inhaltsverzeichnis</a></p>
 </div>
+<div class="imageblock left">
+<div class="content">
+<img src="../../doc/images/Tests.png" alt="Tests">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_11_zusätzliche_iop_feature_files_bzw_tests">11. Zusätzliche IOP Feature Files bzw Tests</h3>
+<div class="paragraph">
+<p><br></p>
+</div>
+<div class="paragraph">
+<p>Folgende Feature Files bzw Testfälle behandelt das Thema IOP in einem größeren Rahmen. Zur Ausführung der Tests
+bedarf es mehrerer zugelassener Anbieter und somit mehrerer Home Server Instanzen.</p>
+</div>
+<div class="paragraph">
+<p>Diese Feature Files werden hier abgelegt:</p>
+</div>
+<div class="paragraph">
+<p>src/test/resources/templates/Zusatztests/Testrun</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 8.3333%;">
+<col style="width: 8.3333%;">
+<col style="width: 50%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><strong>Feature File</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>AF Nummer</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Beschreibung</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Anmerkung</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">14</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ohne</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Gruppenchat</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Gruppenchat mit 5 Teilnehmern/HomeServern</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">15</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ohne</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Gruppenchat</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Gruppenchat mit 3 Teilnehmern/HomeServern</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph text-right">
+<p><a href="#id0">Inhaltsverzeichnis</a></p>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-02-22 10:35:21 +0100
+Last updated 2023-04-26 15:31:37 +0200
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/run_prettify.min.js"></script>

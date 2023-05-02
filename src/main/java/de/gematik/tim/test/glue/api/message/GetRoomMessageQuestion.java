@@ -22,24 +22,27 @@ import static java.util.Objects.requireNonNull;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.models.MessageDTO;
+
 import java.util.List;
 import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 import org.awaitility.core.ConditionTimeoutException;
 
 @RequiredArgsConstructor
-public class GetRoomMessageQuestion implements Question<MessageDTO> {
+public class GetRoomMessageQuestion implements Question<Optional<MessageDTO>> {
 
   private final String msg;
   private final String mxIdSender;
   private Long customTimeout;
   private Long customPollInterval;
+  private boolean shouldWaitUntilDeleted;
 
   public static GetRoomMessageQuestion messageFromSenderWithTextInActiveRoom(String msg,
       String mxIdSender) {
-    return new GetRoomMessageQuestion(msg, mxIdSender);
+    return new GetRoomMessageQuestion(msg, mxIdSender).shouldWaitUntilDeleted(false);
   }
 
   public GetRoomMessageQuestion withCustomInterval(Long timeout, Long pollInterval) {
@@ -48,21 +51,44 @@ public class GetRoomMessageQuestion implements Question<MessageDTO> {
     return this;
   }
 
+  public GetRoomMessageQuestion shouldWaitUntilDeleted(boolean shouldWait) {
+    this.shouldWaitUntilDeleted = shouldWait;
+    return this;
+  }
+
   @Override
-  public MessageDTO answeredBy(Actor actor) {
+  public Optional<MessageDTO> answeredBy(Actor actor) {
     try {
       return repeatedRequest(() -> getMessage(actor), "message", customTimeout,
           customPollInterval);
     } catch (ConditionTimeoutException ex) {
-      return null;
+      return Optional.empty();
     }
   }
 
-  private Optional<MessageDTO> getMessage(Actor actor) {
+  private Optional<Optional<MessageDTO>> getMessage(Actor actor) {
     actor.attemptsTo(GET_MESSAGES.request());
     List<MessageDTO> messages = List.of(lastResponse().body().as(MessageDTO[].class));
-    return messages.stream()
+    if (shouldWaitUntilDeleted) {
+      return dontFindMessage(messages);
+    }
+    return findMessage(messages);
+  }
+
+  private Optional<Optional<MessageDTO>> findMessage(List<MessageDTO> messages) {
+    Optional<MessageDTO> message = messages.stream()
         .filter(m -> m.getBody().equals(msg) && requireNonNull(m.getAuthor()).equals(mxIdSender))
         .findFirst();
+    return message.isPresent() ? Optional.of(message) : Optional.empty();
+  }
+
+  private Optional<Optional<MessageDTO>> dontFindMessage(List<MessageDTO> messages) {
+    Optional<MessageDTO> message = messages.stream()
+        .filter(m -> m.getBody().equals(msg) && requireNonNull(m.getAuthor()).equals(mxIdSender))
+        .findFirst();
+    if (message.isPresent()) {
+      return Optional.empty();
+    }
+    return Optional.of(message);
   }
 }

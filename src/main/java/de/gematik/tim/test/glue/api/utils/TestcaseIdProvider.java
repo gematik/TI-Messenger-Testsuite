@@ -32,6 +32,7 @@ public class TestcaseIdProvider {
 
   private static final String TCID_PREFIX = "@TCID";
   private static String id;
+  private static String lastTcId;
 
   public static void startTest(Scenario scenario) {
     if (StringUtils.isNotBlank(id)) {
@@ -43,6 +44,7 @@ public class TestcaseIdProvider {
         .orElseThrow(() -> new CucumberException(
             "This scenario seems to have not TCID! Name: " + scenario.getName()));
     id = format("%s/%s", testId, UUID.randomUUID());
+    lastTcId = id;
   }
 
   public static String getTestcaseId() {
@@ -50,6 +52,10 @@ public class TestcaseIdProvider {
       throw new TestRunException("The testcase have no id! Please provide id first!");
     }
     return id;
+  }
+
+  public static String getLastTcId() {
+    return lastTcId;
   }
 
   public static void stopTest() {

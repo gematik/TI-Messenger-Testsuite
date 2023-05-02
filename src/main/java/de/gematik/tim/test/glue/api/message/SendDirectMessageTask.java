@@ -21,7 +21,7 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEND_DIRECT_MESSAGE;
 import static de.gematik.tim.test.glue.api.room.UseRoomAbility.addRoomToActor;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomQuestion.ownRoom;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.homeserverFromMxId;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.isSameHomeserver;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -62,8 +62,7 @@ public class SendDirectMessageTask implements Task {
       String toMxId) {
     boolean roomAlreadyExist = isNotBlank(actor.recall(DIRECT_CHAT_NAME + toMxId))
         || lastResponse().statusCode() != 200;
-    boolean isSameHomeServer = homeserverFromMxId(toMxId).equals(homeserverFromMxId(actorMxId));
-    if (isSameHomeServer) {
+    if (isSameHomeserver(toMxId, actorMxId)) {
       RawDataStatistics.exchangeMessageSameHomeserver();
       if (!roomAlreadyExist) {
         RawDataStatistics.inviteToRoomSameHomeserver();

@@ -35,7 +35,6 @@ import static de.gematik.tim.test.models.RoomMembershipStateDTO.INVITED;
 import static de.gematik.tim.test.models.RoomMembershipStateDTO.JOINED;
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
-import static net.serenitybdd.screenplay.actors.OnStage.setTheStage;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorInTheSpotlight;
 import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
@@ -44,7 +43,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import de.gematik.tim.test.models.RoomDTO;
 import de.gematik.tim.test.models.RoomMemberDTO;
 import de.gematik.tim.test.models.RoomMembershipStateDTO;
-import io.cucumber.java.Before;
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Und;
 import io.cucumber.java.de.Wenn;
@@ -56,14 +54,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.actors.Cast;
 
 public class RoomControllerGlue {
-
-  @Before
-  public void setup() {
-    setTheStage(Cast.ofStandardActors());
-  }
 
   //<editor-fold desc="Create room">
   @When("{string} creates a room with name {string}")

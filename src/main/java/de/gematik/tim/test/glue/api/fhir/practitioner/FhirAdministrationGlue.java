@@ -24,8 +24,6 @@ import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirSearchQuestion.
 import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirSetMxidTask.setMxid;
 import static de.gematik.tim.test.glue.api.fhir.practitioner.OwnFhirResourceQuestion.ownFhirResource;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
-import static net.serenitybdd.screenplay.actors.OnStage.setTheStage;
-import static net.serenitybdd.screenplay.actors.OnStage.stage;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,8 +32,6 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import de.gematik.tim.test.models.FhirPractitionerDTO;
 import de.gematik.tim.test.models.FhirPractitionerSearchResultDTO;
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Und;
 import io.cucumber.java.de.Wenn;
@@ -45,20 +41,9 @@ import io.restassured.response.Response;
 import java.util.List;
 import java.util.Optional;
 import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.actors.Cast;
 
 
 public class FhirAdministrationGlue {
-
-  @Before
-  public void setup() {
-    setTheStage(Cast.ofStandardActors());
-  }
-
-  @After
-  public void teardown() {
-    stage().drawTheCurtain();
-  }
 
   // Register own MXID in vzd
   @When("{listOfStrings} sets MXID in own TIPractitioner resource")

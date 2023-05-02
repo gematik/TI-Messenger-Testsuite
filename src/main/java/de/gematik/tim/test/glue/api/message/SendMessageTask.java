@@ -18,11 +18,11 @@ package de.gematik.tim.test.glue.api.message;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEND_MESSAGE;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.homeserverFromMxId;
+import static de.gematik.tim.test.glue.api.room.questions.GetCurrentRoomQuestion.currentRoom;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.isSameHomeserver;
 import static java.util.Objects.requireNonNull;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
-import de.gematik.tim.test.glue.api.room.UseRoomAbility;
 import de.gematik.tim.test.models.MessageContentDTO;
 import de.gematik.tim.test.models.MessageContentInfoDTO;
 import java.util.UUID;
@@ -71,12 +71,19 @@ public class SendMessageTask implements Task {
     actor.attemptsTo(SEND_MESSAGE.request()
         .with(req -> req.body(message)));
 
-    String roomId = actor.abilityTo(UseRoomAbility.class).getActive();
-    if (homeserverFromMxId(actor.recall(MX_ID)).equals(homeserverFromMxId(roomId))) {
-      RawDataStatistics.exchangeMessageSameHomeserver();
-    } else {
-      RawDataStatistics.exchangeMessageMultiHomeserver();
-    }
+    String actorId = actor.recall(MX_ID);
+    requireNonNull(actor.asksFor(currentRoom()).getMembers()).forEach(m -> {
+      String memberId = requireNonNull(m.getMxid());
+      if (actorId.equals(memberId)) {
+        return;
+      }
+      if (isSameHomeserver(actorId, memberId)) {
+        RawDataStatistics.exchangeMessageSameHomeserver();
+      } else {
+        RawDataStatistics.exchangeMessageMultiHomeserver();
+      }
+    });
+
   }
 
   private MessageContentDTO buildMessage() {

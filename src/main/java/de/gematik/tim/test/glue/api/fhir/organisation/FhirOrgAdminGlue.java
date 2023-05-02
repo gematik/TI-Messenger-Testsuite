@@ -21,7 +21,6 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.fhir.organisation.FhirSearchOrgQuestion.organizationEndpoints;
 import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.CreateEndpointTask.addHealthcareServiceEndpoint;
 import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.DeleteEndpointTask.deleteEndPoint;
-import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.FhirGetEndpointListQuestion.getEndpointList;
 import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.FhirGetEndpointQuestion.getEndpoint;
 import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UpdateEndpointTask.updateEndpoint;
 import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UpdateEndpointTask.updateEndpointFromFile;
@@ -40,15 +39,12 @@ import static de.gematik.tim.test.glue.api.utils.GlueUtils.readJsonFile;
 import static java.util.Objects.requireNonNull;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
-import static net.serenitybdd.screenplay.actors.OnStage.setTheStage;
-import static net.serenitybdd.screenplay.actors.OnStage.stage;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorInTheSpotlight;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 
-import de.gematik.tim.test.glue.api.fhir.organisation.endpoint.FhirGetEndpointListQuestion;
 import de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UseEndpointAbility;
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.FhirGetHealthcareServiceListQuestion;
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility;
@@ -58,8 +54,6 @@ import de.gematik.tim.test.models.FhirHealthcareServiceDTO;
 import de.gematik.tim.test.models.FhirLocationDTO;
 import de.gematik.tim.test.models.FhirOrganizationSearchResultDTO;
 import de.gematik.tim.test.models.FhirOrganizationSearchResultListDTO;
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
 import io.cucumber.java.de.Angenommen;
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Und;
@@ -70,21 +64,10 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.actors.Cast;
 
 public class FhirOrgAdminGlue {
 
   public static final String INVALID_HS_NAME = "INVALID";
-
-  @Before
-  public void setup() {
-    setTheStage(Cast.ofStandardActors());
-  }
-
-  @After
-  public void teardown() {
-    stage().drawTheCurtain();
-  }
 
   //<editor-fold desc="Create & Add">
   @Und("{string} erstellt einen Healthcare-Service {string}")
@@ -208,9 +191,10 @@ public class FhirOrgAdminGlue {
   @Und("{string} ändert den Endpunkt von {string} im Healthcare-Service {string} mit dem JSON {string}")
   public void changeEndpointForHealthcareServiceWithJson(String orgAdmin, String client,
       String hsName, String fileName) {
+    String endpointName = theActorCalled(client).recall(CLAIMER_NAME);
     Actor admin = theActorCalled(orgAdmin);
     admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hsName);
-    admin.abilityTo(UseEndpointAbility.class).setActive(client);
+    admin.abilityTo(UseEndpointAbility.class).setActive(endpointName);
     admin.attemptsTo(updateEndpointFromFile(fileName));
   }
   //</editor-fold>
@@ -226,8 +210,9 @@ public class FhirOrgAdminGlue {
 
   @Und("{string} löscht den Endpoint von {string} für den Healthcare-Service {string}")
   public void deleteEndpointOfHealthcareService(String adminName, String userName, String hsName) {
+    String endpointName = theActorCalled(userName).recall(CLAIMER_NAME);
     Actor admin = theActorCalled(adminName);
-    admin.attemptsTo(deleteEndPoint().withName(userName).forHealthcareService(hsName));
+    admin.attemptsTo(deleteEndPoint().withName(endpointName).forHealthcareService(hsName));
     assertThat(lastResponse().getStatusCode()).isEqualTo(204);
   }
 
@@ -262,16 +247,25 @@ public class FhirOrgAdminGlue {
   }
 
   @Dann("existiert kein Endpoint von {string} für den Healthcare-Service {string}")
-  public void noHealthcareServiceEndpointWithName(String endpointName, String hsName) {
-    FhirGetEndpointListQuestion endpointList = getEndpointList().filterForName(endpointName)
-        .forHealthcareService(hsName);
-    theActorInTheSpotlight().should(seeThat(endpointList, is(empty())));
+  public void noHealthcareServiceEndpointWithName(String actorName, String hsName) {
+    Actor actor = theActorCalled(actorName);
+    FhirOrganizationSearchResultListDTO hsSearchResult = actor.asksFor(
+        organizationEndpoints().withHsName(hsName).havingAtLeastXResults(0));
+
+    List<FhirOrganizationSearchResultDTO> filtered =
+        requireNonNull(hsSearchResult.getSearchResults())
+            .stream()
+            .filter(e -> requireNonNull(requireNonNull(e.getEndpoint()).getAddress()).equals(
+                actor.recall(MX_ID)))
+            .toList();
+    assertThat(filtered).isEmpty();
   }
 
   @Dann("existiert kein Healthcare-Service {string}")
   public void noHealthcareServiceWithName(String hsName) {
-    FhirGetHealthcareServiceListQuestion hsList = getHealthcareServiceList().filterForHealthcareService(
-        hsName);
+    FhirGetHealthcareServiceListQuestion hsList = getHealthcareServiceList()
+        .filterForHealthcareService(
+            hsName);
     theActorInTheSpotlight().should(seeThat(hsList, is(empty())));
   }
 
@@ -296,7 +290,8 @@ public class FhirOrgAdminGlue {
       String fileName) {
     Actor admin = theActorInTheSpotlight();
     admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hsName);
-    admin.abilityTo(UseEndpointAbility.class).setActive(client);
+    admin.abilityTo(UseEndpointAbility.class)
+        .setActive(theActorCalled(client).recall(CLAIMER_NAME));
     FhirEndpointDTO endpoint = admin.asksFor(getEndpoint());
     FhirEndpointDTO jsonEndpoint = readJsonFile(fileName, FhirEndpointDTO.class);
     assertThat(endpoint)

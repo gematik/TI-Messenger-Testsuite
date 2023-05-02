@@ -14,16 +14,28 @@
  * limitations under the License.
  */
 
-package de.gematik.tim.test.glue.api;
+package de.gematik.tim.test.glue.api.room.questions;
 
+import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_ROOM;
 import static lombok.AccessLevel.PRIVATE;
+import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
+import de.gematik.tim.test.models.RoomDTO;
 import lombok.AllArgsConstructor;
+import net.serenitybdd.screenplay.Actor;
+import net.serenitybdd.screenplay.Question;
 
 @AllArgsConstructor(access = PRIVATE)
-public class TransferGlue {
+public class GetCurrentRoomQuestion implements Question<RoomDTO> {
 
-  public static final String ERROR_MESSAGE = "Have to be implemented";
+  public static GetCurrentRoomQuestion currentRoom() {
+    return new GetCurrentRoomQuestion();
+  }
 
 
+  @Override
+  public RoomDTO answeredBy(Actor actor) {
+    actor.attemptsTo(GET_ROOM.request());
+    return lastResponse().body().as(RoomDTO.class);
+  }
 }

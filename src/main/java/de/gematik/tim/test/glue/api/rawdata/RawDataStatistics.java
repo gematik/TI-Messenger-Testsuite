@@ -171,6 +171,7 @@ public class RawDataStatistics {
         .andContents(join(currentDataObjectList, " "));
   }
 
+
   private static List<RawDataObject> buildTotalDataObjectList() {
     return List.of(
         new RawDataObject(TIM_UC_10057_01, login),

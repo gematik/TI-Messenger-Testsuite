@@ -1,6 +1,6 @@
 # language: de
 @File:FeatureFile_10 @Ctl:UseCase
-@PRODUKT:TI-M
+@PRODUKT:TIM_FD @PRODUKT:TIM_Client
 @AF-ID:AF_10062
 @AK-ID:ML-123665 @AK-ID:ML-123666 @AK-ID:ML-123667 @AK-ID:ML-123668 @AK-ID:ML-132593
 Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Organisation
@@ -357,23 +357,24 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Dann       "C" kann die Nachricht "At least I can say that I have tried" von "D" im Chat mit "D" nicht mehr sehen [Retry 10 - 3]
     Und        "D" kann die Nachricht "At least I can say that I have tried" von "D" im Chat mit "C" nicht mehr sehen [Retry 5 - 2]
 
-  @Shuffle(true)
+  #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName2B,homeserver,2)
+  #@DistinctColumn(ApiName2B)
   @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
   @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
   @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
-  @DistinctColumn(ApiName2B)
   @AllowSelfCombine(false)
   @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName2A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName2B.hasTag("client"))
+  @Filter(ApiName1B.hasTag("prefIOP"))
+  @Filter(ApiName2B.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
 
-  @WIP
   @BP:P2P @Ctl:Raum @Ctl:MsgForward @Ctl:MsgDelete
   @TCID:TIM_11_AF_1012 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.12 Events außerhalb einer Organisation - Raum - HBA-User "A" löscht eine Nachricht
@@ -406,7 +407,6 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Beispiele:
     | ApiName1 | ApiName2 |
 
-  @WIP
   @BP:O2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgForward @Ctl:MsgDelete
   @TCID:TIM_11_AF_1013 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.13 Events außerhalb einer Organisation - Raum - Organisations-User "C" löscht eine Nachricht
@@ -426,18 +426,20 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Dann       "D" kann die Nachricht "Hello from the other site" von "C" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 10 - 3]
     Und        "C" kann die Nachricht "Hello from the other site" von "C" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 5 - 2]
 
-  @Shuffle(true)
+  #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1B,homeserver,2)
+  #@DistinctColumn(ApiName1B)
   @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
   @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
   @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
-  @DistinctColumn(ApiName1B)
   @AllowSelfCombine(false)
   @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName2A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName2B.hasTag("client"))
+  @Filter(ApiName1B.hasTag("prefIOP"))
+  @Filter(ApiName2B.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
@@ -491,18 +493,20 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Und        "D" bestätigt eine Einladung in Raum "TIM Testraum 1"
     Und        "D" empfängt eine Nachricht "Hello from the other site" von "C" im Raum "TIM Testraum 1"
 
-  @Shuffle(true)
+  #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName2B,homeserver,2)
+  #@DistinctColumn(ApiName2B)
   @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
   @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
   @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
-  @DistinctColumn(ApiName2B)
   @AllowSelfCombine(false)
   @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName2A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName2B.hasTag("client"))
+  @Filter(ApiName1B.hasTag("prefIOP"))
+  @Filter(ApiName2B.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
@@ -552,18 +556,20 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Wenn       "D" sendet ein Attachment "datei.txt" an den Raum "TIM Testraum 1"
     Dann       "C" empfängt das Attachment "datei.txt" von "D" im Raum "TIM Testraum 1"
 
-  @Shuffle(true)
+  #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName2B,homeserver,2)
+  #@DistinctColumn(ApiName2B)
   @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
   @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
   @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
-  @DistinctColumn(ApiName2B)
   @AllowSelfCombine(false)
   @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName2A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName2B.hasTag("client"))
+  @Filter(ApiName1B.hasTag("prefIOP"))
+  @Filter(ApiName2B.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
@@ -613,18 +619,21 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Wenn       "C" sendet ein Attachment "bild.jpg" an den Raum "TIM Testraum 1"
     Dann       "D" empfängt das Attachment "bild.jpg" von "C" im Raum "TIM Testraum 1"
 
-  @Shuffle(true)
+  #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1B,homeserver,2)
+  #@DistinctColumn(ApiName1B)
   @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
   @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
   @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
-  @DistinctColumn(ApiName1B)
   @AllowSelfCombine(false)
   @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName2A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName2B.hasTag("client"))
+  @Filter(ApiName1B.hasTag("prefIOP"))
+  @Filter(ApiName2B.hasTag("prefIOP"))
+
 
     Beispiele:
     | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
