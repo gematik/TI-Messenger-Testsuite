@@ -1,9 +1,8 @@
 # language: de
-@File:FeatureFile_11 @Ctl:UseCase @Ctl:Additional @Ctl:Freigabeliste
-@PRODUKT:TI-M
-@AF-ID:AF_Freigabeliste
+@File:FeatureFile_11 @Ctl:UseCase @Ctl:Freigabeliste
+@PRODUKT:TIM_FD @PRODUKT:TIM_Client
 @AF-ID:AF_10061
-@AK-ID:ML-123654 @AK-ID:ML-123663 @AK-ID:ML-122592
+@AK-ID:ML-123654 @AK-ID:ML-123663 @AK-ID:ML-132592
 @AF-ID:AF_10064
 @AK-ID:ML-123672 @AK-ID:ML-123893 @AK-ID:ML-123891 @AK-ID:ML-132589
 Funktionalität: 11. Einladung von Akteuren via Freigabeliste
@@ -129,17 +128,18 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
     Und        "C" verlässt Chat mit "B"
     Und        "C" löscht "B" in seiner Freigabeliste
 
-  @Shuffle(true)
+  #@Shuffle(true)
+  #@DistinctColumn(ApiName1B)
   #@MaxSameColumnProperty(ApiName1B,homeserver,2)
   @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
   @Filter(!ApiName2.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-  @DistinctColumn(ApiName1B)
   @AllowSelfCombine(true)
   @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("prefIOP"))
   @Filter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:

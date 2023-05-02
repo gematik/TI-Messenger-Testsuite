@@ -16,8 +16,8 @@
 
 package de.gematik.tim.test.glue.api.devices;
 
-import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.UNCLAIM_DEVICE;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.DEVICE_ID_VARIABLE;
+import static de.gematik.tim.test.glue.api.utils.TestcaseIdProvider.getLastTcId;
 import static de.gematik.tim.test.glue.api.utils.TestcaseIdProvider.getTestcaseId;
 import static java.util.Objects.nonNull;
 
@@ -29,6 +29,7 @@ import de.gematik.tim.test.glue.api.room.UseRoomAbility;
 import io.restassured.specification.RequestSpecification;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.HasTeardown;
@@ -43,6 +44,8 @@ public class UseDeviceAbility implements TestdriverApiAbility, HasTeardown, Refe
   public static final String TEST_CASE_ID_HEADER = "Transaction-Id";
   private final long deviceId;
   private Actor actor;
+  @Setter
+  private boolean tearedDown = false;
 
   public static UseDeviceAbility useDevice(long deviceId) {
     return new UseDeviceAbility(deviceId);
@@ -54,18 +57,24 @@ public class UseDeviceAbility implements TestdriverApiAbility, HasTeardown, Refe
 
   @Override
   public RequestSpecification apply(RequestSpecification requestSpecification) {
-    return requestSpecification.headers(TEST_CASE_ID_HEADER, getTestcaseId())
+    String tcId = tearedDown ? getLastTcId() : getTestcaseId();
+    return requestSpecification
+        .headers(TEST_CASE_ID_HEADER, tcId)
         .pathParam(DEVICE_ID_VARIABLE, deviceId);
   }
 
   @Override
   public void tearDown() {
+    if (tearedDown) {
+      return;
+    }
+    tearedDown = true;
     clearAllBeforeLogoutAndUnclaim(actor);
     IsLoggedInAbility loggedInAbility = actor.abilityTo(IsLoggedInAbility.class);
     if (nonNull(loggedInAbility)) {
       loggedInAbility.tearDown();
     }
-    UNCLAIM_DEVICE.request().performAs(actor);
+    DeviceManager.getInstance().release(actor);
   }
 
   @Override

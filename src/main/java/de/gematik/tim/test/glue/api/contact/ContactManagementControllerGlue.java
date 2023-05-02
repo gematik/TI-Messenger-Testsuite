@@ -21,26 +21,18 @@ import static de.gematik.tim.test.glue.api.contact.AddContactTask.addContact;
 import static de.gematik.tim.test.glue.api.contact.ContactListQuestion.ownContactList;
 import static de.gematik.tim.test.glue.api.contact.DeleteContactTask.deleteContact;
 import static de.gematik.tim.test.glue.api.message.SendDirectMessageTask.sendDirectMessageTo;
-import static net.serenitybdd.screenplay.actors.OnStage.setTheStage;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.gematik.tim.test.models.ContactDTO;
 import de.gematik.tim.test.models.ContactsDTO;
-import io.cucumber.java.Before;
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.actors.Cast;
 
 public class ContactManagementControllerGlue {
-
-  @Before
-  public void setup() {
-    setTheStage(Cast.ofStandardActors());
-  }
 
   @Then("{string} is notable to contact {string}")
   @Dann("{string} darf {string} nicht kontaktieren")

@@ -2,6 +2,25 @@
 
 # Release notes
 
+## Release 0.5.0
+
+### Features
+
+- Documentation of Pooling in Testsuite.adoc
+- Documentation of version filter in Testsuite.adoc
+- TestCases 12.1, 12.2, 12.3 adjusted to 3 different participants/home servers
+- New Feature File 14 for group chat (IOP) with 5 participants (incl. documentation in Testsuite.adoc)
+- New Feature File 15 for group chat (IOP) with 3 participants. Tests are excluded from Feature File 12
+- Flag `saveConnections` implemented. Set to true and testsuite will unclaim devices only at the end of run
+- New version `2.9.1` of parameter plugin allows usage of [pooling](https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc#pooling) and [check](https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc#check-goal)
+- Filter Adjustments in all Testcases
+
+
+### Bugfix
+
+- Testcases 13.7 & 13.8 can now create less error because of old data
+- Wrong counted raw data fixed for testcases with multiple actors
+
 ## Release 0.4.4
 
 ### Features
@@ -19,6 +38,7 @@
     - The depending id can also be found in the serenity report
  - The certificate of the tiger proxy get updated automatically. It is no longer necessary to name every host under `alterenativeNames` in `tiger.yml` 
  - TestCase 3.3 splitted into two TestCases (new 3.3 & 3.4)
+ - New Testcases for pipe data acquisition Group Chat inside and outside a homeserver (TF 12.09, 12.10)
 
 ## Release 0.4.1
 

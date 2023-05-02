@@ -22,13 +22,11 @@ import static de.gematik.tim.test.glue.api.media.DownloadMediaQuestion.downloadM
 import static de.gematik.tim.test.glue.api.media.UploadMediaTask.uploadMedia;
 import static de.gematik.tim.test.glue.api.message.GetRoomMessageQuestion.messageFromSenderWithTextInActiveRoom;
 import static de.gematik.tim.test.glue.api.message.SendMessageTask.sendMessage;
-import static net.serenitybdd.screenplay.actors.OnStage.setTheStage;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
 import de.gematik.tim.test.models.MessageDTO;
-import io.cucumber.java.Before;
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Wenn;
 import io.cucumber.java.en.Then;
@@ -37,18 +35,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 import lombok.SneakyThrows;
 import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.actors.Cast;
 
 public class MediaGlue {
 
   public static final String RESOURCES_PATH = "src/test/resources/media/";
-
-  @Before
-  public void setup() {
-    setTheStage(Cast.ofStandardActors());
-  }
 
   @When("{string} uploads a media file with content {string}")
   public void uploadsAMedia(String actorName, String media) {
@@ -98,21 +91,25 @@ public class MediaGlue {
   }
 
   @SneakyThrows
+  @SuppressWarnings("java:S3655") // It get checked by asserThat(message).isPresent()
   @Dann("{string} empfängt das Attachment {string} von {string} im Raum {string}")
   public void receiveAttachmentInRoom(String actorName, String fileName, String userName,
       String roomName) {
     Actor actor = theActorCalled(actorName);
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
     String senderMxId = theActorCalled(userName).recall(MX_ID);
-    MessageDTO message = actor.asksFor(messageFromSenderWithTextInActiveRoom(fileName, senderMxId));
+    Optional<MessageDTO> message = actor
+        .asksFor(messageFromSenderWithTextInActiveRoom(fileName, senderMxId));
 
-    byte[] receivedMedia = actor.asksFor(downloadMedia().withFileId(message.getFileId()));
+    assertThat(message).isPresent();
+
+    byte[] receivedMedia = actor.asksFor(downloadMedia().withFileId(message.get().getFileId()));
 
     Path path = Path.of(RESOURCES_PATH + fileName);
     try (FileInputStream fis = new FileInputStream(path.toFile())) {
       assertThat(receivedMedia).isEqualTo(fis.readAllBytes());
     }
-    assertThat(message.getBody()).isEqualTo(fileName);
+    assertThat(message.get().getBody()).isEqualTo(fileName);
   }
 
 }

@@ -1,6 +1,6 @@
 # language: de
 @File:FeatureFile_03 @Ctl:UseCase @Ctl:OneHomeServer
-@PRODUKT:TI-M
+@PRODUKT:TIM_FD @PRODUKT:TIM_Client
 @AF-ID:AF_10059
 @AK-ID:ML-123626 @AK-ID:ML-123627 @AK-ID:ML-132586
 Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
@@ -39,6 +39,8 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
     Und        "C" schreibt "B" direkt "At least I can say that I have tried"
     Und        "B" empfängt eine Nachricht "At least I can say that I have tried" von "C"
 
+  @Shuffle(true) ##
+  @DistinctColumn(ApiName1B) ##
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
   @AllowDoubleLineup(true)
@@ -70,10 +72,10 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
     Und        "D" schreibt "C" direkt "At least I can say that I have tried"
     Und        "C" empfängt eine Nachricht "At least I can say that I have tried" von "D"
 
-  #@Shuffle(true)
-  #@MaxSameColumnProperty(ApiName1D,homeserver,2)
+  @Shuffle(true)
+  @MaxSameColumnProperty(ApiName1C,homeserver,2) #
   @EqualProperty(homeserver)
-  @AllowSelfCombine(false)
+  @AllowSelfCombine(true)
   @AllowDoubleLineup(false)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
@@ -99,6 +101,8 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
     Wenn       "A" löscht den Healthcare-Service "HealthcareServiceName"
     Dann       existiert kein Healthcare-Service "HealthcareServiceName"
 
+  @Shuffle(true) #
+  @MaxSameColumnProperty(ApiName1B,homeserver,2) #
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
   @AllowDoubleLineup(true)
@@ -108,7 +112,6 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
     Beispiele:
     | ApiName1A | ApiName1B |
 
-  @WIP
   @Ctl:OrgAdmin
   @TCID:TIM_11_AF_304 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
   Szenariogrundriss: 03.4 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin mit zwei Endpoints anlegen und löschen
@@ -127,6 +130,8 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
     Wenn       "A" löscht den Healthcare-Service "HealthcareServiceName"
     Dann       existiert kein Healthcare-Service "HealthcareServiceName"
 
+  @Shuffle(true) #
+  @MaxSameColumnProperty(ApiName1C,homeserver,2) #
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
   @AllowDoubleLineup(true)

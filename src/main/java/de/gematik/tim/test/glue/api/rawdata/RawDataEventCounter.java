@@ -44,7 +44,6 @@ public class RawDataEventCounter {
     RawDataEventCounter newCounter = new RawDataEventCounter();
     errors.forEach(newCounter::addError);
     newCounter.success.set(this.success.get());
-    IntStream.range(0, success.get()).forEach(e -> newCounter.countSuccess());
     return newCounter;
   }
 

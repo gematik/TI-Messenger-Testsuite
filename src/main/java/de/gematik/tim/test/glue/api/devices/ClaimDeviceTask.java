@@ -22,26 +22,38 @@ import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.CLAIM_DEVICE;
 import static de.gematik.tim.test.glue.api.devices.UnclaimedDevicesQuestion.unclaimedDevices;
 import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.TEST_CASE_ID_HEADER;
 import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.useDevice;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.CLAIM_DURATION;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.repeatedRequestWithLongerTimeout;
 import static de.gematik.tim.test.glue.api.utils.TestcaseIdProvider.getTestcaseId;
+import static lombok.AccessLevel.PRIVATE;
 import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.hamcrest.CoreMatchers.equalTo;
 
-import de.gematik.tim.test.glue.api.utils.TestcaseIdProvider;
 import de.gematik.tim.test.models.ClaimDeviceRequestDTO;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 
+@Builder
+@AllArgsConstructor(access = PRIVATE)
 public class ClaimDeviceTask implements Task {
 
 
   private Long deviceId;
-  private int claimDuration = 180;
+  private Integer claimDuration;
+  private String claimerName;
 
   public static ClaimDeviceTask claimDevice() {
-    return new ClaimDeviceTask();
+    return claimDeviceFor(CLAIM_DURATION);
+  }
+
+  public static ClaimDeviceTask claimDeviceFor(Integer claimDuration) {
+    return ClaimDeviceTask.builder().claimDuration(claimDuration).build();
   }
 
   public ClaimDeviceTask withId(Long deviceId) {
@@ -49,8 +61,8 @@ public class ClaimDeviceTask implements Task {
     return this;
   }
 
-  public ClaimDeviceTask forSeconds(int claimDuration) {
-    this.claimDuration = claimDuration;
+  public ClaimDeviceTask withClaimerName(String name) {
+    this.claimerName = name;
     return this;
   }
 
@@ -61,7 +73,7 @@ public class ClaimDeviceTask implements Task {
       deviceId = repeatedRequestWithLongerTimeout(() -> findDeviceToClaim(actor), "device", 10);
     }
 
-    sendClaimRequest(actor, deviceId, claimDuration);
+    sendClaimRequest(actor, deviceId, claimDuration, claimerName);
 
     actor.can(useDevice(deviceId));
     actor.remember(DEVICE_ID, deviceId);
@@ -73,10 +85,10 @@ public class ClaimDeviceTask implements Task {
   }
 
   private static <T extends Actor> void sendClaimRequest(T actor, long deviceId,
-      int claimDuration) {
-
+      int claimDuration, String claimerName) {
+    final String name = isBlank(claimerName) ? UUID.randomUUID().toString() : claimerName;
     ClaimDeviceRequestDTO claimRequest = new ClaimDeviceRequestDTO()
-        .claimerName(actor.getName())
+        .claimerName(name)
         .claimFor(claimDuration);
 
     actor.attemptsTo(CLAIM_DEVICE.request()
@@ -90,8 +102,8 @@ public class ClaimDeviceTask implements Task {
     actor.should(
         seeThatResponse("device is successfully claimed",
             res -> res.statusCode(200)
-                .body("claimer", equalTo(actor.getName()))));
+                .body("claimer", equalTo(name))));
 
-    actor.remember(CLAIMER_NAME, actor.getName());
+    actor.remember(CLAIMER_NAME, name);
   }
 }

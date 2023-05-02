@@ -1,8 +1,8 @@
 # language: de
 @File:FeatureFile_09 @Ctl:UseCase
-@PRODUKT:TI-M
+@PRODUKT:TIM_FD @PRODUKT:TIM_Client
 @AF-ID:AF_10061
-@AK-ID:ML-123654 @AK-ID:ML-123663 @AK-ID:ML-122592
+@AK-ID:ML-123654 @AK-ID:ML-123663 @AK-ID:ML-132592
 @AF-ID:AF_10064
 @AK-ID:ML-123672 @AK-ID:ML-123893 @AK-ID:ML-123891 @AK-ID:ML-132589
 Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
@@ -421,19 +421,22 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Dann       erhält "C" einen Responsecode 401
 
   @Shuffle(true)
+  #@DistinctColumn(ApiName1B)
   #@MaxSameColumnProperty(ApiName1B,homeserver,2)
   @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
   @Filter(ApiName1B.properties["homeserver"].equals(ApiName1C.properties["homeserver"]))
   @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
   @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
-  @DistinctColumn(ApiName1B)
   @AllowSelfCombine(true)
   @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName1C.hasTag("client"))
+  @Filter(ApiName1B.hasTag("prefIOP"))
+  @Filter(ApiName1C.hasTag("prefIOP"))
   @Filter(ApiName2A.hasTag("orgAdmin"))
   @Filter(ApiName2B.hasTag("client"))
+  @Filter(ApiName2B.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1A | ApiName2A | ApiName1B | ApiName1C | ApiName2B |
@@ -472,16 +475,17 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Dann       "B" findet TI-Messenger-Nutzer "C" bei Suche im Practitioner-Verzeichnis im VZD NICHT [Retry 13 - 4]
     Und        "B" findet TI-Messenger-Nutzer "C" bei Suche im Organisations-Verzeichnis im VZD NICHT [Retry 13 - 4]
 
-  @Shuffle(true)
+  #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1B,homeserver,2)
+  #@DistinctColumn(ApiName1B)
   @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
   @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
-  @DistinctColumn(ApiName1B)
   @AllowSelfCombine(false)
   @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName1B.hasTag("prefIOP"))
   @Filter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
@@ -525,17 +529,18 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Dann       erhält "B" einen Responsecode 403
     Und        "C" erhält KEINE Einladung von "B" [Retry 10 - 3]
 
-  @Shuffle(true)
+  #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1B,homeserver,2)
+  #@DistinctColumn(ApiName1B)
   @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
   @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
-  @DistinctColumn(ApiName1B)
   @AllowSelfCombine(false)
   @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName2.hasTag("prefIOP"))
+  @Filter(ApiName1B.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1A | ApiName1B | ApiName2 |
@@ -551,16 +556,16 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName2,homeserver,2)
+  #@DistinctColumn(ApiName2)
   @DistinctProperty(homeserver)
   @AllowSelfCombine(false)
   @AllowDoubleLineup(true)
-  @DistinctColumn(ApiName2)
   @Filter(ApiName1.hasTag("client"))
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName1.hasTag("practitioner"))
   @Filter(ApiName2.hasTag("practitioner"))
-  #@Filter(ApiName1.hasTag("prefIOP"))
-  #@Filter(ApiName2.hasTag("prefIOP"))
+  @Filter(ApiName1.hasTag("prefIOP"))
+  @Filter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1 | ApiName2 |
@@ -581,15 +586,16 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
 
   @Shuffle(true)
   #@MaxSameColumnProperty(ApiName2,homeserver,2)
+  @DistinctColumn(ApiName2)
   @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
   @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
-  #@DistinctColumn(ApiName2)
   @AllowSelfCombine(false)
   @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName2.hasTag("practitioner"))
+  #@Filter(ApiName1B.hasTag("prefIOP"))
   @Filter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
@@ -605,17 +611,18 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Wenn       "C" schreibt "B" direkt "Hello from the other site"
     Dann       erhält "C" einen Responsecode 403
 
-  @Shuffle(true)
+  #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1B,homeserver,2)
+  #@DistinctColumn(ApiName1B)
   @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
   @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
   @AllowSelfCombine(false)
   @AllowDoubleLineup(true)
-  @DistinctColumn(ApiName1B)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName1B.hasTag("prefIOP"))
   @Filter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
@@ -636,18 +643,20 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1"
     Und        "C" ist dem Raum "TIM Testraum 1" beigetreten
 
-  @Shuffle(true)
+  #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName2B,homeserver,2)
+  #@DistinctColumn(ApiName2B)
   @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
   @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
   @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
-  @DistinctColumn(ApiName2B)
   @AllowSelfCombine(false)
   @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName2A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName2B.hasTag("client"))
+  @Filter(ApiName1B.hasTag("prefIOP"))
+  @Filter(ApiName2B.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
@@ -660,11 +669,11 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Dann       "A" findet TI-Messenger-Nutzer "B" bei der Suche im HomeServer nicht [Retry 10 - 3]
 
   #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName1,homeserver,1)
+  #@DistinctColumn(ApiName1)
   @DistinctProperty(homeserver)
   @AllowSelfCombine(false)
   @AllowDoubleLineup(true)
-  #@DistinctColumn(ApiName1)
-  #@MaxSameColumnProperty(ApiName1,homeserver,1)
   @Filter(ApiName1.hasTag("client"))
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName2.hasTag("prefIOP"))

@@ -22,33 +22,18 @@ import static de.gematik.tim.test.glue.api.devices.ClientKind.PRACTITIONER;
 import static de.gematik.tim.test.glue.api.devices.DevicesControllerGlue.checkIs;
 import static de.gematik.tim.test.glue.api.login.LoginTask.login;
 import static de.gematik.tim.test.glue.api.login.LogoutTask.logout;
-import static net.serenitybdd.screenplay.actors.OnStage.setTheStage;
-import static net.serenitybdd.screenplay.actors.OnStage.stage;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Wenn;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import java.util.List;
 import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.actors.Cast;
 
 public class LogInGlue {
-
-  @Before
-  public void setup() {
-    setTheStage(Cast.ofStandardActors());
-  }
-
-  @After
-  public void teardown() {
-    stage().drawTheCurtain();
-  }
 
   @When("{string} logs out")
   @Wenn("{string} loggt sich im TI-Messenger aus")

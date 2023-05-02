@@ -1,7 +1,6 @@
 # language: de
 @File:FeatureFile_13 @Ctl:UseCase @Ctl:Additional @Ctl:MultiDevices
-@PRODUKT:TI-M
-@AF-ID:AF_MultiDevices
+@PRODUKT:TIM_FD @PRODUKT:TIM_Client
 Funktionalität: 13. Nutzung von mehreren Geräten
   Die folgenden Testfälle sollen die Funktionalität der Nutzung von mehreren Devices mit einem Account sicher stellen,
   die nicht weiter in der Spezifikationen des TI-Messengers beschrieben sind, aber trotzdem für den Betrieb des
@@ -32,18 +31,21 @@ Funktionalität: 13. Nutzung von mehreren Geräten
     Und        "C" empfängt eine Nachricht "At least I can say that I have tried" von "B"
 
   @Shuffle(true)
+  #@DistinctColumn(ApiName1B)
+  @MaxSameColumnProperty(ApiName1B,homeserver,2)
   @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
   @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
-  @Filter(!ApiName1A.properties["os"].equals(ApiName1B.properties["os"]))
-  @Filter(!ApiName1B.properties["os"].equals(ApiName2.properties["os"]))
-  @DistinctColumn(ApiName1B)
-  @AllowSelfCombine(false)
+  #@Filter(!ApiName1A.properties["os"].equals(ApiName1B.properties["os"]))
+  #@Filter(!ApiName1B.properties["os"].equals(ApiName2.properties["os"]))
+  @AllowSelfCombine(true)
   @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("client"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName1A.hasTag("practitioner"))
   @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName1A.hasTag("prefIOP"))
+  @Filter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1A | ApiName1B | ApiName2 |
@@ -70,20 +72,23 @@ Funktionalität: 13. Nutzung von mehreren Geräten
     Und        "E" empfängt eine Nachricht "At least I can say that I have tried" von "D"
 
   @Shuffle(true)
+  #@DistinctColumn(ApiName1C)
+  @MaxSameColumnProperty(ApiName1C,homeserver,2)
   @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
   @Filter(ApiName1A.properties["homeserver"].equals(ApiName1C.properties["homeserver"]))
   @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
   @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
-  @Filter(!ApiName1B.properties["os"].equals(ApiName1C.properties["os"]))
-  @Filter(!ApiName1C.properties["os"].equals(ApiName2B.properties["os"]))
-  @DistinctColumn(ApiName1C)
-  @AllowSelfCombine(false)
+  #@Filter(!ApiName1B.properties["os"].equals(ApiName1C.properties["os"]))
+  #@Filter(!ApiName1C.properties["os"].equals(ApiName2B.properties["os"]))
+  @AllowSelfCombine(true)
   @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName2A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName1C.hasTag("client"))
   @Filter(ApiName2B.hasTag("client"))
+  @Filter(ApiName1B.hasTag("prefIOP"))
+  @Filter(ApiName2B.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1A | ApiName2A | ApiName1B | ApiName1C | ApiName2B |
@@ -106,18 +111,21 @@ Funktionalität: 13. Nutzung von mehreren Geräten
     Und        "C" empfängt eine Nachricht "At least I can say that I have tried" von "A"
 
   @Shuffle(true)
+  #@DistinctColumn(ApiName1B)
+  @MaxSameColumnProperty(ApiName1B,homeserver,2)
   @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
   @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
-  @Filter(!ApiName1A.properties["os"].equals(ApiName1B.properties["os"]))
-  @Filter(!ApiName1B.properties["os"].equals(ApiName2.properties["os"]))
-  @DistinctColumn(ApiName1B)
-  @AllowSelfCombine(false)
+  #@Filter(!ApiName1A.properties["os"].equals(ApiName1B.properties["os"]))
+  #@Filter(!ApiName1B.properties["os"].equals(ApiName2.properties["os"]))
+  @AllowSelfCombine(true)
   @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("client"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName1A.hasTag("practitioner"))
   @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName1A.hasTag("prefIOP"))
+  @Filter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1A | ApiName1B | ApiName2 |
@@ -143,20 +151,23 @@ Funktionalität: 13. Nutzung von mehreren Geräten
     Und        "E" empfängt eine Nachricht "At least I can say that I have tried" von "C"
 
   @Shuffle(true)
+  #@DistinctColumn(ApiName1C)
+  @MaxSameColumnProperty(ApiName1C,homeserver,2)
   @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
   @Filter(ApiName1A.properties["homeserver"].equals(ApiName1C.properties["homeserver"]))
   @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
   @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
-  @Filter(!ApiName1B.properties["os"].equals(ApiName1C.properties["os"]))
-  @Filter(!ApiName1C.properties["os"].equals(ApiName2B.properties["os"]))
-  @DistinctColumn(ApiName1C)
-  @AllowSelfCombine(false)
+  #@Filter(!ApiName1B.properties["os"].equals(ApiName1C.properties["os"]))
+  #@Filter(!ApiName1C.properties["os"].equals(ApiName2B.properties["os"]))
+  @AllowSelfCombine(true)
   @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName2A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName1C.hasTag("client"))
   @Filter(ApiName2B.hasTag("client"))
+  @Filter(ApiName1B.hasTag("prefIOP"))
+  @Filter(ApiName2B.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1A | ApiName2A | ApiName1B | ApiName1C | ApiName2B |
@@ -180,9 +191,10 @@ Funktionalität: 13. Nutzung von mehreren Geräten
     Und        "C" empfängt eine Nachricht "At least I can say that I have tried" von "B"
 
   @Shuffle(true)
+  #@DistinctColumn(ApiName1B)
+  @MaxSameColumnProperty(ApiName1B,homeserver,2)
   @EqualProperty(homeserver)
-  @Filter(!ApiName1A.properties["os"].equals(ApiName1B.properties["os"]))
-  @DistinctColumn(ApiName1B)
+  #@Filter(!ApiName1A.properties["os"].equals(ApiName1B.properties["os"]))
   @AllowSelfCombine(true)
   @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("client"))
@@ -215,10 +227,11 @@ Funktionalität: 13. Nutzung von mehreren Geräten
     Und        "D" empfängt eine Nachricht "At least I can say that I have tried" von "C"
 
   @Shuffle(true)
+  #@DistinctColumn(ApiName1C)
+  @MaxSameColumnProperty(ApiName1C,homeserver,2)
   @EqualProperty(homeserver)
-  @Filter(!ApiName1B.properties["os"].equals(ApiName1C.properties["os"]))
-  @DistinctColumn(ApiName1C)
-  @AllowSelfCombine(false)
+  #@Filter(!ApiName1B.properties["os"].equals(ApiName1C.properties["os"]))
+  @AllowSelfCombine(true)
   @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
@@ -243,12 +256,13 @@ Funktionalität: 13. Nutzung von mehreren Geräten
     Und        "C" meldet sich mit den Daten von "A" an der Schnittstelle <ApiName1C> an
     Und        "A" loggt sich im TI-Messenger aus
     Dann       "C" empfängt eine Nachricht "Hello from the other site" von "B"
-    Und        "C" empfängt eine Nachricht "At least I can say that I have tried" von "A"
+    Und        "C" empfängt seine Nachricht "At least I can say that I have tried" im Chat mit "B"
 
   @Shuffle(true)
+  #@DistinctColumn(ApiName1C)
+  @MaxSameColumnProperty(ApiName1C,homeserver,2)
   @EqualProperty(homeserver)
-  @Filter(!ApiName1B.properties["os"].equals(ApiName1C.properties["os"]))
-  @DistinctColumn(ApiName1C)
+  #@Filter(!ApiName1B.properties["os"].equals(ApiName1C.properties["os"]))
   @AllowSelfCombine(true)
   @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("client"))
@@ -277,13 +291,14 @@ Funktionalität: 13. Nutzung von mehreren Geräten
     Und        "D" meldet sich mit den Daten von "B" an der Schnittstelle <ApiName1D> an
     Und        "B" loggt sich im TI-Messenger aus
     Dann       "D" empfängt eine Nachricht "Hello from the other site" von "C"
-    Und        "D" empfängt eine Nachricht "At least I can say that I have tried" von "B"
+    Und        "D" empfängt seine Nachricht "At least I can say that I have tried" im Chat mit "C"
 
   @Shuffle(true)
+  #@DistinctColumn(ApiName1D)
+  @MaxSameColumnProperty(ApiName1D,homeserver,2)
   @EqualProperty(homeserver)
-  @Filter(!ApiName1B.properties["os"].equals(ApiName1D.properties["os"]))
-  @DistinctColumn(ApiName1D)
-  @AllowSelfCombine(false)
+  #@Filter(!ApiName1B.properties["os"].equals(ApiName1D.properties["os"]))
+  @AllowSelfCombine(true)
   @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))

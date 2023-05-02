@@ -71,6 +71,18 @@ maven clean install -P disable-prepare-items
 
 Mit dem Profil `dont-break-preperation` kann das Plugin so eingestellt werden, dass es bei Fehlern den Buildprozess nicht mehr abbricht. Alle möglichen Informationen und Kombinationen werden erstellt. Ein Fehlerlog kann später `./target/generated-combine/errorLog.txt` eingesehen werden.
 
+=== Reuse claimed devices
+
+Die Testsuite kann so eingestellt werden, dass sie Devices für die gesamte Laufzeit nicht unclaimed und bevorzugt die Devices verwendet, die bereits in Verwendung sind.
+
+Hierzu kann in der Commandline `-DsaveConnections=true` gesetzt werden oder in der  pom.xml der Wert gesetzt werden.
+
+Dieses Verhalten sorgt jedoch dafür, dass Devices gehalten werden und eine parallele Ausführung wird somit erschwert.
+
+=== Claimzeit beeinflussen
+
+Über den Parameter `-DclaimDuration=<seconds>` kann die Zeit beeinflusst werden, die ein Device geclaimed bleiben soll. Es sind nur ganzzahlige Sekundenwerte möglich.
+
 === Testcase id
 
 Every testcase run is identified with the testcase name and an id that identifies the specific run. This id is sent in every request in the header `Test-Case-Id`. It is build like `<TestcaseId>/<TestrunUUID>`.

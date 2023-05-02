@@ -1,6 +1,6 @@
 # language: de
 @File:FeatureFile_07 @Ctl:UseCase @Ctl:OneHomeServer
-@PRODUKT:TI-M
+@PRODUKT:TIM_FD @PRODUKT:TIM_Client
 @AF-ID:AF_10104
 @AK-ID:ML-123896 @AK-ID:ML-129415 @AK-ID:ML-129414 @AK-ID:ML-132590
 @AF-ID:AF_10064
@@ -68,9 +68,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "B" bestätigt eine Einladung von "A"
     Und        "B" empfängt eine Nachricht "Hello from the other site" von "A"
 
+  @Shuffle(true) #
+  @DistinctColumn(ApiName1A) #
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
-  @AllowDoubleLineup(false)
+  @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("client"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName1A.hasTag("practitioner"))
@@ -92,6 +94,8 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "B" bestätigt eine Einladung von "A"
     Und        "B" empfängt eine Nachricht "Hello from the other site" von "A"
 
+  @Shuffle(true) #
+  @MaxSameColumnProperty(ApiName1A,homeserver,1) #
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
   @AllowDoubleLineup(false)
@@ -117,9 +121,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
     Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
 
+  @Shuffle(true)
+  @DistinctColumn(ApiName1A)
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
-  @AllowDoubleLineup(false)
+  @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("client"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName1A.hasTag("practitioner"))
@@ -142,6 +148,8 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
     Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
 
+  @Shuffle(true) #
+  @MaxSameColumnProperty(ApiName1A,homeserver,1) #
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
   @AllowDoubleLineup(false)
@@ -167,10 +175,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "B" bestätigt eine Einladung von "C"
     Dann       "B" empfängt eine Nachricht "Hello from the other site" von "C"
 
-  #@DistinctColumn(ApiName1A)
+  @Shuffle(true) #
+  @DistinctColumn(ApiName1C) #
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
-  @AllowDoubleLineup(false)
+  @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName1C.hasTag("client"))
@@ -194,9 +203,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
     Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
 
+  @Shuffle(true) #
+  @DistinctColumn(ApiName1C) #
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
-  @AllowDoubleLineup(false)
+  @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName1C.hasTag("client"))
@@ -219,10 +230,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "C" bestätigt eine Einladung von "B"
     Dann       "C" empfängt eine Nachricht "Hello from the other site" von "B"
 
-  #@DistinctColumn(ApiName1A)
+  @Shuffle(true) #
+  @DistinctColumn(ApiName1B) #
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
-  @AllowDoubleLineup(false)
+  @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName1C.hasTag("client"))
@@ -244,9 +256,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Wenn       "B" lehnt eine Einladung zum Chat mit "A" ab
     Dann       "B" ist dem Chat mit "A" nicht beigetreten [Retry 10 - 2]
 
+  @Shuffle(true) #
+  @DistinctColumn(ApiName1B) #
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
-  @AllowDoubleLineup(false)
+  @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("client"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName1A.hasTag("practitioner"))
@@ -269,9 +283,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Wenn       "B" lehnt eine Einladung für Raum "TIM Testraum 1" ab
     Dann       "B" ist dem Raum "TIM Testraum 1" nicht beigetreten [Retry 10 - 2]
 
+  @Shuffle(true) #
+  @DistinctColumn(ApiName1B) #
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
-  @AllowDoubleLineup(false)
+  @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("client"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName1A.hasTag("practitioner"))
@@ -294,10 +310,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Wenn       "C" lehnt eine Einladung zum Chat mit "B" ab
     Dann       "C" ist dem Chat mit "B" nicht beigetreten [Retry 10 - 2]
 
-  #@DistinctColumn(ApiName1A)
+  @Shuffle(true) #
+  @DistinctColumn(ApiName1C) #
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
-  @AllowDoubleLineup(false)
+  @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName1C.hasTag("client"))
@@ -320,10 +337,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Wenn       "C" lehnt eine Einladung für Raum "TIM Testraum 1" ab
     Dann       "C" ist dem Raum "TIM Testraum 1" nicht beigetreten [Retry 10 - 2]
 
-  #@DistinctColumn(ApiName1A)
+  @Shuffle(true) #
+  @DistinctColumn(ApiName1C) #
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
-  @AllowDoubleLineup(false)
+  @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName1C.hasTag("client"))
@@ -348,9 +366,9 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Wenn       "A" lädt "C" in Chat mit "B" ein
     Dann       erhält "A" einen Responsecode 401
 
-  @Shuffle(true)
+  @Shuffle(true) #
+  @DistinctColumn(ApiName1A) #
   @EqualProperty(homeserver)
-  @DistinctColumn(ApiName1A)
   @AllowSelfCombine(true)
   @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("client"))
@@ -382,9 +400,9 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Wenn       "B" lädt "D" in Chat mit "C" ein
     Dann       erhält "B" einen Responsecode 401
 
-  #@Shuffle(true)
+  @Shuffle(true) #
+  @MaxSameColumnProperty(ApiName1B,homeserver,1) #
   @EqualProperty(homeserver)
-  @DistinctColumn(ApiName1B)
   @AllowSelfCombine(true)
   @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))
@@ -404,10 +422,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "A" hinterlegt seine MXID im Verzeichnis Dienst
     Dann       "A" findet TI-Messenger-Nutzer "B" bei Suche im VZD NICHT [Retry 10 - 4]
 
+  @Shuffle(true) #
+  @MaxSameColumnProperty(ApiName1B,homeserver,1) #
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
   @AllowDoubleLineup(false)
-  @DistinctColumn(ApiName1A)
   @Filter(ApiName1A.hasTag("client"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName1A.hasTag("practitioner"))
@@ -426,10 +445,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
     Dann       "B" findet TI-Messenger-Nutzer "C" bei Suche im VZD NICHT [Retry 10 - 4]
 
+  @Shuffle(true) #
+  @MaxSameColumnProperty(ApiName1B,homeserver,1) #
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
   @AllowDoubleLineup(false)
-  @DistinctColumn(ApiName1B)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName1C.hasTag("client"))
@@ -449,8 +469,8 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "B" empfängt eine Nachricht "Hello from the other site" von "A"
 
   @Shuffle(true)
-  @EqualProperty(homeserver)
   @DistinctColumn(ApiName1A)
+  @EqualProperty(homeserver)
   @AllowSelfCombine(true)
   @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("client"))
@@ -473,9 +493,9 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "C" bestätigt eine Einladung von "B"
     Und        "C" empfängt eine Nachricht "Hello from the other site" von "B"
 
-  @Shuffle(true)
+  @Shuffle(true) #
+  @MaxSameColumnProperty(ApiName1B,homeserver,1) #
   @EqualProperty(homeserver)
-  @DistinctColumn(ApiName1B)
   @AllowSelfCombine(true)
   @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))
@@ -496,10 +516,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "A" bestätigt eine Einladung von "B"
     Und        "A" empfängt eine Nachricht "Hello from the other site" von "B"
 
+  @Shuffle(true) #
+  @DistinctColumn(ApiName1B) #
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
   @AllowDoubleLineup(false)
-  @DistinctColumn(ApiName1B)
   @Filter(ApiName1A.hasTag("client"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName1A.hasTag("practitioner"))
@@ -521,6 +542,8 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "A" bestätigt eine Einladung in Raum "TIM Testraum 1"
     Und        "A" ist dem Raum "TIM Testraum 1" beigetreten
 
+  @Shuffle(true) #
+  @MaxSameColumnProperty(ApiName1B,homeserver,1) #
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
   @AllowDoubleLineup(false)
@@ -544,10 +567,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "B" bestätigt eine Einladung von "C"
     Und        "B" empfängt eine Nachricht "Hello from the other site" von "C"
 
+  @Shuffle(true) #
+  @DistinctColumn(ApiName1C) #
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
-  @AllowDoubleLineup(false)
-  @DistinctColumn(ApiName1C)
+  @AllowDoubleLineup(true)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName1C.hasTag("client"))
@@ -568,10 +592,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1"
     Und        "C" ist dem Raum "TIM Testraum 1" beigetreten
 
+  @Shuffle(true) #
+  @MaxSameColumnProperty(ApiName1B,homeserver,1) #
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
   @AllowDoubleLineup(false)
-  @DistinctColumn(ApiName1B)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName1C.hasTag("client"))
@@ -590,11 +615,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "B" bestätigt eine Einladung von "A"
     Und        "B" empfängt eine Nachricht "Hello from the other site" von "A"
 
-  #@Shuffle(true)
+  @Shuffle(true) #
+  @DistinctColumn(ApiName1A) #
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
   @AllowDoubleLineup(true)
-  #@DistinctColumn(ApiName1A)
   @Filter(ApiName1A.hasTag("client"))
   @Filter(ApiName1B.hasTag("client"))
 
@@ -612,11 +637,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "B" bestätigt eine Einladung von "A"
     Und        "B" empfängt eine Nachricht "Hello from the other site" von "A"
 
-  #@Shuffle(true)
+  @Shuffle(true) #
+  @MaxSameColumnProperty(ApiName1A,homeserver,1) #
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
   @AllowDoubleLineup(true)
-  #@DistinctColumn(ApiName1A)
   @Filter(ApiName1A.hasTag("client"))
   @Filter(ApiName1B.hasTag("client"))
 
@@ -635,11 +660,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
     Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
 
-  #@Shuffle(true)
+  @Shuffle(true) #
+  @DistinctColumn(ApiName1A) #
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
   @AllowDoubleLineup(true)
-  #@DistinctColumn(ApiName1A)
   @Filter(ApiName1A.hasTag("client"))
   @Filter(ApiName1B.hasTag("client"))
 
@@ -658,11 +683,11 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
     Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
 
-  #@Shuffle(true)
+  @Shuffle(true) #
+  @MaxSameColumnProperty(ApiName1A,homeserver,1) #
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
   @AllowDoubleLineup(true)
-  #@DistinctColumn(ApiName1A)
   @Filter(ApiName1A.hasTag("client"))
   @Filter(ApiName1B.hasTag("client"))
 
