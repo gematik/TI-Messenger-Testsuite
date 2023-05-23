@@ -1,5 +1,5 @@
 /*
- * Copyright 20023 gematik GmbH
+ * Copyright 2023 gematik GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,7 @@ import de.gematik.tim.test.models.InfoObjectDTO;
 import io.cucumber.java.After;
 import io.cucumber.java.AfterAll;
 import io.cucumber.java.Before;
+import io.cucumber.java.BeforeAll;
 import io.cucumber.java.Scenario;
 import io.cucumber.java.de.Angenommen;
 import io.cucumber.java.de.Dann;
@@ -66,6 +67,10 @@ public class DevicesControllerGlue {
   public void setup(Scenario scenario) {
     startTest(scenario);
     RawDataStatistics.startTest();
+  }
+
+  @BeforeAll
+  public static void setupStageForAll(){
     setTheStage(Cast.ofStandardActors());
   }
 

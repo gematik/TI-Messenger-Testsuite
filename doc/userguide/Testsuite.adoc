@@ -17,7 +17,7 @@
 :rootdir: ../../
 
 [[id0,Inhaltsverzeichnis]]
-= TI-Messenger-Dienst Release 1.1.0
+= TI-Messenger-Dienst Release 1.1.1
 
 image::gematikLogoRight.png[float="right"]
 
@@ -52,7 +52,7 @@ image:System.png[float="center"]
 <<id0,Inhaltsverzeichnis>>
 
 image::TI-Messenger.png[float="left"]
-==== 1.1 TI-Messenger-Dienst Anwendungsfälle
+==== 1.2 TI-Messenger-Dienst Anwendungsfälle
 {empty} +
 
 Für jeden zu testenden Anwendungsfall wurde ein Feature File angelegt. In diesem Feature File befinden sich
@@ -87,7 +87,7 @@ an dieser Schnittstelle durch.
 
 image::TI-Messenger.png[float="left"]
 
-==== 1.2 Zusätzliche Anwendungsfälle
+==== 1.3 Zusätzliche Anwendungsfälle
 {empty} +
 
 Neben den Anwendungsfällen, die in der Spezifikation beschrieben sind, wurden noch zwei weitere Anwendungsfälle für die Tests definiert. In diesen Anwendungsfällen werden
@@ -561,6 +561,26 @@ https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc
 
 Wie genau die Reihenfolge der Filterung funktioniert ist ebenfalls der Dokumentation zu entnehmen.
 
+*Vergleichsoptionen der Schnittstellen Response*
+
+Es besteht auch weiter die Möglichkeit vor Erstellung der Target combine_items.json und dem Lauf der
+Kombinatorik Vergleichswerte für die einzelnen Items zu definieren. Hierzu wird die Response json jeder
+Schnittstelle validiert.
+
+So kann bespielsweise eine Minimalanzahl von Devices hinter einer Schnittstelle geprüft werden.
+Dies ist auch als Defaultwert in der pom.xml hinterlegt:
+
+image::DeafultExpression.png[]
+
+Hier ist beispielsweise definiert, dass alle Schitstellen mit dem Wert 'orgAdmin' mindestens ein Device
+und alle anderen 3 Devices hinterlegt haben müssen, sonst wird der Run nicht weiter fortgesetzt.
+
+Es können auch dedizierte Vergleichswerte definiert werden, die dann einzelnen Schnitstellen in der combine_items.json
+zugeordnet werden können. Dies kann auch global in der pom.xml geschehen, so dass dann an die Schnitstellt in
+der combine_items.json lediglich die ID weiter gegeben werden muss.
+
+Weitere Information zu den Möglichkeiten sind unter https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc#pooling[Plugin/doc/userguide] zu finden.
+
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
 
@@ -1006,31 +1026,24 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 [[id85,Zurück]] *AF_10104 Einladung von Akteuren innerhalb eines Messenger-Service*
 [cols='^6%,90%']
 |===
-|07.1 | Einladung innerhalb einer Organisation - Einladung in Chat - Qualifizierte Suche (HBA-User an HBA-User)
-|07.2 | Einladung innerhalb einer Organisation - Einladung in Chat - Teilqualifizierte Suche (HBA-User an HBA-User)
-|07.3 | Einladung innerhalb einer Organisation - Einladung in Raum - Qualifizierte Suche (HBA-User an HBA-User)
-|07.4 | Einladung innerhalb einer Organisation - Einladung in Raum - Teilqualifizierte Suche (HBA-User an HBA-User)
-|07.5 | Einladung innerhalb einer Organisation - Einladung in Chat - HBA-User lädt Organisations-User ein
-|07.6 | Einladung innerhalb einer Organisation - Einladung in Raum - Organisations-User lädt Organisations-User ein
-|07.7 | Einladung innerhalb einer Organisation - Einladung in Chat - Organisations-User lädt HBA-User ein
-|07.8 | Einladung innerhalb einer Organisation - Einladung in Chat - Ablehnung der Einladung (HBA-User an HBA-User)
-|07.9 | Einladung innerhalb einer Organisation - Einladung in Raum - Ablehnung der Einladung (HBA-User an HBA-User)
-|07.10| Einladung innerhalb einer Organisation - Einladung in Chat - Ablehnung der Einladung (Organisations-User an Organisations-User)
-|07.11| Einladung innerhalb einer Organisation - Einladung in Raum - Ablehnung der Einladung (Organisations-User an Organisations-User)
-|07.12| Einladung innerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (HBA)
-|07.13| Einladung innerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (OrgUser)
-|07.14| Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch HBA-User
-|07.15| Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch Organisations-User
-|07.16| Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch HBA-User
-|07.17| Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch Organisations-User
-|07.18| Einladung innerhalb einer Organisation - Einladung in Chat - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
-|07.19| Einladung innerhalb einer Organisation - Einladung in Raum - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
-|07.20| Einladung innerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
-|07.21| Einladung innerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
-|07.22| Einladung innerhalb einer Organisation - Einladung in Chat - Qualifizierte Suche auf dem Homeserver
-|07.23| Einladung innerhalb einer Organisation - Einladung in Chat - Teilqualifizierte Suche auf dem Homeserver
-|07.24| Einladung innerhalb einer Organisation - Einladung in Raum - Qualifizierte Suche  auf dem Homeserver
-|07.25| Einladung innerhalb einer Organisation - Einladung in Raum - Teilqualifizierte Suche auf dem Homeserver
+|07.1 | Einladung innerhalb einer Organisation - Einladung in Chat - Teilqualifizierte Suche (HBA-User an HBA-User)
+|07.2 | Einladung innerhalb einer Organisation - Einladung in Raum - Teilqualifizierte Suche (HBA-User an HBA-User)
+|07.3 | Einladung innerhalb einer Organisation - Einladung in Chat - Ablehnung der Einladung (HBA-User an HBA-User)
+|07.4 | Einladung innerhalb einer Organisation - Einladung in Raum - Ablehnung der Einladung (HBA-User an HBA-User)
+|07.5 | Einladung innerhalb einer Organisation - Einladung in Chat - Ablehnung der Einladung (Organisations-User an Organisations-User)
+|07.6 | Einladung innerhalb einer Organisation - Einladung in Raum - Ablehnung der Einladung (Organisations-User an Organisations-User)
+|07.7 | Einladung innerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (HBA)
+|07.8 | Einladung innerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (OrgUser)
+|07.9 | Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch HBA-User
+|07.10| Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch Organisations-User
+|07.11| Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch HBA-User
+|07.12| Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch Organisations-User
+|07.13| Einladung innerhalb einer Organisation - Einladung in Chat - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
+|07.14| Einladung innerhalb einer Organisation - Einladung in Raum - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
+|07.15| Einladung innerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
+|07.16| Einladung innerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
+|07.17| Einladung innerhalb einer Organisation - Einladung in Chat - Teilqualifizierte Suche auf dem Homeserver
+|07.18| Einladung innerhalb einer Organisation - Einladung in Raum - Teilqualifizierte Suche auf dem Homeserver
 |===
 
 [.text-center]
@@ -1076,28 +1089,24 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 [[id87,Zurück]] *AF_10061 Einladung von Akteuren anderer Messenger-Services*
 [cols='^6%,90%']
 |===
-|09.1 | Einladung außerhalb einer Organisation - Einladung in Chat - Qualifizierte Suche (HBA-User an HBA-User)
-|09.2 | Einladung außerhalb einer Organisation - Einladung in Chat - Teilqualifizierte Suche (HBA-User an HBA-User)
-|09.3 | Einladung außerhalb einer Organisation - Einladung in Raum - Qualifizierte Suche (HBA-User an HBA-User)
-|09.4 | Einladung außerhalb einer Organisation - Einladung in Raum - Teilqualifizierte Suche (HBA-User an HBA-User)
-|09.5 | Einladung außerhalb einer Organisation - Einladung in Chat - HBA-User lädt Organisations-User ein
-|09.6 | Einladung außerhalb einer Organisation - Einladung in Raum - Organisations-User lädt Organisations-User ein
-|09.7 | Einladung außerhalb einer Organisation - Einladung in Chat - Organisations-User lädt HBA-User ein
-|09.8 | Einladung außerhalb einer Organisation - Einladung in Chat - Ablehnung der Einladung (HBA-User an HBA-User)
-|09.9 | Einladung außerhalb einer Organisation - Einladung in Raum - Ablehnung der Einladung (HBA-User an HBA-User)
-|09.10| Einladung außerhalb einer Organisation - Einladung in Chat - Ablehnung der Einladung (Organisations-User an Organisations-User)
-|09.11| Einladung außerhalb einer Organisation - Einladung in Raum - Ablehnung der Einladung (Organisations-User an Organisations-User)
-|09.12| Einladung außerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (HBA)
-|09.13| Einladung außerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (OrgUser)
-|09.14| Einladung außerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch HBA-User
-|09.15| Einladung außerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch Organisations-User
-|09.16| Einladung außerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch HBA-User
-|09.17| Einladung außerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch Organisations-User
-|09.18| Einladung außerhalb einer Organisation - Einladung in Chat - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
-|09.19| Einladung außerhalb einer Organisation - Einladung in Raum - HBA-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
-|09.20| Einladung außerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
-|09.21| Einladung außerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
-|09.22| Einladung außerhalb einer Organisation - Negativ Suche - Qualifizierte Suche auf dem Homeserver
+|09.1 | Einladung außerhalb einer Organisation - Einladung in Chat - Teilqualifizierte Suche (HBA-User an HBA-User)
+|09.2 | Einladung außerhalb einer Organisation - Einladung in Raum - Teilqualifizierte Suche (HBA-User an HBA-User)
+|09.3 | Einladung außerhalb einer Organisation - Einladung in Chat - Organisations-User lädt HBA-User ein
+|09.4 | Einladung außerhalb einer Organisation - Einladung in Chat - Ablehnung der Einladung (HBA-User an HBA-User)
+|09.5 | Einladung außerhalb einer Organisation - Einladung in Raum - Ablehnung der Einladung (HBA-User an HBA-User)
+|09.6 | Einladung außerhalb einer Organisation - Einladung in Chat - Ablehnung der Einladung (Organisations-User an Organisations-User)
+|09.7 | Einladung außerhalb einer Organisation - Einladung in Raum - Ablehnung der Einladung (Organisations-User an Organisations-User)
+|09.8 | Einladung außerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (HBA)
+|09.9 | Einladung außerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (OrgUser)
+|09.10| Einladung außerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch HBA-User
+|09.11| Einladung außerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch Organisations-User
+|09.12| Einladung außerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch HBA-User
+|09.13| Einladung außerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch Organisations-User
+|09.14| Einladung außerhalb einer Organisation - Einladung in Chat - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
+|09.15| Einladung außerhalb einer Organisation - Einladung in Raum - HBA-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
+|09.16| Einladung außerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
+|09.17| Einladung außerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
+|09.18| Einladung außerhalb einer Organisation - Negativ Suche - Qualifizierte Suche auf dem Homeserver
 |===
 
 [.text-center]

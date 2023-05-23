@@ -6,7 +6,7 @@
 
   <groupId>de.gematik.tim.test</groupId>
   <artifactId>TI-Messenger-Testsuite</artifactId>
-  <version>0.5.1</version>
+  <version>0.5.4</version>
   <packaging>jar</packaging>
   <name>TI-Messenger-Testsuite</name>
   <description>Testsuite to check functionality of TI-Messenger-Clients</description>
@@ -22,6 +22,7 @@
     <version.serenity.core>3.3.10</version.serenity.core>
     <polarion.toolbox.version>1.3.0-92</polarion.toolbox.version>
     <feature_dir>${project.build.directory}/features/</feature_dir>
+    <feature.template.dir>${project.basedir}/src/test/resources/templates/FeatureFiles</feature.template.dir>
     <sonar.coverage.exclusions>**/*</sonar.coverage.exclusions>
     <feature.tables.max_rows>9999</feature.tables.max_rows>
     <maven.build.timestamp.format>yyyy-MM-dd_HH_mm_ss</maven.build.timestamp.format>
@@ -255,7 +256,7 @@
           <!--          Combine config-->
           <breakIfTableToSmall>${cutest.combine.break}</breakIfTableToSmall>
           <outputDir>${feature_dir}</outputDir>
-          <templateDir>${project.basedir}/src/test/resources/templates/</templateDir>
+          <templateDir>${feature.template.dir}</templateDir>
           <filterConfiguration>
             <maxTableRows>${feature.tables.max_rows}</maxTableRows>
           </filterConfiguration>
@@ -760,8 +761,7 @@
                   <goal>parse-bdd</goal>
                 </goals>
                 <configuration>
-                  <pathToBddFiles>src/test/resources/templates/Zulassungstests/Testrun
-                  </pathToBddFiles>
+                  <pathToBddFiles>${feature.template.dir}</pathToBddFiles>
                   <fileExtension>.cute</fileExtension>
                 </configuration>
               </execution>

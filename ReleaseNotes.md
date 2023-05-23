@@ -2,6 +2,16 @@
 
 # Release notes
 
+## Link to TI-Messenger-testsuite [`docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
+
+- - -
+
+## Release 0.5.3
+
+### Bugfix
+
+- Commandline bug is fixed and testcases with tags can run without errors
+
 ## Release 0.5.0
 
 ### Features
