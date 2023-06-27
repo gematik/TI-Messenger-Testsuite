@@ -24,19 +24,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import net.serenitybdd.screenplay.Ability;
 import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.HasTeardown;
-import net.serenitybdd.screenplay.RefersToActor;
 import net.serenitybdd.screenplay.Task;
 
-public abstract class MultiTargetAbility<K, V> implements Ability, HasTeardown, RefersToActor {
+public abstract class MultiTargetAbility<K, V> extends TeardownAbility {
 
   private final Map<K, V> targets = new HashMap<>();
   private Entry<K, V> currentTarget;
-
-  private Actor actor;
-  private boolean tearedDown = false;
 
   public void addTarget(K key, V target) {
     requireNonNull(key);
@@ -103,14 +97,10 @@ public abstract class MultiTargetAbility<K, V> implements Ability, HasTeardown, 
   }
 
   @Override
-  public void tearDown() {
-    if (tearedDown) {
-      return;
-    }
-    for (var key : List.copyOf(targets.keySet())) {
+  public void teardownThis() {
+    for (K key : List.copyOf(targets.keySet())) {
       actor.attemptsTo(tearDownPerTarget(key));
     }
-    tearedDown = true;
   }
 
   @SuppressWarnings("unused")
@@ -120,12 +110,5 @@ public abstract class MultiTargetAbility<K, V> implements Ability, HasTeardown, 
         // default: no teardown action
       }
     };
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public <T extends Ability> T asActor(Actor actor) {
-    this.actor = actor;
-    return (T) this;
   }
 }

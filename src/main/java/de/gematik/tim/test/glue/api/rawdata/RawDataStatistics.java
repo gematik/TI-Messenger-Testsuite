@@ -51,6 +51,7 @@ public class RawDataStatistics {
   private static final RawDataEventCounter editContactManagement = new RawDataEventCounter();
   private static final RawDataEventCounter inviteToRoomMultiHomeserver = new RawDataEventCounter();
   private static final RawDataEventCounter exchangeMessageMultiHomeserver = new RawDataEventCounter();
+  private static final RawDataEventCounter getRegTokenForVZDEvent = new RawDataEventCounter();
 
   private static final String YML_PATHNAME = "./target/generated-raw-data/rohdaten.yml";
   private static final String JSON_PATHNAME = "./target/generated-raw-data/rohdaten.json";
@@ -59,14 +60,15 @@ public class RawDataStatistics {
   private static final String TIM_UC_10057_01 = "TIM.UC_10057_01 (Client-Login, Auswahl Authentifizierungsverfahren):";
   private static final String TIM_UC_10057_02 = "TIM.UC_10057_02 (Erstellung Matrix-ACCESS_TOKEN):";
   private static final String TIM_UC_10057_03 = "TIM.UC_10057_03 (Erstellung Matrix-OpenID-Token):";
-  private static final String TIM_UC_10104_01 = "TIM.UC_10104_01 (Akteur suchen):";
-  private static final String TIM_UC_10104_02 = "TIM.UC_10104_02 (Akteur einladen, gleicher Homeserver):";
+  private static final String TIM_UC_10104_01_01 = "TIM.UC_10104-01_01 (Akteur suchen):";
+  private static final String TIM_UC_10104_01_02 = "TIM.UC_10104-01_02 (Akteur einladen, gleicher Homeserver):";
   private static final String TIM_UC_10063_01 = "TIM.UC_10063_01 (Austausch von Events innerhalb einer Organisation, gleicher Homeserver):";
-  private static final String TIM_UC_10061_01 = "TIM.UC_10061_01 (Eintrag in Freigabeliste erzeugen):";
-  private static final String TIM_UC_10061_02 = "TIM.UC_10061_02 (Einladung Sendersystem, unterschiedliche Homeserver):";
-  private static final String TIM_UC_10061_03 = "TIM.UC_10061_03 (Einladung Empfangssystem, unterschiedliche Homeserver):";
-  private static final String TIM_UC_10062_01 = "TIM.UC_10062_01 (Event Sendersystem, unterschiedliche Homeserver):";
-  private static final String TIM_UC_10062_02 = "TIM.UC_10062_02 (Event Empfangssystem, unterschiedliche Homeserver):";
+  private static final String TIM_UC_10061_01_01 = "TIM.UC_10061-01_01 (Eintrag in Freigabeliste erzeugen):";
+  private static final String TIM_UC_10061_01_02 = "TIM.UC_10061-01_02 (Einladung Sendersystem, unterschiedliche Homeserver):";
+  private static final String TIM_UC_10061_01_03 = "TIM.UC_10061-01_03 (Einladung Empfangssystem, unterschiedliche Homeserver):";
+  private static final String TIM_UC_10062_01_01 = "TIM.UC_10062-01_01 (Event Sendersystem, unterschiedliche Homeserver):";
+  private static final String TIM_UC_10062_01_02 = "TIM.UC_10062-01_02 (Event Empfangssystem, unterschiedliche Homeserver):";
+  private static final String TIM_UC_10059_01_02 = "TIM.UC_10059-01_02 (Organisationsressourcen im Verzeichnisdienst hinzufügen):";
 
   private static final String[] HEADERS = new String[]{"description", "success", "error", "errors"};
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -79,6 +81,7 @@ public class RawDataStatistics {
   private static final String ECM_KEY = "editContactManagement";
   private static final String ITRMH_KEY = "inviteToRoomMultiHomeserver";
   private static final String EMMH_KEY = "exchangeMessageMultiHomeserver";
+  private static final String GRTFVE_KEY = "getRegTokenForVZDEvent";
   private static final Map<String, RawDataEventCounter> copiedCounter = new HashMap<>();
 
 
@@ -156,6 +159,16 @@ public class RawDataStatistics {
     countEventFor(exchangeMessageMultiHomeserver);
   }
 
+  /**
+   * Count method for these events:
+   * <ul>
+   *  <li> 6.3 AF - Organisationsressourcen im Verzeichnisdienst hinzufügen: Get RegService-OpenID-Token</li>
+   * </ul>
+   **/
+  public static void getRegTokenForVZDEvent() {
+    countEventFor(getRegTokenForVZDEvent);
+  }
+
   public static void addToReport() {
     List<RawDataObject> totalDataObjectList = buildTotalDataObjectList();
     List<RawDataObject> currentDataObjectList = buildCurrentDataObjectList();
@@ -177,14 +190,15 @@ public class RawDataStatistics {
         new RawDataObject(TIM_UC_10057_01, login),
         new RawDataObject(TIM_UC_10057_02, login),
         new RawDataObject(TIM_UC_10057_03, login),
-        new RawDataObject(TIM_UC_10104_01, search),
-        new RawDataObject(TIM_UC_10104_02, inviteToRoomSameHomeserver),
+        new RawDataObject(TIM_UC_10104_01_01, search),
+        new RawDataObject(TIM_UC_10104_01_02, inviteToRoomSameHomeserver),
         new RawDataObject(TIM_UC_10063_01, exchangeMessageSameHomeserver),
-        new RawDataObject(TIM_UC_10061_01, editContactManagement),
-        new RawDataObject(TIM_UC_10061_02, inviteToRoomMultiHomeserver),
-        new RawDataObject(TIM_UC_10061_03, inviteToRoomMultiHomeserver),
-        new RawDataObject(TIM_UC_10062_01, exchangeMessageMultiHomeserver),
-        new RawDataObject(TIM_UC_10062_02, exchangeMessageMultiHomeserver));
+        new RawDataObject(TIM_UC_10061_01_01, editContactManagement),
+        new RawDataObject(TIM_UC_10061_01_02, inviteToRoomMultiHomeserver),
+        new RawDataObject(TIM_UC_10061_01_03, inviteToRoomMultiHomeserver),
+        new RawDataObject(TIM_UC_10062_01_01, exchangeMessageMultiHomeserver),
+        new RawDataObject(TIM_UC_10062_01_02, exchangeMessageMultiHomeserver),
+        new RawDataObject(TIM_UC_10059_01_02, getRegTokenForVZDEvent));
   }
 
   private static List<RawDataObject> buildCurrentDataObjectList() {
@@ -192,21 +206,23 @@ public class RawDataStatistics {
         new RawDataObject(TIM_UC_10057_01, login.getDiff(copiedCounter.get(LOGIN_KEY))),
         new RawDataObject(TIM_UC_10057_02, login.getDiff(copiedCounter.get(LOGIN_KEY))),
         new RawDataObject(TIM_UC_10057_03, login.getDiff(copiedCounter.get(LOGIN_KEY))),
-        new RawDataObject(TIM_UC_10104_01, search.getDiff(copiedCounter.get(SEARCH_KEY))),
-        new RawDataObject(TIM_UC_10104_02,
+        new RawDataObject(TIM_UC_10104_01_01, search.getDiff(copiedCounter.get(SEARCH_KEY))),
+        new RawDataObject(TIM_UC_10104_01_02,
             inviteToRoomSameHomeserver.getDiff(copiedCounter.get(ITRSH_KEY))),
         new RawDataObject(TIM_UC_10063_01,
             exchangeMessageSameHomeserver.getDiff(copiedCounter.get(EMSH_KEY))),
-        new RawDataObject(TIM_UC_10061_01,
+        new RawDataObject(TIM_UC_10061_01_01,
             editContactManagement.getDiff(copiedCounter.get(ECM_KEY))),
-        new RawDataObject(TIM_UC_10061_02,
+        new RawDataObject(TIM_UC_10061_01_02,
             inviteToRoomMultiHomeserver.getDiff(copiedCounter.get(ITRMH_KEY))),
-        new RawDataObject(TIM_UC_10061_03,
+        new RawDataObject(TIM_UC_10061_01_03,
             inviteToRoomMultiHomeserver.getDiff(copiedCounter.get(ITRMH_KEY))),
-        new RawDataObject(TIM_UC_10062_01,
+        new RawDataObject(TIM_UC_10062_01_01,
             exchangeMessageMultiHomeserver.getDiff(copiedCounter.get(EMMH_KEY))),
-        new RawDataObject(TIM_UC_10062_02,
-            exchangeMessageMultiHomeserver.getDiff(copiedCounter.get(EMMH_KEY))));
+        new RawDataObject(TIM_UC_10062_01_02,
+            exchangeMessageMultiHomeserver.getDiff(copiedCounter.get(EMMH_KEY))),
+            new RawDataObject(TIM_UC_10059_01_02,getRegTokenForVZDEvent.getDiff(copiedCounter.get(
+                GRTFVE_KEY))));
   }
 
   public static void startTest() {
@@ -217,6 +233,7 @@ public class RawDataStatistics {
     copiedCounter.put(ECM_KEY, editContactManagement.copy());
     copiedCounter.put(ITRMH_KEY, inviteToRoomMultiHomeserver.copy());
     copiedCounter.put(EMMH_KEY, exchangeMessageMultiHomeserver.copy());
+    copiedCounter.put(GRTFVE_KEY, getRegTokenForVZDEvent.copy());
   }
 
   @SneakyThrows

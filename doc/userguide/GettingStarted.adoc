@@ -51,10 +51,20 @@ Sollte ein Alias verwendet werden muss die entsprechende URL unter `url` eingetr
 .Ein Beispiel-Item mit Alias und URL
 [source,json]
 ----
-{
-    "value": "http://ti-messenger-win-client",
-    "url": "https://<HOST_NAME>:<PORT>"
-}
+[
+  {
+      "value": "API1",
+      "url": "https://<HOST_NAME>:<PORT>"
+  },
+  {
+      "value": "API2",
+      "url": "https://<HOST_NAME>:<PORT>/rest/"
+  },
+  {
+      "value": "API3",
+      "url": "https://<HOST_NAME>:<PORT>/ti-m-testtreiber"
+  }
+]
 ----
 
 IMPORTANT: Für die Verwendung eines `alias` ist es ebenfalls nötig diesen in die link:{rootdir}tiger.yml[tiger.yml] nach folgendem Schema einzutragen!
@@ -65,22 +75,18 @@ IMPORTANT: Für die Verwendung eines `alias` ist es ebenfalls nötig diesen in d
 tigerProxy:
   tls:
     forwardMutualTlsIdentity: "${TIM_KEYSTORE};${TIM_KEYSTORE_PW};pkcs12" <1>
-
-servers:
-  SameAliasAsInCombineItemsJson: <2>
-    type: externalUrl <3>
-    source:
-      - https://127.0.0.1:8080 <4>
-    healthcheckUrl: https://127.0.0.1:8080/actuator/health <5>
-
+  proxyRoutes:
+    - from: http://API1 <2>
+      to: https://<HOST_NAME>:<PORT>
+    - from: http://API2
+      to: https://<HOST_NAME>:<PORT>/rest <3>
+    - from: http://API3
+      to: https://<HOST_NAME>:<PORT>/ti-m-testtreiber
 ----
 
 <1> Default local Tiger muss bestehen bleiben.
-<2> Unter Servers können die einzelnen Services genannt werden.
-Alias muss mit alias in link:{sourcedir}/test/resources/combine_items.json[combine_items.json] übereinstimmen.
-<3> Der Typ muss `externalUrl` sein.
-<4> Unter `source` muss die entsprechende URL stehen.
-<5> Ein Healthcheck ist optional (Führt ein GET aus und erwartet eine beliebige Antwort).
+<2> Unter `proxyRoutes` können die einzelnen Routen dem Proxy bekannt gemacht werden. From muss mit http:// beginnen und mit dem Value in link:{sourcedir}/test/resources/combine_items.json[combine_items.json] übereinstimmen.
+<3> Weitere Ressourcen im Pfad müssen genannt werden
 
 === Starten der Testfälle
 

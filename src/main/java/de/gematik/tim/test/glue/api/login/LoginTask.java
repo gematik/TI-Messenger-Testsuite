@@ -16,20 +16,22 @@
 
 package de.gematik.tim.test.glue.api.login;
 
+import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
+import de.gematik.tim.test.models.AccountDTO;
+import de.gematik.tim.test.models.LoginDTO;
+import net.serenitybdd.screenplay.Actor;
+import net.serenitybdd.screenplay.Task;
+
+import java.util.Optional;
+
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.ACCOUNT_PASSWORD;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DISPLAY_NAME;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_LOGGED_IN;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.LOGIN;
 import static de.gematik.tim.test.glue.api.login.IsLoggedInAbility.logOut;
 import static de.gematik.tim.test.models.AuthStageNameDTO.BASICAUTH;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
-
-import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
-import de.gematik.tim.test.models.AccountDTO;
-import de.gematik.tim.test.models.LoginDTO;
-import java.util.Optional;
-import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.Task;
 
 public class LoginTask implements Task {
 
@@ -50,7 +52,7 @@ public class LoginTask implements Task {
     actor.remember(ACCOUNT_PASSWORD, account.getPassword());
     actor.remember(DISPLAY_NAME, account.getDisplayName());
     actor.can(logOut());
-
+    actor.remember(IS_LOGGED_IN, true);
     RawDataStatistics.login();
   }
 

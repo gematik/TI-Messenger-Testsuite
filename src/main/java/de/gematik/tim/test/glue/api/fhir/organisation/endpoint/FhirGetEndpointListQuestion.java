@@ -46,7 +46,7 @@ public class FhirGetEndpointListQuestion extends HealthcareSpecificTask implemen
   public List<FhirEndpointDTO> answeredBy(Actor actor) {
     super.performAs(actor);
     Optional<String> endpointId = Optional.ofNullable(endpointNameFilter)
-        .map(name -> actor.abilityTo(UseEndpointAbility.class).getTarget(name));
+        .map(name -> actor.abilityTo(UseEndpointAbility.class).getTarget(name).endpointId());
 
     actor.attemptsTo(GET_ENDPOINTS.request());
 

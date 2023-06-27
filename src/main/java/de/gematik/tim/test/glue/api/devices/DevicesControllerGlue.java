@@ -54,11 +54,12 @@ import io.cucumber.java.de.Wenn;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.actors.Cast;
 import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
+
+import java.util.List;
 
 @Slf4j
 public class DevicesControllerGlue {
@@ -70,7 +71,7 @@ public class DevicesControllerGlue {
   }
 
   @BeforeAll
-  public static void setupStageForAll(){
+  public static void setupStageForAll() {
     setTheStage(Cast.ofStandardActors());
   }
 
@@ -123,8 +124,7 @@ public class DevicesControllerGlue {
   }
 
   @Und("{string} meldet sich mit den Daten von {string} an der Schnittstelle {word} an")
-  public void reserveClientOnApiAndLoginWithData(String actorName, String userName,
-      String apiName) {
+  public void reserveClientOnApiAndLoginWithData(String actorName, String userName, String apiName) {
     Actor actor = reserveClientOnApi(actorName, apiName);
 
     String mxId = theActorCalled(userName).recall(MX_ID);
@@ -138,10 +138,11 @@ public class DevicesControllerGlue {
   @Given("{string} claims client on api {word}")
   @Angenommen("{string} reserviert sich einen Test-Client an der Schnittstelle {word}")
   public Actor reserveClientOnApi(String actorName, String apiName) {
+    String apiUrl = prepareApiName(apiName);
     Actor actor = theActorCalled(actorName);
-    actor.whoCan(CallAnApi.at(apiName)).entersTheScene();
-    addHostToTigerProxy(apiName);
-    DeviceManager.getInstance().orderDeviceToActor(actor, apiName);
+    actor.whoCan(CallAnApi.at(apiUrl)).entersTheScene();
+    addHostToTigerProxy(apiUrl);
+    DeviceManager.getInstance().orderDeviceToActor(actor, apiUrl);
     return actor;
   }
 
@@ -180,5 +181,13 @@ public class DevicesControllerGlue {
           .as("Claimed device have no practitioner privileges! This information is got from the info endpoint.")
           .isTrue();
     }
+  }
+
+  // Utils
+  private String prepareApiName(String apiName) {
+    if (!apiName.startsWith("http")) {
+      apiName = "http://" + apiName;
+    }
+    return apiName;
   }
 }

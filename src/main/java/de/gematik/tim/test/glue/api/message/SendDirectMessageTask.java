@@ -23,6 +23,7 @@ import static de.gematik.tim.test.glue.api.room.UseRoomAbility.addRoomToActor;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomQuestion.ownRoom;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.isSameHomeserver;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
@@ -60,20 +61,28 @@ public class SendDirectMessageTask implements Task {
 
   private <T extends Actor> void logEventsAndSaveRoomToActor(T actor, String actorMxId,
       String toMxId) {
-    boolean roomAlreadyExist = isNotBlank(actor.recall(DIRECT_CHAT_NAME + toMxId))
-        || lastResponse().statusCode() != 200;
+    boolean roomDoesExist =
+        isNotBlank(actor.recall(DIRECT_CHAT_NAME + toMxId)) || isNotBlank(
+            this.toActor.recall(DIRECT_CHAT_NAME + actorMxId));
+
+    boolean requestSuccessful = lastResponse().getStatusCode() == 200;
     if (isSameHomeserver(toMxId, actorMxId)) {
-      RawDataStatistics.exchangeMessageSameHomeserver();
-      if (!roomAlreadyExist) {
+      if (!roomDoesExist) {
         RawDataStatistics.inviteToRoomSameHomeserver();
-        handleNewRoom(actor, actorMxId, toMxId);
+      }
+      if (requestSuccessful) {
+        RawDataStatistics.exchangeMessageSameHomeserver();
       }
     } else {
-      RawDataStatistics.exchangeMessageMultiHomeserver();
-      if (!roomAlreadyExist) {
+      if (!roomDoesExist) {
         RawDataStatistics.inviteToRoomMultiHomeserver();
-        handleNewRoom(actor, actorMxId, toMxId);
       }
+      if (requestSuccessful) {
+        RawDataStatistics.exchangeMessageMultiHomeserver();
+      }
+    }
+    if (requestSuccessful && !roomDoesExist) {
+      handleNewRoom(actor, actorMxId, toMxId);
     }
   }
 

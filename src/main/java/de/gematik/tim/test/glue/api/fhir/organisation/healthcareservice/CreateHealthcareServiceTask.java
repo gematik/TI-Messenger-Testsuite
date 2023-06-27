@@ -22,6 +22,7 @@ import static de.gematik.tim.test.glue.api.utils.GlueUtils.readJsonFile;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static org.springframework.http.HttpStatus.CREATED;
 
+import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.FhirCreateHealthcareServiceDTO;
 import de.gematik.tim.test.models.FhirHealthcareServiceDTO;
 import io.restassured.response.Response;
@@ -59,6 +60,7 @@ public class CreateHealthcareServiceTask implements Task {
       actor.attemptsTo(CREATE_HEALTHCARE_SERVICE.request()
           .with(req -> req.body(healthcareServiceDTO)));
     }
+    RawDataStatistics.getRegTokenForVZDEvent();
 
     Response response = lastResponse();
     if (response.statusCode() == CREATED.value()) {
@@ -66,4 +68,6 @@ public class CreateHealthcareServiceTask implements Task {
       addHsToActor(hsName, hsDTO.getHealthcareServiceId(), actor);
     }
   }
+
+
 }

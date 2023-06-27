@@ -46,7 +46,7 @@ public class FhirGetLocationListQuestion extends HealthcareSpecificTask implemen
   public List<FhirLocationDTO> answeredBy(Actor actor) {
     super.performAs(actor);
     Optional<String> locationId = Optional.ofNullable(locationNameFilter)
-        .map(name -> actor.abilityTo(UseLocationAbility.class).getTarget(name));
+        .map(name -> actor.abilityTo(UseLocationAbility.class).getTarget(name).locationId());
 
     actor.attemptsTo(GET_LOCATIONS.request());
 

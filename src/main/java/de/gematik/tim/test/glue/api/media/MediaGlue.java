@@ -87,7 +87,7 @@ public class MediaGlue {
         .withFileId(actor.recall(MEDIA_ID))
         .withMimetype(Files.probeContentType(path))
         .withSize((int) Files.size(path))
-        .withMsgType("m." + Files.probeContentType(path).split("/")[0]));
+        .withMsgType("m.file"));
   }
 
   @SneakyThrows

@@ -6,11 +6,34 @@
 
 - - -
 
+## Release 0.6.1
+
+### Feature
+
+- more detailed counters for invite and event-system
+- http is no longer required for the values in combine-items.json
+- new RawDataCounter for RegServiceToken and ID updates
+- RegServiceToken-counter active
+- Rework Testsuit.adoc
+- New Chapter 10 & 11 in Testsuite.adoc (Reports & Error Logs)
+- Delete disabled TestCases in Feature Files 3, 7, 8, 9, 10
+
+### Bugfix
+
+- Cleanup of mxId's fixed for tests with logout
+- Filter for negative search recently deleted Healthcare-Service fixed
+- New Tiger-Version used -> no more issues with / in the end of URL
+
 ## Release 0.5.3
+
+### Features
+
+- Response of upload media just have to be successful 
 
 ### Bugfix
 
 - Commandline bug is fixed and testcases with tags can run without errors
+- Messagetype changed `m.file` for sending media
 
 ## Release 0.5.0
 

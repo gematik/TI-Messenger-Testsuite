@@ -7,42 +7,42 @@
 @AK-ID:ML-123654 @AK-ID:ML-123663 @AK-ID:ML-132864 @AK-ID:ML-132592
 @AF-ID:AF_10064
 @AK-ID:ML-123672 @AK-ID:ML-123893 @AK-ID:ML-123891 @AK-ID:ML-132589
+@AF-ID:AF_10058
+@AK-ID:ML-123612 @AK-ID:ML-132588
+@AF-ID:AF_10059
+@AK-ID:ML-123627 @AK-ID:ML-132586
 Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Organisation
+
   AF_10062 - Austausch von Events zwischen Akteuren außerhalb einer Organisation
-  In diesem Anwendungsfall können Akteure welche sich in einem gemeinsamen Raum befinden Nachrichten
-  austauschen und andere durch die Matrix-Spezifikation festgelegte Aktionen ausführen. Dieser
-  Anwendungsfall setzt ein erfolgreiches Invite-Event eines oder mehrerer beteiligter Akteure voraus.
-  In diesem Anwendungsfall sind die beteiligten Akteure in einem gemeinsamen Chatraum und auf
-  unterschiedlichen Messenger-Services verteilt.
-
-  ML-123665 - Messenger-Proxy des Senders prüft Domain des Empfängers
-  ML-123666 - Messenger-Proxy des Empfängers prüft Domain des Senders
-  ML-123667 - Auslösen einer Notifikation
-  ML-123668 - Nachricht wird angezeigt
-  ML-132593 - TI-M Rohdatenerfassung und -lieferung
-
-  Zusätzlich werden in diesem Feature File folgende Anforderungen aus Feature File 8 betrachtet,
-  da sie Preconditions für den AF_10062 darstellen:
+    ML-123665 - Messenger-Proxy des Senders prüft Domain des Empfängers
+    ML-123666 - Messenger-Proxy des Empfängers prüft Domain des Senders
+    ML-123667 - Auslösen einer Notifikation
+    ML-123668 - Nachricht wird angezeigt
+    ML-132593 - TI-M Rohdatenerfassung und -lieferung
 
   AF_10061 - Einladung von Akteuren außerhalb einer Organisation
-  In diesem Anwendungsfall wird ein Akteur außerhalb einer Organisation eingeladen.
-
-  ML-123654 - Suche im VZD-FHIR-Directory
-  ML-123663 - Akteure sind dem Chatraum beigetreten
-  ML-132864 - Berechtigungsprüfung aller Stufen
-  ML-132592 - TI-M Rohdatenerfassung und -lieferung
+    ML-123654 - Suche im VZD-FHIR-Directory
+    ML-123663 - Akteure sind dem Chatraum beigetreten
+    ML-132864 - Berechtigungsprüfung aller Stufen
+    ML-132592 - TI-M Rohdatenerfassung und -lieferung
 
   AF_10064 - Föderationszugehörigkeit eines Messenger-Service prüfen
-  Dieser Anwendungsfall prüft, ob ein Messenger-Service zugehörig zur TI-Messenger-Föderation ist
-  und gilt für alle Anwendungsfälle, welche die Matrix-Domain eines anderen Messenger-Services
-  überprüfen müssen.
+    ML-123672 - Föderationsliste vom VZD-FHIR-Directory abrufen
+    ML-123893 - Aktualität - Föderationsliste Messenger-Proxy
+    ML-123891 - Matrix-Domain Teil der Föderationsliste & Aktualitätscheck
+    ML-132589 - TI-M Rohdatenerfassung und -lieferung
 
-  ML-123672 - Föderationsliste vom VZD-FHIR-Directory abrufen
-  ML-123893 - Aktualität - Föderationsliste Messenger-Proxy
-  ML-123891 - Matrix-Domain Teil der Föderationsliste & Aktualitätscheck
-  ML-132589 - TI-M Rohdatenerfassung und -lieferung
+  AF_10058 Akteur (User-HBA) im Verzeichnisdienst hinzufügen
+    ML-123612 - Akteur als Practitioner hinzufügen
+    ML-132588 - TI-M Rohdatenerfassung und -lieferung
+
+  AF_10059 - Organisationsressourcen im Verzeichnisdienst hinzufügen
+    ML-123627 - Organisationsressourcen im VZD-FHIR-Directory hinzufügen
+    ML-132586 - TI-M Rohdatenerfassung und -lieferung
 
   In diesem Anwendungsfall erfolgt gleichzeitig eine Prüfung des Berechtigungskonzept.
+  Zusätzlich werden in diesem Feature File Anforderungen aus Feature File 9 (AF_10061) betrachtet,
+  da sie Preconditions für den AF_10062 darstellen und so an dieser Stelle getestst werden.
 
   Inhalt
   TF 1  -  3 HBA sendet Nachricht Chat/Raum (HBA an HBA)
@@ -664,73 +664,3 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
 
     Beispiele:
     | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
-
-#  @WIP
-#  @BP:P2P @Ctl:Raum @Ctl:MsgForward @Ctl:MsgChange
-#  @TCID:TIM_11_AF_1020 @PRIO:1 @TESTFALL:Positiv @STATUS:BearbeitungGestoppt
-#  Szenariogrundriss: 10.20 Events außerhalb einer Organisation - Raum - HBA_User ändert eine Nachricht
-#    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
-#    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
-#    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
-#    Und        "A" findet "B" in FHIR
-#    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
-#    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
-#    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
-#    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
-#    Und        "A" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
-#    Und        "B" empfängt eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
-#    Dann       "A" ändert seine letzte Nachricht im Raum "TIM Testraum 1" in "At least I can say that I have tried"
-#    Wenn       "B" empfängt eine Nachricht "At least I can say that I have tried" von "A" im Raum "TIM Testraum 1"
-#    Und        "B" kann die Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 10 - 3]
-#
-#  #@Shuffle(true)
-#  #@MaxSameColumnProperty(ApiName2,homeserver,2)
-#  @DistinctProperty(homeserver)
-#  @AllowSelfCombine(false)
-#  @AllowDoubleLineup(true)
-#  @Filter(ApiName1.hasTag("client"))
-#  @Filter(ApiName2.hasTag("client"))
-#  @Filter(ApiName1.hasTag("practitioner"))
-#  @Filter(ApiName2.hasTag("practitioner"))
-#  @Filter(ApiName1.hasTag("prefIOP"))
-#  @Filter(ApiName2.hasTag("prefIOP"))
-#
-#    Beispiele:
-#    | ApiName1 | ApiName2 |
-#
-#  @WIP
-#  @BP:O2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgForward @Ctl:MsgChange
-#  @TCID:TIM_11_AF_1021 @PRIO:1 @TESTFALL:Positiv @STATUS:BearbeitungGestoppt
-#  Szenariogrundriss: 10.21 Events außerhalb einer Organisation - Raum - Organisations-User ändert eine Nachricht
-#    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
-#    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
-#    Und        "C" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName2A>
-#    Und        "D" reserviert sich einen Messenger-Client an Schnittstelle <ApiName2B>
-#    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
-#    Und        "C" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "D"
-#    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
-#    Und        "B" lädt "D" über den HealthcareService "HealthcareServiceName2" in den Chat-Raum "TIM Testraum 1" ein
-#    Und        "D" erhält eine Einladung in Raum "TIM Testraum 1"
-#    Und        "D" bestätigt eine Einladung in Raum "TIM Testraum 1"
-#    Und        "B" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
-#    Und        "D" empfängt eine Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1"
-#    Wenn       "B" ändert seine letzte Nachricht im Raum "TIM Testraum 1" in "At least I can say that I have tried"
-#    Dann       "D" empfängt eine Nachricht "At least I can say that I have tried" von "B" im Raum "TIM Testraum 1"
-#    Und        "D" kann die Nachricht "Hello from the other site" von "B" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 10 - 3]
-#
-#  #@Shuffle(true)
-#  #@MaxSameColumnProperty(ApiName1B,homeserver,2)
-#  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-#  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
-#  @Filter(!ApiName1B.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
-#  @AllowSelfCombine(false)
-#  @AllowDoubleLineup(true)
-#  @Filter(ApiName1A.hasTag("orgAdmin"))
-#  @Filter(ApiName2A.hasTag("orgAdmin"))
-#  @Filter(ApiName1B.hasTag("client"))
-#  @Filter(ApiName2B.hasTag("client"))
-#  @Filter(ApiName1B.hasTag("prefIOP"))
-#  @Filter(ApiName2B.hasTag("prefIOP"))
-#
-#    Beispiele:
-#    | ApiName1A | ApiName1B | ApiName2A | ApiName2B |

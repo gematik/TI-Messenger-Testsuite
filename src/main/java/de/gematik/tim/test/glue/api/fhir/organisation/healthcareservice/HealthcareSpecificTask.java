@@ -25,7 +25,7 @@ import net.serenitybdd.screenplay.Task;
 @Getter
 public abstract class HealthcareSpecificTask implements Task {
 
-  private String hsName;
+  protected String hsName;
 
   @SuppressWarnings("unchecked")
   public <T extends HealthcareSpecificTask> T forHealthcareService(String hsName) {

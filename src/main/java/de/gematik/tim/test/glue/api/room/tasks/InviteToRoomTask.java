@@ -53,7 +53,6 @@ public class InviteToRoomTask implements Task {
 
     actor.attemptsTo(INVITE_TO_ROOM.request()
         .with(req -> req.body(invitees)));
-
     sendRawDataEvent(actor.recall(MX_ID));
   }
 

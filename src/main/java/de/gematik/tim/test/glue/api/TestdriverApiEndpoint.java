@@ -52,21 +52,29 @@ import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_JOIN_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_LEAVE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.UNCLAIM_DEVICE_PATH;
 
+import de.gematik.test.tiger.common.data.config.tigerProxy.TigerRoute;
+import de.gematik.test.tiger.lib.TigerDirector;
 import de.gematik.tim.test.glue.api.devices.UseDeviceAbility;
 import de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UseEndpointAbility;
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility;
 import de.gematik.tim.test.glue.api.fhir.organisation.location.UseLocationAbility;
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Function;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import net.serenitybdd.screenplay.Actor;
+import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
 import net.serenitybdd.screenplay.rest.interactions.Delete;
 import net.serenitybdd.screenplay.rest.interactions.Get;
 import net.serenitybdd.screenplay.rest.interactions.Post;
 import net.serenitybdd.screenplay.rest.interactions.Put;
 import net.serenitybdd.screenplay.rest.interactions.RestInteraction;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+
+@Getter
 public enum TestdriverApiEndpoint {
 
   GET_INFO(GET, INFO_PATH),
@@ -167,7 +175,7 @@ public enum TestdriverApiEndpoint {
 
   @SafeVarargs
   TestdriverApiEndpoint(HttpMethod httpMethod, String path,
-      Class<? extends TestdriverApiAbility>... neededAbilities) {
+                        Class<? extends TestdriverApiAbility>... neededAbilities) {
     this.httpMethod = httpMethod;
     this.path = path;
     this.neededAbilities = Arrays.stream(neededAbilities).toList();
