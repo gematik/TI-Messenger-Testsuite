@@ -16,6 +16,7 @@
 
 package de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_DELETED_HS_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.DELETE_HEALTHCARE_SERVICE;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
@@ -40,7 +41,9 @@ public class DeleteHealthcareServicesTask extends HealthcareSpecificTask {
 
     Response response = lastResponse();
     if (response.statusCode() == HttpStatus.NO_CONTENT.value()) {
-      actor.abilityTo(UseHealthcareServiceAbility.class).removeCurrent();
+      UseHealthcareServiceAbility ability = actor.abilityTo(UseHealthcareServiceAbility.class);
+      actor.remember(LAST_DELETED_HS_ID, ability.getActiveValue());
+      ability.removeCurrent();
     }
   }
 }

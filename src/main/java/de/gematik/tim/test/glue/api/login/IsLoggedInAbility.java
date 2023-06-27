@@ -16,36 +16,18 @@
 
 package de.gematik.tim.test.glue.api.login;
 
-import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.clearAllBeforeLogoutAndUnclaim;
 import static de.gematik.tim.test.glue.api.login.LogoutTask.logout;
 
-import net.serenitybdd.screenplay.Ability;
-import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.HasTeardown;
-import net.serenitybdd.screenplay.RefersToActor;
+import de.gematik.tim.test.glue.api.TeardownAbility;
 
-public class IsLoggedInAbility implements Ability, HasTeardown, RefersToActor {
-
-  private Actor actor;
-  private boolean tearedDown = false;
+public class IsLoggedInAbility extends TeardownAbility {
 
   public static IsLoggedInAbility logOut() {
     return new IsLoggedInAbility();
   }
 
   @Override
-  public void tearDown() {
-    clearAllBeforeLogoutAndUnclaim(actor);
-    if (tearedDown) {
-      return;
-    }
+  public void teardownThis() {
     this.actor.attemptsTo(logout());
-    tearedDown = true;
-  }
-
-  @Override
-  public IsLoggedInAbility asActor(Actor actor) {
-    this.actor = actor;
-    return this;
   }
 }

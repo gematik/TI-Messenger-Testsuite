@@ -18,32 +18,16 @@ package de.gematik.tim.test.glue.api.fhir.practitioner;
 
 import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirDeleteOwnMxidTask.deleteMxidFromFhir;
 
-import net.serenitybdd.screenplay.Ability;
-import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.HasTeardown;
-import net.serenitybdd.screenplay.RefersToActor;
+import de.gematik.tim.test.glue.api.TeardownAbility;
 
-public class CanDeleteOwnMxidAbility implements Ability, HasTeardown, RefersToActor {
-
-  private Actor actor;
-  private boolean tearedDown = false;
+public class CanDeleteOwnMxidAbility extends TeardownAbility {
 
   public static CanDeleteOwnMxidAbility deleteOwnMxid() {
     return new CanDeleteOwnMxidAbility();
   }
 
   @Override
-  public void tearDown() {
-    if (tearedDown) {
-      return;
-    }
+  protected void teardownThis() {
     this.actor.attemptsTo(deleteMxidFromFhir());
-    tearedDown = true;
-  }
-
-  @Override
-  public CanDeleteOwnMxidAbility asActor(Actor actor) {
-    this.actor = actor;
-    return this;
   }
 }

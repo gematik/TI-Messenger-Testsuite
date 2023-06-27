@@ -16,6 +16,7 @@
 
 package de.gematik.tim.test.glue.api.login;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_LOGGED_IN;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.LOGOUT;
 
 import net.serenitybdd.screenplay.Actor;
@@ -29,7 +30,10 @@ public class LogoutTask implements Task {
 
   @Override
   public <T extends Actor> void performAs(T actor) {
-    actor.attemptsTo(LOGOUT.request());
+    if (actor.recall(IS_LOGGED_IN)) {
+      actor.attemptsTo(LOGOUT.request());
+      actor.remember(IS_LOGGED_IN, false);
+    }
   }
 
 }

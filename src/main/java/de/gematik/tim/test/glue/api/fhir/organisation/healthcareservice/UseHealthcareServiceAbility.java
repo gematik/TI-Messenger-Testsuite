@@ -50,15 +50,15 @@ public class UseHealthcareServiceAbility extends MultiTargetAbility<String, Stri
     }
   }
 
-  private static UseHealthcareServiceAbility useHs(String hsName, String hsId) {
-    return new UseHealthcareServiceAbility(hsName, hsId);
-  }
-
   @Override
   public RequestSpecification apply(RequestSpecification requestSpecification) {
     String hsId = getActive();
     requireNonNull(hsId);
     return requestSpecification.pathParam(HEALTHCARE_SERVICE_ID_VARIABLE, hsId);
+  }
+
+  private static UseHealthcareServiceAbility useHs(String hsName, String hsId) {
+    return new UseHealthcareServiceAbility(hsName, hsId);
   }
 
   @Override

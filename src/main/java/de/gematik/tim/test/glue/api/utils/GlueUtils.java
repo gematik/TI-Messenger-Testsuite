@@ -16,6 +16,7 @@
 
 package de.gematik.tim.test.glue.api.utils;
 
+import static com.networknt.schema.utils.StringUtils.isBlank;
 import static com.nimbusds.jose.util.X509CertUtils.parse;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
@@ -36,6 +37,18 @@ import de.gematik.tim.test.models.MessageDTO;
 import de.gematik.tim.test.models.RoomDTO;
 import de.gematik.tim.test.models.RoomMemberDTO;
 import io.cucumber.java.ParameterType;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import net.serenitybdd.screenplay.Actor;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.awaitility.core.ConditionTimeoutException;
+import org.bouncycastle.asn1.x500.RDN;
+import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -53,17 +66,6 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import net.serenitybdd.screenplay.Actor;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.awaitility.core.ConditionTimeoutException;
-import org.bouncycastle.asn1.x500.RDN;
-import org.bouncycastle.asn1.x500.style.BCStyle;
-import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
-import org.jetbrains.annotations.NotNull;
 
 @Slf4j
 public class GlueUtils {
@@ -82,6 +84,7 @@ public class GlueUtils {
   private static final List<String> knownUrls = new ArrayList<>();
   private static final String KEY_STORE = "TIM_KEYSTORE";
   private static final String KEY_STORE_PW = "TIM_KEYSTORE_PW";
+  private static final String RUN_WITHOUT_CERT = "no configured cert found";
   private static Long timeout;
   private static final Long TIMEOUT_DEFAULT = 10L;
   private static Long pollInterval;
@@ -102,7 +105,7 @@ public class GlueUtils {
     String pollIntervalString = p.getProperty(POLL_INTERVAL_PROPERTY_NAME);
     RUN_WITHOUT_RETRY = Boolean.parseBoolean(p.getProperty(RUN_WITHOUT_RETRY_PROPERTY_NAME));
     SAVE_CONNECTIONS = Boolean.parseBoolean(p.getProperty(SAVE_CONNECTIONS_PROPERTY_NAME));
-    CLAIM_DURATION = Integer.parseInt(p.getProperty(CLAIM_DURATION_PROPERTYNAME, "180"));
+    CLAIM_DURATION = Integer.parseInt(isBlank(p.getProperty(CLAIM_DURATION_PROPERTYNAME)) ? "180" : p.getProperty(CLAIM_DURATION_PROPERTYNAME));
     CERT_CN = parseCn();
     try {
       timeout = Long.parseLong(timeoutString);
@@ -126,18 +129,18 @@ public class GlueUtils {
   }
 
   public static RoomDTO filterForRoomWithSpecificMembers(List<RoomDTO> rooms,
-      List<String> memberIds) {
+                                                         List<String> memberIds) {
     List<RoomDTO> filteredRooms = filterForRoomsWithSpecificMembers(rooms, memberIds);
     assertThat(filteredRooms).as(
-        "%s matching room for this members (%s) have been found.", filteredRooms.size(),
-        StringUtils.join(memberIds, ","))
+            "%s matching room for this members (%s) have been found.", filteredRooms.size(),
+            StringUtils.join(memberIds, ","))
         .hasSize(1);
     return filteredRooms.get(0);
   }
 
   @NotNull
   public static List<RoomDTO> filterForRoomsWithSpecificMembers(List<RoomDTO> rooms,
-      List<String> memberIds) {
+                                                                List<String> memberIds) {
     return rooms.stream()
         .filter(r -> requireNonNull(r.getMembers()).size() >= memberIds.size())
         .filter(
@@ -149,19 +152,19 @@ public class GlueUtils {
   }
 
   public static MessageDTO filterMessageForSenderAndText(String messageText, String userName,
-      List<MessageDTO> messages) {
+                                                         List<MessageDTO> messages) {
     List<MessageDTO> filteredMessages = filterMessagesForSenderAndText(messageText, userName,
         messages);
     assertThat(filteredMessages).as(
-        "%s matching messages for this members (%s) have been found.", filteredMessages.size(),
-        filteredMessages.size())
+            "%s matching messages for this members (%s) have been found.", filteredMessages.size(),
+            filteredMessages.size())
         .hasSize(1);
     return filteredMessages.get(0);
   }
 
   @NotNull
   public static List<MessageDTO> filterMessagesForSenderAndText(String message, String userName,
-      List<MessageDTO> messages) {
+                                                                List<MessageDTO> messages) {
     return messages.stream()
         .filter(e -> requireNonNull(e.getBody()).equals(message))
         .filter(e -> requireNonNull(e.getAuthor()).equals(theActorCalled(userName).recall(MX_ID)))
@@ -208,7 +211,7 @@ public class GlueUtils {
     } catch (Exception ex) {
       log.error("Could not parse certificate");
     }
-    return "";
+    return RUN_WITHOUT_CERT;
   }
 
   public static <T> T repeatedRequest(Supplier<Optional<T>> request) {
@@ -220,12 +223,12 @@ public class GlueUtils {
   }
 
   public static <T> T repeatedRequestWithLongerTimeout(Supplier<Optional<T>> request,
-      String resourceType, int factor) {
+                                                       String resourceType, int factor) {
     return repeatedRequest(request, resourceType, timeout * factor, pollInterval);
   }
 
   public static <T> T repeatedRequest(Supplier<Optional<T>> request, String resourceType,
-      Long customTimeout, Long customPollInterval) {
+                                      Long customTimeout, Long customPollInterval) {
     if (customTimeout == null || customPollInterval == null) {
       customTimeout = timeout;
       customPollInterval = pollInterval;

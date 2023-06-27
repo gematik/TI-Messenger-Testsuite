@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>de.gematik.tim.test</groupId>
   <artifactId>TI-Messenger-Testsuite</artifactId>
-  <version>0.5.4</version>
+  <version>0.6.1</version>
   <packaging>jar</packaging>
   <name>TI-Messenger-Testsuite</name>
   <description>Testsuite to check functionality of TI-Messenger-Clients</description>
@@ -18,9 +18,9 @@
     <java.version>17</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jacoco.version>0.8.8</jacoco.version>
-    <version.tiger>1.3.2</version.tiger>
-    <version.serenity.core>3.3.10</version.serenity.core>
-    <polarion.toolbox.version>1.3.0-92</polarion.toolbox.version>
+    <version.tiger>2.1.1</version.tiger>
+    <version.serenity.core>3.6.20</version.serenity.core>
+    <polarion.toolbox.version>2.0.0-133</polarion.toolbox.version>
     <feature_dir>${project.build.directory}/features/</feature_dir>
     <feature.template.dir>${project.basedir}/src/test/resources/templates/FeatureFiles</feature.template.dir>
     <sonar.coverage.exclusions>**/*</sonar.coverage.exclusions>
@@ -33,15 +33,23 @@
     <tiger.config.file>tiger.yml</tiger.config.file>
     <cutest.combine.break>true</cutest.combine.break>
     <cutest.prepare.break>true</cutest.prepare.break>
-    <combine.items.file>${project.basedir}/src/test/resources/combine_items.json
-    </combine.items.file>
+    <combine.items.file>${project.basedir}/src/test/resources/combine_items.json</combine.items.file>
+    <tim.truststore>${env.TIM_TRUSTSTORE}</tim.truststore>
+    <tim.truststore.pw>${env.TIM_TRUSTSTORE_PW}</tim.truststore.pw>
+    <tim.keystore>${env.TIM_KEYSTORE}</tim.keystore>
+    <tim.keystore.pw>${env.TIM_KEYSTORE_PW}</tim.keystore.pw>
+    <cutest.prepare.skip>false</cutest.prepare.skip>
+    <cutest.prepare.skipPrepare>false</cutest.prepare.skipPrepare>
+    <cutest.prepare.skipCombine>false</cutest.prepare.skipCombine>
+    <cutest.prepare.skipCheck>false</cutest.prepare.skipCheck>
+    <pool.group.string/>
     <saveConnections/>
     <cucumber.filter.tags/>
     <timeout/>
+    <claimDuration/>
     <pollInterval/>
     <cucumber.filter.version/>
   </properties>
-
   <distributionManagement>
     <repository>
       <id>releases</id>
@@ -116,6 +124,11 @@
       <artifactId>super-csv</artifactId>
       <version>2.4.0</version>
     </dependency>
+    <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>javax.annotation-api</artifactId>
+      <version>1.3.2</version>
+    </dependency>
     <!-- screenplay -->
     <dependency>
       <groupId>net.serenity-bdd</groupId>
@@ -147,7 +160,7 @@
             </goals>
             <configuration>
               <url>
-                https://raw.githubusercontent.com/gematik/api-ti-messenger/8d078e54fec9331027df41ef2cf8d6356d049198/src/openapi/TiMessengerTestTreiber.yaml
+                https://raw.githubusercontent.com/gematik/api-ti-messenger/130e62f79e995860c982b9e439e542212009166a/src/openapi/TiMessengerTestTreiber.yaml
               </url>
               <outputFileName>TiMessengerTestTreiber.yaml</outputFileName>
               <outputDirectory>${project.build.directory}</outputDirectory>
@@ -201,18 +214,22 @@
       <plugin>
         <groupId>de.gematik</groupId>
         <artifactId>cucumber-test-combinations-maven-plugin</artifactId>
-        <version>2.9.1</version>
+        <version>2.9.6</version>
         <configuration>
+          <skip>${cutest.prepare.skip}</skip>
+          <skipPrep>${cutest.prepare.skipPrepare}</skipPrep>
+          <skipComb>${cutest.prepare.skipCombine}</skipComb>
+          <skipCheck>${cutest.prepare.skipCheck}</skipCheck>
           <!--          Global Config-->
           <combineItemsFile>${combine.items.file}</combineItemsFile>
           <!--          Prepare item config-->
-          <truststore>${env.TIM_TRUSTSTORE}</truststore>
-          <truststorePw>${env.TIM_TRUSTSTORE_PW}</truststorePw>
+          <truststore>${tim.truststore}</truststore>
+          <truststorePw>${tim.truststore.pw}</truststorePw>
+          <clientCertStore>${tim.keystore}</clientCertStore>
+          <clientCertStorePw>${tim.keystore.pw}</clientCertStorePw>
           <hardFail>${cutest.prepare.break}</hardFail>
           <configFail>${cutest.prepare.break}</configFail>
-          <clientCertStore>${env.TIM_KEYSTORE}
-          </clientCertStore>
-          <clientCertStorePw>${env.TIM_KEYSTORE_PW}</clientCertStorePw>
+          <poolGroupString>${pool.group.string}</poolGroupString>
           <tagExpressions>
             <tagExpression>
               <tag>client</tag>
@@ -343,7 +360,7 @@
       <plugin>
         <groupId>org.openapitools</groupId>
         <artifactId>openapi-generator-maven-plugin</artifactId>
-        <version>5.0.1</version>
+        <version>6.6.0</version>
         <executions>
           <execution>
             <goals>
@@ -588,7 +605,7 @@
                 <artifactItem>
                   <groupId>de.gematik.tim.test</groupId>
                   <artifactId>TI-Messenger-TestdriverSim</artifactId>
-                  <version>3.2.0</version>
+                  <version>3.2.2</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}</outputDirectory>
@@ -599,6 +616,21 @@
           </plugin>
         </plugins>
       </build>
+    </profile>
+    <profile>
+      <id>prod</id>
+      <properties>
+        <combine.items.file>${project.basedir}/src/test/resources/combine_items_prod.json
+        </combine.items.file>
+        <tiger.config.file>tiger-prod.yml</tiger.config.file>
+        <tim.truststore>${project.basedir}/src/main/resources/certs/gemRoot/cert/gem/gemTruststore.p12</tim.truststore>
+        <tim.truststore.pw>changeit</tim.truststore.pw>
+        <tim.keystore>${project.basedir}/src/main/resources/certs/gemRoot/cert/gem/gemKeystore.p12</tim.keystore>
+        <tim.keystore.pw>changeit</tim.keystore.pw>
+        <timeout>240</timeout>
+        <pollInterval>5</pollInterval>
+        <claimDuration>300</claimDuration>
+      </properties>
     </profile>
     <profile>
       <id>disable-prepare-items</id>
@@ -640,6 +672,12 @@
       <id>skip-saving-reports</id>
       <properties>
         <skip.saving.reports>true</skip.saving.reports>
+      </properties>
+    </profile>
+    <profile>
+      <id>save-connections</id>
+      <properties>
+        <saveConnections>true</saveConnections>
       </properties>
     </profile>
     <profile>

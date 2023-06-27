@@ -16,34 +16,29 @@
 
 package de.gematik.tim.test.glue.api.fhir.organisation.endpoint;
 
+import de.gematik.tim.test.glue.api.MultiTargetAbility;
+import de.gematik.tim.test.glue.api.TestdriverApiAbility;
+import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility;
+import io.restassured.specification.RequestSpecification;
+import net.serenitybdd.screenplay.Actor;
+import net.serenitybdd.screenplay.Task;
+
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ENDPOINT_ID_VARIABLE;
+import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.DeleteEndpointTask.deleteEndPoint;
+import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UseEndpointAbility.EndpointInfo;
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 
-import de.gematik.tim.test.glue.api.MultiTargetAbility;
-import de.gematik.tim.test.glue.api.TestdriverApiAbility;
-import io.restassured.specification.RequestSpecification;
-import net.serenitybdd.screenplay.Actor;
-
-public class UseEndpointAbility extends MultiTargetAbility<String, String> implements
+public class UseEndpointAbility extends MultiTargetAbility<String, EndpointInfo> implements
     TestdriverApiAbility {
 
-  private UseEndpointAbility(String endpointName, String endpointId) {
-    addAndSetActive(endpointName, endpointId);
-  }
-
-  private static UseEndpointAbility useEndpoint(String endpointName, String endpointId) {
-    return new UseEndpointAbility(endpointName, endpointId);
-  }
-
-  public static <T extends Actor> void addEndpointToActor(String endpointName, String endpointId,
-      T actor) {
+  public static <T extends Actor> void addEndpointToActorForHS(T actor, String endpointName,
+                                                               String endpointId, String hsName) {
     UseEndpointAbility ability = actor.abilityTo(UseEndpointAbility.class);
     if (isNull(ability)) {
-      actor.can(useEndpoint(endpointName, endpointId));
-      return;
+      actor.can(ability = new UseEndpointAbility());
     }
-    ability.addAndSetActive(endpointName, endpointId);
+    ability.addAndSetActive(endpointName, new EndpointInfo(endpointId, hsName));
   }
 
   public static <T extends Actor> void removeEndpointFromActor(String endpointName, T actor) {
@@ -55,8 +50,20 @@ public class UseEndpointAbility extends MultiTargetAbility<String, String> imple
 
   @Override
   public RequestSpecification apply(RequestSpecification requestSpecification) {
-    String endpointId = getActive();
+    String endpointId = getActive().endpointId;
+    actor.abilityTo(UseHealthcareServiceAbility.class).setActive(getActive().hsName);
     requireNonNull(endpointId);
     return requestSpecification.pathParam(ENDPOINT_ID_VARIABLE, endpointId);
+  }
+
+  @Override
+  protected Task tearDownPerTarget(String endpointName) {
+    setActive(endpointName);
+    requireNonNull(actor.abilityTo(UseHealthcareServiceAbility.class))
+        .setActive(requireNonNull(getActive().hsName));
+    return deleteEndPoint().withName(endpointName);
+  }
+
+  protected record EndpointInfo(String endpointId, String hsName) {
   }
 }

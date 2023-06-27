@@ -4,16 +4,11 @@
 @AF-ID:AF_10059
 @AK-ID:ML-123626 @AK-ID:ML-123627 @AK-ID:ML-132586
 Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
-  AF_10059 - Organisationsressourcen im Verzeichnisdienst hinzufügen
-  Mit diesem Anwendungsfall macht ein Akteur in der Rolle "Org-Admin" Akteure seiner Organisation im
-  TI-Messenger-Dienst für andere Akteure auffindbar und erreichbar. Dafür werden FHIR-Ressourcen mit
-  ihrer jeweiligen MXID im Organisationsverzeichnis (HealthcareService) des VZD-FHIR-Directory
-  hinterlegt. Organisationen KÖNNEN mehrere FHIR-Ressourcen pro Organisation administrieren und somit
-  eingehende Kommunikationsprozesse organisatorisch und thematisch strukturieren.
 
-  ML-123626 - Änderungen nur für eigene Organization-FHIR-Datensätze
-  ML-123627 - Organisationsressourcen im VZD-FHIR-Directory hinzufügen
-  ML-132586 - TI-M Rohdatenerfassung und -lieferung
+  AF_10059 - Organisationsressourcen im Verzeichnisdienst hinzufügen
+    ML-123626 - Änderungen nur für eigene Organization-FHIR-Datensätze
+    ML-123627 - Organisationsressourcen im VZD-FHIR-Directory hinzufügen
+    ML-132586 - TI-M Rohdatenerfassung und -lieferung
 
   Mit diesem Anwendungsfall werden Healthcare-Services anlegen, geändert und gelöscht (löschen wird bei den TFs 1 & 2
   implizit mit getestet).
@@ -99,7 +94,7 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
     Wenn       "A" löscht den Endpoint von "B" für den Healthcare-Service "HealthcareServiceName"
     Dann       existiert kein Endpoint von "B" für den Healthcare-Service "HealthcareServiceName"
     Wenn       "A" löscht den Healthcare-Service "HealthcareServiceName"
-    Dann       existiert kein Healthcare-Service "HealthcareServiceName"
+    Dann       existiert der zuletzt gelöschte Healthcare-Service nicht mehr
 
   @Shuffle(true) #
   @MaxSameColumnProperty(ApiName1B,homeserver,2) #
@@ -128,7 +123,7 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
     Wenn       "A" löscht den Endpoint von "C" für den Healthcare-Service "HealthcareServiceName"
     Dann       existiert kein Endpoint von "C" für den Healthcare-Service "HealthcareServiceName"
     Wenn       "A" löscht den Healthcare-Service "HealthcareServiceName"
-    Dann       existiert kein Healthcare-Service "HealthcareServiceName"
+    Dann       existiert der zuletzt gelöschte Healthcare-Service nicht mehr
 
   @Shuffle(true) #
   @MaxSameColumnProperty(ApiName1C,homeserver,2) #
@@ -153,35 +148,3 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
 
     Beispiele:
     | ApiName1A |
-
-#  @WIP
-#  @Ctl:OrgAdmin
-#  @TCID:TIM_11_AF_306 @PRIO:1 @TESTFALL:Positiv @STATUS:BearbeitungGestoppt
-#  Szenariogrundriss: 03.6 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen/ändern, Location anlegen/ändern, Endpoint anlegen/ändern und löschen
-#    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
-#    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
-#    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName"
-#    Wenn       "A" ändert die Daten des Healthcare-Service "HealthcareServiceName" mit JSON "03_AenderungEinesHealthcareService.json"
-#    Dann       vergleicht "A" den Healthcare-Service "HealthcareServiceName" mit dem JSON "03_AenderungEinesHealthcareService.json"
-#    Wenn       "A" fügt eine Location "Location1" zum Healthcare-Service "HealthcareServiceName" hinzu mit JSON "03_HinzufuegenLocationFuerHealthcareService.json"
-#    Dann       entspricht die Location "Location1" zum Healthcare-Service "HealthcareServiceName" dem JSON "03_HinzufuegenLocationFuerHealthcareService.json"
-#    Wenn       "A" ändert die Location "Location1" für den Healthcare-Service "HealthcareServiceName" mit JSON "03_AenderungLocationFuerHealthcareService.json"
-#    Dann       entspricht die Location "Location1" zum Healthcare-Service "HealthcareServiceName" dem JSON "03_AenderungLocationFuerHealthcareService.json"
-#    Wenn       "A" löscht die Location "Location1" für den Healthcare-Service "HealthcareServiceName"
-#    Dann       existiert keine Location "Location1" für den Healthcare-Service "HealthcareServiceName"
-#    Wenn       "A" erstellt Endpunkt für "B" auf Healthcare-Service "HealthcareServiceName"
-#    Und        "A" ändert den Endpunkt von "B" im Healthcare-Service "HealthcareServiceName" mit dem JSON "03_AenderungEndpointFuerHealthcareService.json"
-#    Und        entspricht der Endpunkt von "B" im Healthcare-Service "HealthcareServiceName" dem JSON "03_AenderungEndpointFuerHealthcareService.json"
-#    Wenn       "A" löscht den Endpoint von "B" für den Healthcare-Service "HealthcareServiceName"
-#    Dann       existiert kein Endpoint von "B" für den Healthcare-Service "HealthcareServiceName"
-#    Wenn       "A" löscht den Healthcare-Service "HealthcareServiceName"
-#    Dann       existiert kein Healthcare-Service "HealthcareServiceName"
-#
-#  @EqualProperty(homeserver)
-#  @AllowSelfCombine(true)
-#  @AllowDoubleLineup(true)
-#  @Filter(ApiName1A.hasTag("orgAdmin"))
-#  @Filter(ApiName1B.hasTag("client"))
-#
-#    Beispiele:
-#    | ApiName1A | ApiName1B |

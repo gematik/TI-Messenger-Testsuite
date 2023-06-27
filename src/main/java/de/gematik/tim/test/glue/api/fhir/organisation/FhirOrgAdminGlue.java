@@ -24,7 +24,7 @@ import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.DeleteEndp
 import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.FhirGetEndpointQuestion.getEndpoint;
 import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UpdateEndpointTask.updateEndpoint;
 import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UpdateEndpointTask.updateEndpointFromFile;
-import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UseEndpointAbility.addEndpointToActor;
+import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UseEndpointAbility.addEndpointToActorForHS;
 import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.CreateHealthcareServiceTask.createHealthcareService;
 import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.DeleteHealthcareServicesTask.deleteHealthcareService;
 import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.FhirGetHealthcareServiceListQuestion.getHealthcareServiceList;
@@ -69,6 +69,22 @@ public class FhirOrgAdminGlue {
 
   public static final String INVALID_HS_NAME = "INVALID";
 
+  //<editor-fold desc="Search">
+  @Given("{string} finds {string} in the healthcare service {string}")
+  @Angenommen("{string} findet {string} im Healthcare-Service {string}")
+  public static void findsAddressInHealthcareService(String actorName, String userName,
+      String hsName) {
+    Actor actor = theActorCalled(actorName);
+    String mxId = theActorCalled(userName).recall(MX_ID);
+    FhirOrganizationSearchResultListDTO resultList = actor.asksFor(
+        organizationEndpoints().withHsName(hsName).havingMxidInEndpoint(mxId));
+    List<String> mxIds = requireNonNull(resultList.getSearchResults()).stream()
+        .map(res -> requireNonNull(res.getEndpoint()).getAddress())
+        .filter(Objects::nonNull)
+        .toList();
+    assertThat(mxIds).contains(mxId);
+  }
+
   //<editor-fold desc="Create & Add">
   @Und("{string} erstellt einen Healthcare-Service {string}")
   public void createHealthcareServiceWithName(String orgAdmin, String hsName) {
@@ -99,6 +115,7 @@ public class FhirOrgAdminGlue {
     Actor admin = theActorCalled(adminName);
     admin.attemptsTo(createHealthcareService(INVALID_HS_NAME).withStringFromFile(file));
   }
+  //</editor-fold>
 
   @Wenn("{string} fügt eine Location {string} zum Healthcare-Service {string} hinzu mit JSON {string}")
   public void addLocationToHealthcareServiceWithJson(String adminName, String locationName,
@@ -106,23 +123,6 @@ public class FhirOrgAdminGlue {
     Actor admin = theActorCalled(adminName);
     admin.attemptsTo(addHealthcareServiceLocation(locationName).fromFile(fileName)
         .forHealthcareService(hsName));
-  }
-  //</editor-fold>
-
-  //<editor-fold desc="Search">
-  @Given("{string} finds {string} in the healthcare service {string}")
-  @Angenommen("{string} findet {string} im Healthcare-Service {string}")
-  public static void findsAddressInHealthcareService(String actorName, String userName,
-      String hsName) {
-    Actor actor = theActorCalled(actorName);
-    String mxId = theActorCalled(userName).recall(MX_ID);
-    FhirOrganizationSearchResultListDTO resultList = actor.asksFor(
-        organizationEndpoints().withHsName(hsName).havingMxidInEndpoint(mxId));
-    List<String> mxIds = requireNonNull(resultList.getSearchResults()).stream()
-        .map(res -> requireNonNull(res.getEndpoint()).getAddress())
-        .filter(Objects::nonNull)
-        .toList();
-    assertThat(mxIds).contains(mxId);
   }
 
   @Wenn("{listOfStrings} hat genau einen Endpunkt im Healthcare-Service {string}")
@@ -155,7 +155,7 @@ public class FhirOrgAdminGlue {
         organizationEndpoints().withHsName(hsName)).getSearchResults()).get(0).getEndpoint();
     Actor endpointActor = theActorCalled(userName);
     requireNonNull(endpoint).setAddress(endpointActor.recall(MX_ID));
-    addEndpointToActor(userName, endpoint.getEndpointId(), admin);
+    addEndpointToActorForHS(admin, userName, endpoint.getEndpointId(), hsName);
     admin.attemptsTo(updateEndpoint(endpoint).withAddress(endpointActor.recall(MX_ID)));
   }
 
@@ -261,11 +261,10 @@ public class FhirOrgAdminGlue {
     assertThat(filtered).isEmpty();
   }
 
-  @Dann("existiert kein Healthcare-Service {string}")
-  public void noHealthcareServiceWithName(String hsName) {
+  @Dann("existiert der zuletzt gelöschte Healthcare-Service nicht mehr")
+  public void lastDeletedHsDoesNotExistAnymore() {
     FhirGetHealthcareServiceListQuestion hsList = getHealthcareServiceList()
-        .filterForHealthcareService(
-            hsName);
+        .filterForLastDeleted();
     theActorInTheSpotlight().should(seeThat(hsList, is(empty())));
   }
 
