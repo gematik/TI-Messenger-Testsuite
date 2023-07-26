@@ -18,16 +18,18 @@ package de.gematik.tim.test.glue.api.fhir.practitioner;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
+import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
 import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirAuthenticateTask.authenticateOnFhirVzd;
 import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirDeleteOwnMxidTask.deleteMxidFromFhir;
 import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirSearchQuestion.practitionerInFhirDirectory;
 import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirSetMxidTask.setMxid;
 import static de.gematik.tim.test.glue.api.fhir.practitioner.OwnFhirResourceQuestion.ownFhirResource;
-import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import de.gematik.tim.test.models.FhirPractitionerDTO;
@@ -38,9 +40,10 @@ import io.cucumber.java.de.Wenn;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.response.Response;
+import net.serenitybdd.screenplay.Actor;
+
 import java.util.List;
 import java.util.Optional;
-import net.serenitybdd.screenplay.Actor;
 
 
 public class FhirAdministrationGlue {
@@ -53,17 +56,15 @@ public class FhirAdministrationGlue {
     actorNames.forEach(a -> {
       Actor actor = theActorCalled(a);
       actor.attemptsTo(authenticateOnFhirVzd());
+      actor.should(seeThatResponse(
+          "check status code",
+          res -> res.statusCode(OK.value())));
       actor.attemptsTo(setMxid());
+      actor.should(seeThatResponse(
+          "check status code",
+          res -> res.statusCode(CREATED.value())));
     });
   }
-
-  @Und("{string} versucht seine MXID im Verzeichnis Dienst ohne Authencitation zu hinterlegen")
-  public void tryAddToFhir(String actorName) {
-    theActorCalled(actorName).attemptsTo(setMxid());
-    theActorCalled(actorName).should(seeThatResponse(res ->
-        res.statusCode(401)));
-  }
-
 
   // Delete own MXID
   @Then("{listOfStrings} removes the MXID in the own TIPractitioner FHIR resource")
@@ -74,6 +75,7 @@ public class FhirAdministrationGlue {
     actorNames.forEach(a -> {
       Actor actor = theActorCalled(a);
       actor.attemptsTo(deleteMxidFromFhir());
+      checkResponseCode(a, NO_CONTENT.value());
       assertThat(((Response) actor.recall(LAST_RESPONSE)).getStatusCode()).isEqualTo(
           NO_CONTENT.value());
     });
@@ -82,11 +84,12 @@ public class FhirAdministrationGlue {
   // Search and find MXID
   @Wenn("{string} search MXID of user {string} in vzd")
   @Und("{string} sucht die MXID des Benutzers {string} im Verzeichnis Dienst")
-  public void searchUserInFhir(String clientName, String userName) {
-    Actor actor1 = theActorCalled(clientName);
+  public void searchUserInFhir(String actorName, String userName) {
+    Actor actor1 = theActorCalled(actorName);
     Actor actor2 = theActorCalled(userName);
     FhirPractitionerSearchResultDTO searchResult = actor1.asksFor(
         practitionerInFhirDirectory().withMxid(actor2.recall(MX_ID)));
+    checkResponseCode(actorName, OK.value());
     assertThat(searchResult).isNotNull();
     assertThat(searchResult.getTotalSearchResults()).isEqualTo(1);
   }
@@ -96,6 +99,7 @@ public class FhirAdministrationGlue {
   public void findUserInFhir(String actorName) {
     Actor actor = theActorCalled(actorName);
     FhirPractitionerDTO practitioner = actor.asksFor(ownFhirResource()).orElseThrow();
+    checkResponseCode(actorName, OK.value());
     assertThat(practitioner.getMxid()).isEqualTo(actor.recall(MX_ID));
   }
 
@@ -105,16 +109,16 @@ public class FhirAdministrationGlue {
   public void getsOwnNullMXID(String actorName) {
     Optional<FhirPractitionerDTO> practitioner = theActorCalled(actorName).asksFor(
         ownFhirResource());
+    checkResponseCode(actorName, OK.value());
     assertThat(practitioner).isEmpty();
   }
 
   @Then("{string} is not authorized on Vzd")
   @Dann("{string} ist nicht berechtigt im Verzeichnis Dienst")
-  public void noAccessToFhir(String clientName) {
-    Actor actor = theActorCalled(clientName);
-    actor.attemptsTo(setMxid());
-    Response resp = lastResponse();
-    assertThat(resp.statusCode()).isEqualTo(UNAUTHORIZED.value());
+  @Und("{string} versucht seine MXID im Verzeichnis Dienst ohne Authentication zu hinterlegen")
+  public void tryAddToFhir(String actorName) {
+    theActorCalled(actorName).attemptsTo(setMxid());
+    checkResponseCode(actorName, UNAUTHORIZED.value());
   }
 
 }

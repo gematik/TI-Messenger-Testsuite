@@ -32,8 +32,13 @@ import static de.gematik.tim.test.glue.api.utils.GlueUtils.getRoomBetweenTwoActo
 import static net.serenitybdd.screenplay.actors.OnStage.setTheStage;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.OK;
 
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
+import de.gematik.tim.test.glue.api.utils.GlueUtils;
 import de.gematik.tim.test.models.MessageDTO;
 import de.gematik.tim.test.models.RoomDTO;
 import io.cucumber.java.Before;
@@ -41,10 +46,11 @@ import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Wenn;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import java.util.List;
-import java.util.Optional;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.actors.Cast;
+
+import java.util.List;
+import java.util.Optional;
 
 public class MessageControllerGlue {
 
@@ -61,6 +67,7 @@ public class MessageControllerGlue {
     Actor actor = theActorCalled(actorName);
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
     actor.attemptsTo(sendMessage(messageText));
+    checkResponseCode(actorName, OK.value());
   }
 
   @When("{string} writes {string} directly {string}")
@@ -69,12 +76,13 @@ public class MessageControllerGlue {
     Actor actor1 = theActorCalled(actorName);
     Actor actor2 = theActorCalled(userName);
     actor1.attemptsTo(sendDirectMessageTo(actor2, message));
+    checkResponseCode(actorName, OK.value());
   }
 
   @When("{string} writes {string} via healthcare service {string} directly {string}")
   @Wenn("{string} schreibt {string} über den Healthcare-Service {string} direkt {string}")
   public void writsDirectlyToHealthcareService(String actorName, String userName, String hsName,
-      String message) {
+                                               String message) {
     findsAddressInHealthcareService(actorName, userName, hsName);
     sendDirectMessage(actorName, userName, message);
   }
@@ -84,12 +92,12 @@ public class MessageControllerGlue {
     Actor actor1 = theActorCalled(actorName);
     Actor actor2 = theActorCalled(userName);
     actor1.attemptsTo(sendDirectMessageTo(actor2, message));
-    checkResponseCode(actorName, 403);
+    checkResponseCode(actorName, FORBIDDEN.value());
   }
 
   @Wenn("{string} ist nicht berechtigt {string} zu kontaktieren")
   public void notAuthorizedForCommunication(String actorName, String userName) {
-    checkResponseCode(actorName, 403);
+    checkResponseCode(actorName, FORBIDDEN.value());
   }
   //</editor-fold>
 
@@ -101,7 +109,7 @@ public class MessageControllerGlue {
   @Dann("{listOfStrings} empfangen eine Nachricht {listOfStrings} von {string} im Raum {string}")
   @Dann("{listOfStrings} empfangen die Nachrichten {listOfStrings} von {string} im Raum {string}")
   public void canSeeMessagesInRoom(List<String> actorNames, List<String> messageTexts,
-      String authorName, String roomName) {
+                                   String authorName, String roomName) {
 
     String authorId = theActorCalled(authorName).recall(MX_ID);
 
@@ -146,14 +154,14 @@ public class MessageControllerGlue {
   @Then("{string} could not see message {string} from {string} in chat with {string}")
   @Dann("{string} kann die Nachricht {string} von {string} im Chat mit {string} nicht sehen")
   public void canNotSeeChatMessage(String actorName, String message, String messageAuthor,
-      String chatPartner) {
+                                   String chatPartner) {
     canNotSeeChatMessage(actorName, message, messageAuthor, chatPartner, null, null);
   }
 
   @Wenn("{string} could not see message {string} from {string} in chat with {string} [Retry {long} - {long}]")
   @Dann("{string} kann die Nachricht {string} von {string} im Chat mit {string} nicht sehen [Retry {long} - {long}]")
   public void canNotSeeChatMessage(String actorName, String messageText, String messageAuthor,
-      String chatPartner, Long timeout, Long pollInterval) {
+                                   String chatPartner, Long timeout, Long pollInterval) {
     Actor actor = theActorCalled(actorName);
     String roomName = actor.recall(
         DIRECT_CHAT_NAME + theActorCalled(chatPartner).recall(MX_ID));
@@ -163,14 +171,14 @@ public class MessageControllerGlue {
   @Then("{string} could not find message {string} from {string} in room {string}")
   @Dann("{string} kann die Nachricht {string} von {string} im Raum {string} nicht sehen")
   public void cantFindMessageInRoom(String actorName, String messageText, String messageAuthor,
-      String roomName) {
+                                    String roomName) {
     cantFindMessageInRoom(actorName, messageText, messageAuthor, roomName, null, null);
   }
 
   @Then("{string} could not find message {string} from {string} in room {string} [Retry {long} - {long}]")
   @Dann("{string} kann die Nachricht {string} von {string} im Raum {string} nicht sehen [Retry {long} - {long}]")
   public void cantFindMessageInRoom(String actorName, String messageText, String userName,
-      String roomName, Long timeout, Long pollInterval) {
+                                    String roomName, Long timeout, Long pollInterval) {
     Actor actor = theActorCalled(actorName);
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
     Optional<MessageDTO> message = actor.asksFor(
@@ -182,16 +190,16 @@ public class MessageControllerGlue {
   @Then("{string} could not see more message {string} from {string} in chat with {string}")
   @Dann("{string} kann die Nachricht {string} von {string} im Chat mit {string} nicht mehr sehen")
   public void canNotSeeChatMessageAnymore(String actorName, String messageText,
-      String messageAuthor,
-      String chatPartner) {
+                                          String messageAuthor,
+                                          String chatPartner) {
     canNotSeeChatMessageAnymore(actorName, messageText, messageAuthor, chatPartner, null, null);
   }
 
   @Then("{string} could not see more message {string} from {string} in chat with {string} [Retry {long} - {long}]")
   @Dann("{string} kann die Nachricht {string} von {string} im Chat mit {string} nicht mehr sehen [Retry {long} - {long}]")
   public void canNotSeeChatMessageAnymore(String actorName, String messageText,
-      String messageAuthor,
-      String chatPartner, Long timeout, Long pollInterval) {
+                                          String messageAuthor,
+                                          String chatPartner, Long timeout, Long pollInterval) {
     Actor actor = theActorCalled(actorName);
     String roomName = actor.recall(
         DIRECT_CHAT_NAME + theActorCalled(chatPartner).recall(MX_ID));
@@ -202,22 +210,22 @@ public class MessageControllerGlue {
   @Then("{string} could not find message {string} from {string} in room {string} anymore")
   @Dann("{string} kann die Nachricht {string} von {string} im Raum {string} nicht mehr sehen")
   public void cantFindMessageInRoomAnymore(String actorName, String messageText,
-      String messageAuthor, String roomName) {
+                                           String messageAuthor, String roomName) {
     cantFindMessageInRoomAnymore(actorName, messageText, messageAuthor, roomName, null, null);
   }
 
   @Then("{string} could not find message {string} from {string} in room {string} anymore [Retry {long} - {long}]")
   @Dann("{string} kann die Nachricht {string} von {string} im Raum {string} nicht mehr sehen [Retry {long} - {long}]")
   public void cantFindMessageInRoomAnymore(String actorName, String messageText,
-      String messageAuthor,
-      String roomName, Long timeout, Long pollInterval) {
+                                           String messageAuthor,
+                                           String roomName, Long timeout, Long pollInterval) {
     Actor actor = theActorCalled(actorName);
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
     canNotFindMessageAnymore(actorName, messageText, timeout, pollInterval, actor);
   }
 
   private void canNotFindMessageAnymore(String messageText, String messageAuthor, Long timeout,
-      Long pollInterval, Actor actor) {
+                                        Long pollInterval, Actor actor) {
     Optional<MessageDTO> message = actor.asksFor(
         messageFromSenderWithTextInActiveRoom(messageText,
             theActorCalled(messageAuthor).recall(MX_ID))
@@ -236,6 +244,7 @@ public class MessageControllerGlue {
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
     MessageDTO message = actor.asksFor(lastOwnMessage());
     actor.attemptsTo(editMessage().withMessage(messageText).withMessageId(message.getMessageId()));
+    checkResponseCode(actorName, OK.value());
   }
   //</editor-fold>
 
@@ -247,6 +256,7 @@ public class MessageControllerGlue {
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
     MessageDTO message = actor.asksFor(lastOwnMessage());
     actor.attemptsTo(deleteMessageWithId(message.getMessageId()));
+    checkResponseCode(actorName, NO_CONTENT.value());
   }
 
   @When("{string} deletes his message {string} in chat with {string}")
@@ -264,6 +274,7 @@ public class MessageControllerGlue {
     List<MessageDTO> messages = actor.asksFor(messagesInActiveRoom());
     MessageDTO message = filterMessageForSenderAndText(messageText, actorName, messages);
     actor.attemptsTo(deleteMessageWithId(message.getMessageId()));
+    checkResponseCode(actorName, NO_CONTENT.value());
   }
 
   //</editor-fold>

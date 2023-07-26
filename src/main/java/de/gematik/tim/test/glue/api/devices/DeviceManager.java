@@ -88,7 +88,7 @@ public class DeviceManager {
           .filter(not(e -> devicesInUse.get(api).contains(e.getDeviceId()))).findAny();
       if (device.isPresent()) {
         actor.can(useDevice(device.get().getDeviceId()));
-        actor.remember(CLAIMER_NAME, device.get().getClaimer());
+        actor.remember(CLAIMER_NAME, device.get().getClaimerName());
       } else if (!orderedIds.get(UNCLAIMED).isEmpty()) {
         actor.attemptsTo(claimDevice().withId(orderedIds.get(UNCLAIMED).get(0).getDeviceId()));
       } else {

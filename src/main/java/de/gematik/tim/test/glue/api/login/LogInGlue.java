@@ -16,6 +16,8 @@
 
 package de.gematik.tim.test.glue.api.login;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_ORG_ADMIN;
+import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.MESSENGER_CLIENT;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.PRACTITIONER;
@@ -23,15 +25,16 @@ import static de.gematik.tim.test.glue.api.devices.DevicesControllerGlue.checkIs
 import static de.gematik.tim.test.glue.api.login.LoginTask.login;
 import static de.gematik.tim.test.glue.api.login.LogoutTask.logout;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
-import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.OK;
 
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Wenn;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import java.util.List;
 import net.serenitybdd.screenplay.Actor;
+
+import java.util.List;
 
 public class LogInGlue {
 
@@ -39,12 +42,14 @@ public class LogInGlue {
   @Wenn("{string} loggt sich im TI-Messenger aus")
   public void logsOut(String actorName) {
     theActorCalled(actorName).attemptsTo(logout());
+    checkResponseCode(actorName, OK.value());
   }
 
   @When("{string} logs in")
   @Wenn("{string} loggt sich im TI-Messenger ein")
   public static void logsIn(String actorName) {
     theActorCalled(actorName).attemptsTo(login());
+    checkResponseCode(actorName, OK.value());
   }
 
   @Wenn("{string} sich als HBA-User einloggt")
@@ -64,6 +69,7 @@ public class LogInGlue {
   @Wenn("{string} sich als OrgAdmin einloggt")
   public void sichAlsOrgAdminRegistriert(String actorName) {
     Actor actor = theActorCalled(actorName);
+    actor.remember(IS_ORG_ADMIN, true);
     logsIn(actorName);
     checkIs(actor, List.of(ORG_ADMIN));
   }
@@ -71,13 +77,12 @@ public class LogInGlue {
   @Then("registration successful for {string}")
   @Dann("ist das Login für {string} erfolgreich")
   public static void loginSuccess(String actorName) {
-    theActorCalled(actorName).should(seeThatResponse(res -> res.statusCode(200)));
+    checkResponseCode(actorName, OK.value());
   }
 
   @Then("registration failed for {string}")
   @Dann("schlägt das Login für {string} fehl")
   public static void loginFailure(String actorName) {
-    theActorCalled(actorName).should(
-        seeThatResponse(res -> res.statusCode(greaterThanOrEqualTo(400))));
+    checkResponseCode(actorName, BAD_REQUEST.value());
   }
 }

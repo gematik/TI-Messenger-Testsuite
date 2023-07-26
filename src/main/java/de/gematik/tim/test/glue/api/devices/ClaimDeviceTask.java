@@ -102,7 +102,7 @@ public class ClaimDeviceTask implements Task {
     actor.should(
         seeThatResponse("device is successfully claimed",
             res -> res.statusCode(200)
-                .body("claimer", equalTo(name))));
+                .body("claimerName", equalTo(name))));
 
     actor.remember(CLAIMER_NAME, name);
   }

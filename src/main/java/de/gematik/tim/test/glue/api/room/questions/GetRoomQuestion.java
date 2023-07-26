@@ -16,11 +16,11 @@
 
 package de.gematik.tim.test.glue.api.room.questions;
 
-import static de.gematik.tim.test.glue.api.room.UseRoomAbility.updateAvailableRooms;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.repeatedRequest;
 import static java.util.Objects.requireNonNull;
 
+import de.gematik.tim.test.glue.api.room.UseRoomAbility;
 import de.gematik.tim.test.models.RoomDTO;
 import de.gematik.tim.test.models.RoomMemberDTO;
 import de.gematik.tim.test.models.RoomMembershipStateDTO;
@@ -78,7 +78,7 @@ public class GetRoomQuestion implements Question<RoomDTO> {
     try {
       RoomDTO room = repeatedRequest(() -> filterForResults(actor), "room", customTimeout,
           customPollInterval);
-      updateAvailableRooms(List.of(room), actor);
+      actor.abilityTo(UseRoomAbility.class).addAndSetActive(room);
       return room;
     } catch (ConditionTimeoutException ex) {
       log.error("Room could not bee found with requested parameters");

@@ -17,43 +17,30 @@
 package de.gematik.tim.test.glue.api.contact;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
+import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
 import static de.gematik.tim.test.glue.api.contact.AddContactTask.addContact;
 import static de.gematik.tim.test.glue.api.contact.ContactListQuestion.ownContactList;
 import static de.gematik.tim.test.glue.api.contact.DeleteContactTask.deleteContact;
 import static de.gematik.tim.test.glue.api.message.SendDirectMessageTask.sendDirectMessageTo;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
-import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.OK;
 
 import de.gematik.tim.test.models.ContactDTO;
 import de.gematik.tim.test.models.ContactsDTO;
 import io.cucumber.java.de.Dann;
-import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import net.serenitybdd.screenplay.Actor;
 
 public class ContactManagementControllerGlue {
-
-  @Then("{string} is notable to contact {string}")
-  @Dann("{string} darf {string} nicht kontaktieren")
-  public void isNotableToContact(String actorName, String userName) {
-    Actor actor = theActorCalled(actorName);
-    actor.should(
-        seeThatResponse("check status code", res -> res.statusCode(403)));
-  }
 
   @Dann("{string} hinterlegt {string} in seiner Freigabeliste")
   @When("{string} put {string} into his contact management")
   public void putIntoHisContactManagement(String actorName, String userName) {
     Actor actor = theActorCalled(actorName);
     actor.attemptsTo(addContact(theActorCalled(userName).recall(MX_ID)));
-  }
-
-  @Then("{string} is able to contact {string}")
-  public void isAbleToContact(String actorName, String userName) {
-    Actor actor = theActorCalled(actorName);
-    actor.should(
-        seeThatResponse("check status code", res -> res.statusCode(200)));
+    checkResponseCode(actorName, OK.value());
   }
 
   @When("{string} tries to contact {string} directly {string}")
@@ -61,6 +48,7 @@ public class ContactManagementControllerGlue {
     Actor actor = theActorCalled(actorName);
     Actor user = theActorCalled(userName);
     actor.attemptsTo(sendDirectMessageTo(user, message));
+    checkResponseCode(actorName, FORBIDDEN.value());
   }
 
   @Dann("{string} löscht {string} in seiner Freigabeliste")

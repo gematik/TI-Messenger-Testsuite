@@ -6,7 +6,7 @@
 
   <groupId>de.gematik.tim.test</groupId>
   <artifactId>TI-Messenger-Testsuite</artifactId>
-  <version>0.6.1</version>
+  <version>0.7.0</version>
   <packaging>jar</packaging>
   <name>TI-Messenger-Testsuite</name>
   <description>Testsuite to check functionality of TI-Messenger-Clients</description>
@@ -160,8 +160,9 @@
             </goals>
             <configuration>
               <url>
-                https://raw.githubusercontent.com/gematik/api-ti-messenger/130e62f79e995860c982b9e439e542212009166a/src/openapi/TiMessengerTestTreiber.yaml
+                https://raw.githubusercontent.com/gematik/api-ti-messenger/41450bedbcc1cb926e6cceeb099b27d6a21b2528/src/openapi/TiMessengerTestTreiber.yaml
               </url>
+              <md5>354768f720c04b229d6fb84cd4c3b534</md5>
               <outputFileName>TiMessengerTestTreiber.yaml</outputFileName>
               <outputDirectory>${project.build.directory}</outputDirectory>
               <overwrite>true</overwrite>
@@ -605,7 +606,7 @@
                 <artifactItem>
                   <groupId>de.gematik.tim.test</groupId>
                   <artifactId>TI-Messenger-TestdriverSim</artifactId>
-                  <version>3.2.2</version>
+                  <version>3.3.0</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}</outputDirectory>
@@ -758,6 +759,7 @@
       <id>polarion-upload</id>
       <properties>
         <testRun>testruns</testRun>
+        <polarion.project>releaseTIMessenger1101</polarion.project>
       </properties>
       <build>
         <plugins>
@@ -770,9 +772,9 @@
                 <configuration>
                   <username>${env.POLARION_CREDENTIALS_USR}</username>
                   <password>${env.POLARION_CREDENTIALS_PSW}</password>
-                  <project>releaseTIMessenger1101</project>
+                  <project>${polarion.project}</project>
                   <testRun>${testRun}</testRun>
-                  <serenityReportsFolderPath>target/site/serenity</serenityReportsFolderPath>
+                  <serenityReportsFolderPath>${basedir}/reports/${build.time}/report</serenityReportsFolderPath>
                 </configuration>
                 <phase>post-integration-test</phase>
                 <goals>

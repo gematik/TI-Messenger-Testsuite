@@ -50,10 +50,9 @@ import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_ID_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_INVITE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_JOIN_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_LEAVE_PATH;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_STATE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.UNCLAIM_DEVICE_PATH;
 
-import de.gematik.test.tiger.common.data.config.tigerProxy.TigerRoute;
-import de.gematik.test.tiger.lib.TigerDirector;
 import de.gematik.tim.test.glue.api.devices.UseDeviceAbility;
 import de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UseEndpointAbility;
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility;
@@ -61,8 +60,6 @@ import de.gematik.tim.test.glue.api.fhir.organisation.location.UseLocationAbilit
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
 import net.serenitybdd.screenplay.rest.interactions.Delete;
 import net.serenitybdd.screenplay.rest.interactions.Get;
 import net.serenitybdd.screenplay.rest.interactions.Post;
@@ -71,7 +68,6 @@ import net.serenitybdd.screenplay.rest.interactions.RestInteraction;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 
 @Getter
@@ -103,6 +99,7 @@ public enum TestdriverApiEndpoint {
   JOIN_ROOM(POST, ROOM_JOIN_PATH, UseDeviceAbility.class),
   LEAVE_ROOM(POST, ROOM_LEAVE_PATH, UseDeviceAbility.class, UseRoomAbility.class),
   DENY_ROOM(POST, ROOM_LEAVE_PATH, UseDeviceAbility.class),
+  GET_ROOM_STATES(GET, ROOM_STATE_PATH, UseDeviceAbility.class, UseRoomAbility.class),
 
   // MESSAGE
   SEND_MESSAGE(POST, MESSAGE_PATH, UseDeviceAbility.class, UseRoomAbility.class),

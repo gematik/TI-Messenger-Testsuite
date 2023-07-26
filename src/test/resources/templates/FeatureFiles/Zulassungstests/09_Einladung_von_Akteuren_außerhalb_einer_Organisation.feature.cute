@@ -4,7 +4,7 @@
 @AF-ID:AF_10061
 @AK-ID:ML-123654 @AK-ID:ML-123663 @AK-ID:ML-132864 @AK-ID:ML-132592
 @AF-ID:AF_10064
-@AK-ID:ML-123672 @AK-ID:ML-123893 @AK-ID:ML-123891 @AK-ID:ML-132589
+@AK-ID:ML-123672 @AK-ID:ML-123891 @AK-ID:ML-132589 @AK-ID:ML-137902
 @AF-ID:AF_10058
 @AK-ID:ML-123612 @AK-ID:ML-132588
 @AF-ID:AF_10059
@@ -19,9 +19,9 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
 
   AF_10064 - Föderationszugehörigkeit eines Messenger-Service prüfen
     ML-123672 - Föderationsliste vom VZD-FHIR-Directory abrufen
-    ML-123893 - Aktualität - Föderationsliste Messenger-Proxy
     ML-123891 - Matrix-Domain Teil der Föderationsliste & Aktualitätscheck
     ML-132589 - TI-M Rohdatenerfassung und -lieferung
+    ML-137902 - Aktualität - Föderationsliste Messenger-Proxy
 
   AF_10058 Akteur (User-HBA) im Verzeichnisdienst hinzufügen
     ML-123612 - Akteur als Practitioner hinzufügen
@@ -260,7 +260,7 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Und        "B" erhält eine Einladung von "A"
     Und        "B" bestätigt eine Einladung von "A"
     Und        "B" empfängt eine Nachricht "Hello from the other site" von "A"
-    Wenn       "A" lädt "C" in Chat mit "B" ein
+    Wenn       "A" versucht "C" in Chat mit "B" einzuladen
     Dann       erhält "A" einen Responsecode 401
 
   #@Shuffle(true)
@@ -297,7 +297,7 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Und        "D" erhält eine Einladung von "C"
     Und        "D" bestätigt eine Einladung von "C"
     Und        "D" empfängt eine Nachricht "Hello from the other site" von "C"
-    Wenn       "C" lädt "E" in Chat mit "D" ein
+    Wenn       "C" versucht "E" in Chat mit "D" einzuladen
     Dann       erhält "C" einen Responsecode 401
 
   @Shuffle(true)
@@ -377,7 +377,7 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "A" hinterlegt seine MXID im Verzeichnis Dienst
-    Wenn       "A" schreibt "B" direkt "Hello from the other site"
+    Wenn       "A" versucht "B" direkt "Hello from the other site" zu schreiben
     Dann       erhält "A" einen Responsecode 403
     Und        "B" erhält KEINE Einladung von "A" [Retry 10 - 3]
 
@@ -403,7 +403,7 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
     Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName2>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
-    Wenn       "B" schreibt "C" direkt "Hello from the other site"
+    Wenn       "B" versucht "C" direkt "Hello from the other site" zu schreiben
     Dann       erhält "B" einen Responsecode 403
     Und        "C" erhält KEINE Einladung von "B" [Retry 10 - 3]
 
@@ -429,7 +429,7 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "A" hinterlegt seine MXID im Verzeichnis Dienst
-    Wenn       "B" schreibt "A" direkt "Hello from the other site"
+    Wenn       "B" versucht "A" direkt "Hello from the other site" zu schreiben
     Dann       erhält "B" einen Responsecode 403
 
   #@Shuffle(true)
@@ -482,16 +482,43 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
   @BP:N2P_extern @Ctl:OrgAdmin @Ctl:Chat
   @TCID:TIM_11_AF_916 @PRIO:2 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 09.16 Einladung außerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
-    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
-    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
-    Und        "B" hinterlegt seine MXID im Verzeichnis Dienst
-    Wenn       "C" schreibt "B" direkt "Hello from the other site"
-    Dann       erhält "C" einen Responsecode 403
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1>
+    Und        "A" hinterlegt seine MXID im Verzeichnis Dienst
+    Wenn       "B" versucht "A" direkt "Hello from the other site" zu schreiben
+    Dann       erhält "B" einen Responsecode 403
 
   #@Shuffle(true)
-  #@MaxSameColumnProperty(ApiName1B,homeserver,2)
-  #@DistinctColumn(ApiName1B)
+  #@MaxSameColumnProperty(ApiName1,homeserver,2)
+  #@DistinctColumn(ApiName1)
+  @DistinctProperty(homeserver)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @Filter(ApiName1.hasTag("prefIOP"))
+  @Filter(ApiName2.hasTag("prefIOP"))
+
+    Beispiele:
+    | ApiName1 | ApiName2 |
+
+  @BP:N2O @Ctl:OrgAdmin @Ctl:Raum
+  @TCID:TIM_11_AF_917 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 09.17 Einladung außerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName2>
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
+    Und        "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Wenn       "C" lädt "B" über den HealthcareService "HealthcareServiceName" in den Chat-Raum "TIM Testraum 1" ein
+    Dann       "B" erhält eine Einladung von "C"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
+
+  #@Shuffle(true)
+  #@MaxSameColumnProperty(ApiName2B,homeserver,2)
+  #@DistinctColumn(ApiName2B)
   @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
   @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
   @AllowSelfCombine(false)
@@ -499,45 +526,11 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName2.hasTag("client"))
-  @Filter(ApiName2.hasTag("practitioner"))
   @Filter(ApiName1B.hasTag("prefIOP"))
   @Filter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1A | ApiName1B | ApiName2 |
-
-  @BP:N2O @Ctl:OrgAdmin @Ctl:Raum
-  @TCID:TIM_11_AF_917 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
-  Szenariogrundriss: 09.17 Einladung außerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
-    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName2A>
-    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
-    Und        "D" reserviert sich einen Messenger-Client an Schnittstelle <ApiName2B>
-    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "C"
-    Und        "B" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "D"
-    Und        "D" erstellt einen Chat-Raum "TIM Testraum 1"
-    Wenn       "D" lädt "C" über den HealthcareService "HealthcareServiceName" in den Chat-Raum "TIM Testraum 1" ein
-    Dann       "C" erhält eine Einladung von "D"
-    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1"
-    Und        "C" ist dem Raum "TIM Testraum 1" beigetreten
-
-  #@Shuffle(true)
-  #@MaxSameColumnProperty(ApiName2B,homeserver,2)
-  #@DistinctColumn(ApiName2B)
-  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
-  @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
-  @AllowSelfCombine(false)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName2A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName2B.hasTag("client"))
-  @Filter(ApiName1B.hasTag("prefIOP"))
-  @Filter(ApiName2B.hasTag("prefIOP"))
-
-    Beispiele:
-    | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
 
   @BP:N2N_intern @@Ctl:NOVZD
   @TCID:TIM_11_AF_918 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert

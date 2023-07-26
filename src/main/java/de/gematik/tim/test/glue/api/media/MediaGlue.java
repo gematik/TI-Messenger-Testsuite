@@ -18,41 +18,33 @@ package de.gematik.tim.test.glue.api.media;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MEDIA_ID;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
+import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
 import static de.gematik.tim.test.glue.api.media.DownloadMediaQuestion.downloadMedia;
 import static de.gematik.tim.test.glue.api.media.UploadMediaTask.uploadMedia;
 import static de.gematik.tim.test.glue.api.message.GetRoomMessageQuestion.messageFromSenderWithTextInActiveRoom;
 import static de.gematik.tim.test.glue.api.message.SendMessageTask.sendMessage;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
 import de.gematik.tim.test.models.MessageDTO;
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Wenn;
-import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import lombok.SneakyThrows;
+import net.serenitybdd.screenplay.Actor;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
-import lombok.SneakyThrows;
-import net.serenitybdd.screenplay.Actor;
 
 public class MediaGlue {
 
   public static final String RESOURCES_PATH = "src/test/resources/media/";
-
-  @When("{string} uploads a media file with content {string}")
-  public void uploadsAMedia(String actorName, String media) {
-    theActorCalled(actorName).attemptsTo(uploadMedia().withMedia(media.getBytes()));
-  }
-
-  @Then("{string} can download media file with content {string}")
-  public void canDownloadMedia(String actorName, String media) {
-    byte[] receivedMedia = theActorCalled(actorName).asksFor(downloadMedia());
-    assertThat(receivedMedia).isEqualTo(media.getBytes());
-  }
 
   @SneakyThrows
   @When("{string} uploads a media file {string}")
@@ -62,19 +54,8 @@ public class MediaGlue {
       theActorCalled(actorName).attemptsTo(
           uploadMedia().withMedia(fis.readAllBytes()));
     }
+    checkResponseCode(actorName, CREATED.value());
   }
-
-  @SneakyThrows
-  @Then("{string} can download media file {string}")
-  public void canDownloadMediaFile(String actorName, String media) {
-    byte[] receivedMedia = theActorCalled(actorName).asksFor(downloadMedia());
-
-    Path path = Path.of(RESOURCES_PATH + media);
-    try (FileInputStream fis = new FileInputStream(path.toFile())) {
-      assertThat(receivedMedia).isEqualTo(fis.readAllBytes());
-    }
-  }
-
 
   @SneakyThrows
   @Wenn("{string} sendet ein Attachment {string} an den Raum {string}")
@@ -88,13 +69,16 @@ public class MediaGlue {
         .withMimetype(Files.probeContentType(path))
         .withSize((int) Files.size(path))
         .withMsgType("m.file"));
+
+    checkResponseCode(actorName, OK.value());
   }
 
   @SneakyThrows
-  @SuppressWarnings("java:S3655") // It get checked by asserThat(message).isPresent()
+  @SuppressWarnings("java:S3655")
+  // It get checked by asserThat(message).isPresent()
   @Dann("{string} empfängt das Attachment {string} von {string} im Raum {string}")
   public void receiveAttachmentInRoom(String actorName, String fileName, String userName,
-      String roomName) {
+                                      String roomName) {
     Actor actor = theActorCalled(actorName);
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
     String senderMxId = theActorCalled(userName).recall(MX_ID);

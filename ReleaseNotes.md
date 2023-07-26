@@ -6,6 +6,26 @@
 
 - - -
 
+## Release 0.7.0
+
+### Feature
+
+- improvements for login-counter and RegServiceToken-counter
+- Deleting Test Case 3.05 incl adjusting Testsuite.adoc
+- Adjusting json "03_AenderungEinesHealthcareService.json" for Test Case 3.03
+- Corrected Test Cases 9.16, 9.17 & 11.3
+- unWIP Test Cases 10.10 & 10.11
+- Correction for Raw Data counting - OrgAdmin
+- implements testdriver api 0.4.11
+- improved checks for response codes for early fail
+- New Feature File 6 (two testcases still in Work) incl adjustments in Testsuite.adoc
+- Change of ML-123893 into ML-137902 in all Feature Files
+- New Feature File 14 (RoomStateTests) incl adjustments in Testsuite.adoc
+- Renamed Feature file 14 in 15 & 15 in 16
+
+### Bugfix
+
+
 ## Release 0.6.1
 
 ### Feature
