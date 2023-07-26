@@ -16,8 +16,10 @@
 
 package de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HAS_REG_SERVICE_TOKEN;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import lombok.Getter;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
@@ -41,6 +43,10 @@ public abstract class HealthcareSpecificTask implements Task {
       useHealthcareServiceAbility.setActive(getHsName());
     } else {
       hsName = useHealthcareServiceAbility.getActiveKey();
+    }
+    if(actor.recall(HAS_REG_SERVICE_TOKEN) == null) {
+      RawDataStatistics.getRegTokenForVZDEvent();
+      actor.remember(HAS_REG_SERVICE_TOKEN, true);
     }
   }
 

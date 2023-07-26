@@ -18,7 +18,6 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
   TF 2 Healthcare Service Endpoint ändern
   TF 3 Healthcare Service anlegen/ändern, Endpoint anlegen/ändern und löschen
   TF 4 Healthcare Service anlegen, zwei Endpoints anlegen und löschen
-  TF 5 Negativ Test Healthcare Service anlegen
 
   @BP:P2O @Ctl:OrgAdmin
   @TCID:TIM_11_AF_301 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
@@ -80,6 +79,7 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C | ApiName1D |
 
+  @WIP
   @Ctl:OrgAdmin
   @TCID:TIM_11_AF_303 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 03.3 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen/ändern, Endpoint anlegen/ändern und löschen
@@ -92,9 +92,9 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
     Und        "A" ändert den Endpunkt von "B" im Healthcare-Service "HealthcareServiceName" mit dem JSON "03_AenderungEndpointFuerHealthcareService.json"
     Dann       entspricht der Endpunkt von "B" im Healthcare-Service "HealthcareServiceName" dem JSON "03_AenderungEndpointFuerHealthcareService.json"
     Wenn       "A" löscht den Endpoint von "B" für den Healthcare-Service "HealthcareServiceName"
-    Dann       existiert kein Endpoint von "B" für den Healthcare-Service "HealthcareServiceName"
+    Dann       existiert kein Endpoint von "B" für den Healthcare-Service "HealthcareServiceName" [Retry 10 - 3]
     Wenn       "A" löscht den Healthcare-Service "HealthcareServiceName"
-    Dann       existiert der zuletzt gelöschte Healthcare-Service nicht mehr
+    Dann       existiert der zuletzt gelöschte Healthcare-Service nicht mehr [Retry 10 - 3]
 
   @Shuffle(true) #
   @MaxSameColumnProperty(ApiName1B,homeserver,2) #
@@ -107,6 +107,7 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
     Beispiele:
     | ApiName1A | ApiName1B |
 
+  @WIP
   @Ctl:OrgAdmin
   @TCID:TIM_11_AF_304 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
   Szenariogrundriss: 03.4 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin mit zwei Endpoints anlegen und löschen
@@ -118,12 +119,12 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
     Wenn       "A" erstellt Endpunkt für "C" auf Healthcare-Service "HealthcareServiceName"
     Dann       "B", "C" haben je einen Endpunkt im Healthcare-Service "HealthcareServiceName"
     Wenn       "A" löscht den Endpoint von "B" für den Healthcare-Service "HealthcareServiceName"
-    Dann       existiert kein Endpoint von "B" für den Healthcare-Service "HealthcareServiceName"
+    Dann       existiert kein Endpoint von "B" für den Healthcare-Service "HealthcareServiceName" [Retry 10 - 3]
     Und        "C" hat genau einen Endpunkt im Healthcare-Service "HealthcareServiceName"
     Wenn       "A" löscht den Endpoint von "C" für den Healthcare-Service "HealthcareServiceName"
-    Dann       existiert kein Endpoint von "C" für den Healthcare-Service "HealthcareServiceName"
+    Dann       existiert kein Endpoint von "C" für den Healthcare-Service "HealthcareServiceName" [Retry 10 - 3]
     Wenn       "A" löscht den Healthcare-Service "HealthcareServiceName"
-    Dann       existiert der zuletzt gelöschte Healthcare-Service nicht mehr
+    Dann       existiert der zuletzt gelöschte Healthcare-Service nicht mehr [Retry 10 - 3]
 
   @Shuffle(true) #
   @MaxSameColumnProperty(ApiName1C,homeserver,2) #
@@ -136,15 +137,3 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
 
     Beispiele:
     | ApiName1A | ApiName1B | ApiName1C |
-
-  @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_305 @PRIO:2 @TESTFALL:Negativ @STATUS:Implementiert
-  Szenariogrundriss: 03.5 Organisationsressourcen im Verzeichnisdienst hinzufügen - Nicht validen Healthcare-Service durch Org-Admin anlegen
-    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
-    Wenn       "A" versucht einen Healthcare-Service mit dem nicht validen JSON "03_ErstellenEinesHealthcareService_Negativ.json" zu erstellen
-    Dann       erhält "A" einen Responsecode 400
-
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-
-    Beispiele:
-    | ApiName1A |

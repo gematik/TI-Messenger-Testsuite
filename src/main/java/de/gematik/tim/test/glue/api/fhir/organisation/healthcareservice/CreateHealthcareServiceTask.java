@@ -16,6 +16,7 @@
 
 package de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HAS_REG_SERVICE_TOKEN;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.CREATE_HEALTHCARE_SERVICE;
 import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility.addHsToActor;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.readJsonFile;
@@ -53,6 +54,7 @@ public class CreateHealthcareServiceTask implements Task {
 
   @Override
   public <T extends Actor> void performAs(T actor) {
+
     if (StringUtils.isNotBlank(healthcareServiceString)) {
       actor.attemptsTo(CREATE_HEALTHCARE_SERVICE.request()
           .with(req -> req.body(healthcareServiceString)));
@@ -60,7 +62,10 @@ public class CreateHealthcareServiceTask implements Task {
       actor.attemptsTo(CREATE_HEALTHCARE_SERVICE.request()
           .with(req -> req.body(healthcareServiceDTO)));
     }
-    RawDataStatistics.getRegTokenForVZDEvent();
+    if(actor.recall(HAS_REG_SERVICE_TOKEN) == null) {
+      RawDataStatistics.getRegTokenForVZDEvent();
+      actor.remember(HAS_REG_SERVICE_TOKEN, true);
+    }
 
     Response response = lastResponse();
     if (response.statusCode() == CREATED.value()) {

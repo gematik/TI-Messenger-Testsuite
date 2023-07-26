@@ -54,6 +54,7 @@ public final class TestdriverApiPath {
   public static final String ROOM_INVITE_PATH = ROOM_ID_PATH + "/invite";
   public static final String ROOM_JOIN_PATH = ROOM_ID_PATH + "/join";
   public static final String ROOM_LEAVE_PATH = ROOM_ID_PATH + "/leave";
+  public static final String ROOM_STATE_PATH = ROOM_ID_PATH + "/state";
 
   // MESSAGE
   public static final String DIRECT_MESSAGE_PATH = DEVICE_ID_PATH + "/sendMessage";

@@ -16,10 +16,12 @@
 
 package de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HAS_REG_SERVICE_TOKEN;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_DELETED_HS_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.DELETE_HEALTHCARE_SERVICE;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
+import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import io.restassured.response.Response;
 import net.serenitybdd.screenplay.Actor;
 import org.springframework.http.HttpStatus;
@@ -44,6 +46,10 @@ public class DeleteHealthcareServicesTask extends HealthcareSpecificTask {
       UseHealthcareServiceAbility ability = actor.abilityTo(UseHealthcareServiceAbility.class);
       actor.remember(LAST_DELETED_HS_ID, ability.getActiveValue());
       ability.removeCurrent();
+    }
+    if(actor.recall(HAS_REG_SERVICE_TOKEN) == null) {
+      RawDataStatistics.getRegTokenForVZDEvent();
+      actor.remember(HAS_REG_SERVICE_TOKEN, true);
     }
   }
 }

@@ -4,7 +4,7 @@
 @AF-ID:AF_10061
 @AK-ID:ML-123654 @AK-ID:ML-123663 @AK-ID:ML-132864 @AK-ID:ML-132592
 @AF-ID:AF_10064
-@AK-ID:ML-123672 @AK-ID:ML-123893 @AK-ID:ML-123891 @AK-ID:ML-132589
+@AK-ID:ML-123672 @AK-ID:ML-123891 @AK-ID:ML-132589 @AK-ID:ML-137902
 Funktionalität: 11. Einladung von Akteuren via Freigabeliste
   Die folgenden Testfälle sollen die Funktionalität der Freigabeliste zur Einladung von Akteuren sicher stellen,
   die nicht weiter in der Spezifikationen des TI-Messengers beschrieben sind aber trotzdem für den Betrieb des
@@ -23,9 +23,9 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
 
   AF_10064 - Föderationszugehörigkeit eines Messenger-Service prüfen
     ML-123672 - Föderationsliste vom VZD-FHIR-Directory abrufen
-    ML-123893 - Aktualität - Föderationsliste Messenger-Proxy
     ML-123891 - Matrix-Domain Teil der Föderationsliste & Aktualitätscheck
     ML-132589 - TI-M Rohdatenerfassung und -lieferung
+    ML-137902 - Aktualität - Föderationsliste Messenger-Proxy
 
   Inhalt
   TF 1 & 2 Einladung via Freigabeliste Chat/Raum HBA
@@ -98,20 +98,23 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
     Beispiele:
     | ApiName1 | ApiName2 |
 
-  @BP:FL @Ctl:OrgAdmin
+  @BP:FL @Ctl:OrgAdmin @@Ctl:NOVZD
   @TCID:TIM_11_AF_1103 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
-  Szenariogrundriss: 11.3 Einladung via Freigabeliste außerhalb einer Oganisation - Chat - Nur ein User in Freigabeliste (Organisations-User an HBA-User)
+  Szenariogrundriss: 11.3 Einladung via Freigabeliste außerhalb einer Oganisation - Chat - Beide User jeweils in Freigabeliste (Organisations-User an HBA-User)
     Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
     Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "C" hinterlegt "B" in seiner Freigabeliste
+    Und        "B" hinterlegt "C" in seiner Freigabeliste
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
     Wenn       "B" schreibt "C" direkt "Hello from the other site"
     Dann       "C" erhält eine Einladung von "B"
     Und        "C" bestätigt eine Einladung von "B"
     Und        "C" empfängt eine Nachricht "Hello from the other site" von "B"
     Und        "C" verlässt Chat mit "B"
+    Und        "B" verlässt Chat mit "C"
     Und        "C" löscht "B" in seiner Freigabeliste
+    Und        "B" löscht "C" in seiner Freigabeliste
 
   #@Shuffle(true)
   #@DistinctColumn(ApiName1B)
@@ -137,7 +140,7 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "B" hinterlegt "A" in seiner Freigabeliste
     Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
-    Wenn       "B" lädt "A" in Chat-Raum "TIM Testraum 1" ein
+    Wenn       "B" versucht "A" in Chat-Raum "TIM Testraum 1" einzuladen
     Dann       "B" ist nicht berechtigt "A" zu kontaktieren
     Und        "A" erhält KEINE Einladung von "B" für den Raum "TIM Testraum 1" [Retry 10 - 3]
     Und        "B" löscht "A" in seiner Freigabeliste
@@ -162,7 +165,7 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "B" hinterlegt "A" in seiner Freigabeliste
-    Wenn       "B" schreibt "A" direkt "Hello from the other site"
+    Wenn       "B" versucht "A" direkt "Hello from the other site" zu schreiben
     Dann       "B" ist nicht berechtigt "A" zu kontaktieren
     Und        "A" erhält KEINE Einladung von "B" [Retry 10 - 3]
     Und        "B" löscht "A" in seiner Freigabeliste

@@ -87,7 +87,7 @@ public class UseRoomAbility extends MultiTargetAbility<String, String> implement
 
   @Override
   protected Task tearDownPerTarget(String roomName) {
-   return deleteRoom().withName(roomName);
+    return deleteRoom().withName(roomName);
   }
 
 }

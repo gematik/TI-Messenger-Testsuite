@@ -27,6 +27,7 @@ import java.util.Optional;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.ACCOUNT_PASSWORD;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DISPLAY_NAME;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_LOGGED_IN;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.LOGIN;
 import static de.gematik.tim.test.glue.api.login.IsLoggedInAbility.logOut;
@@ -53,7 +54,9 @@ public class LoginTask implements Task {
     actor.remember(DISPLAY_NAME, account.getDisplayName());
     actor.can(logOut());
     actor.remember(IS_LOGGED_IN, true);
-    RawDataStatistics.login();
+    if (actor.recall(IS_ORG_ADMIN) == null) {
+      RawDataStatistics.login();
+    }
   }
 
   private <T extends Actor> Optional<LoginDTO> getLoginDto(T actor) {

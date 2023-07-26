@@ -16,19 +16,19 @@
 
 package de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HAS_REG_SERVICE_TOKEN;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_DELETED_HS_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_HEALTHCARE_SERVICES;
 import static java.util.Objects.requireNonNull;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
+import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.FhirHealthcareServiceDTO;
 import de.gematik.tim.test.models.FhirHealthcareServicesDTO;
-import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.Question;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import net.serenitybdd.screenplay.Actor;
+import net.serenitybdd.screenplay.Question;
 
 public class FhirGetHealthcareServiceListQuestion implements
     Question<List<FhirHealthcareServiceDTO>> {
@@ -62,8 +62,13 @@ public class FhirGetHealthcareServiceListQuestion implements
 
     actor.attemptsTo(GET_HEALTHCARE_SERVICES.request());
 
+    if(actor.recall(HAS_REG_SERVICE_TOKEN) == null) {
+      RawDataStatistics.getRegTokenForVZDEvent();
+      actor.remember(HAS_REG_SERVICE_TOKEN, true);
+    }
     List<FhirHealthcareServiceDTO> fhirHealthcareServiceDTOs = requireNonNull(
         lastResponse().body().as(FhirHealthcareServicesDTO.class).getHealthcareServices());
+
 
     return fhirHealthcareServiceDTOs.stream()
         .filter(hs -> hsId

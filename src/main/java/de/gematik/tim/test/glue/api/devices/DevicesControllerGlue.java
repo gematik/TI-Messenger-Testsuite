@@ -18,6 +18,7 @@ package de.gematik.tim.test.glue.api.devices;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.ACCOUNT_PASSWORD;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.CLAIMER_NAME;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_DEVICES;
@@ -110,6 +111,7 @@ public class DevicesControllerGlue {
   public void reserveOrgAdminClientOnApi(String actorName, String apiName) {
     Actor actor = reserveClientOnApi(actorName, apiName);
     checkIs(actor, List.of(ORG_ADMIN));
+    actor.remember(IS_ORG_ADMIN, true);
     logsIn(actorName);
     loginSuccess(actorName);
   }
@@ -159,7 +161,7 @@ public class DevicesControllerGlue {
     String claimerName = actor.recall(CLAIMER_NAME);
     actor.should(seeThatResponse("Check if a device is claimed",
         res -> res.statusCode(200)
-            .body("devices.claimer", hasItem(claimerName))
+            .body("devices.claimerName", hasItem(claimerName))
     ));
   }
 

@@ -1,0 +1,125 @@
+# language: de
+@File:FeatureFile_14 @Ctl:UseCase
+@PRODUKT:TIM_FD @PRODUKT:TIM_Client
+Funktionalität: 14. Room States
+  Die folgenden Testfälle sollen die Funktionalität des Setzens verschiedener Room States testen. Im ersten Schritt wird
+  an dieser Stelle das Setzen des Default-Room-States betrachtet.
+
+  Inhalt
+  TF 1 & 2 Default Room States in Chat und Raum (HBA-User)
+  TF 3 & 4 Default Room States in Chat und Raum (Org-User)
+
+  @BP:P2P @Ctl:Chat
+  @TCID:TIM_11_AF_1401 @PRIO:1 @TESTFALL:Positiv @STATUS:InArbeit
+  Szenariogrundriss: 14.1 Room States - Chat - Default Room State (HBA-User an HBA-User)
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" findet "B" in FHIR
+    Und        "A" schreibt "B" direkt "Hello from the other site"
+    Und        "B" erhält eine Einladung von "A"
+    Und        "B" bestätigt eine Einladung von "A"
+    Wenn       "B" empfängt eine Nachricht "Hello from the other site" von "A"
+    Dann       "B" prüft den Room State im Chat mit "A" auf "TIM_DEFAULT"
+
+  @Shuffle(true)
+  @MaxSameColumnProperty(ApiName1,homeserver,1)
+  @DistinctProperty(homeserver)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName2.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1 | ApiName2 |
+
+  @BP:P2P @Ctl:Raum
+  @TCID:TIM_11_AF_1402 @PRIO:1 @TESTFALL:Positiv @STATUS:InArbeit
+  Szenariogrundriss: 14.2 Room States - Raum - Default Room State (HBA-User an HBA-User)
+    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
+    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
+    Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" findet "B" in FHIR
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Wenn       "B" ist dem Raum "TIM Testraum 1" beigetreten
+    Dann       "B" prüft den Room State im Raum "TIM Testraum 1" auf "TIM_DEFAULT"
+
+  @Shuffle(true)
+  @MaxSameColumnProperty(ApiName1,homeserver,1)
+  @DistinctProperty(homeserver)
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(false)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName2.hasTag("practitioner"))
+
+    Beispiele:
+    | ApiName1 | ApiName2 |
+
+  @BP:O2O @Ctl:OrgAdmin @Ctl:Chat @Ctl:MsgForward
+  @TCID:TIM_11_AF_1403 @PRIO:1 @TESTFALL:Positiv @STATUS:InArbeit
+  Szenariogrundriss: 14.3 Room States - Chat - Default Room State (Org-User an Org-User)
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName2A>
+    Und        "D" reserviert sich einen Messenger-Client an Schnittstelle <ApiName2B>
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "C" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "D"
+    Und        "B" schreibt "D" über den Healthcare-Service "HealthcareServiceName2" direkt "Hello from the other site"
+    Und        "D" erhält eine Einladung von "B"
+    Und        "D" bestätigt eine Einladung von "B"
+    Wenn       "D" empfängt eine Nachricht "Hello from the other site" von "B"
+    Dann       "D" prüft den Room State im Chat mit "B" auf "TIM_DEFAULT"
+
+  @Shuffle(true)
+  @MaxSameColumnProperty(ApiName1B,homeserver,1)
+  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+  @Filter(!ApiName1B.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(false)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName2A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName2B.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName2A | ApiName2B |
+
+  @BP:O2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgForward
+  @TCID:TIM_11_AF_1404 @PRIO:1 @TESTFALL:Positiv @STATUS:InArbeit
+  Szenariogrundriss: 14.4 Room States - Raum - Default Room State (Org-User an Org-User)
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName2A>
+    Und        "D" reserviert sich einen Messenger-Client an Schnittstelle <ApiName2B>
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "C" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "D"
+    Und        "B" findet "D" im Healthcare-Service "HealthcareServiceName2"
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "B" lädt "D" in Chat-Raum "TIM Testraum 1" ein
+    Und        "D" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "D" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Wenn       "D" ist dem Raum "TIM Testraum 1" beigetreten
+    Dann       "D" prüft den Room State im Raum "TIM Testraum 1" auf "TIM_DEFAULT"
+
+  @Shuffle(true)
+  @MaxSameColumnProperty(ApiName1B,homeserver,1)
+  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+  @Filter(!ApiName1B.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+  @AllowSelfCombine(false)
+  @AllowDoubleLineup(false)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName2A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName2B.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName2A | ApiName2B |

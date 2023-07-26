@@ -16,10 +16,12 @@
 
 package de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HAS_REG_SERVICE_TOKEN;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.UPDATE_HEALTHCARE_SERVICE;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.readJsonFile;
 import static java.util.Objects.requireNonNull;
 
+import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.FhirHealthcareServiceDTO;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -54,5 +56,9 @@ public class UpdateHealthcareServiceTask extends HealthcareSpecificTask {
   public <T extends Actor> void performAs(T actor) {
     actor.attemptsTo(UPDATE_HEALTHCARE_SERVICE.request()
         .with(req -> req.body(healthcareService)));
+    if(actor.recall(HAS_REG_SERVICE_TOKEN) == null) {
+      RawDataStatistics.getRegTokenForVZDEvent();
+      actor.remember(HAS_REG_SERVICE_TOKEN, true);
+    }
   }
 }

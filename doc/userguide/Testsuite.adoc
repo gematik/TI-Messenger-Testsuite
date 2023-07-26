@@ -67,7 +67,7 @@ dann die einzelnen Tests für den jeweiligen Anwendungsfall.
 | 03             | AF_10059                  | Organisationsressourcen im Verzeichnisdienst hinzufügen      |
 | 04             | AF_10057                  | Anmeldung eines Akteurs am Messenger-Service                 |
 | 05             | AF_10058                  | Akteur (User-HBA) im Verzeichnisdienst hinzufügen            |
-|                | AF_10064                  | Föderationszugehörigkeit eines Messenger-Service prüfen      | wird im AF_10104 und AF_10061 mit getestet ^2)^
+| 06             | AF_10064                  | Föderationszugehörigkeit eines Messenger-Service prüfen      | Die Positivtests des Anwendungsfalls werden im AF_10104 und AF_10061 implizit mitgetestet
 | 07             | AF_10104                  | Einladung von Akteuren innerhalb eines Messenger-Service     |
 | 08             | AF_10063                  | Austausch von Events innerhalb eines Messenger-Service       |
 | 09             | AF_10061                  | Einladung von Akteuren anderer Messenger-Services            |
@@ -81,8 +81,6 @@ administrieren. Bei dieser Schnittstelle bleibt es dem TI-Messenger-Anbieter üb
 bereitzustellen. Die gematik gibt lediglich grundlegende bereitzustellende Funktionen vor und führt auch keine Tests
 an dieser Schnittstelle durch.
 
-^2)^ Für diesen Anwendungsfall wurden kein eigenes Feature File angelegt.
-
 *Info*: Teile der Anwendungsfälle AF_10104 & AF_10061 (Einladung) werden implizit in den Anwendungsfällen AF_10063 & AF_10062 (Eventaustausch) mitgetestet,
 da diese Preconditions für den Eventaustausch darstellen und somit nicht doppelt getestet werden.
 
@@ -94,8 +92,8 @@ image::TI-Messenger.png[float="left"]
 ==== 1.3 Zusätzliche Anwendungsfälle
 {empty} +
 
-Neben den Anwendungsfällen, die in der Spezifikation beschrieben sind, wurden noch zwei weitere Anwendungsfälle für die Tests definiert. In diesen Anwendungsfällen werden
-Gruppenchats und die Nutzung von mehreren Geräten getestet. Die Anfrage der Geräte-Information aller Schnittstellen hat nur informativen Charakter.
+Neben den Anwendungsfällen, die in der Spezifikation beschrieben sind, wurden noch drei weitere Anwendungsfälle für die Tests definiert. In diesen Anwendungsfällen werden
+Room States, Gruppenchats und die Nutzung von mehreren Geräten getestet. Die Anfrage der Geräte-Information aller Schnittstellen hat nur informativen Charakter.
 
 [cols='^1,1,6,4']
 |===
@@ -103,6 +101,7 @@ Gruppenchats und die Nutzung von mehreren Geräten getestet. Die Anfrage der Ger
 | 00             | ohne        | Abfragen der Geräte-Information aller Schnittstellen         | informativ
 | 12             | ohne        | Gruppen Chats                                                |
 | 13             | ohne        | Nutzung von mehreren Geräten                                 |
+| 14             | ohne        | Room States überprüfen                                       |
 |===
 
 [.text-right]
@@ -1034,7 +1033,6 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 |03.2 | Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen und Endpoint ändern
 |03.3 | Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen/ändern, Endpoint anlegen/ändern und löschen
 |03.4 | Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin mit zwei Endpoints anlegen und löschen
-|03.5 | Organisationsressourcen im Verzeichnisdienst hinzufügen - Nicht validen Healthcare-Service durch Org-Admin anlegen
 |===
 
 [.text-center]
@@ -1077,7 +1075,21 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 <<id8,Testfall Liste>>
 
-[[id85,Zurück]] *AF_10104 Einladung von Akteuren innerhalb eines Messenger-Service*
+[[id85,Zurück]] *AF_10064 Föderationszugehörigkeit eines Messenger-Service prüfen*
+[cols='^6%,90%']
+|===
+|06.1 | Föderationszugehörigkeit prüfen - Chat - Test-Client "A" versucht User außerhalb der Föderation einzuladen (HBA-User)
+|06.2 | Föderationszugehörigkeit prüfen - Raum - Test-Client "A" versucht User außerhalb der Föderation einzuladen (Org-User)
+|===
+
+[.text-center]
+<<id84,Zurück>>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<<id8,Testfall Liste>>
+
+[[id86,Zurück]] *AF_10104 Einladung von Akteuren innerhalb eines Messenger-Service*
 [cols='^6%,90%']
 |===
 |07.1 | Einladung innerhalb einer Organisation - Einladung in Chat - Teilqualifizierte Suche (HBA-User an HBA-User)
@@ -1101,13 +1113,13 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 |===
 
 [.text-center]
-<<id84,Zurück>>
+<<id87,Zurück>>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 <<id8,Testfall Liste>>
 
-[[id86,Zurück]] *AF_10063 Austausch von Events innerhalb eines Messenger-Service*
+[[id87,Zurück]] *AF_10063 Austausch von Events innerhalb eines Messenger-Service*
 [cols=' ^6%,90%']
 |===
 |08.1 | Events innerhalb einer Organisation - Chat - Test-Client "A" sendet und empfängt eine Nachricht
@@ -1134,13 +1146,13 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 |===
 
 [.text-center]
-<<id85,Zurück>>
+<<id86,Zurück>>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 <<id8,Testfall Liste>>
 
-[[id87,Zurück]] *AF_10061 Einladung von Akteuren anderer Messenger-Services*
+[[id88,Zurück]] *AF_10061 Einladung von Akteuren anderer Messenger-Services*
 [cols='^6%,90%']
 |===
 |09.1 | Einladung außerhalb einer Organisation - Einladung in Chat - Teilqualifizierte Suche (HBA-User an HBA-User)
@@ -1164,13 +1176,13 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 |===
 
 [.text-center]
-<<id86,Zurück>>
+<<id87,Zurück>>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 <<id8,Testfall Liste>>
 
-[[id88,Zurück]] *AF_10062 Austausch von Events zwischen anderen Messenger-Services*
+[[id89,Zurück]] *AF_10062 Austausch von Events zwischen anderen Messenger-Services*
 [cols='^6%,90%']
 |===
 |10.1 | Events außerhalb einer Organisation - Chat - Test-Client "A" sendet und empfängt eine Nachricht
@@ -1195,13 +1207,13 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 |===
 
 [.text-center]
-<<id87,Zurück>>
+<<id88,Zurück>>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 <<id8,Testfall Liste>>
 
-[[id89,Zurück]] *Einladung von Akteuren via Freigabeliste*
+[[id90,Zurück]] *Einladung von Akteuren via Freigabeliste*
 [cols='^6%,90%']
 |===
 |11.1 | Einladung via Freigabeliste außerhalb einer Organisation - Raum - Beide User jeweils in Freigabeliste (HBA-User an HBA-User)
@@ -1212,7 +1224,7 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 |===
 
 [.text-center]
-<<id88,Zurück>>
+<<id89,Zurück>>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
@@ -1234,7 +1246,7 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 |===
 
 [.text-center]
-<<id89,Zurück>>
+<<id90,Zurück>>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
@@ -1260,12 +1272,13 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 <<id8,Testfall Liste>>
 
-[[id812,Zurück]] *Gruppenchat mit 5 HomeServern*
+[[id812,Zurück]] *Room States überprüfen*
 [cols='^6%,90%']
 |===
-|14.1 | Events außerhalb einer Organisation - Gruppenchat mit 5 Teilnehmern - Test-Client "A" sendet eine Nachricht (HBA-User)
-|14.2 | Events außerhalb einer Organisation - Gruppenchat mit 5 Teilnehmern - Test-Client "E" sendet eine Nachricht (HBA-User)
-|14.3 | Events außerhalb einer Organisation - Gruppenchat mit 5 Teilnehmern - Test-Client "F" sendet eine Nachricht (Organisations-User)
+|14.1 | Room States - Chat - Deafult Room State (HBA-User an HBA-User)
+|14.2 | Room States - Raum - Deafult Room State (HBA-User an HBA-User)
+|14.3 | Room States - Chat - Deafult Room State (Org-User an Org-User)
+|14.4 | Room States - Raum - Deafult Room State (Org-User an Org-User)
 |===
 
 [.text-center]
@@ -1275,17 +1288,32 @@ grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 <<id8,Testfall Liste>>
 
-[[id813,Zurück]] *Gruppenchat mit 3 HomeServern*
+[[id813,Zurück]] *Gruppenchat mit 5 HomeServern*
 [cols='^6%,90%']
 |===
-|15.1 | Events außerhalb einer Organisation - Gruppenchat mit 3 Teilnehmern - Test-Client "A" sendet eine Nachricht (HBA-User)
-|15.2 | Events außerhalb einer Organisation - Gruppenchat mit 3 Teilnehmern - Test-Client "C" sendet eine Nachricht (HBA-User)
-|15.3 | Events außerhalb einer Organisation - Gruppenchat mit 3 Teilnehmern - Test-Client "D" sendet eine Nachricht (Organisations-User)
-|15.4 | Events außerhalb einer Organisation - Gruppenchat mit 3 Teilnehmern - Test-Client "C" sendet eine Nachricht (HBA-User lädt Organisations-User ein)
+|15.1 | Events außerhalb einer Organisation - Gruppenchat mit 5 Teilnehmern - Test-Client "A" sendet eine Nachricht (HBA-User)
+|15.2 | Events außerhalb einer Organisation - Gruppenchat mit 5 Teilnehmern - Test-Client "E" sendet eine Nachricht (HBA-User)
+|15.3 | Events außerhalb einer Organisation - Gruppenchat mit 5 Teilnehmern - Test-Client "F" sendet eine Nachricht (Organisations-User)
 |===
 
 [.text-center]
 <<id812,Zurück>>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<<id8,Testfall Liste>>
+
+[[id814,Zurück]] *Gruppenchat mit 3 HomeServern*
+[cols='^6%,90%']
+|===
+|16.1 | Events außerhalb einer Organisation - Gruppenchat mit 3 Teilnehmern - Test-Client "A" sendet eine Nachricht (HBA-User)
+|16.2 | Events außerhalb einer Organisation - Gruppenchat mit 3 Teilnehmern - Test-Client "C" sendet eine Nachricht (HBA-User)
+|16.3 | Events außerhalb einer Organisation - Gruppenchat mit 3 Teilnehmern - Test-Client "D" sendet eine Nachricht (Organisations-User)
+|16.4 | Events außerhalb einer Organisation - Gruppenchat mit 3 Teilnehmern - Test-Client "C" sendet eine Nachricht (HBA-User lädt Organisations-User ein)
+|===
+
+[.text-center]
+<<id813,Zurück>>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
