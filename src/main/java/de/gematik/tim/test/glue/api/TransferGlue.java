@@ -26,26 +26,6 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor(access = PRIVATE)
 public class TransferGlue {
 
-  @Then("existiert kein Endpoint von {string} für den Healthcare-Service {string} [Retry {long} - {long}]")
-  public void noHealthcareServiceEndpointWithNameTiming(String actorName, String hsName, Long timeout, Long pollInterval) {
-    throw new PendingException("Have to be implemented");
-  }
-
-  @Then("existiert der zuletzt gelöschte Healthcare-Service nicht mehr [Retry {long} - {long}]")
-  public void lastDeletedHsDoesNotExistAnymoreTiming(Long timeout, Long pollInterval) {
-    throw new PendingException("Have to be implemented");
-  }
-
-  @Then("{string} versucht der MXID {string} direkt {string} zu schreiben")
-  public void directMessageMxid(String actor, String mxid, String message) {
-    throw new PendingException("Have to be implemented");
-  }
-
-  @Then("{string} versucht die MXID {string} über den HealthcareService {string} in den Chat-Raum {string} einzuladen")
-  public void inviteMxid(String actor, String mxid, String bcsName, String roomName) {
-    throw new PendingException("Have to be implemented");
-  }
-
 
 }
 

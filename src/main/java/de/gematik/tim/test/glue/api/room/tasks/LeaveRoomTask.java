@@ -18,12 +18,9 @@ package de.gematik.tim.test.glue.api.room.tasks;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.LEAVE_ROOM;
 
-import de.gematik.tim.test.glue.api.room.UseRoomAbility;
 import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.Task;
 
-public class LeaveRoomTask implements Task {
-
+public class LeaveRoomTask extends RoomSpecificTask {
 
   public static LeaveRoomTask leaveRoom() {
     return new LeaveRoomTask();
@@ -31,7 +28,7 @@ public class LeaveRoomTask implements Task {
 
   @Override
   public <T extends Actor> void performAs(T actor) {
+    super.performAs(actor);
     actor.attemptsTo(LEAVE_ROOM.request());
-    actor.abilityTo(UseRoomAbility.class).removeCurrent();
   }
 }

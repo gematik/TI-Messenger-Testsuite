@@ -22,7 +22,7 @@ import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
-import de.gematik.tim.test.models.FhirHsEndpointSearchResultListDTO;
+import de.gematik.tim.test.models.FhirSearchResultDTO;
 import io.restassured.specification.RequestSpecification;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +32,7 @@ import org.awaitility.core.ConditionTimeoutException;
 import org.jetbrains.annotations.NotNull;
 
 @Slf4j
-public class FhirEndpointSearchQuestion implements Question<FhirHsEndpointSearchResultListDTO> {
+public class FhirEndpointSearchQuestion implements Question<FhirSearchResultDTO> {
 
   private Long customTimeout;
   private Long customPollInterval;
@@ -66,7 +66,7 @@ public class FhirEndpointSearchQuestion implements Question<FhirHsEndpointSearch
   }
 
   @Override
-  public FhirHsEndpointSearchResultListDTO answeredBy(Actor actor) {
+  public FhirSearchResultDTO answeredBy(Actor actor) {
     try {
       return repeatedRequest(() -> filterEndpoint(actor), "room",
           customTimeout, customPollInterval);
@@ -76,15 +76,15 @@ public class FhirEndpointSearchQuestion implements Question<FhirHsEndpointSearch
           this.mxId, this.endpointName);
     }
     return lastResponse().body()
-        .as(FhirHsEndpointSearchResultListDTO.class);
+        .as(FhirSearchResultDTO.class);
   }
 
   @NotNull
-  private Optional<FhirHsEndpointSearchResultListDTO> filterEndpoint(Actor actor) {
+  private Optional<FhirSearchResultDTO> filterEndpoint(Actor actor) {
     actor.attemptsTo(SEARCH_ENDPOINT.request().with(this::prepareQuery));
-    FhirHsEndpointSearchResultListDTO res = lastResponse().body()
-        .as(FhirHsEndpointSearchResultListDTO.class);
-    if (requireNonNull(res.getTotalSearchResults()) < atLeastExpectedResults) {
+    FhirSearchResultDTO res = lastResponse().body()
+        .as(FhirSearchResultDTO.class);
+    if (requireNonNull(res.getTotal()) < atLeastExpectedResults) {
       return Optional.empty();
     }
     return Optional.of(res);

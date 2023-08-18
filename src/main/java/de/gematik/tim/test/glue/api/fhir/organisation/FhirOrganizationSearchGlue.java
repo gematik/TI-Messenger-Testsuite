@@ -18,11 +18,14 @@ package de.gematik.tim.test.glue.api.fhir.organisation;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.FhirEndpointSearchQuestion.endpoint;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
+import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
 import static lombok.AccessLevel.PRIVATE;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import de.gematik.tim.test.models.FhirHsEndpointSearchResultListDTO;
+import de.gematik.tim.test.models.FhirEndpointDTO;
+import de.gematik.tim.test.models.FhirSearchResultDTO;
 import io.cucumber.java.de.Dann;
 import lombok.AllArgsConstructor;
 import net.serenitybdd.core.Serenity;
@@ -53,11 +56,10 @@ public class FhirOrganizationSearchGlue {
     Serenity.recordReportData();
 
     String mxIdOfUserToFind = user.recall(MX_ID);
-    FhirHsEndpointSearchResultListDTO res =
-        actor.asksFor(endpoint()
-            .withMxId(mxIdOfUserToFind)
-            .withCustomInterval(customTimeout, customPollInterval));
-    assertThat(res.getTotalSearchResults()).isZero();
+    FhirSearchResultDTO result = actor.asksFor(endpoint()
+        .withMxId(mxIdOfUserToFind)
+        .withCustomInterval(customTimeout, customPollInterval));
+    assertThat(getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class)).hasSize(0);
     return null;
   }
 

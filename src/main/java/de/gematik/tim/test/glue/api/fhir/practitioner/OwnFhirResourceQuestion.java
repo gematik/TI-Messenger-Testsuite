@@ -16,32 +16,48 @@
 
 package de.gematik.tim.test.glue.api.fhir.practitioner;
 
-import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.READ_MXID_PRACTITIONER;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.getMapper;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.orderByResourceType;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.repeatedRequest;
+import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
-import de.gematik.tim.test.models.FhirPractitionerDTO;
-import io.restassured.response.Response;
+import de.gematik.tim.test.models.FhirBaseResourceDTO;
+import de.gematik.tim.test.models.FhirSearchResultDTO;
+import java.util.List;
 import java.util.Optional;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 
 
-public class OwnFhirResourceQuestion implements Question <Optional<FhirPractitionerDTO>> {
+public class OwnFhirResourceQuestion implements Question<FhirSearchResultDTO> {
 
-  public static OwnFhirResourceQuestion ownFhirResource(){return new OwnFhirResourceQuestion();}
+  private int amount = 0;
+
+  public static OwnFhirResourceQuestion ownFhirResource() {
+    return new OwnFhirResourceQuestion();
+  }
+
+  public OwnFhirResourceQuestion withAtLeastAmountEndpoints(int amount) {
+    this.amount = amount;
+    return this;
+  }
 
   @Override
-  public Optional<FhirPractitionerDTO> answeredBy(Actor actor) {
+  public FhirSearchResultDTO answeredBy(Actor actor) {
+
+    return repeatedRequest(() -> searchOwnEntry(actor), "SearchOwnPractitionerInfos");
+  }
+
+  private Optional<FhirSearchResultDTO> searchOwnEntry(Actor actor) {
     actor.attemptsTo(READ_MXID_PRACTITIONER.request());
-    Response lastResponse = lastResponse();
+    FhirSearchResultDTO result = lastResponse().body().as(FhirSearchResultDTO.class, getMapper());
 
-    if(lastResponse.getStatusCode() == 404){
-      return Optional.empty();
+    List<FhirBaseResourceDTO> ownInfos = orderByResourceType(result).get(ENDPOINT);
+    if (ownInfos.size() >= amount) {
+      return Optional.of(result);
     }
-
-    FhirPractitionerDTO fhirPractitionerDTO = lastResponse.body().as(FhirPractitionerDTO.class);
-    actor.remember(LAST_RESPONSE, lastResponse);
-    return Optional.of(fhirPractitionerDTO);
+    return Optional.empty();
   }
 }

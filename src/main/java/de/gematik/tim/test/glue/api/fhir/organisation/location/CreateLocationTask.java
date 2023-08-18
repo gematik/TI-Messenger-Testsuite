@@ -47,14 +47,14 @@ public class CreateLocationTask extends HealthcareSpecificTask implements Task {
 
   @Override
   public <T extends Actor> void performAs(T actor) {
-   super.performAs(actor);
+    super.performAs(actor);
 
     actor.attemptsTo(CREATE_LOCATION.request().with(req -> req.body(locationDTO)));
 
     Response response = lastResponse();
     if (response.statusCode() == CREATED.value()) {
       FhirLocationDTO location = response.getBody().as(FhirLocationDTO.class);
-      addLocationToActorForHS(locationName, location.getLocationId(), actor, hsName);
+      addLocationToActorForHS(locationName, location.getId(), actor, hsName);
     }
   }
 }

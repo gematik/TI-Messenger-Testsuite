@@ -17,8 +17,8 @@
 package de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HAS_REG_SERVICE_TOKEN;
-import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_DELETED_HS_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.DELETE_HEALTHCARE_SERVICE;
+import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.LookForDeletedHealthcareServiceAbility.lookUpDeleted;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
@@ -44,12 +44,13 @@ public class DeleteHealthcareServicesTask extends HealthcareSpecificTask {
     Response response = lastResponse();
     if (response.statusCode() == HttpStatus.NO_CONTENT.value()) {
       UseHealthcareServiceAbility ability = actor.abilityTo(UseHealthcareServiceAbility.class);
-      actor.remember(LAST_DELETED_HS_ID, ability.getActiveValue());
+      actor.can(lookUpDeleted(ability.getActiveValue()));
       ability.removeCurrent();
     }
-    if(actor.recall(HAS_REG_SERVICE_TOKEN) == null) {
+    if (actor.recall(HAS_REG_SERVICE_TOKEN) == null) {
       RawDataStatistics.getRegTokenForVZDEvent();
       actor.remember(HAS_REG_SERVICE_TOKEN, true);
     }
+
   }
 }

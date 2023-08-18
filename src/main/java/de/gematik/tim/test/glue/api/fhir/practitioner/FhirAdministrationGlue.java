@@ -24,6 +24,8 @@ import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirDeleteOwnMxidTa
 import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirSearchQuestion.practitionerInFhirDirectory;
 import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirSetMxidTask.setMxid;
 import static de.gematik.tim.test.glue.api.fhir.practitioner.OwnFhirResourceQuestion.ownFhirResource;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
+import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,18 +34,16 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
-import de.gematik.tim.test.models.FhirPractitionerDTO;
-import de.gematik.tim.test.models.FhirPractitionerSearchResultDTO;
+import de.gematik.tim.test.models.FhirEndpointDTO;
+import de.gematik.tim.test.models.FhirSearchResultDTO;
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Und;
 import io.cucumber.java.de.Wenn;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.response.Response;
-import net.serenitybdd.screenplay.Actor;
-
 import java.util.List;
-import java.util.Optional;
+import net.serenitybdd.screenplay.Actor;
 
 
 public class FhirAdministrationGlue {
@@ -60,9 +60,7 @@ public class FhirAdministrationGlue {
           "check status code",
           res -> res.statusCode(OK.value())));
       actor.attemptsTo(setMxid());
-      actor.should(seeThatResponse(
-          "check status code",
-          res -> res.statusCode(CREATED.value())));
+      checkResponseCode(a, CREATED.value());
     });
   }
 
@@ -87,30 +85,31 @@ public class FhirAdministrationGlue {
   public void searchUserInFhir(String actorName, String userName) {
     Actor actor1 = theActorCalled(actorName);
     Actor actor2 = theActorCalled(userName);
-    FhirPractitionerSearchResultDTO searchResult = actor1.asksFor(
+    FhirSearchResultDTO result = actor1.asksFor(
         practitionerInFhirDirectory().withMxid(actor2.recall(MX_ID)));
     checkResponseCode(actorName, OK.value());
-    assertThat(searchResult).isNotNull();
-    assertThat(searchResult.getTotalSearchResults()).isEqualTo(1);
+    List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
+    assertThat(endpoints).hasSize(1);
   }
 
   @Then("{string} gets own MXID")
   @Dann("{string} findet seine MXID im Verzeichnis Dienst")
   public void findUserInFhir(String actorName) {
     Actor actor = theActorCalled(actorName);
-    FhirPractitionerDTO practitioner = actor.asksFor(ownFhirResource()).orElseThrow();
-    checkResponseCode(actorName, OK.value());
-    assertThat(practitioner.getMxid()).isEqualTo(actor.recall(MX_ID));
+    FhirSearchResultDTO result = actor.asksFor(ownFhirResource().withAtLeastAmountEndpoints(1));
+    List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
+
+    assertThat(endpoints).extracting("address").contains((String) actor.recall(MX_ID));
   }
 
   // Assertions
   @Then("{string} has no MXID in Fhir")
   @Dann("{string} hat keine MXID im Fhir")
   public void getsOwnNullMXID(String actorName) {
-    Optional<FhirPractitionerDTO> practitioner = theActorCalled(actorName).asksFor(
-        ownFhirResource());
-    checkResponseCode(actorName, OK.value());
-    assertThat(practitioner).isEmpty();
+    Actor actor = theActorCalled(actorName);
+    FhirSearchResultDTO result = theActorCalled(actorName).asksFor(ownFhirResource());
+    List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
+    assertThat(endpoints).extracting("address").doesNotContain(actor.recall(MX_ID));
   }
 
   @Then("{string} is not authorized on Vzd")

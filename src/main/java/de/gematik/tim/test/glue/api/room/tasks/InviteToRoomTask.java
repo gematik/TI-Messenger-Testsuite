@@ -20,6 +20,7 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.INVITE_TO_ROOM;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.homeserverFromMxId;
 import static java.util.Objects.requireNonNull;
+import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.MxIdDTO;
@@ -54,6 +55,7 @@ public class InviteToRoomTask implements Task {
     actor.attemptsTo(INVITE_TO_ROOM.request()
         .with(req -> req.body(invitees)));
     sendRawDataEvent(actor.recall(MX_ID));
+    lastResponse().prettyPrint();
   }
 
   @SuppressWarnings("java:S5411")

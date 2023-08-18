@@ -35,7 +35,7 @@ public class SendMessageTask implements Task {
 
   private final String body;
   private String msgType = "m.text";
-  private UUID fileId;
+  private String fileId;
   private String mimetype;
   private Integer size;
 
@@ -44,7 +44,7 @@ public class SendMessageTask implements Task {
     return new SendMessageTask(messageText);
   }
 
-  public SendMessageTask withFileId(UUID fileId) {
+  public SendMessageTask withFileId(String fileId) {
     this.fileId = fileId;
     return this;
   }

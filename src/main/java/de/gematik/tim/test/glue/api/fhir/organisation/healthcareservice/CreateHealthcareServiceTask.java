@@ -24,7 +24,6 @@ import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static org.springframework.http.HttpStatus.CREATED;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
-import de.gematik.tim.test.models.FhirCreateHealthcareServiceDTO;
 import de.gematik.tim.test.models.FhirHealthcareServiceDTO;
 import io.restassured.response.Response;
 import lombok.RequiredArgsConstructor;
@@ -36,13 +35,13 @@ import org.apache.commons.lang3.StringUtils;
 public class CreateHealthcareServiceTask implements Task {
 
   private final String hsName;
-  FhirCreateHealthcareServiceDTO healthcareServiceDTO = new FhirCreateHealthcareServiceDTO();
+  FhirHealthcareServiceDTO healthcareServiceDTO = new FhirHealthcareServiceDTO();
   String healthcareServiceString;
 
   public static CreateHealthcareServiceTask createHealthcareService(String hsName) {
     CreateHealthcareServiceTask createHealthcareServiceTask = new CreateHealthcareServiceTask(
         hsName);
-    createHealthcareServiceTask.healthcareServiceDTO.setHealthcareServiceName(hsName);
+    createHealthcareServiceTask.healthcareServiceDTO.name(hsName);
     return createHealthcareServiceTask;
   }
 
@@ -62,7 +61,7 @@ public class CreateHealthcareServiceTask implements Task {
       actor.attemptsTo(CREATE_HEALTHCARE_SERVICE.request()
           .with(req -> req.body(healthcareServiceDTO)));
     }
-    if(actor.recall(HAS_REG_SERVICE_TOKEN) == null) {
+    if (actor.recall(HAS_REG_SERVICE_TOKEN) == null) {
       RawDataStatistics.getRegTokenForVZDEvent();
       actor.remember(HAS_REG_SERVICE_TOKEN, true);
     }
@@ -70,7 +69,7 @@ public class CreateHealthcareServiceTask implements Task {
     Response response = lastResponse();
     if (response.statusCode() == CREATED.value()) {
       FhirHealthcareServiceDTO hsDTO = response.body().as(FhirHealthcareServiceDTO.class);
-      addHsToActor(hsName, hsDTO.getHealthcareServiceId(), actor);
+      addHsToActor(hsName, hsDTO.getId(), actor);
     }
   }
 

@@ -24,16 +24,17 @@ import de.gematik.tim.test.glue.api.room.UseRoomAbility;
 import de.gematik.tim.test.models.RoomDTO;
 import de.gematik.tim.test.models.RoomMemberDTO;
 import de.gematik.tim.test.models.RoomMembershipStateDTO;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 import org.awaitility.core.ConditionTimeoutException;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 @Slf4j
 public class GetRoomQuestion implements Question<RoomDTO> {
@@ -51,6 +52,11 @@ public class GetRoomQuestion implements Question<RoomDTO> {
     this.filterList.add(m -> new HashSet<>(
         requireNonNull(m.getMembers()).stream().map(RoomMemberDTO::getMxid).toList()).containsAll(
         memberList));
+    return this;
+  }
+
+  public GetRoomQuestion withRoomId(String roomId) {
+    this.filterList.add(r -> r.getRoomId().equals(roomId));
     return this;
   }
 

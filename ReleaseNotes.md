@@ -6,6 +6,19 @@
 
 - - -
 
+## Release 0.9.0
+
+### Feature
+
+- Changed Status of Test Cases 6.1, 6.2 & 14.2 - 14.4
+- improved look up in VZD if HCS is deleted, with customizable poll-intervals
+- Fits to TestdriverApi 0.9.0 -> implements the FHIR-datastructures
+
+### Bugfix
+
+- Search for healthcare- services with name is fixed and returns correct result
+- Enter room with multiple participants do not check every invited member anymore and uses roomId
+
 ## Release 0.7.0
 
 ### Feature
@@ -22,6 +35,7 @@
 - Change of ML-123893 into ML-137902 in all Feature Files
 - New Feature File 14 (RoomStateTests) incl adjustments in Testsuite.adoc
 - Renamed Feature file 14 in 15 & 15 in 16
+
 
 ### Bugfix
 

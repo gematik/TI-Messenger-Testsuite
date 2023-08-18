@@ -18,11 +18,15 @@ package de.gematik.tim.test.glue.api.fhir.organisation;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEARCH_ORG;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.getMapper;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.repeatedRequest;
+import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
 import static java.util.Objects.requireNonNull;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
-import de.gematik.tim.test.models.FhirOrganizationSearchResultListDTO;
+import de.gematik.tim.test.models.FhirEndpointDTO;
+import de.gematik.tim.test.models.FhirSearchResultDTO;
 import io.restassured.specification.RequestSpecification;
 import java.util.List;
 import java.util.Objects;
@@ -31,7 +35,7 @@ import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 import org.apache.commons.lang3.StringUtils;
 
-public class FhirSearchOrgQuestion implements Question<FhirOrganizationSearchResultListDTO> {
+public class FhirSearchOrgQuestion implements Question<FhirSearchResultDTO> {
 
   private String hsName;
   private String orgName;
@@ -44,6 +48,8 @@ public class FhirSearchOrgQuestion implements Question<FhirOrganizationSearchRes
   private String contactPurpose;
   private String mxIdInEndpoint;
   private int minimalSearchResults = 1;
+  private Long customTimeout;
+  private Long customPollInterval;
 
 
   public static FhirSearchOrgQuestion organizationEndpoints() {
@@ -95,45 +101,48 @@ public class FhirSearchOrgQuestion implements Question<FhirOrganizationSearchRes
     return this;
   }
 
-  public FhirSearchOrgQuestion havingMxidInEndpoint(String mxId) {
+  public FhirSearchOrgQuestion havingMxIdInEndpoint(String mxId) {
     this.mxIdInEndpoint = mxId;
     return this;
   }
 
-  public FhirSearchOrgQuestion havingAtLeastXResults(int amount) {
+  public FhirSearchOrgQuestion havingAtLeastXEndpoints(int amount) {
     this.minimalSearchResults = amount;
     return this;
   }
 
-  @Override
-  public FhirOrganizationSearchResultListDTO answeredBy(Actor actor) {
-    return repeatedRequest(() -> searchForOrganization(actor),"organization");
+  public FhirSearchOrgQuestion withCustomInterval(Long timeout, Long pollInterval) {
+    this.customTimeout = timeout;
+    this.customPollInterval = pollInterval;
+    return this;
   }
 
-  private Optional<FhirOrganizationSearchResultListDTO> searchForOrganization(Actor actor) {
+  @Override
+  public FhirSearchResultDTO answeredBy(Actor actor) {
+    return repeatedRequest(() -> searchForOrganization(actor), "organization", customTimeout, customPollInterval);
+  }
+
+  private Optional<FhirSearchResultDTO> searchForOrganization(Actor actor) {
     actor.attemptsTo(
         SEARCH_ORG.request().with(this::prepareQuery));
 
-    FhirOrganizationSearchResultListDTO resp = lastResponse().body()
-        .as(FhirOrganizationSearchResultListDTO.class);
+    FhirSearchResultDTO resp = lastResponse().body().as(FhirSearchResultDTO.class, getMapper());
     actor.remember(LAST_RESPONSE, lastResponse());
 
     return checkConditions(resp);
   }
 
-  private Optional<FhirOrganizationSearchResultListDTO> checkConditions(
-      FhirOrganizationSearchResultListDTO resp) {
-    if (mxIdInEndpoint == null
-        && requireNonNull(resp.getTotalSearchResults()) >= minimalSearchResults) {
+  private Optional<FhirSearchResultDTO> checkConditions(FhirSearchResultDTO resp) {
+    List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(resp, ENDPOINT, FhirEndpointDTO.class);
+    if (mxIdInEndpoint == null && endpoints.size() >= minimalSearchResults) {
       return Optional.of(resp);
     }
 
-    List<String> ids = requireNonNull(resp.getSearchResults()).stream()
-        .map(res -> requireNonNull(res.getEndpoint()).getAddress())
+    List<String> ids = endpoints.stream()
+        .map(FhirEndpointDTO::getAddress)
         .filter(Objects::nonNull)
         .toList();
-    if (ids.contains(mxIdInEndpoint)
-        && requireNonNull(resp.getTotalSearchResults()) >= minimalSearchResults) {
+    if (ids.contains(mxIdInEndpoint) && requireNonNull(resp.getTotal()) >= minimalSearchResults) {
       return Optional.of(resp);
     }
     return Optional.empty();

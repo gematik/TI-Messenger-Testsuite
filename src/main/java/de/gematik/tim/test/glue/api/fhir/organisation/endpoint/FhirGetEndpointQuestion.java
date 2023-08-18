@@ -17,6 +17,7 @@
 package de.gematik.tim.test.glue.api.fhir.organisation.endpoint;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_ENDPOINT;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.getMapper;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.models.FhirEndpointDTO;
@@ -34,7 +35,7 @@ public class FhirGetEndpointQuestion extends EndpointSpecificTask implements
   public FhirEndpointDTO answeredBy(Actor actor) {
     super.performAs(actor);
     actor.attemptsTo(GET_ENDPOINT.request());
-    return lastResponse().body().as(FhirEndpointDTO.class);
+    return lastResponse().body().as(FhirEndpointDTO.class, getMapper());
   }
 
 }
