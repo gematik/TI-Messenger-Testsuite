@@ -56,7 +56,7 @@ public class UpdateHealthcareServiceTask extends HealthcareSpecificTask {
   public <T extends Actor> void performAs(T actor) {
     actor.attemptsTo(UPDATE_HEALTHCARE_SERVICE.request()
         .with(req -> req.body(healthcareService)));
-    if(actor.recall(HAS_REG_SERVICE_TOKEN) == null) {
+    if (actor.recall(HAS_REG_SERVICE_TOKEN) == null) {
       RawDataStatistics.getRegTokenForVZDEvent();
       actor.remember(HAS_REG_SERVICE_TOKEN, true);
     }

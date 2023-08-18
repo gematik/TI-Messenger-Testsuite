@@ -21,26 +21,27 @@ import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.DOWNLOAD_MEDIA;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.MEDIA_ID_VARIABLE;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
-import java.util.UUID;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 
+import java.util.UUID;
+
 public class DownloadMediaQuestion implements Question<byte[]> {
 
-  private UUID fileId;
+  private String fileId;
 
   public static DownloadMediaQuestion downloadMedia() {
     return new DownloadMediaQuestion();
   }
 
-  public DownloadMediaQuestion withFileId(UUID fileId) {
+  public DownloadMediaQuestion withFileId(String fileId) {
     this.fileId = fileId;
     return this;
   }
 
   @Override
   public byte[] answeredBy(Actor actor) {
-    UUID mediaId = fileId == null ? actor.recall(MEDIA_ID) : this.fileId;
+    String mediaId = fileId == null ? actor.recall(MEDIA_ID) : this.fileId;
     actor.attemptsTo(DOWNLOAD_MEDIA.request().with(s -> s.pathParam(MEDIA_ID_VARIABLE, mediaId)));
     return lastResponse().body().asByteArray();
   }

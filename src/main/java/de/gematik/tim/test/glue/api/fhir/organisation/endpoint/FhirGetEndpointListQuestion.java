@@ -17,46 +17,57 @@
 package de.gematik.tim.test.glue.api.fhir.organisation.endpoint;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_ENDPOINTS;
-import static java.util.Objects.requireNonNull;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.getMapper;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.getEndpointIdsOrLocationIdsOfHealthcareService;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
+import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
+import static java.util.Objects.nonNull;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.HealthcareSpecificTask;
 import de.gematik.tim.test.models.FhirEndpointDTO;
-import de.gematik.tim.test.models.FhirEndpointsDTO;
+import de.gematik.tim.test.models.FhirSearchResultDTO;
 import java.util.List;
-import java.util.Optional;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 
 public class FhirGetEndpointListQuestion extends HealthcareSpecificTask implements
     Question<List<FhirEndpointDTO>> {
 
-  private String endpointNameFilter;
+  private String endpointName;
+  private String hsId;
 
   public static FhirGetEndpointListQuestion getEndpointList() {
     return new FhirGetEndpointListQuestion();
   }
 
+  public FhirGetEndpointListQuestion withHsId(String hsId) {
+    this.hsId = hsId;
+    return this;
+  }
+
   public FhirGetEndpointListQuestion filterForName(String endpointName) {
-    this.endpointNameFilter = endpointName;
+    this.endpointName = endpointName;
     return this;
   }
 
   @Override
   public List<FhirEndpointDTO> answeredBy(Actor actor) {
     super.performAs(actor);
-    Optional<String> endpointId = Optional.ofNullable(endpointNameFilter)
-        .map(name -> actor.abilityTo(UseEndpointAbility.class).getTarget(name).endpointId());
-
     actor.attemptsTo(GET_ENDPOINTS.request());
 
-    List<FhirEndpointDTO> fhirEndpointDTOs = requireNonNull(
-        lastResponse().body().as(FhirEndpointsDTO.class).getEndpoints());
-    return fhirEndpointDTOs.stream()
-        .filter(ep -> endpointId
-            .map(id -> id.equals(ep.getEndpointId()))
-            .orElse(true))
-        .toList();
+    FhirSearchResultDTO res = lastResponse().body().as(FhirSearchResultDTO.class, getMapper());
+    List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(res, ENDPOINT, FhirEndpointDTO.class);
+    if (nonNull(endpointName)) {
+      endpoints = endpoints.stream().filter(e -> e.getName().equals(endpointName)).toList();
+    }
+    if (nonNull(hsId)) {
+      List<String> ids = getEndpointIdsOrLocationIdsOfHealthcareService(res, hsId, ENDPOINT);
+      endpoints = endpoints.stream().filter(e -> ids.contains(e.getId())).toList();
+    }
+
+    return endpoints;
   }
+
 
 }

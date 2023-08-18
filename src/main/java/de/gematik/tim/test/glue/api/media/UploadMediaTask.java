@@ -16,18 +16,15 @@
 
 package de.gematik.tim.test.glue.api.media;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MEDIA_ID;
+import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.UPLOAD_MEDIA;
+import static net.serenitybdd.rest.SerenityRest.lastResponse;
+
 import de.gematik.tim.test.models.MediaFileIdDTO;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
-
-import java.util.UUID;
-
-import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MEDIA_ID;
-import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.UPLOAD_MEDIA;
-import static java.util.Objects.nonNull;
-import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 public class UploadMediaTask implements Task {
 
@@ -49,7 +46,7 @@ public class UploadMediaTask implements Task {
 
     Response response = lastResponse();
     assert (response.statusCode() / 100 == 2);
-    UUID mediaId = response.body().as(MediaFileIdDTO.class).getFileId();
+    String mediaId = response.body().as(MediaFileIdDTO.class).getFileId();
     actor.remember(MEDIA_ID, mediaId);
 
   }

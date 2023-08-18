@@ -30,7 +30,6 @@ public final class ActorMemoryKeys {
   public static final String DIRECT_CHAT_NAME = "directChatWith-";
   public static final String MEDIA_ID = "mediaId";
   public static final String IS_LOGGED_IN = "isLoggedIn";
-  public static final String LAST_DELETED_HS_ID = "lastDeletedHsId";
   public static final String HAS_REG_SERVICE_TOKEN = "hasRegServiceToken";
   public static final String IS_ORG_ADMIN = "isOrgAdmin";
 }

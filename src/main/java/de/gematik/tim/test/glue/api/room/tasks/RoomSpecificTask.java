@@ -16,6 +16,7 @@
 
 package de.gematik.tim.test.glue.api.room.tasks;
 
+import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
@@ -38,9 +39,7 @@ public abstract class RoomSpecificTask implements Task {
     UseRoomAbility useRoomAbility = actor.abilityTo(UseRoomAbility.class);
     if (isNotBlank(getRoomName())) {
       useRoomAbility.setActive(getRoomName());
-    } else {
-      roomName = useRoomAbility.getActiveKey();
     }
-
+    requireNonNull(useRoomAbility.getActive(), "An active Room have to be set");
   }
 }

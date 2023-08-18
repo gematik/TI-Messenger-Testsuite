@@ -44,7 +44,7 @@ public abstract class HealthcareSpecificTask implements Task {
     } else {
       hsName = useHealthcareServiceAbility.getActiveKey();
     }
-    if(actor.recall(HAS_REG_SERVICE_TOKEN) == null) {
+    if (actor.recall(HAS_REG_SERVICE_TOKEN) == null) {
       RawDataStatistics.getRegTokenForVZDEvent();
       actor.remember(HAS_REG_SERVICE_TOKEN, true);
     }

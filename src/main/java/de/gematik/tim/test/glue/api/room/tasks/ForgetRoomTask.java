@@ -16,34 +16,29 @@
 
 package de.gematik.tim.test.glue.api.room.tasks;
 
-import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.DELETE_ROOM;
-import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility.removeHsFromActor;
+import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.FORGET_ROOM;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
-import io.restassured.response.Response;
 import net.serenitybdd.screenplay.Actor;
 import org.springframework.http.HttpStatus;
 
-public class DeleteRoomTask extends RoomSpecificTask {
+public class ForgetRoomTask extends RoomSpecificTask {
 
-  public static DeleteRoomTask deleteRoom() {
-    return new DeleteRoomTask();
+  public static ForgetRoomTask forgetRoom() {
+    return new ForgetRoomTask();
   }
 
-  public DeleteRoomTask withName(String roomName) {
+  public ForgetRoomTask withName(String roomName) {
     return forRoomName(roomName);
   }
 
   @Override
   public <T extends Actor> void performAs(T actor) {
     super.performAs(actor);
-    actor.attemptsTo(DELETE_ROOM.request());
-    actor.abilityTo(UseRoomAbility.class).removeCurrent();
-    Response response = lastResponse();
-    if (response.statusCode() == HttpStatus.NO_CONTENT.value()) {
-      String roomName = actor.abilityTo(UseRoomAbility.class).getActive();
-      removeHsFromActor(roomName, actor);
+    actor.attemptsTo(FORGET_ROOM.request());
+    if (lastResponse().statusCode() == HttpStatus.NO_CONTENT.value()) {
+      actor.abilityTo(UseRoomAbility.class).removeCurrent();
     }
   }
 }

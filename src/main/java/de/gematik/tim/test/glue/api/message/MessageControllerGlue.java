@@ -26,19 +26,18 @@ import static de.gematik.tim.test.glue.api.message.GetLastOwnMessageFromRoomQues
 import static de.gematik.tim.test.glue.api.message.GetRoomMessageQuestion.messageFromSenderWithTextInActiveRoom;
 import static de.gematik.tim.test.glue.api.message.GetRoomMessagesQuestion.messagesInActiveRoom;
 import static de.gematik.tim.test.glue.api.message.SendDirectMessageTask.sendDirectMessageTo;
+import static de.gematik.tim.test.glue.api.message.SendDirectMessageToMxIdTask.sendDirectMessageToMxIdOutOfFederation;
 import static de.gematik.tim.test.glue.api.message.SendMessageTask.sendMessage;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.filterMessageForSenderAndText;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getRoomBetweenTwoActors;
 import static net.serenitybdd.screenplay.actors.OnStage.setTheStage;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
-import de.gematik.tim.test.glue.api.utils.GlueUtils;
 import de.gematik.tim.test.models.MessageDTO;
 import de.gematik.tim.test.models.RoomDTO;
 import io.cucumber.java.Before;
@@ -92,6 +91,13 @@ public class MessageControllerGlue {
     Actor actor1 = theActorCalled(actorName);
     Actor actor2 = theActorCalled(userName);
     actor1.attemptsTo(sendDirectMessageTo(actor2, message));
+    checkResponseCode(actorName, FORBIDDEN.value());
+  }
+
+  @Then("{string} versucht der MXID {string} direkt {string} zu schreiben")
+  public void directMessageMxid(String actorName, String mxid, String message) {
+    Actor actor = theActorCalled(actorName);
+    actor.attemptsTo(sendDirectMessageToMxIdOutOfFederation(mxid,message));
     checkResponseCode(actorName, FORBIDDEN.value());
   }
 

@@ -35,7 +35,7 @@ public class UpdateLocationTask extends LocationSpecificTask {
   }
 
   public UpdateLocationTask withDataFrom(FhirLocationDTO update) {
-    update.setLocationId(location.getLocationId());
+    update.setId(location.getId());
     this.location = update;
     return this;
   }

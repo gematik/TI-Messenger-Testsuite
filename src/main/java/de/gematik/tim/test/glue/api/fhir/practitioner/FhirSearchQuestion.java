@@ -18,20 +18,26 @@ package de.gematik.tim.test.glue.api.fhir.practitioner;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEARCH_PRACTITIONER;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.getMapper;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.repeatedRequest;
+import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
-import de.gematik.tim.test.models.FhirPractitionerSearchResultDTO;
+import de.gematik.tim.test.models.FhirEndpointDTO;
+import de.gematik.tim.test.models.FhirResourceTypeDTO;
+import de.gematik.tim.test.models.FhirSearchResultDTO;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import java.util.List;
 import java.util.Optional;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 import org.apache.commons.lang3.StringUtils;
 import org.awaitility.core.ConditionTimeoutException;
 
-public class FhirSearchQuestion implements Question<FhirPractitionerSearchResultDTO> {
+public class FhirSearchQuestion implements Question<FhirSearchResultDTO> {
 
   String mxid;
   String name;
@@ -96,17 +102,17 @@ public class FhirSearchQuestion implements Question<FhirPractitionerSearchResult
   }
 
   @Override
-  public FhirPractitionerSearchResultDTO answeredBy(Actor actor) {
+  public FhirSearchResultDTO answeredBy(Actor actor) {
     try {
       return repeatedRequest(() -> requestFhirPractitioner(actor), "practitioner", customTimeout,
           customPollInterval);
     } catch (ConditionTimeoutException ex) {
       return ((Response) actor.recall(LAST_RESPONSE)).body()
-          .as(FhirPractitionerSearchResultDTO.class);
+          .as(FhirSearchResultDTO.class);
     }
   }
 
-  private Optional<FhirPractitionerSearchResultDTO> requestFhirPractitioner(Actor actor) {
+  private Optional<FhirSearchResultDTO> requestFhirPractitioner(Actor actor) {
     actor.attemptsTo(SEARCH_PRACTITIONER.request().with(this::prepareQuery));
     actor.remember(LAST_RESPONSE, lastResponse());
     if (shouldWaitTillDeleted) {
@@ -115,17 +121,30 @@ public class FhirSearchQuestion implements Question<FhirPractitionerSearchResult
     return findPractitioner();
   }
 
-  private Optional<FhirPractitionerSearchResultDTO> findPractitioner() {
-    FhirPractitionerSearchResultDTO res = lastResponse().body()
-        .as(FhirPractitionerSearchResultDTO.class);
-    return requireNonNull(res.getTotalSearchResults()) >= atLeastExpectedResults ? Optional.of(res)
-        : Optional.empty();
+  private Optional<FhirSearchResultDTO> findPractitioner() {
+    FhirSearchResultDTO res = lastResponse().body().as(FhirSearchResultDTO.class, getMapper());
+    List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(res, FhirResourceTypeDTO.ENDPOINT,
+        FhirEndpointDTO.class);
+    endpoints = filterForEndpoint(endpoints);
+    return requireNonNull(endpoints.size()) >= atLeastExpectedResults ? Optional.of(res) : Optional.empty();
   }
 
-  private Optional<FhirPractitionerSearchResultDTO> dontFindPractitioner() {
-    FhirPractitionerSearchResultDTO res = lastResponse().body()
-        .as(FhirPractitionerSearchResultDTO.class);
-    return requireNonNull(res.getTotalSearchResults()) == 0 ? Optional.of(res) : Optional.empty();
+  private Optional<FhirSearchResultDTO> dontFindPractitioner() {
+    FhirSearchResultDTO res = lastResponse().body().as(FhirSearchResultDTO.class, getMapper());
+    List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(res, FhirResourceTypeDTO.ENDPOINT,
+        FhirEndpointDTO.class);
+    endpoints = filterForEndpoint(endpoints);
+    return requireNonNull(endpoints.size()) == 0 ? Optional.of(res) : Optional.empty();
+  }
+
+  private List<FhirEndpointDTO> filterForEndpoint(List<FhirEndpointDTO> endpoints) {
+    if (nonNull(mxid)) {
+      endpoints = endpoints.stream().filter(e -> e.getAddress().equals(mxid)).toList();
+    }
+    if (nonNull(name)) {
+      endpoints = endpoints.stream().filter(e -> e.getName().contains(name)).toList();
+    }
+    return endpoints;
   }
 
   private RequestSpecification prepareQuery(RequestSpecification request) {

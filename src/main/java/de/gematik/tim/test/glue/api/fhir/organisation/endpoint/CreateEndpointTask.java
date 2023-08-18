@@ -23,6 +23,9 @@ import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static org.springframework.http.HttpStatus.CREATED;
 
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.HealthcareSpecificTask;
+import de.gematik.tim.test.models.FhirCodingDTO;
+import de.gematik.tim.test.models.FhirCodingEntryDTO;
+import de.gematik.tim.test.models.FhirConnectionTypeDTO;
 import de.gematik.tim.test.models.FhirEndpointDTO;
 import de.gematik.tim.test.models.FhirEndpointDTO.StatusEnum;
 import io.restassured.response.Response;
@@ -80,13 +83,34 @@ public class CreateEndpointTask extends HealthcareSpecificTask {
     Response response = lastResponse();
     if (response.statusCode() == CREATED.value()) {
       FhirEndpointDTO endpoint = response.getBody().as(FhirEndpointDTO.class);
-      addEndpointToActorForHS(actor, endpoint.getName(), endpoint.getEndpointId(), hsName);
+      addEndpointToActorForHS(actor, endpoint.getName(), endpoint.getId(), hsName);
     }
   }
 
   private FhirEndpointDTO buildEndpoint() {
     status = status == null ? ACTIVE : status;
-    return new FhirEndpointDTO().address(mxId).name(name).status(status).payloadType(payloadType)
-        .connectionType(connectionType).managingOrganization(managingOrganization);
+    return new FhirEndpointDTO()
+        .address(mxId)
+        .name(name)
+        .status(status)
+        .payloadType(buildPayloadType())
+        .connectionType(buildConnectionType());
+  }
+
+  private List<FhirCodingEntryDTO> buildPayloadType() {
+    return List.of(
+        new FhirCodingEntryDTO().coding(
+            List.of(
+                new FhirCodingDTO()
+                    .code("tim-chat")
+                    .system("https://gematik.de/fhir/directory/CodeSystem/EndpointDirectoryPayloadType")
+                    .display("TI-Messenger chat"))
+        ));
+  }
+
+  private FhirConnectionTypeDTO buildConnectionType() {
+    return new FhirConnectionTypeDTO()
+        .system("https://gematik.de/fhir/directory/CodeSystem/EndpointDirectoryConnectionType")
+        .code("tim");
   }
 }

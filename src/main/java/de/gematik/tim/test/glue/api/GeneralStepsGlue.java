@@ -24,6 +24,7 @@ import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.lessThan;
 
 import io.cucumber.java.de.Dann;
+import net.serenitybdd.screenplay.Actor;
 import org.hamcrest.Matcher;
 
 public class GeneralStepsGlue {
@@ -33,7 +34,11 @@ public class GeneralStepsGlue {
 
   @Dann("erhält {string} einen Responsecode {int}")
   public static void checkResponseCode(String actorName, int responseCode) {
-    theActorCalled(actorName).should(seeThatResponse(res -> res.statusCode(responseCode)));
+    checkResponseCode(theActorCalled(actorName), responseCode);
+  }
+
+  public static void checkResponseCode(Actor actor, int responseCode) {
+    actor.should(seeThatResponse(res -> res.statusCode(responseCode)));
   }
 
   @Dann("war die Operation erfolgreich")

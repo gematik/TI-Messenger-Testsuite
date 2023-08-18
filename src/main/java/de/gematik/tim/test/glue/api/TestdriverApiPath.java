@@ -87,6 +87,7 @@ public final class TestdriverApiPath {
       FHIR_BASE_PATH + "/org/healthcareService";
   public static final String FHIR_HS_ADMIN_PATH =
       FHIR_HEALTHCARE_SERVICE_PATH + "/" + PATH_VARIABLE.formatted(HEALTHCARE_SERVICE_ID_VARIABLE);
+
   public static final String FHIR_ENDPOINT_PATH = FHIR_HS_ADMIN_PATH + "/endpoint";
   public static final String FHIR_ENDPOINT_ADMIN_PATH =
       FHIR_ENDPOINT_PATH + "/" + PATH_VARIABLE.formatted(ENDPOINT_ID_VARIABLE);

@@ -18,6 +18,7 @@ package de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HAS_REG_SERVICE_TOKEN;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_HEALTHCARE_SERVICE;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.getMapper;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
@@ -40,10 +41,10 @@ public class FhirGetHealthcareServiceQuestion extends HealthcareSpecificTask imp
   public FhirHealthcareServiceDTO answeredBy(Actor actor) {
     super.performAs(actor);
     actor.attemptsTo(GET_HEALTHCARE_SERVICE.request());
-    if(actor.recall(HAS_REG_SERVICE_TOKEN) == null) {
+    if (actor.recall(HAS_REG_SERVICE_TOKEN) == null) {
       RawDataStatistics.getRegTokenForVZDEvent();
       actor.remember(HAS_REG_SERVICE_TOKEN, true);
     }
-    return lastResponse().body().as(FhirHealthcareServiceDTO.class);
+    return lastResponse().body().as(FhirHealthcareServiceDTO.class, getMapper());
   }
 }
