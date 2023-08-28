@@ -16,7 +16,9 @@ Funktionalität: 13. Nutzung von mehreren Geräten
   @TCID:TIM_11_AF_1301 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 13.1 Events außerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "A" exportiert seinen Session-Key
     Und        "B" meldet sich mit den Daten von "A" an der Schnittstelle <ApiName1B> an
+    Und        "B" importiert den Session-Key von "A"
     Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "A", "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "C" findet "A" in FHIR
@@ -56,7 +58,9 @@ Funktionalität: 13. Nutzung von mehreren Geräten
     Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName2A>
     Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" exportiert seinen Session-Key
     Und        "D" meldet sich mit den Daten von "C" an der Schnittstelle <ApiName1C> an
+    Und        "D" importiert den Session-Key von "C"
     Und        "E" reserviert sich einen Messenger-Client an Schnittstelle <ApiName2B>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
     Und        "B" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "E"
@@ -97,6 +101,7 @@ Funktionalität: 13. Nutzung von mehreren Geräten
   @TCID:TIM_11_AF_1303 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 13.3 Events außerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices - Erhalt vorheriger Nachrichten
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "A" exportiert seinen Session-Key
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "B" findet "A" in FHIR
@@ -106,6 +111,7 @@ Funktionalität: 13. Nutzung von mehreren Geräten
     Und        "A" empfängt eine Nachricht "Hello from the other site" von "B"
     Und        "A" schreibt "B" direkt "At least I can say that I have tried"
     Und        "C" meldet sich mit den Daten von "A" an der Schnittstelle <ApiName1B> an
+    Und        "C" importiert den Session-Key von "A"
     Und        "A" loggt sich im TI-Messenger aus
     Dann       "C" empfängt eine Nachricht "Hello from the other site" von "B"
     Und        "C" empfängt eine Nachricht "At least I can say that I have tried" von "A"
@@ -136,6 +142,7 @@ Funktionalität: 13. Nutzung von mehreren Geräten
     Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName2A>
     Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "C" exportiert seinen Session-Key
     Und        "D" reserviert sich einen Messenger-Client an Schnittstelle <ApiName2B>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
     Und        "B" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "D"
@@ -146,6 +153,7 @@ Funktionalität: 13. Nutzung von mehreren Geräten
     Und        "C" empfängt eine Nachricht "Hello from the other site" von "D"
     Und        "C" schreibt "D" direkt "At least I can say that I have tried"
     Und        "E" meldet sich mit den Daten von "C" an der Schnittstelle <ApiName1C> an
+    Und        "E" importiert den Session-Key von "C"
     Und        "C" loggt sich im TI-Messenger aus
     Dann       "E" empfängt eine Nachricht "Hello from the other site" von "D"
     Und        "E" empfängt eine Nachricht "At least I can say that I have tried" von "C"
@@ -176,7 +184,9 @@ Funktionalität: 13. Nutzung von mehreren Geräten
   @TCID:TIM_11_AF_1305 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 13.5 Events innerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "A" exportiert seinen Session-Key
     Und        "B" meldet sich mit den Daten von "A" an der Schnittstelle <ApiName1B> an
+    Und        "B" importiert den Session-Key von "A"
     Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1C>
     Und        "A", "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "C" findet "A" in FHIR
@@ -211,7 +221,9 @@ Funktionalität: 13. Nutzung von mehreren Geräten
   Szenariogrundriss: 13.6 Events innerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices
     Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "B" exportiert seinen Session-Key
     Und        "C" meldet sich mit den Daten von "B" an der Schnittstelle <ApiName1C> an
+    Und        "C" importiert den Session-Key von "B"
     Und        "D" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1D>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "D"
@@ -245,6 +257,7 @@ Funktionalität: 13. Nutzung von mehreren Geräten
   @TCID:TIM_11_AF_1307 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 13.7 Events innerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices - Erhalt vorheriger Nachrichten
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Und        "A" exportiert seinen Session-Key
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "B" findet "A" in FHIR
@@ -254,6 +267,7 @@ Funktionalität: 13. Nutzung von mehreren Geräten
     Und        "A" empfängt eine Nachricht "Hello from the other site" von "B"
     Und        "A" schreibt "B" direkt "At least I can say that I have tried"
     Und        "C" meldet sich mit den Daten von "A" an der Schnittstelle <ApiName1C> an
+    Und        "C" importiert den Session-Key von "A"
     Und        "A" loggt sich im TI-Messenger aus
     Dann       "C" empfängt eine Nachricht "Hello from the other site" von "B"
     Und        "C" empfängt seine Nachricht "At least I can say that I have tried" im Chat mit "B"
@@ -279,6 +293,7 @@ Funktionalität: 13. Nutzung von mehreren Geräten
   Szenariogrundriss: 13.8 Events innerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices - Erhalt vorheriger Nachrichten
     Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        "B" exportiert seinen Session-Key
     Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
@@ -289,6 +304,7 @@ Funktionalität: 13. Nutzung von mehreren Geräten
     Und        "B" empfängt eine Nachricht "Hello from the other site" von "C"
     Und        "B" schreibt "C" direkt "At least I can say that I have tried"
     Und        "D" meldet sich mit den Daten von "B" an der Schnittstelle <ApiName1D> an
+    Und        "D" importiert den Session-Key von "B"
     Und        "B" loggt sich im TI-Messenger aus
     Dann       "D" empfängt eine Nachricht "Hello from the other site" von "C"
     Und        "D" empfängt seine Nachricht "At least I can say that I have tried" im Chat mit "C"

@@ -44,7 +44,7 @@ public class DeleteHealthcareServicesTask extends HealthcareSpecificTask {
     Response response = lastResponse();
     if (response.statusCode() == HttpStatus.NO_CONTENT.value()) {
       UseHealthcareServiceAbility ability = actor.abilityTo(UseHealthcareServiceAbility.class);
-      actor.can(lookUpDeleted(ability.getActiveValue()));
+      actor.can(lookUpDeleted(ability.getActiveValue().id()));
       ability.removeCurrent();
     }
     if (actor.recall(HAS_REG_SERVICE_TOKEN) == null) {

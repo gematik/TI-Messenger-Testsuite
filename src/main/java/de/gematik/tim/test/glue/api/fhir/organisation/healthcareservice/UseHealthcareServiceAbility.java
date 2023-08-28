@@ -27,20 +27,20 @@ import io.restassured.specification.RequestSpecification;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 
-public class UseHealthcareServiceAbility extends MultiTargetAbility<String, String> implements
+public class UseHealthcareServiceAbility extends MultiTargetAbility<String, HealthcareServiceInfo> implements
     TestdriverApiAbility {
 
-  private UseHealthcareServiceAbility(String hsName, String hsId) {
-    addAndSetActive(hsName, hsId);
+  private UseHealthcareServiceAbility(String hsName, HealthcareServiceInfo hsInfo) {
+    addAndSetActive(hsName, hsInfo);
   }
 
-  public static <T extends Actor> void addHsToActor(String hsName, String hsId, T actor) {
+  public static <T extends Actor> void addHsToActor(String hsName, HealthcareServiceInfo hsInfo, T actor) {
     UseHealthcareServiceAbility ability = actor.abilityTo(UseHealthcareServiceAbility.class);
     if (isNull(ability)) {
-      actor.can(useHs(hsName, hsId));
+      actor.can(useHs(hsName, hsInfo));
       return;
     }
-    ability.addAndSetActive(hsName, hsId);
+    ability.addAndSetActive(hsName, hsInfo);
   }
 
   public static <T extends Actor> void removeHsFromActor(String hsName, T actor) {
@@ -52,13 +52,13 @@ public class UseHealthcareServiceAbility extends MultiTargetAbility<String, Stri
 
   @Override
   public RequestSpecification apply(RequestSpecification requestSpecification) {
-    String hsId = getActive();
-    requireNonNull(hsId);
-    return requestSpecification.pathParam(HEALTHCARE_SERVICE_ID_VARIABLE, hsId);
+    HealthcareServiceInfo hsInfo = getActive();
+    requireNonNull(hsInfo);
+    return requestSpecification.pathParam(HEALTHCARE_SERVICE_ID_VARIABLE, hsInfo.id());
   }
 
-  private static UseHealthcareServiceAbility useHs(String hsName, String hsId) {
-    return new UseHealthcareServiceAbility(hsName, hsId);
+  private static UseHealthcareServiceAbility useHs(String hsName, HealthcareServiceInfo hsInfo) {
+    return new UseHealthcareServiceAbility(hsName, hsInfo);
   }
 
   @Override

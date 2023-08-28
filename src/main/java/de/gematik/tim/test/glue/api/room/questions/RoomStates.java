@@ -20,13 +20,18 @@ import lombok.Getter;
 
 @Getter
 public enum RoomStates {
-  TIM_DEFAULT("de.gematik.tim.room.default.v1");
+  TIM_DEFAULT("de.gematik.tim.room.default.v1", null),
+  TIM_ROOM_TYPE("m.room.create", new Content("$.type", "de.gematik.tim.roomtype.default.v1"));
 
-  private String text;
+  private String type;
+  private Content content;
 
-  RoomStates(String text) {
-    this.text = text;
+  RoomStates(String type, Content content) {
+    this.type = type;
+    this.content = content;
   }
 
+  public record Content(String jsonPath, String value) {
 
+  }
 }

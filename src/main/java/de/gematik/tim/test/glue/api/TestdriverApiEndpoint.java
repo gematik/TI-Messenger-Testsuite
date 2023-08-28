@@ -33,12 +33,14 @@ import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_HEALTHCARE_SER
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_HS_ADMIN_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_LOCATION_ADMIN_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_LOCATION_PATH;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_ORG_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_PRACTITIONER_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_SEARCH_ENDPOINT_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_SEARCH_ORG_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_SEARCH_PRACTITIONER_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.HOMESERVER_SEARCH_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.INFO_PATH;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.KEY_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.LOGIN_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.LOGOUT_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.MEDIA_DOWNLOAD_PATH;
@@ -84,6 +86,8 @@ public enum TestdriverApiEndpoint {
   GET_ACCOUNT(GET, ACCOUNT_PATH, UseDeviceAbility.class),
   CREATE_ACCOUNT(POST, ACCOUNT_PATH, UseDeviceAbility.class),
   DELETE_ACCOUNT(DELETE, ACCOUNT_PATH, UseDeviceAbility.class),
+  GET_SESSION_KEY(GET, KEY_PATH, UseDeviceAbility.class),
+  IMPORT_SESSION_KEY(POST, KEY_PATH, UseDeviceAbility.class),
 
   //LOGIN
   LOGIN(POST, LOGIN_PATH, UseDeviceAbility.class),
@@ -122,6 +126,7 @@ public enum TestdriverApiEndpoint {
   // FHIR ORG_ADMIN
   SEARCH_ORG(GET, FHIR_SEARCH_ORG_PATH, UseDeviceAbility.class),
   SEARCH_ENDPOINT(GET, FHIR_SEARCH_ENDPOINT_PATH, UseDeviceAbility.class),
+  GET_OWN_ORG(GET, FHIR_ORG_PATH, UseDeviceAbility.class),
 
   // FHIR ORG_ADMIN HEALTHCARE SERVICE
   GET_HEALTHCARE_SERVICES(GET, FHIR_HEALTHCARE_SERVICE_PATH, UseDeviceAbility.class),

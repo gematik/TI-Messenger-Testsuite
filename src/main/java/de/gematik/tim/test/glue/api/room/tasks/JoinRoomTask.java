@@ -19,12 +19,16 @@ package de.gematik.tim.test.glue.api.room.tasks;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.JOIN_ROOM;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_ID_VARIABLE;
 import static de.gematik.tim.test.glue.api.room.UseRoomAbility.addRoomToActor;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.repeatedRequest;
+import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.models.RoomDTO;
+import io.restassured.response.Response;
 import java.util.Objects;
-import net.serenitybdd.rest.SerenityRest;
+import java.util.Optional;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
+import org.springframework.http.HttpStatus;
 
 public class JoinRoomTask implements Task {
 
@@ -43,12 +47,19 @@ public class JoinRoomTask implements Task {
   public <T extends Actor> void performAs(T actor) {
     Objects.requireNonNull(roomId,
         "roomId of JoinRoomTask hast to be set with #withRoomId(roomId)");
+    repeatedRequest(() -> joinRoom(actor), "join Room");
+  }
 
+  private <T extends Actor> Optional<RoomDTO> joinRoom(T actor) {
     actor.attemptsTo(JOIN_ROOM.request()
         .with(req -> req.pathParam(ROOM_ID_VARIABLE, roomId)));
-
-    RoomDTO room = SerenityRest.lastResponse().body().as(RoomDTO.class);
-    addRoomToActor(room, actor);
-
+    Response resp = lastResponse();
+    if (HttpStatus.valueOf(resp.statusCode()).is2xxSuccessful()) {
+      RoomDTO room = lastResponse().body().as(RoomDTO.class);
+      addRoomToActor(room, actor);
+      return Optional.of(room);
+    } else {
+      return Optional.empty();
+    }
   }
 }

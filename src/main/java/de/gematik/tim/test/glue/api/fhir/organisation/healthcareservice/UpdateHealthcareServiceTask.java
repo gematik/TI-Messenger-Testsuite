@@ -18,11 +18,15 @@ package de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HAS_REG_SERVICE_TOKEN;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.UPDATE_HEALTHCARE_SERVICE;
+import static de.gematik.tim.test.glue.api.fhir.organisation.FhirOwnOrganizationQuestion.ownOrgId;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueName;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.readJsonFile;
 import static java.util.Objects.requireNonNull;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.FhirHealthcareServiceDTO;
+import de.gematik.tim.test.models.FhirOrganizationDTO;
+import de.gematik.tim.test.models.FhirReferenceDTO;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
@@ -32,11 +36,12 @@ import net.serenitybdd.screenplay.Actor;
 public class UpdateHealthcareServiceTask extends HealthcareSpecificTask {
 
   private FhirHealthcareServiceDTO healthcareService = new FhirHealthcareServiceDTO();
+  private boolean replaceOrganizationRef;
 
   public static UpdateHealthcareServiceTask updateHealthcareService(
       FhirHealthcareServiceDTO healthcareServiceDTO) {
     requireNonNull(healthcareServiceDTO);
-    return new UpdateHealthcareServiceTask(healthcareServiceDTO);
+    return new UpdateHealthcareServiceTask(healthcareServiceDTO, false);
   }
 
   public static UpdateHealthcareServiceTask updateHealthcareService() {
@@ -49,11 +54,21 @@ public class UpdateHealthcareServiceTask extends HealthcareSpecificTask {
 
   public UpdateHealthcareServiceTask withFile(String jsonFileName) {
     healthcareService = readJsonFile(jsonFileName, FhirHealthcareServiceDTO.class);
+    healthcareService.setName(createUniqueName(healthcareService.getName()));
+    return this;
+  }
+
+  public UpdateHealthcareServiceTask withOrganizationOfCurrentDevice() {
+    this.replaceOrganizationRef = true;
     return this;
   }
 
   @Override
   public <T extends Actor> void performAs(T actor) {
+    if (replaceOrganizationRef) {
+      FhirOrganizationDTO organization = actor.asksFor(ownOrgId());
+      healthcareService.providedBy(new FhirReferenceDTO().reference("Organization/" + organization.getId()));
+    }
     actor.attemptsTo(UPDATE_HEALTHCARE_SERVICE.request()
         .with(req -> req.body(healthcareService)));
     if (actor.recall(HAS_REG_SERVICE_TOKEN) == null) {

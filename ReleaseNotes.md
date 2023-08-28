@@ -5,6 +5,23 @@
 ## Link to TI-Messenger-testsuite [`docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
 
 - - -
+## Release 0.9.2
+
+### Feature
+
+- Feature File 14 does check for TIM custom event and TIM custom roomType in create event
+- Check expression of goal `check` have been edited. For apis that provide an orgAdmin and client simultaneously the amount of needed devices will be checked to be greater than four.  
+- Names of healthcare-services now get generated with timestamp to be unique and shrink 
+- TestCases in Feature File 13 adjusted. New steps for export/import of session keys
+- Fits to TestdriverApi 0.9.2 -> CodeableConcept and telecom added
+
+### Bugfix
+
+- Join room will be performed multiple times till success or set timeout. This is needed to avoid false negative because of sync issues between homeservers
+- Checks belonging the membership status of room members will be performed multiple times, till success or set timeout. This is needed to avoid false negative because of sync issues between homeservers
+- Error in GlueUtils, could not find File, resolved
+- An empty searchResult does not throw a NPE anymore
+- Feature File 03 - .json files edit to fit to FHIR-datastructures. OrganizationId will be requested and replaced in request (body ca be sent directly to FhirVZD)
 
 ## Release 0.9.0
 
@@ -75,7 +92,7 @@
 
 - Documentation of Pooling in Testsuite.adoc
 - Documentation of version filter in Testsuite.adoc
-- TestCases 12.1, 12.2, 12.3 adjusted to 3 different participants/home servers
+- TestCases 12.1, 12.2, 12.3 adjusted to 3 different participants/homeservers
 - New Feature File 14 for group chat (IOP) with 5 participants (incl. documentation in Testsuite.adoc)
 - New Feature File 15 for group chat (IOP) with 3 participants. Tests are excluded from Feature File 12
 - Flag `saveConnections` implemented. Set to true and testsuite will unclaim devices only at the end of run

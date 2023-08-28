@@ -23,8 +23,8 @@ import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static org.springframework.http.HttpStatus.CREATED;
 
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.HealthcareSpecificTask;
+import de.gematik.tim.test.models.FhirCodeableConceptDTO;
 import de.gematik.tim.test.models.FhirCodingDTO;
-import de.gematik.tim.test.models.FhirCodingEntryDTO;
 import de.gematik.tim.test.models.FhirConnectionTypeDTO;
 import de.gematik.tim.test.models.FhirEndpointDTO;
 import de.gematik.tim.test.models.FhirEndpointDTO.StatusEnum;
@@ -97,9 +97,9 @@ public class CreateEndpointTask extends HealthcareSpecificTask {
         .connectionType(buildConnectionType());
   }
 
-  private List<FhirCodingEntryDTO> buildPayloadType() {
+  private List<FhirCodeableConceptDTO> buildPayloadType() {
     return List.of(
-        new FhirCodingEntryDTO().coding(
+        new FhirCodeableConceptDTO().coding(
             List.of(
                 new FhirCodingDTO()
                     .code("tim-chat")

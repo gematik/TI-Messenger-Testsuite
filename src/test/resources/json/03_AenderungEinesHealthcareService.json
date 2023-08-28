@@ -1,35 +1,66 @@
 {
   "name": "HealthcareServiceName2",
-  "serviceProvisionCode": [
+  "resourceType": "HealthcareService",
+  "providedBy": {
+    "reference": "{{ORG_ID_REF}}"
+  },
+  "meta": {
+    "profile": [
+      "https://gematik.de/fhir/directory/StructureDefinition/HealthcareServiceDirectory"
+    ],
+    "tag": [
+      {
+        "system": "https://gematik.de/fhir/directory/CodeSystem/Origin",
+        "code": "owner",
+        "display": "my test owner",
+        "userSelected": false
+      }
+    ]
+  },
+  "telecom": [
     {
-      "code": "FREE"
+      "system": "phone",
+      "value": "030 606 06 60",
+      "use": "work"
     }
   ],
   "communication": [
     {
-      "system": "language",
-      "code": "DE"
-    },
+      "coding": [
+        {
+          "system": "http://hl7.org.au/fhir/StructureDefinition/healthcareservice-communication",
+          "code": "DE"
+        },
+        {
+          "system": "http://hl7.org.au/fhir/StructureDefinition/healthcareservice-communication",
+          "code": "EN"
+        }
+      ]
+    }
+  ],
+  "serviceProvisionCode": [
     {
-      "system": "language",
-      "code": "EN"
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/service-provision-conditions",
+          "code": "free"
+        }
+      ]
     }
   ],
   "appointmentRequired": true,
+  "availabilityExceptions": "During summer holiday not available" ,
   "availableTime": [
     {
       "daysOfWeek": [
-        "Mon",
-        "Tue",
-        "Wed",
-        "Thu",
-        "Fri"
+        "mon",
+        "tue",
+        "wed",
+        "thu",
+        "fri"
       ],
-      "availableStartTime": "08:00",
-      "availableEndTime": "17:00"
+      "availableStartTime": "08:00:00",
+      "availableEndTime": "17:00:00"
     }
-  ],
-  "availabilityExceptions": [
-    "During summer holiday not available"
   ]
 }
