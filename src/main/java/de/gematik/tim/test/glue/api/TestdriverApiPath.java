@@ -46,6 +46,7 @@ public final class TestdriverApiPath {
   public static final String CLAIM_DEVICE_PATH = DEVICE_ID_PATH + "/claim";
   public static final String UNCLAIM_DEVICE_PATH = DEVICE_ID_PATH + "/unclaim";
   public static final String ACCOUNT_PATH = DEVICE_ID_PATH + "/account";
+  public static final String KEY_PATH = ACCOUNT_PATH + "/key";
 
   // ROOM
   public static final String ROOMS_PATH = DEVICE_ID_PATH + "/rooms";
@@ -78,13 +79,13 @@ public final class TestdriverApiPath {
       FHIR_BASE_PATH + "/searchPractitionerInFhirDirectory";
   public static final String FHIR_PRACTITIONER_PATH = FHIR_BASE_PATH + "/mxidInFhirDirectory";
   public static final String FHIR_AUTHENTICATE_PATH = FHIR_BASE_PATH + "/fhirAuthenticate";
+  public static final String FHIR_ORG_PATH = FHIR_BASE_PATH + "/org";
 
   // FHIR ORG_ADMIN
   public static final String FHIR_SEARCH_ORG_PATH =
       FHIR_BASE_PATH + "/searchOrganizationInFhirDirectory";
   public static final String FHIR_SEARCH_ENDPOINT_PATH = FHIR_BASE_PATH + "/searchHealthcareServiceEndpointInFhirDirectory";
-  public static final String FHIR_HEALTHCARE_SERVICE_PATH =
-      FHIR_BASE_PATH + "/org/healthcareService";
+  public static final String FHIR_HEALTHCARE_SERVICE_PATH = FHIR_ORG_PATH +"/healthcareService";
   public static final String FHIR_HS_ADMIN_PATH =
       FHIR_HEALTHCARE_SERVICE_PATH + "/" + PATH_VARIABLE.formatted(HEALTHCARE_SERVICE_ID_VARIABLE);
 

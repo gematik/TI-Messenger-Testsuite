@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>de.gematik.tim.test</groupId>
   <artifactId>TI-Messenger-Testsuite</artifactId>
-  <version>0.9.0</version>
+  <version>0.9.2</version>
   <packaging>jar</packaging>
   <name>TI-Messenger-Testsuite</name>
   <description>Testsuite to check functionality of TI-Messenger-Clients</description>
@@ -22,7 +22,8 @@
     <version.serenity.core>3.6.20</version.serenity.core>
     <polarion.toolbox.version>2.0.0-133</polarion.toolbox.version>
     <feature_dir>${project.build.directory}/features/</feature_dir>
-    <feature.template.dir>${project.basedir}/src/test/resources/templates/FeatureFiles/Zulassungstests</feature.template.dir>
+    <feature.template.dir>${project.basedir}/src/test/resources/templates/FeatureFiles/Zulassungstests
+    </feature.template.dir>
     <sonar.coverage.exclusions>**/*</sonar.coverage.exclusions>
     <feature.tables.max_rows>9999</feature.tables.max_rows>
     <maven.build.timestamp.format>yyyy-MM-dd_HH_mm_ss</maven.build.timestamp.format>
@@ -160,9 +161,9 @@
             </goals>
             <configuration>
               <url>
-                https://raw.githubusercontent.com/gematik/api-ti-messenger/f176514c43388703c06418548df5e35588ccba65/src/openapi/TiMessengerTestTreiber.yaml
+                https://raw.githubusercontent.com/gematik/api-ti-messenger/9c5d696f999e09e78a4ca64d0c96b4246711a471/src/openapi/TiMessengerTestTreiber.yaml
               </url>
-              <md5>ecc367ef3eb4fee8e7b9c6abb1988c54</md5>
+              <md5>4a04bf5d7df98c743482be021b4b1211</md5>
               <outputFileName>TiMessengerTestTreiber.yaml</outputFileName>
               <outputDirectory>${project.build.directory}</outputDirectory>
               <overwrite>true</overwrite>
@@ -269,8 +270,8 @@
           </propertyExpressions>
           <!--          Check config-->
           <checkPath>devices</checkPath>
-          <defaultCheckExpressions>ITEM.hasProperty("orgAdmin") ? $.devices.size() >= 1 : $.devices.size() >= 3
-          </defaultCheckExpressions>
+          <defaultCheckExpressions>
+            ITEM.hasTag("orgAdmin") and ITEM.hasTag("client") ? $.devices.size() >= 4 : ITEM.hasTag("orgAdmin") ? $.devices.size() >= 1 : $.devices.size() >= 3</defaultCheckExpressions>
           <!--          Combine config-->
           <breakIfTableToSmall>${cutest.combine.break}</breakIfTableToSmall>
           <outputDir>${feature_dir}</outputDir>
@@ -606,7 +607,7 @@
                 <artifactItem>
                   <groupId>de.gematik.tim.test</groupId>
                   <artifactId>TI-Messenger-TestdriverSim</artifactId>
-                  <version>4.0.0</version>
+                  <version>4.1.1</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}</outputDirectory>

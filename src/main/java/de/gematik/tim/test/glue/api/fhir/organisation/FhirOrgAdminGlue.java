@@ -91,6 +91,7 @@ public class FhirOrgAdminGlue {
         .toList();
     assertThat(mxIds).contains(mxId);
   }
+  //</editor-fold>
 
   //<editor-fold desc="Create & Add">
   @Und("{string} erstellt einen Healthcare-Service {string}")
@@ -127,6 +128,7 @@ public class FhirOrgAdminGlue {
   }
   //</editor-fold>
 
+  //<editor-fold desc="Location">
   @Wenn("{string} fügt eine Location {string} zum Healthcare-Service {string} hinzu mit JSON {string}")
   public void addLocationToHealthcareServiceWithJson(String orgAdmin, String locationName,
       String hsName, String fileName) {
@@ -136,6 +138,26 @@ public class FhirOrgAdminGlue {
     checkResponseCode(orgAdmin, CREATED.value());
   }
 
+  @Dann("{string} ändert die Location {string} für den Healthcare-Service {string} mit JSON {string}")
+  public void changeLocationForHealthcareServiceWithJson(String orgAdmin, String locationName,
+      String hsName, String fileName) {
+    Actor admin = theActorCalled(orgAdmin);
+    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hsName);
+    FhirLocationDTO location = admin.asksFor(getLocation().withName(locationName));
+    admin.attemptsTo(updateLocation(location).withFile(fileName));
+    checkResponseCode(orgAdmin, OK.value());
+  }
+
+  @Und("{string} löscht die Location {string} für den Healthcare-Service {string}")
+  public void deleteLocationForHealthcareService(String orgAdmin, String locationName,
+      String hsName) {
+    Actor admin = theActorCalled(orgAdmin);
+    admin.attemptsTo(deleteLocation().withName(locationName).forHealthcareService(hsName));
+    checkResponseCode(orgAdmin, NO_CONTENT.value());
+  }
+  //</editor-fold>
+
+  //<editor-fold desc="Endpoint">
   @Wenn("{string} sieht, dass {listOfStrings} genau einen Endpunkt im Healthcare-Service {string} hat")
   @Wenn("{string} sieht, dass {listOfStrings} je einen Endpunkt im Healthcare-Service {string} haben")
   public void healthCareServiceEndpointSearch(String adminName, List<String> actorNames, String hcsName) {
@@ -143,7 +165,7 @@ public class FhirOrgAdminGlue {
         .map(name -> (String) theActorCalled(name).recall(MX_ID))
         .toList().toArray(new String[0]);
     Actor admin = theActorCalled(adminName);
-    String hsId = admin.abilityTo(UseHealthcareServiceAbility.class).getTarget(hcsName);
+    String hsId = admin.abilityTo(UseHealthcareServiceAbility.class).getTarget(hcsName).id();
     List<FhirEndpointDTO> results =
         getEndpointList().withHsId(hsId).answeredBy(admin);
     List<String> endpointMxids = requireNonNull(results).stream()
@@ -153,9 +175,6 @@ public class FhirOrgAdminGlue {
     assertThat(endpointMxids).containsExactlyInAnyOrder(actorMxids);
   }
 
-  //</editor-fold>
-
-  //<editor-fold desc="Change">
   @When("{string} changes endpoint of healthcare service {string} to {string}")
   @Wenn("{string} ändert den Endpunkt des Healthcare-Services {string} auf {string}")
   public void changeHealthcareServiceEndpointToOtherMxId(String orgAdmin, String hsName,
@@ -171,7 +190,27 @@ public class FhirOrgAdminGlue {
     checkResponseCode(orgAdmin, OK.value());
   }
 
+  @Und("{string} ändert den Endpunkt von {string} im Healthcare-Service {string} mit dem JSON {string}")
+  public void changeEndpointForHealthcareServiceWithJson(String orgAdmin, String client,
+      String hsName, String fileName) {
+    String endpointName = theActorCalled(client).recall(DISPLAY_NAME);
+    Actor admin = theActorCalled(orgAdmin);
+    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hsName);
+    admin.abilityTo(UseEndpointAbility.class).setActive(endpointName);
+    admin.attemptsTo(updateEndpointFromFile(fileName));
+    checkResponseCode(orgAdmin, OK.value());
+  }
 
+  @Und("{string} löscht den Endpoint von {string} für den Healthcare-Service {string}")
+  public void deleteEndpointOfHealthcareService(String orgAdmin, String userName, String hsName) {
+    String endpointName = theActorCalled(userName).recall(DISPLAY_NAME);
+    Actor admin = theActorCalled(orgAdmin);
+    admin.attemptsTo(deleteEndPoint().withName(endpointName).forHealthcareService(hsName));
+    checkResponseCode(orgAdmin, NO_CONTENT.value());
+  }
+  //</editor-fold>
+
+  //<editor-fold desc="HealthcareService">
   @Wenn("{string} ändert die Daten des von {string} angelegten Healthcare-Service {string} mit JSON {string}")
   public void changeDataFromHealthcareServiceWithJson(String orgAdmin, String hsCreator,
       String hsName, String fileName) {
@@ -188,47 +227,8 @@ public class FhirOrgAdminGlue {
       String fileName) {
     Actor admin = theActorCalled(orgAdmin);
 
-    admin.attemptsTo(updateHealthcareService().withName(hsName).withFile(fileName));
+    admin.attemptsTo(updateHealthcareService().withName(hsName).withFile(fileName).withOrganizationOfCurrentDevice());
     checkResponseCode(orgAdmin, OK.value());
-  }
-
-  @Dann("{string} ändert die Location {string} für den Healthcare-Service {string} mit JSON {string}")
-  public void changeLocationForHealthcareServiceWithJson(String orgAdmin, String locationName,
-      String hsName, String fileName) {
-    Actor admin = theActorCalled(orgAdmin);
-    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hsName);
-    FhirLocationDTO location = admin.asksFor(getLocation().withName(locationName));
-    admin.attemptsTo(updateLocation(location).withFile(fileName));
-    checkResponseCode(orgAdmin, OK.value());
-  }
-
-  @Und("{string} ändert den Endpunkt von {string} im Healthcare-Service {string} mit dem JSON {string}")
-  public void changeEndpointForHealthcareServiceWithJson(String orgAdmin, String client,
-      String hsName, String fileName) {
-    String endpointName = theActorCalled(client).recall(DISPLAY_NAME);
-    Actor admin = theActorCalled(orgAdmin);
-    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hsName);
-    admin.abilityTo(UseEndpointAbility.class).setActive(endpointName);
-    admin.attemptsTo(updateEndpointFromFile(fileName));
-    checkResponseCode(orgAdmin, OK.value());
-  }
-  //</editor-fold>
-
-  //<editor-fold desc="Delete">
-  @Und("{string} löscht die Location {string} für den Healthcare-Service {string}")
-  public void deleteLocationForHealthcareService(String orgAdmin, String locationName,
-      String hsName) {
-    Actor admin = theActorCalled(orgAdmin);
-    admin.attemptsTo(deleteLocation().withName(locationName).forHealthcareService(hsName));
-    checkResponseCode(orgAdmin, NO_CONTENT.value());
-  }
-
-  @Und("{string} löscht den Endpoint von {string} für den Healthcare-Service {string}")
-  public void deleteEndpointOfHealthcareService(String orgAdmin, String userName, String hsName) {
-    String endpointName = theActorCalled(userName).recall(DISPLAY_NAME);
-    Actor admin = theActorCalled(orgAdmin);
-    admin.attemptsTo(deleteEndPoint().withName(endpointName).forHealthcareService(hsName));
-    checkResponseCode(orgAdmin, NO_CONTENT.value());
   }
 
   @Und("{string} löscht den Healthcare-Service {string}")
@@ -310,7 +310,7 @@ public class FhirOrgAdminGlue {
     jsonHs.setLocation(jsonHs.getLocation() == null ? List.of() : jsonHs.getLocation());
 
     assertThat(healthcareService).usingRecursiveComparison()
-        .ignoringFields("providedBy", "identifier", "meta", "resourceType", "text")
+        .ignoringFields("providedBy", "identifier", "meta", "resourceType", "text", "name")
         .ignoringFieldsMatchingRegexes(".*id")
         .isEqualTo(jsonHs);
   }

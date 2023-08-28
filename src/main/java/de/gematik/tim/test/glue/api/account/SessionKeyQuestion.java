@@ -14,25 +14,24 @@
  * limitations under the License.
  */
 
-package de.gematik.tim.test.glue.api.room.questions;
+package de.gematik.tim.test.glue.api.account;
 
-import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_ROOM_STATES;
+import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_SESSION_KEY;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
-import de.gematik.tim.test.models.RoomStateDTO;
-import java.util.List;
+import de.gematik.tim.test.models.MatrixKeyInfoDTO;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 
-public class GetRoomStatesQuestion implements Question<List<RoomStateDTO>> {
+public class SessionKeyQuestion implements Question<MatrixKeyInfoDTO> {
 
-  public static GetRoomStatesQuestion roomStates() {
-    return new GetRoomStatesQuestion();
+  public static SessionKeyQuestion ownSessionKey() {
+    return new SessionKeyQuestion();
   }
 
   @Override
-  public List<RoomStateDTO> answeredBy(Actor actor) {
-    actor.attemptsTo(GET_ROOM_STATES.request());
-    return List.of(lastResponse().body().as(RoomStateDTO[].class));
+  public MatrixKeyInfoDTO answeredBy(Actor actor) {
+    actor.attemptsTo(GET_SESSION_KEY.request());
+    return lastResponse().body().as(MatrixKeyInfoDTO.class);
   }
 }

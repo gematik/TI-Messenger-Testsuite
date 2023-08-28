@@ -14,20 +14,8 @@
  * limitations under the License.
  */
 
-package de.gematik.tim.test.glue.api;
+package de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice;
 
-import static lombok.AccessLevel.PRIVATE;
-
-import io.cucumber.java.PendingException;
-import io.cucumber.java.de.Dann;
-import io.cucumber.java.de.Und;
-import io.cucumber.java.en.Then;
-import lombok.AllArgsConstructor;
-
-
-@AllArgsConstructor(access = PRIVATE)
-public class TransferGlue {
+public record HealthcareServiceInfo(String name, String id) {
 
 }
-
-

@@ -64,7 +64,10 @@ import java.net.URI;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -198,7 +201,8 @@ public class GlueUtils {
 
   @SneakyThrows
   public static <T> T readJsonFile(String file, Class<T> returnType) {
-    return new ObjectMapper().registerModule(new JavaTimeModule()).readValue(new File(file), returnType);
+    return new ObjectMapper().registerModule(new JavaTimeModule())
+        .readValue(new File(TEST_RESOURCES_JSON_PATH + file), returnType);
   }
 
   @SneakyThrows
@@ -218,6 +222,11 @@ public class GlueUtils {
     }
     return splitted[1];
   }
+
+  public static String createUniqueName(String name) {
+    return name + "-" + Instant.now().toEpochMilli();
+  }
+
 
   public static List<?> getResourcesFromSearchResult(FhirSearchResultDTO result,
       FhirResourceTypeDTO type) {
@@ -239,6 +248,9 @@ public class GlueUtils {
 
   public static Map<FhirResourceTypeDTO, List<FhirBaseResourceDTO>> orderByResourceType(
       FhirSearchResultDTO res) {
+    if (requireNonNull(res.getTotal()) == 0) {
+      return new EnumMap<>(FhirResourceTypeDTO.class);
+    }
     return requireNonNull(res.getEntry()).stream().map(FhirEntryDTO::getResource)
         .filter(Objects::nonNull)
         .collect(groupingBy(FhirBaseResourceDTO::getResourceType));
