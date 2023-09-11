@@ -5,6 +5,23 @@
 ## Link to TI-Messenger-testsuite [`docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
 
 - - -
+
+## Release 0.9.3
+
+### Feature
+
+- Status for test cases in Feature File 06 is now 'implemented'
+- Make use of the new `breakOnFailedRequest` and `breakOnContextError` parameters of the [test combination plugin](https://github.com/gematik/cucumber-test-combinations-maven-plugin) -> now it's possible to keep the build running if an API responds with unexpected context or does not respond at all
+- Toggle implemented to clean old rooms of an account. Can be activated via environment variable 'clearRooms'
+
+### Bugfix
+
+- Changed the numbering in all Feature File for monadic numbers. Now they have a leading zero.
+- Fix rename error  for skip-saving-reports profile
+- Edit and create endpoints add necessary meta-data/tag and delete "lastUpdated" (set by VZD)
+- Certificate error resolved when use multiple https apis directly without routing via tiger proxy
+- Szenario 03.03: Comparison between empty list and null does not fail anymore
+
 ## Release 0.9.2
 
 ### Feature

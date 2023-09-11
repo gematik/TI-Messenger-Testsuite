@@ -70,7 +70,8 @@ public class LogInGlue {
   public void sichAlsOrgAdminRegistriert(String actorName) {
     Actor actor = theActorCalled(actorName);
     actor.remember(IS_ORG_ADMIN, true);
-    logsIn(actorName);
+    theActorCalled(actorName).attemptsTo(login().withoutClearingRooms());
+    checkResponseCode(actorName, OK.value());
     checkIs(actor, List.of(ORG_ADMIN));
   }
 

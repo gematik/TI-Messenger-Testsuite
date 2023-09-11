@@ -302,14 +302,16 @@ public class FhirOrgAdminGlue {
   @Dann("vergleicht {string} den Healthcare-Service {string} mit dem JSON {string}")
   public void compareHealthcareServiceWithJson(String orgAdmin, String hsName, String fileName) {
     Actor actor = theActorCalled(orgAdmin);
-    FhirHealthcareServiceDTO healthcareService = actor.asksFor(
+    FhirHealthcareServiceDTO hs = actor.asksFor(
         getHealthcareService().withName(hsName));
     FhirHealthcareServiceDTO jsonHs = readJsonFile(fileName, FhirHealthcareServiceDTO.class);
 
     jsonHs.setEndpoint(jsonHs.getEndpoint() == null ? List.of() : jsonHs.getEndpoint());
     jsonHs.setLocation(jsonHs.getLocation() == null ? List.of() : jsonHs.getLocation());
+    hs.setEndpoint(hs.getEndpoint() == null ? List.of() : hs.getEndpoint());
+    hs.setLocation(hs.getLocation() == null ? List.of() : hs.getLocation());
 
-    assertThat(healthcareService).usingRecursiveComparison()
+    assertThat(hs).usingRecursiveComparison()
         .ignoringFields("providedBy", "identifier", "meta", "resourceType", "text", "name")
         .ignoringFieldsMatchingRegexes(".*id")
         .isEqualTo(jsonHs);

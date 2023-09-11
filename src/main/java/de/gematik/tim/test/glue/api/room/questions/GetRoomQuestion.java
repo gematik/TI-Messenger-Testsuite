@@ -87,7 +87,7 @@ public class GetRoomQuestion implements Question<RoomDTO> {
       actor.abilityTo(UseRoomAbility.class).addAndSetActive(room);
       return room;
     } catch (ConditionTimeoutException ex) {
-      log.error("Room could not bee found with requested parameters");
+      log.error("Room could not be found with requested parameters");
     }
     return null;
   }

@@ -29,7 +29,6 @@ import static de.gematik.tim.test.glue.api.info.ApiInfoQuestion.apiInfo;
 import static de.gematik.tim.test.glue.api.login.LogInGlue.loginSuccess;
 import static de.gematik.tim.test.glue.api.login.LogInGlue.logsIn;
 import static de.gematik.tim.test.glue.api.login.LoginTask.login;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.addHostToTigerProxy;
 import static de.gematik.tim.test.glue.api.utils.TestcaseIdProvider.startTest;
 import static de.gematik.tim.test.glue.api.utils.TestcaseIdProvider.stopTest;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
@@ -134,7 +133,7 @@ public class DevicesControllerGlue {
     actor.remember(MX_ID, mxId);
     actor.remember(ACCOUNT_PASSWORD, password);
 
-    actor.attemptsTo(login());
+    actor.attemptsTo(login().withoutClearingRooms());
   }
 
   @Given("{string} claims client on api {word}")
@@ -143,7 +142,6 @@ public class DevicesControllerGlue {
     String apiUrl = prepareApiName(apiName);
     Actor actor = theActorCalled(actorName);
     actor.whoCan(CallAnApi.at(apiUrl)).entersTheScene();
-    addHostToTigerProxy(apiUrl);
     DeviceManager.getInstance().orderDeviceToActor(actor, apiUrl);
     return actor;
   }

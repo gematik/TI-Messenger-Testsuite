@@ -28,6 +28,8 @@ import de.gematik.tim.test.models.FhirCodingDTO;
 import de.gematik.tim.test.models.FhirConnectionTypeDTO;
 import de.gematik.tim.test.models.FhirEndpointDTO;
 import de.gematik.tim.test.models.FhirEndpointDTO.StatusEnum;
+import de.gematik.tim.test.models.FhirMetaDTO;
+import de.gematik.tim.test.models.FhirTagDTO;
 import io.restassured.response.Response;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -94,7 +96,8 @@ public class CreateEndpointTask extends HealthcareSpecificTask {
         .name(name)
         .status(status)
         .payloadType(buildPayloadType())
-        .connectionType(buildConnectionType());
+        .connectionType(buildConnectionType())
+        .meta(defaultEndpointMeta());
   }
 
   private List<FhirCodeableConceptDTO> buildPayloadType() {
@@ -112,5 +115,13 @@ public class CreateEndpointTask extends HealthcareSpecificTask {
     return new FhirConnectionTypeDTO()
         .system("https://gematik.de/fhir/directory/CodeSystem/EndpointDirectoryConnectionType")
         .code("tim");
+  }
+
+  public static FhirMetaDTO defaultEndpointMeta() {
+    return new FhirMetaDTO()
+        .tag(List.of(new FhirTagDTO().code("owner").system("https://gematik.de/fhir/directory/CodeSystem/Origin")))
+        .profile(List.of(
+            "https://gematik.de/fhir/directory/StructureDefinition/EndpointDirectory",
+            "http://hl7.org/fhir/StructureDefinition/Endpoint"));
   }
 }

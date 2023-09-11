@@ -19,6 +19,7 @@ package de.gematik.tim.test.glue.api.room;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_ID_VARIABLE;
 import static de.gematik.tim.test.glue.api.room.tasks.ForgetRoomTask.forgetRoom;
 import static de.gematik.tim.test.glue.api.room.tasks.LeaveRoomTask.leaveRoom;
+import static de.gematik.tim.test.glue.api.utils.TestcaseIdProvider.getTestcaseId;
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 import static lombok.AccessLevel.PRIVATE;
@@ -27,13 +28,12 @@ import de.gematik.tim.test.glue.api.MultiTargetAbility;
 import de.gematik.tim.test.glue.api.TestdriverApiAbility;
 import de.gematik.tim.test.models.RoomDTO;
 import io.restassured.specification.RequestSpecification;
+import java.util.List;
 import lombok.NoArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.HasTeardown;
 import net.serenitybdd.screenplay.RefersToActor;
 import net.serenitybdd.screenplay.Task;
-
-import java.util.List;
 
 @NoArgsConstructor(access = PRIVATE)
 public class UseRoomAbility extends MultiTargetAbility<String, String> implements

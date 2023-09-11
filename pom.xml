@@ -6,7 +6,7 @@
 
   <groupId>de.gematik.tim.test</groupId>
   <artifactId>TI-Messenger-Testsuite</artifactId>
-  <version>0.9.2</version>
+  <version>0.9.3</version>
   <packaging>jar</packaging>
   <name>TI-Messenger-Testsuite</name>
   <description>Testsuite to check functionality of TI-Messenger-Clients</description>
@@ -32,8 +32,6 @@
     <maven.javadoc.plugin.version>3.0.1</maven.javadoc.plugin.version>
     <skip.saving.reports>false</skip.saving.reports>
     <tiger.config.file>tiger.yml</tiger.config.file>
-    <cutest.combine.break>true</cutest.combine.break>
-    <cutest.prepare.break>true</cutest.prepare.break>
     <combine.items.file>${project.basedir}/src/test/resources/combine_items.json</combine.items.file>
     <tim.truststore>${env.TIM_TRUSTSTORE}</tim.truststore>
     <tim.truststore.pw>${env.TIM_TRUSTSTORE_PW}</tim.truststore.pw>
@@ -43,9 +41,14 @@
     <cutest.prepare.skipPrepare>false</cutest.prepare.skipPrepare>
     <cutest.prepare.skipCombine>false</cutest.prepare.skipCombine>
     <cutest.prepare.skipCheck>false</cutest.prepare.skipCheck>
+    <cutest.prepare.break>true</cutest.prepare.break>
+    <cutest.break.context>${cutest.prepare.break}</cutest.break.context>
+    <cutest.break.request>${cutest.prepare.break}</cutest.break.request>
+    <cutest.break.tablesize>${cutest.prepare.break}</cutest.break.tablesize>
+    <cucumber.filter.tags/>
     <pool.group.string/>
     <saveConnections/>
-    <cucumber.filter.tags/>
+    <clearRooms/>
     <timeout/>
     <claimDuration/>
     <pollInterval/>
@@ -216,7 +219,7 @@
       <plugin>
         <groupId>de.gematik</groupId>
         <artifactId>cucumber-test-combinations-maven-plugin</artifactId>
-        <version>2.9.6</version>
+        <version>2.9.9</version>
         <configuration>
           <skip>${cutest.prepare.skip}</skip>
           <skipPrep>${cutest.prepare.skipPrepare}</skipPrep>
@@ -224,13 +227,13 @@
           <skipCheck>${cutest.prepare.skipCheck}</skipCheck>
           <!--          Global Config-->
           <combineItemsFile>${combine.items.file}</combineItemsFile>
+          <breakOnContextError>${cutest.break.context}</breakOnContextError>
+          <breakOnFailedRequest>${cutest.break.request}</breakOnFailedRequest>
           <!--          Prepare item config-->
           <truststore>${tim.truststore}</truststore>
           <truststorePw>${tim.truststore.pw}</truststorePw>
           <clientCertStore>${tim.keystore}</clientCertStore>
           <clientCertStorePw>${tim.keystore.pw}</clientCertStorePw>
-          <hardFail>${cutest.prepare.break}</hardFail>
-          <configFail>${cutest.prepare.break}</configFail>
           <poolGroupString>${pool.group.string}</poolGroupString>
           <tagExpressions>
             <tagExpression>
@@ -273,7 +276,7 @@
           <defaultCheckExpressions>
             ITEM.hasTag("orgAdmin") and ITEM.hasTag("client") ? $.devices.size() >= 4 : ITEM.hasTag("orgAdmin") ? $.devices.size() >= 1 : $.devices.size() >= 3</defaultCheckExpressions>
           <!--          Combine config-->
-          <breakIfTableToSmall>${cutest.combine.break}</breakIfTableToSmall>
+          <breakIfTableToSmall>${cutest.break.tablesize}</breakIfTableToSmall>
           <outputDir>${feature_dir}</outputDir>
           <templateDir>${feature.template.dir}</templateDir>
           <filterConfiguration>
@@ -426,6 +429,24 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>com.coderplus.maven.plugins</groupId>
+        <artifactId>copy-rename-maven-plugin</artifactId>
+        <version>1.0</version>
+        <executions>
+          <execution>
+            <id>copy-file</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <sourceFile>${basedir}/target/site/serenity/index.html</sourceFile>
+              <destinationFile>${basedir}/target/site/serenity/#index.html</destinationFile>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <version>3.0.2</version>
         <configuration>
@@ -490,24 +511,6 @@
                   <directory>${basedir}/target/generated-combine</directory>
                 </resource>
               </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>com.coderplus.maven.plugins</groupId>
-        <artifactId>copy-rename-maven-plugin</artifactId>
-        <version>1.0</version>
-        <executions>
-          <execution>
-            <id>copy-file</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <sourceFile>${basedir}/reports/${build.time}/report/index.html</sourceFile>
-              <destinationFile>${basedir}/reports/${build.time}/report/#index.html</destinationFile>
             </configuration>
           </execution>
         </executions>
@@ -607,7 +610,7 @@
                 <artifactItem>
                   <groupId>de.gematik.tim.test</groupId>
                   <artifactId>TI-Messenger-TestdriverSim</artifactId>
-                  <version>4.1.1</version>
+                  <version>4.1.2</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}</outputDirectory>

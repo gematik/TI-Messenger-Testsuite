@@ -17,9 +17,11 @@
 package de.gematik.tim.test.glue.api.fhir.organisation.endpoint;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.UPDATE_ENDPOINT;
+import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.CreateEndpointTask.defaultEndpointMeta;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.readJsonFile;
 
 import de.gematik.tim.test.models.FhirEndpointDTO;
+import lombok.SneakyThrows;
 import net.serenitybdd.screenplay.Actor;
 
 public class UpdateEndpointTask extends EndpointSpecificTask {
@@ -44,8 +46,11 @@ public class UpdateEndpointTask extends EndpointSpecificTask {
   }
 
   @Override
+  @SneakyThrows
   public <T extends Actor> void performAs(T actor) {
     super.performAs(actor);
+    endpoint.setMeta(defaultEndpointMeta());
+    endpoint.setId(actor.abilityTo(UseEndpointAbility.class).getTarget(getEndpointName()).endpointId());
     actor.attemptsTo(UPDATE_ENDPOINT.request().with(req -> req.body(endpoint)));
   }
 }
