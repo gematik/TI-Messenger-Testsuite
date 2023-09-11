@@ -19,17 +19,108 @@
 
 === Zertifikate einrichten
 
-Die Testtreiberschnittstelle ist über mTls abgesichert. Da jegliche Kommunikation über den Tiger-Proxy läuft muss dem Tiger-Proxy ein Klient-Zertifikat mitgegeben werden. In diesem Kapitel wird beschrieben wie der Proxy richtig konfiguriert werden kenn.
+Die Testtreiberschnittstelle ist über mTls abgesichert.
+Da jegliche Kommunikation über den Tiger-Proxy läuft muss dem Tiger-Proxy ein Client-Zertifikat mitgegeben werden.
+Außerdem muss der Testtreiber mit den entsprechenden Zertifikaten versehen werden.
+In diesem Kapitel wird beschrieben wie der Proxy richtig konfiguriert werden kann und eine unterstützende Anleitung gegeben, wie das Server-Zertifikat installiert wird.
+
+Nach Beantragen einer Zulassung werden Sie aufgefordert Ihre URL's der von Ihnen bereitgestellten Schnittstellen zu liefern.
+Für diese URL's erstellt die gematik ein Server-Zertifikat, ein Client-Zertifikat und alle dazugehörigen Keys.
+
+==== Zertifikate extrahieren
+
+Die Zertifikate bzw.
+Keys können wie folgt aus dem `.p12`-File extrahiert werden (benötigte Passwörter stehen in der mitgelieferten `password`-Datei):
+
+.Trusted-Zertifikat
+[source,bash]
+----
+openssl pkcs12 -info --in gemTruststore.p12 -nokeys > trustedCert.pem
+----
+
+.Server-Zertifikat
+[source,bash]
+----
+openssl pkcs12 -info --in <yourName>ServerKeystore.p12 -nokeys > serverCert.pem
+----
+
+.Server-Key
+[source,bash]
+----
+openssl pkcs12 -info --in <yourName>ServerKeystore.p12 -nocerts > serverKey.pem
+----
+
+.Client-Zertifikat
+[source,bash]
+----
+openssl pkcs12 -info --in <yourName>ClientKeystore.p12 -nokeys > clientCert.pem
+----
+
+.Client-Key
+[source,bash]
+----
+openssl pkcs12 -info --in <yourName>ClientKeystore.p12 -nocerts > clientKey.pem
+----
+
+[IMPORTANT]
+[red]#Wenn ein Key aus einer .p12 geladen wird, wird ein neues Passwort gesetzt.
+Dieses muss nicht dem in der mitgelieferten `passwort`-Datei entsprechen.#
+
+==== Server-Zertifikat einrichten
+
+Eine genaue Anleitung ist hier nicht möglich.
+Je nach verwendeter Technologie kann sich das Einrichten anders gestalten.
+Das Zertifikat und die damit einhergehende Prüfung kann in der Anwendung direkt oder in einen vorgeschalteten Proxy geschehen.
+
+[IMPORTANT]
+[red]#*Die Schnittstelle muss TLSv1.2 unterstützen!*#
+
+Beispielhaft ist hier eine Konfiguration mit einem nginx-proxy wie sie unter `_/etc/nginx/default.conf_` liegen könnte.
+Gleichzeitig müssen die oben extrahierten
+
+* Server-Key
+* Server-Zertifikat
+* Trusted-Zertifikate
+
+unter `_etc/nginx/conf.d/certs/*_` abgelegt werden.
+Außerdem muss eine `.txt`-Datei erstellt werden, die nur das ServerKey Passwort enthält (entweder das selbstgewählte, wenn das extrahierte Zertifikat aus dem Keystore genommen wird).
+
+----
+access_log   /dev/stdout;
+error_log    /dev/stderr debug;
+
+server {
+    listen                     443 ssl default_server;
+
+    ssl_protocols              TLSv1.2;
+
+    ssl_certificate            conf.d/certs/serverCert.pem;
+    ssl_certificate_key        conf.d/certs/serverKey.pem;
+    ssl_password_file          conf.d/certs/pass-key.txt;
+
+    ssl_verify_client          on;
+    ssl_verify_depth           1;
+    ssl_trusted_certificate    conf.d/certs/trustedCert.pem;
+
+    charset                    utf-8;
+
+    location / {
+        ...
+    }
+}
+----
 
 ==== Client-Zertifikat für mTLS einrichten
 
-Die Testtreiberschnittstelle setzt auf mTLS.
-Daher muss ein Client-Zertifikat bereitgestellt und dem Tiger Proxy übergeben werden. Die Testsuite ist so vorbereitet, dass Sie den Path und das Passwort unter folgenden Umgebungsvariablen erwartet:
+Die Testtreiberschnittstelle verwendet mTLS.
+Daher muss ein Client-Zertifikat bereitgestellt und dem Tiger Proxy übergeben werden.
+Die Testsuite ist so vorbereitet, dass Sie den Path und das Passwort unter folgenden Umgebungsvariablen erwartet:
 
 * TIM_KEYSTORE
 * TIM_KEYSTORE_PW
 
-Sollte für Testzwecke ein selbstsigniertes Zertifikat verwendet werden muss zusätzlich noch ein Truststore konfiguriert werden. Dies geschieht über die Angabe der 2 Umgebungsvariablen:
+Sollte für Testzwecke ein selbstsigniertes Zertifikat verwendet werden muss zusätzlich noch ein Truststore konfiguriert werden.
+Dies geschieht über die Angabe der 2 Umgebungsvariablen:
 
 * TIM_TRUSTSTORE
 * TIM_TRUSTSTORE_PW
@@ -85,7 +176,8 @@ tigerProxy:
 ----
 
 <1> Default local Tiger muss bestehen bleiben.
-<2> Unter `proxyRoutes` können die einzelnen Routen dem Proxy bekannt gemacht werden. From muss mit http:// beginnen und mit dem Value in link:{sourcedir}/test/resources/combine_items.json[combine_items.json] übereinstimmen.
+<2> Unter `proxyRoutes` können die einzelnen Routen dem Proxy bekannt gemacht werden.
+From muss mit http:// beginnen und mit dem Value in link:{sourcedir}/test/resources/combine_items.json[combine_items.json] übereinstimmen.
 <3> Weitere Ressourcen im Pfad müssen genannt werden
 
 === Starten der Testfälle

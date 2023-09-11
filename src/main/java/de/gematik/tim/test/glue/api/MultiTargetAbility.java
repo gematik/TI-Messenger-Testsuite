@@ -32,13 +32,13 @@ public abstract class MultiTargetAbility<K, V> extends TeardownAbility {
   private final Map<K, V> targets = new HashMap<>();
   private Entry<K, V> currentTarget;
 
-  public void addTarget(K key, V target) {
+  private void addTarget(K key, V target) {
     requireNonNull(key);
     requireNonNull(target);
     targets.put(key, target);
   }
 
-  public void addAndSetActive(K key, V target) {
+  protected void addAndSetActive(K key, V target) {
     addTarget(key, target);
     setActive(key);
   }
@@ -51,7 +51,7 @@ public abstract class MultiTargetAbility<K, V> extends TeardownAbility {
     return targets.entrySet();
   }
 
-  public void remove(K key) {
+  protected void remove(K key) {
     requireNonNull(key);
     V target = targets.remove(key);
     if (target != null && target.equals(currentTarget)) {
@@ -92,7 +92,7 @@ public abstract class MultiTargetAbility<K, V> extends TeardownAbility {
   }
 
 
-  public void clear() {
+  protected void clear() {
     targets.clear();
   }
 

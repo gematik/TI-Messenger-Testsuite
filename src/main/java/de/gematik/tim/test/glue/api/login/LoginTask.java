@@ -17,6 +17,7 @@
 package de.gematik.tim.test.glue.api.login;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
+import de.gematik.tim.test.glue.api.utils.GlueUtils;
 import de.gematik.tim.test.models.AccountDTO;
 import de.gematik.tim.test.models.LoginDTO;
 import net.serenitybdd.screenplay.Actor;
@@ -31,10 +32,14 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.LOGIN;
 import static de.gematik.tim.test.glue.api.login.IsLoggedInAbility.logOut;
+import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
+import static de.gematik.tim.test.glue.api.room.tasks.LeaveRoomTask.leaveRoom;
 import static de.gematik.tim.test.models.AuthStageNameDTO.BASICAUTH;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 public class LoginTask implements Task {
+
+  private boolean clearRooms = GlueUtils.CLEAR_ROOMS;
 
   public static LoginTask login() {
     return new LoginTask();
@@ -52,6 +57,9 @@ public class LoginTask implements Task {
     actor.remember(MX_ID, account.getMxid());
     actor.remember(ACCOUNT_PASSWORD, account.getPassword());
     actor.remember(DISPLAY_NAME, account.getDisplayName());
+    if (clearRooms) {
+      actor.asksFor(ownRooms()).forEach(room -> actor.attemptsTo(leaveRoom().withName(room.getName())));
+    }
     actor.can(logOut());
     actor.remember(IS_LOGGED_IN, true);
     if (actor.recall(IS_ORG_ADMIN) == null) {
@@ -69,4 +77,8 @@ public class LoginTask implements Task {
     return Optional.empty();
   }
 
+  public LoginTask withoutClearingRooms() {
+    this.clearRooms = false;
+    return this;
+  }
 }

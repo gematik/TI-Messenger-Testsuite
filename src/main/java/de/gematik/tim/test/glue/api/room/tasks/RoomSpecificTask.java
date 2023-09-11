@@ -29,9 +29,14 @@ public abstract class RoomSpecificTask implements Task {
 
   private String roomName;
 
+  @SuppressWarnings("unchecked")
   protected <T extends RoomSpecificTask> T forRoomName(String roomName) {
     this.roomName = roomName;
     return (T) this;
+  }
+
+  public <T extends RoomSpecificTask> T withName(String roomName) {
+    return this.forRoomName(roomName);
   }
 
   @Override
