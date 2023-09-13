@@ -16,10 +16,12 @@
 
 package de.gematik.tim.test.glue.api.fhir.practitioner;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.OWN_ENDPOINT_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SET_MXID_PRACTITIONER;
 import static de.gematik.tim.test.glue.api.fhir.practitioner.CanDeleteOwnMxidAbility.deleteOwnMxid;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
+import de.gematik.tim.test.models.FhirEndpointDTO;
 import io.restassured.response.Response;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
@@ -36,6 +38,7 @@ public class FhirSetMxidTask implements Task {
     Response res = lastResponse();
     if (res.statusCode() == 201) {
       actor.can(deleteOwnMxid());
+      actor.remember(OWN_ENDPOINT_ID, res.body().as(FhirEndpointDTO.class).getId());
     }
   }
 }

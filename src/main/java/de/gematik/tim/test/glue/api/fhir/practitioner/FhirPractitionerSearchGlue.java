@@ -17,6 +17,7 @@
 package de.gematik.tim.test.glue.api.fhir.practitioner;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.OWN_ENDPOINT_ID;
 import static de.gematik.tim.test.glue.api.account.AccountQuestion.ownAccountInfos;
 import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirSearchQuestion.practitionerInFhirDirectory;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
@@ -36,6 +37,7 @@ import io.cucumber.java.de.Wenn;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import java.util.List;
+import java.util.NoSuchElementException;
 import net.serenitybdd.core.Serenity;
 import net.serenitybdd.screenplay.Actor;
 
@@ -45,7 +47,7 @@ public class FhirPractitionerSearchGlue {
   @Wenn("{string} kann {string} nicht finden in FHIR")
   @Dann("{string} findet TI-Messenger-Nutzer {string} bei Suche im Practitioner-Verzeichnis im VZD NICHT")
   public static void dontFindPractitionerInFhir(String actorName, String userName) {
-     dontFindPractitionerInFhir(actorName, userName, null, null);
+    dontFindPractitionerInFhir(actorName, userName, null, null);
   }
 
   @Wenn("{string} kann {string} nicht finden in FHIR [Retry {long} - {long}]")
@@ -86,14 +88,14 @@ public class FhirPractitionerSearchGlue {
   @Then("{string} can not find {string} in FHIR anymore")
   @Dann("{string} kann {string} nicht mehr finden in FHIR")
   public void cantFindPractitionerInFhirAnymore(String actorName, String userName) {
-     cantFindPractitionerInFhirAnymore(actorName, userName, null, null);
+    cantFindPractitionerInFhirAnymore(actorName, userName, null, null);
   }
 
   @Then("{string} can not find {string} in FHIR anymore [Retry {long} - {long}]")
   @Dann("{string} kann {string} nicht mehr finden in FHIR [Retry {long} - {long}]")
   public void cantFindPractitionerInFhirAnymore(String actorName, String userName, Long timeout,
       Long pollInterval) {
-     dontFindPractitionerInFhir(actorName, userName, timeout, pollInterval, true);
+    dontFindPractitionerInFhir(actorName, userName, timeout, pollInterval, true);
   }
   //</editor-fold>
 
@@ -112,7 +114,12 @@ public class FhirPractitionerSearchGlue {
     FhirSearchResultDTO result = actor.asksFor(
         practitionerInFhirDirectory().withName(cutName));
     List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
-    assertThat(endpoints).extracting(FhirEndpointDTO::getAddress).containsExactly((String) searchedActor.recall(MX_ID));
+    String searchedEndpointId = searchedActor.recall(OWN_ENDPOINT_ID);
+    FhirEndpointDTO endpoint = endpoints.stream()
+        .filter(e -> requireNonNull(e.getId()).equals(searchedEndpointId))
+        .findFirst().orElseThrow(() -> new NoSuchElementException(
+            "Delivered search set does not provide the search endpoint with id -> " + searchedEndpointId));
+    assertThat(endpoint.getAddress()).isEqualTo(searchedActor.recall(MX_ID));
   }
 
   @When("{string} can NOT find {string} by searching by name {string}")

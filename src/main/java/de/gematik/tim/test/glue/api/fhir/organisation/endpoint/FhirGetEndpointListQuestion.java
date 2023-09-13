@@ -17,15 +17,18 @@
 package de.gematik.tim.test.glue.api.fhir.organisation.endpoint;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_ENDPOINTS;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.getMapper;
+import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.FhirGetHealthcareServiceQuestion.getHealthcareService;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getEndpointIdsOrLocationIdsOfHealthcareService;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.getMapper;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
 import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
 import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.HealthcareSpecificTask;
 import de.gematik.tim.test.models.FhirEndpointDTO;
+import de.gematik.tim.test.models.FhirHealthcareServiceDTO;
 import de.gematik.tim.test.models.FhirSearchResultDTO;
 import java.util.List;
 import net.serenitybdd.screenplay.Actor;
@@ -62,7 +65,10 @@ public class FhirGetEndpointListQuestion extends HealthcareSpecificTask implemen
       endpoints = endpoints.stream().filter(e -> e.getName().equals(endpointName)).toList();
     }
     if (nonNull(hsId)) {
-      List<String> ids = getEndpointIdsOrLocationIdsOfHealthcareService(res, hsId, ENDPOINT);
+      FhirHealthcareServiceDTO hs = getResourcesFromSearchResult(res, ENDPOINT, FhirEndpointDTO.class).stream()
+          .filter(e -> requireNonNull(e.getId()).equals(hsId)).map(FhirHealthcareServiceDTO.class::cast).findAny()
+          .orElseGet(() -> actor.asksFor(getHealthcareService()));
+      List<String> ids = getEndpointIdsOrLocationIdsOfHealthcareService(hs, ENDPOINT);
       endpoints = endpoints.stream().filter(e -> ids.contains(e.getId())).toList();
     }
 
