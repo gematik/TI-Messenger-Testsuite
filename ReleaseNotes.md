@@ -6,6 +6,17 @@
 
 - - -
 
+## Release 0.9.4
+
+### Feature
+
+- Better description for the use of the 'prefIOP' Tag in testsuite.adoc (chapter 6.3)
+
+### Bugfix
+
+- Feature 3.4 -> do not cause error if _get endpoints_ of HealthcareService dos not include HealthcareService resource
+- Feature 7.1, 7.2, 9.1, 9.2 -> does not look for one single address anymore. No error if one displayname comes up twice
+
 ## Release 0.9.3
 
 ### Feature

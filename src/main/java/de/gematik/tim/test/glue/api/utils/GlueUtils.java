@@ -113,6 +113,8 @@ public class GlueUtils {
   public static final Boolean CLEAR_ROOMS;
   public static final Integer CLAIM_DURATION;
   public static final String CERT_CN;
+  public static final String FEATURE_PATH = "./target/features";
+  public static final String FEATURE_ENDING = "feature";
   private static final String RUN_WITHOUT_RETRY_PROPERTY_NAME = "runWithoutRetry";
   private static final String SAVE_CONNECTIONS_PROPERTY_NAME = "saveConnections";
   private static final String CLAIM_DURATION_PROPERTYNAME = "claimDuration";
@@ -123,8 +125,6 @@ public class GlueUtils {
   private static final Long POLL_INTERVAL_DEFAULT = 1L;
   private static final boolean RUN_WITHOUT_RETRY;
   private static final Jackson2Mapper mapper;
-  public static final String FEATURE_PATH = "./target/features";
-  public static final String FEATURE_ENDING = "feature";
   private static Long timeout;
   private static Long pollInterval;
 
@@ -283,11 +283,18 @@ public class GlueUtils {
     if (entry.isEmpty()) {
       return List.of();
     }
-    FhirHealthcareServiceDTO hs = (FhirHealthcareServiceDTO) entry.get().getResource();
+    return getEndpointIdsOrLocationIdsOfHealthcareService((FhirHealthcareServiceDTO) entry.get().getResource(),
+        filterFor);
+  }
+
+  public static List<String> getEndpointIdsOrLocationIdsOfHealthcareService(
+      FhirHealthcareServiceDTO hs, FhirResourceTypeDTO filterFor) {
     if (filterFor.equals(ENDPOINT)) {
-      return hs.getEndpoint().stream().map(e -> e.getReference().split("/")[1]).toList();
+      return nonNull(hs.getEndpoint()) ?
+          hs.getEndpoint().stream().map(e -> e.getReference().split("/")[1]).toList() : List.of();
     }
-    return hs.getLocation().stream().map(e -> e.getReference().split("/")[1]).toList();
+    return nonNull(hs.getLocation()) ?
+        hs.getLocation().stream().map(e -> e.getReference().split("/")[1]).toList() : List.of();
   }
 
   private static String parseCn() {
