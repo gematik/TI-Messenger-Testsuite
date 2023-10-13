@@ -30,11 +30,11 @@ import static de.gematik.tim.test.glue.api.room.tasks.ForgetRoomTask.forgetRoom;
 import static de.gematik.tim.test.glue.api.room.tasks.InviteToRoomTask.invite;
 import static de.gematik.tim.test.glue.api.room.tasks.JoinRoomTask.joinRoom;
 import static de.gematik.tim.test.glue.api.room.tasks.LeaveRoomTask.leaveRoom;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getInternalRoomNameForActor;
 import static de.gematik.tim.test.models.RoomMembershipStateDTO.INVITE;
 import static de.gematik.tim.test.models.RoomMembershipStateDTO.JOIN;
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
-import static java.util.Objects.requireNonNull;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -90,11 +90,10 @@ public class RoomControllerGlue {
     List<String> inviteMxids = new ArrayList<>();
     inviteActors.forEach(e -> inviteMxids.add(theActorCalled(e).recall(MX_ID)));
 
-    String roomId = actor.abilityTo(UseRoomAbility.class).getRoomIdByName(roomName);
-    RoomDTO room = new RoomDTO().roomId(roomId).name(roomName);
-    inviteActors.forEach(e -> addRoomToActor(room, theActorCalled(e)));
+    RoomDTO room = actor.abilityTo(UseRoomAbility.class).getActiveValue();
+    inviteActors.forEach(e -> addRoomToActor(roomName, room, theActorCalled(e)));
 
-    actor.attemptsTo(invite(inviteMxids).toRoom(roomId));
+    actor.attemptsTo(invite(inviteMxids).toRoom(room.getRoomId()));
   }
 
   @When("{string} invites {string} into room with {string}")
@@ -143,7 +142,7 @@ public class RoomControllerGlue {
   @Wenn("{listOfStrings} erhält eine Einladung von {string}")
   @Wenn("{listOfStrings} erhalten eine Einladung von {string}")
   public void receiveInvitation(List<String> actorNames, String userName) {
-    String roomId = theActorCalled(userName).abilityTo(UseRoomAbility.class).getActive();
+    String roomId = theActorCalled(userName).abilityTo(UseRoomAbility.class).getActive().getRoomId();
     String inviterMxId = theActorCalled(userName).recall(MX_ID);
     for (String actorName : actorNames) {
       Actor actor1 = theActorCalled(actorName);
@@ -153,7 +152,7 @@ public class RoomControllerGlue {
           .withRoomId(roomId)
           .withMemberHaveStatus(actor1Id, INVITE)
           .withMemberHaveStatus(inviterMxId, JOIN));
-      assertThat(room).as(format("could not find invitation for %s", actorNames)).isNotNull();
+      assertThat(room).as(format("could not find invitation for %s", actorName)).isNotNull();
     }
   }
 
@@ -192,14 +191,14 @@ public class RoomControllerGlue {
     RoomDTO room = actor.asksFor(ownRoom()
         .withName(roomName)
         .withMemberHaveStatus(actor.recall(MX_ID), INVITE));
-    addRoomToActor(room, actor);
+    addRoomToActor(roomName, room, actor);
     leaveAndForgetRoom(actorName, actor);
   }
 
   @When("{string} deny chat invitation with {string}")
   @Wenn("{string} lehnt eine Einladung zum Chat mit {string} ab")
   public void denyChatInvitationTo(String actorName, String userName) {
-    String roomId = theActorCalled(userName).abilityTo(UseRoomAbility.class).getActive();
+    String roomId = theActorCalled(userName).abilityTo(UseRoomAbility.class).getActive().getRoomId();
     Actor actor = theActorCalled(actorName);
     RoomDTO room = actor.asksFor(ownRoom()
         .withRoomId(roomId)
@@ -214,14 +213,14 @@ public class RoomControllerGlue {
     Actor actor = theActorCalled(actorName);
     String actor2Id = theActorCalled(userName).recall(MX_ID);
 
-    String roomName = actor.recall(DIRECT_CHAT_NAME + actor2Id);
-    assertThat(roomName).as("%s have no direct chat with %s", actorName, userName).isNotBlank();
+    String roomName = DIRECT_CHAT_NAME + actor2Id;
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
     leaveAndForgetRoom(actorName, actor);
 
     List<RoomDTO> rooms = actor.asksFor(ownRooms());
     assertThat(rooms).extracting(RoomDTO::getName).doesNotContain(roomName);
   }
+
   //</editor-fold>
   //<editor-fold desc="Delete room">
   @When("{string} leave room with name {string}")
@@ -246,7 +245,7 @@ public class RoomControllerGlue {
   //<editor-fold desc="RoomState">
   @Then("{string} prüft den Room State im Chat mit {string} auf {listOfStrings}")
   public void checkRoomStatesOfChat(String actorName, String userName, List<String> roomStates) {
-    String roomName = theActorCalled(actorName).recall(DIRECT_CHAT_NAME + theActorCalled(userName).recall(MX_ID));
+    String roomName = DIRECT_CHAT_NAME + theActorCalled(userName).recall(MX_ID);
     checkRoomStatesOfRoom(actorName, roomName, roomStates);
   }
 

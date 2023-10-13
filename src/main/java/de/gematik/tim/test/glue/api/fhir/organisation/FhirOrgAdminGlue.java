@@ -261,22 +261,20 @@ public class FhirOrgAdminGlue {
     theActorInTheSpotlight().should(seeThat(locationList, is(empty())));
   }
 
-  @Dann("existiert kein Endpoint von {string} für den Healthcare-Service {string} der von {string} angelegt wurde")
-  @Then("no endpoint exists for {string} in the health-care-service {string} created by {string}")
-  public void noHealthcareServiceEndpointWithName(String actorName, String hsName, String orgAdminName) {
-    noHealthcareServiceEndpointWithNameTiming(actorName, hsName, orgAdminName, null, null);
+  @Dann("existiert kein Endpoint von {string} für den Healthcare-Service {string}")
+  @Then("no endpoint exists for {string} in the health-care-service {string}")
+  public void noHealthcareServiceEndpointWithName(String actorName, String hsName) {
+    noHealthcareServiceEndpointWithNameTiming(actorName, hsName, null, null);
   }
 
-  @Dann("existiert kein Endpoint von {string} für den Healthcare-Service {string} der von {string} angelegt wurde [Retry {long} - {long}]")
-  @Then("no endpoint exists for {string} in the health-care-service {string} created by {string} [Retry {long} - {long}]")
-  public void noHealthcareServiceEndpointWithNameTiming(String actorName, String hsName, String orgAdminName,
-      Long timeout, Long pollInterval) {
+  @Dann("existiert kein Endpoint von {string} für den Healthcare-Service {string} [Retry {long} - {long}]")
+  @Then("no endpoint exists for {string} in the health-care-service {string} [Retry {long} - {long}]")
+  public void noHealthcareServiceEndpointWithNameTiming(String actorName, String hsName, Long timeout,
+      Long pollInterval) {
     Actor actor = theActorCalled(actorName);
-    String hsFullName = theActorCalled(orgAdminName).abilityTo(UseHealthcareServiceAbility.class).getTarget(hsName)
-        .name();
     FhirSearchResultDTO result = actor.asksFor(
         organizationEndpoints()
-            .withHsName(hsFullName)
+            .withHsName(hsName)
             .havingAtLeastXEndpoints(0)
             .withCustomInterval(timeout, pollInterval));
 
@@ -304,8 +302,7 @@ public class FhirOrgAdminGlue {
   @Dann("vergleicht {string} den Healthcare-Service {string} mit dem JSON {string}")
   public void compareHealthcareServiceWithJson(String orgAdmin, String hsName, String fileName) {
     Actor actor = theActorCalled(orgAdmin);
-    FhirHealthcareServiceDTO hs = actor.asksFor(
-        getHealthcareService().withName(hsName));
+    FhirHealthcareServiceDTO hs = actor.asksFor(getHealthcareService().withName(hsName));
     FhirHealthcareServiceDTO jsonHs = readJsonFile(fileName, FhirHealthcareServiceDTO.class);
 
     jsonHs.setEndpoint(jsonHs.getEndpoint() == null ? List.of() : jsonHs.getEndpoint());

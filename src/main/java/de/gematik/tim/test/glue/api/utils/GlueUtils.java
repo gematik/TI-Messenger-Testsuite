@@ -35,9 +35,11 @@ import static org.awaitility.Awaitility.await;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.github.javafaker.Faker;
 import de.gematik.test.tiger.lib.TigerDirector;
 import de.gematik.test.tiger.proxy.TigerProxy;
 import de.gematik.tim.test.glue.api.exceptions.RequestedRessourceNotAvailable;
+import de.gematik.tim.test.glue.api.room.UseRoomAbility;
 import de.gematik.tim.test.models.FhirBaseResourceDTO;
 import de.gematik.tim.test.models.FhirEndpointDTO;
 import de.gematik.tim.test.models.FhirEntryDTO;
@@ -85,6 +87,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -125,6 +128,8 @@ public class GlueUtils {
   private static final Long POLL_INTERVAL_DEFAULT = 1L;
   private static final boolean RUN_WITHOUT_RETRY;
   private static final Jackson2Mapper mapper;
+  private static final Faker faker = new Faker();
+  private static final Random random = new Random();
   private static Long timeout;
   private static Long pollInterval;
 
@@ -241,10 +246,26 @@ public class GlueUtils {
     return splitted[1];
   }
 
-  public static String createUniqueName(String name) {
-    return name + "-" + Instant.now().toEpochMilli();
+  public static String createUniqueHsName() {
+    return faker.gameOfThrones().character() + " of " + faker.gameOfThrones().house() + "-" + Instant.now()
+        .toEpochMilli();
   }
 
+  public static String createUniqueRoomName() {
+    return faker.company().buzzword() + " " + faker.company().industry() + "-" + Instant.now().toEpochMilli();
+  }
+
+  public static String createUniqueMessageText() {
+    return switch (random.nextInt(7)) {
+      case 1 -> faker.gameOfThrones().quote() + "-" + Instant.now().toEpochMilli();
+      case 2 -> faker.friends().quote() + "-" + Instant.now().toEpochMilli();
+      case 3 -> faker.harryPotter().quote() + "-" + Instant.now().toEpochMilli();
+      case 4 -> faker.rickAndMorty().quote() + "-" + Instant.now().toEpochMilli();
+      case 5 -> faker.lebowski().quote() + "-" + Instant.now().toEpochMilli();
+      case 6 -> faker.witcher().quote() + "-" + Instant.now().toEpochMilli();
+      default -> faker.yoda().quote() + "-" + Instant.now().toEpochMilli();
+    };
+  }
 
   public static List<?> getResourcesFromSearchResult(FhirSearchResultDTO result,
       FhirResourceTypeDTO type) {
@@ -306,7 +327,7 @@ public class GlueUtils {
       RDN cn = new JcaX509CertificateHolder(cert).getSubject().getRDNs(BCStyle.CN)[0];
       return cn.getFirst().getValue().toString();
     } catch (Exception ex) {
-      log.error("Could not parse certificate");
+      log.error("Could not parse certificat" + " KEY_STORE: " + System.getenv(KEY_STORE));
     }
     return RUN_WITHOUT_CERT;
   }

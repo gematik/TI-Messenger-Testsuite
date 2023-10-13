@@ -43,13 +43,6 @@ public class UseHealthcareServiceAbility extends MultiTargetAbility<String, Heal
     ability.addAndSetActive(hsName, hsInfo);
   }
 
-  public static <T extends Actor> void removeHsFromActor(String hsName, T actor) {
-    UseHealthcareServiceAbility ability = actor.abilityTo(UseHealthcareServiceAbility.class);
-    if (ability != null) {
-      ability.remove(hsName);
-    }
-  }
-
   @Override
   public RequestSpecification apply(RequestSpecification requestSpecification) {
     HealthcareServiceInfo hsInfo = getActive();

@@ -18,10 +18,6 @@ package de.gematik.tim.test.glue.api;
 
 import static lombok.AccessLevel.PRIVATE;
 
-import io.cucumber.java.PendingException;
-import io.cucumber.java.de.Dann;
-import io.cucumber.java.de.Und;
-import io.cucumber.java.en.Then;
 import lombok.AllArgsConstructor;
 
 

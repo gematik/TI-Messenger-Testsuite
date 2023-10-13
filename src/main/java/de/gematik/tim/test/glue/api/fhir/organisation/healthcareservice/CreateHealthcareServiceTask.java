@@ -19,7 +19,7 @@ package de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HAS_REG_SERVICE_TOKEN;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.CREATE_HEALTHCARE_SERVICE;
 import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility.addHsToActor;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueName;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueHsName;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.readJsonFile;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -41,7 +41,7 @@ public class CreateHealthcareServiceTask implements Task {
 
   public static CreateHealthcareServiceTask createHealthcareService(String hsName) {
     CreateHealthcareServiceTask createHealthcareServiceTask = new CreateHealthcareServiceTask(hsName);
-    createHealthcareServiceTask.healthcareServiceDTO.name(createUniqueName(hsName));
+    createHealthcareServiceTask.healthcareServiceDTO.name(createUniqueHsName());
     return createHealthcareServiceTask;
   }
 

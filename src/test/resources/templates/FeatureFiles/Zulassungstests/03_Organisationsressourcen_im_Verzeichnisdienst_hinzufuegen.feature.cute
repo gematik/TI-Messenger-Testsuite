@@ -27,11 +27,11 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
     Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1C>
     Und        "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
-    Wenn       "C" schreibt "B" über den Healthcare-Service "HealthcareServiceName" direkt "Hello from the other site"
+    Wenn       "C" schreibt "B" über den Healthcare-Service "HealthcareServiceName" direkt "Testnachricht 1"
     Und        "B" bestätigt eine Einladung von "C"
-    Dann       "B" empfängt eine Nachricht "Hello from the other site" von "C"
-    Und        "C" schreibt "B" direkt "At least I can say that I have tried"
-    Und        "B" empfängt eine Nachricht "At least I can say that I have tried" von "C"
+    Dann       "B" empfängt eine Nachricht "Testnachricht 1" von "C"
+    Und        "C" schreibt "B" direkt "Testnachricht 2"
+    Und        "B" empfängt eine Nachricht "Testnachricht 2" von "C"
 
   @Shuffle(true) ##
   @DistinctColumn(ApiName1B) ##
@@ -54,17 +54,17 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
     Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
     Und        "D" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1D>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
-    Und        "D" schreibt "B" über den Healthcare-Service "HealthcareServiceName" direkt "Hello from the other site"
+    Und        "D" schreibt "B" über den Healthcare-Service "HealthcareServiceName" direkt "Testnachricht 1"
     Und        "B" bestätigt eine Einladung von "D"
-    Und        "B" empfängt eine Nachricht "Hello from the other site" von "D"
-    Und        "D" schreibt "B" direkt "At least I can say that I have tried"
-    Und        "B" empfängt eine Nachricht "At least I can say that I have tried" von "D"
+    Und        "B" empfängt eine Nachricht "Testnachricht 1" von "D"
+    Und        "D" schreibt "B" direkt "Testnachricht 2"
+    Und        "B" empfängt eine Nachricht "Testnachricht 2" von "D"
     Wenn       "A" ändert den Endpunkt des Healthcare-Services "HealthcareServiceName" auf "C"
-    Dann       "D" schreibt "C" über den Healthcare-Service "HealthcareServiceName" direkt "Hello from the other site"
+    Dann       "D" schreibt "C" über den Healthcare-Service "HealthcareServiceName" direkt "Testnachricht 1"
     Und        "C" bestätigt eine Einladung von "D"
-    Und        "C" empfängt eine Nachricht "Hello from the other site" von "D"
-    Und        "D" schreibt "C" direkt "At least I can say that I have tried"
-    Und        "C" empfängt eine Nachricht "At least I can say that I have tried" von "D"
+    Und        "C" empfängt eine Nachricht "Testnachricht 1" von "D"
+    Und        "D" schreibt "C" direkt "Testnachricht 2"
+    Und        "C" empfängt eine Nachricht "Testnachricht 2" von "D"
 
   @Shuffle(true)
   @MaxSameColumnProperty(ApiName1C,homeserver,2) #
@@ -92,7 +92,7 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
     Und        "A" ändert den Endpunkt von "B" im Healthcare-Service "HealthcareServiceName" mit dem JSON "03_AenderungEndpointFuerHealthcareService.json"
     Dann       entspricht der Endpunkt von "B" im Healthcare-Service "HealthcareServiceName" dem JSON "03_AenderungEndpointFuerHealthcareService.json"
     Wenn       "A" löscht den Endpoint von "B" für den Healthcare-Service "HealthcareServiceName"
-    Dann       existiert kein Endpoint von "B" für den Healthcare-Service "HealthcareServiceName" der von "A" angelegt wurde [Retry 10 - 3]
+    Dann       existiert kein Endpoint von "B" für den Healthcare-Service "HealthcareServiceName" [Retry 10 - 3]
     Wenn       "A" löscht den Healthcare-Service "HealthcareServiceName"
     Dann       existiert der zuletzt gelöschte Healthcare-Service nicht mehr [Retry 10 - 3]
 
@@ -119,10 +119,10 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
     Wenn       "A" erstellt Endpunkt für "C" auf Healthcare-Service "HealthcareServiceName"
     Dann       "A" sieht, dass "B", "C" je einen Endpunkt im Healthcare-Service "HealthcareServiceName" haben
     Wenn       "A" löscht den Endpoint von "B" für den Healthcare-Service "HealthcareServiceName"
-    Dann       existiert kein Endpoint von "B" für den Healthcare-Service "HealthcareServiceName" der von "A" angelegt wurde [Retry 10 - 3]
+    Dann       existiert kein Endpoint von "B" für den Healthcare-Service "HealthcareServiceName" [Retry 10 - 3]
     Und        "A" sieht, dass "C" genau einen Endpunkt im Healthcare-Service "HealthcareServiceName" hat
     Wenn       "A" löscht den Endpoint von "C" für den Healthcare-Service "HealthcareServiceName"
-    Dann       existiert kein Endpoint von "C" für den Healthcare-Service "HealthcareServiceName" der von "A" angelegt wurde [Retry 10 - 3]
+    Dann       existiert kein Endpoint von "C" für den Healthcare-Service "HealthcareServiceName" [Retry 10 - 3]
     Wenn       "A" löscht den Healthcare-Service "HealthcareServiceName"
     Dann       existiert der zuletzt gelöschte Healthcare-Service nicht mehr [Retry 10 - 3]
 

@@ -32,7 +32,6 @@ public class GetCurrentRoomQuestion implements Question<RoomDTO> {
     return new GetCurrentRoomQuestion();
   }
 
-
   @Override
   public RoomDTO answeredBy(Actor actor) {
     actor.attemptsTo(GET_ROOM.request());

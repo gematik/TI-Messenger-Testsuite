@@ -54,10 +54,10 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" findet TI-Messenger-Nutzer "B" bei Suche nach Namen minus 0-1 (Anzahl vorne-hinten) Char(s) abgeschnitten
-    Wenn       "A" schreibt "B" direkt "Hello from the other site"
+    Wenn       "A" schreibt "B" direkt "Testnachricht 1"
     Dann       "B" erhält eine Einladung von "A"
     Und        "B" bestätigt eine Einladung von "A"
-    Und        "B" empfängt eine Nachricht "Hello from the other site" von "A"
+    Und        "B" empfängt eine Nachricht "Testnachricht 1" von "A"
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1,homeserver,2)
@@ -68,8 +68,8 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName1.hasTag("practitioner"))
   @Filter(ApiName2.hasTag("practitioner"))
-  @Filter(ApiName1.hasTag("prefIOP"))
-  @Filter(ApiName2.hasTag("prefIOP"))
+  @SoftFilter(ApiName1.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1 | ApiName2 |
@@ -96,8 +96,8 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName1.hasTag("practitioner"))
   @Filter(ApiName2.hasTag("practitioner"))
-  @Filter(ApiName1.hasTag("prefIOP"))
-  @Filter(ApiName2.hasTag("prefIOP"))
+  @SoftFilter(ApiName1.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1 | ApiName2 |
@@ -111,7 +111,7 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Wenn       "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
     Und        "B" findet "C" in FHIR
-    Und        "B" versucht "C" direkt "Hello from the other site" zu schreiben
+    Und        "B" versucht "C" direkt "Testnachricht 1" zu schreiben
     Dann       erhält "B" einen Responsecode 403
 
   #@Shuffle(true)
@@ -124,8 +124,8 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName2.hasTag("practitioner"))
-  @Filter(ApiName1B.hasTag("prefIOP"))
-  @Filter(ApiName2.hasTag("prefIOP"))
+  @SoftFilter(ApiName1B.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1A | ApiName1B | ApiName2 |
@@ -137,7 +137,7 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" findet "B" in FHIR
-    Und        "A" schreibt "B" direkt "Hello from the other site"
+    Und        "A" schreibt "B" direkt "Testnachricht 1"
     Und        "B" erhält eine Einladung von "A"
     Wenn       "B" lehnt eine Einladung zum Chat mit "A" ab
     Dann       "B" ist dem Chat mit "A" nicht beigetreten [Retry 10 - 3]
@@ -151,8 +151,8 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName1.hasTag("practitioner"))
   @Filter(ApiName2.hasTag("practitioner"))
-  @Filter(ApiName1.hasTag("prefIOP"))
-  @Filter(ApiName2.hasTag("prefIOP"))
+  @SoftFilter(ApiName1.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1 | ApiName2 |
@@ -179,8 +179,8 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName1.hasTag("practitioner"))
   @Filter(ApiName2.hasTag("practitioner"))
-  @Filter(ApiName1.hasTag("prefIOP"))
-  @Filter(ApiName2.hasTag("prefIOP"))
+  @SoftFilter(ApiName1.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1 | ApiName2 |
@@ -194,7 +194,7 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Und        "D" reserviert sich einen Messenger-Client an Schnittstelle <ApiName2B>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
     Und        "B" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "D"
-    Und        "C" schreibt "D" über den Healthcare-Service "HealthcareServiceName2" direkt "Hello from the other site"
+    Und        "C" schreibt "D" über den Healthcare-Service "HealthcareServiceName2" direkt "Testnachricht 1"
     Und        "D" erhält eine Einladung von "C"
     Wenn       "D" lehnt eine Einladung zum Chat mit "C" ab
     Dann       "D" ist dem Chat mit "C" nicht beigetreten [Retry 10 - 3]
@@ -210,8 +210,8 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
   @Filter(ApiName2A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName2B.hasTag("client"))
-  @Filter(ApiName1B.hasTag("prefIOP"))
-  @Filter(ApiName2B.hasTag("prefIOP"))
+  @SoftFilter(ApiName1B.hasTag("prefIOP"))
+  @SoftFilter(ApiName2B.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1A | ApiName1B | ApiName2A | ApiName2B |
@@ -242,8 +242,8 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
   @Filter(ApiName2A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName2B.hasTag("client"))
-  @Filter(ApiName1B.hasTag("prefIOP"))
-  @Filter(ApiName2B.hasTag("prefIOP"))
+  @SoftFilter(ApiName1B.hasTag("prefIOP"))
+  @SoftFilter(ApiName2B.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1A | ApiName1B | ApiName2A | ApiName2B |
@@ -256,10 +256,10 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "A", "B", "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" findet "B" in FHIR
-    Und        "A" schreibt "B" direkt "Hello from the other site"
+    Und        "A" schreibt "B" direkt "Testnachricht 1"
     Und        "B" erhält eine Einladung von "A"
     Und        "B" bestätigt eine Einladung von "A"
-    Und        "B" empfängt eine Nachricht "Hello from the other site" von "A"
+    Und        "B" empfängt eine Nachricht "Testnachricht 1" von "A"
     Wenn       "A" versucht "C" in Chat mit "B" einzuladen
     Dann       erhält "A" einen Responsecode 401
 
@@ -276,8 +276,8 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
   @Filter(ApiName1A.hasTag("practitioner"))
   @Filter(ApiName1B.hasTag("practitioner"))
   @Filter(ApiName2.hasTag("practitioner"))
-  @Filter(ApiName1A.hasTag("prefIOP"))
-  @Filter(ApiName2.hasTag("prefIOP"))
+  @SoftFilter(ApiName1A.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1A | ApiName1B | ApiName2 |
@@ -293,10 +293,10 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "C"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "D"
     Und        "B" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "E"
-    Und        "C" schreibt "D" über den Healthcare-Service "HealthcareServiceName1" direkt "Hello from the other site"
+    Und        "C" schreibt "D" über den Healthcare-Service "HealthcareServiceName1" direkt "Testnachricht 1"
     Und        "D" erhält eine Einladung von "C"
     Und        "D" bestätigt eine Einladung von "C"
-    Und        "D" empfängt eine Nachricht "Hello from the other site" von "C"
+    Und        "D" empfängt eine Nachricht "Testnachricht 1" von "C"
     Wenn       "C" versucht "E" in Chat mit "D" einzuladen
     Dann       erhält "C" einen Responsecode 401
 
@@ -312,11 +312,11 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName1C.hasTag("client"))
-  @Filter(ApiName1B.hasTag("prefIOP"))
-  @Filter(ApiName1C.hasTag("prefIOP"))
+  @SoftFilter(ApiName1B.hasTag("prefIOP"))
+  @SoftFilter(ApiName1C.hasTag("prefIOP"))
   @Filter(ApiName2A.hasTag("orgAdmin"))
   @Filter(ApiName2B.hasTag("client"))
-  @Filter(ApiName2B.hasTag("prefIOP"))
+  @SoftFilter(ApiName2B.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1A | ApiName2A | ApiName1B | ApiName1C | ApiName2B |
@@ -339,8 +339,8 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName1.hasTag("practitioner"))
   @Filter(ApiName2.hasTag("practitioner"))
-  @Filter(ApiName1.hasTag("prefIOP"))
-  @Filter(ApiName2.hasTag("prefIOP"))
+  @SoftFilter(ApiName1.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1 | ApiName2 |
@@ -365,8 +365,8 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName2.hasTag("client"))
-  @Filter(ApiName1B.hasTag("prefIOP"))
-  @Filter(ApiName2.hasTag("prefIOP"))
+  @SoftFilter(ApiName1B.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1A | ApiName1B | ApiName2 |
@@ -377,7 +377,7 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "A" hinterlegt seine MXID im Verzeichnis Dienst
-    Wenn       "A" versucht "B" direkt "Hello from the other site" zu schreiben
+    Wenn       "A" versucht "B" direkt "Testnachricht 1" zu schreiben
     Dann       erhält "A" einen Responsecode 403
     Und        "B" erhält KEINE Einladung von "A" [Retry 10 - 3]
 
@@ -390,8 +390,8 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName1.hasTag("practitioner"))
   @Filter(ApiName2.hasTag("practitioner"))
-  @Filter(ApiName1.hasTag("prefIOP"))
-  @Filter(ApiName2.hasTag("prefIOP"))
+  @SoftFilter(ApiName1.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1 | ApiName2 |
@@ -403,7 +403,7 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
     Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName2>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
-    Wenn       "B" versucht "C" direkt "Hello from the other site" zu schreiben
+    Wenn       "B" versucht "C" direkt "Testnachricht 1" zu schreiben
     Dann       erhält "B" einen Responsecode 403
     Und        "C" erhält KEINE Einladung von "B" [Retry 10 - 3]
 
@@ -417,8 +417,8 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName2.hasTag("client"))
-  @Filter(ApiName2.hasTag("prefIOP"))
-  @Filter(ApiName1B.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
+  @SoftFilter(ApiName1B.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1A | ApiName1B | ApiName2 |
@@ -429,7 +429,7 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "A" hinterlegt seine MXID im Verzeichnis Dienst
-    Wenn       "B" versucht "A" direkt "Hello from the other site" zu schreiben
+    Wenn       "B" versucht "A" direkt "Testnachricht 1" zu schreiben
     Dann       erhält "B" einen Responsecode 403
 
   #@Shuffle(true)
@@ -442,8 +442,8 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName1.hasTag("practitioner"))
   @Filter(ApiName2.hasTag("practitioner"))
-  @Filter(ApiName1.hasTag("prefIOP"))
-  @Filter(ApiName2.hasTag("prefIOP"))
+  @SoftFilter(ApiName1.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1 | ApiName2 |
@@ -473,8 +473,8 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName2.hasTag("practitioner"))
-  #@Filter(ApiName1B.hasTag("prefIOP"))
-  @Filter(ApiName2.hasTag("prefIOP"))
+  #@SoftFilter(ApiName1B.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1A | ApiName1B | ApiName2 |
@@ -485,7 +485,7 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1>
     Und        "A" hinterlegt seine MXID im Verzeichnis Dienst
-    Wenn       "B" versucht "A" direkt "Hello from the other site" zu schreiben
+    Wenn       "B" versucht "A" direkt "Testnachricht 1" zu schreiben
     Dann       erhält "B" einen Responsecode 403
 
   #@Shuffle(true)
@@ -497,8 +497,8 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
   @Filter(ApiName1.hasTag("client"))
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName2.hasTag("practitioner"))
-  @Filter(ApiName1.hasTag("prefIOP"))
-  @Filter(ApiName2.hasTag("prefIOP"))
+  @SoftFilter(ApiName1.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1 | ApiName2 |
@@ -526,8 +526,8 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName2.hasTag("client"))
-  @Filter(ApiName1B.hasTag("prefIOP"))
-  @Filter(ApiName2.hasTag("prefIOP"))
+  @SoftFilter(ApiName1B.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1A | ApiName1B | ApiName2 |
@@ -547,8 +547,8 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
   @AllowDoubleLineup(true)
   @Filter(ApiName1.hasTag("client"))
   @Filter(ApiName2.hasTag("client"))
-  @Filter(ApiName2.hasTag("prefIOP"))
-  @Filter(ApiName1.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
+  @SoftFilter(ApiName1.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1 | ApiName2 |

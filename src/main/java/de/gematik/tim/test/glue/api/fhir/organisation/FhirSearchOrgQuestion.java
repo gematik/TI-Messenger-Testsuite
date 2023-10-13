@@ -21,6 +21,7 @@ import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEARCH_ORG;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getMapper;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.repeatedRequest;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getHsFromInternalName;
 import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
 import static java.util.Objects.requireNonNull;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
@@ -150,7 +151,7 @@ public class FhirSearchOrgQuestion implements Question<FhirSearchResultDTO> {
 
   private RequestSpecification prepareQuery(RequestSpecification request) {
     if (StringUtils.isNotBlank(hsName)) {
-      request.queryParam("healthcareServiceName", hsName);
+      request.queryParam("healthcareServiceName", getHsFromInternalName(hsName).name());
     }
     if (StringUtils.isNotBlank(address)) {
       request.queryParam("address", address);

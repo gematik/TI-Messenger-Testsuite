@@ -18,6 +18,7 @@ package de.gematik.tim.test.glue.api.room.tasks;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.CREATE_ROOM;
 import static de.gematik.tim.test.glue.api.room.UseRoomAbility.addRoomToActor;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueRoomName;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -43,13 +44,14 @@ public class CreateRoomTask implements Task {
   @Override
   public <T extends Actor> void performAs(T actor) {
     Objects.requireNonNull(roomName);
+    String uniqueName = createUniqueRoomName();
     CreateRoomRequestDTO requestDTO = new CreateRoomRequestDTO()
-        .name(roomName);
+        .name(uniqueName);
 
     actor.attemptsTo(CREATE_ROOM.request()
         .with(req -> req.body(requestDTO)));
     RoomDTO room = lastResponse().body().as(RoomDTO.class);
-    assertThat(room.getName()).isEqualTo(roomName);
-    addRoomToActor(room, actor);
+    assertThat(room.getName()).isEqualTo(uniqueName);
+    addRoomToActor(roomName,room, actor);
   }
 }
