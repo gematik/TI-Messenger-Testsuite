@@ -42,7 +42,7 @@ public abstract class TeardownAbility implements RefersToActor, Ability, HasTear
     if (tearedDown) {
       return;
     }
-    if (!(boolean) actor.recall(IS_LOGGED_IN) && !(this instanceof UseDeviceAbility) && !(this instanceof IsLoggedInAbility)) {
+    if (actor.recall(IS_LOGGED_IN) == null || !(boolean) actor.recall(IS_LOGGED_IN) && !(this instanceof UseDeviceAbility) && !(this instanceof IsLoggedInAbility)) {
       actor.attemptsTo(login());
     }
     for (Class<? extends TeardownAbility> abilityClass : TeardownOrder.before(this)) {

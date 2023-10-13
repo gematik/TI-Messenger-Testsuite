@@ -21,18 +21,21 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEND_DIRECT_MESSAGE;
 import static de.gematik.tim.test.glue.api.room.UseRoomAbility.addRoomToActor;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomQuestion.ownRoom;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueMessageText;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.isSameHomeserver;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addMessage;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.DirectMessageDTO;
+import de.gematik.tim.test.models.MessageDTO;
 import de.gematik.tim.test.models.RoomDTO;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
+import org.springframework.http.HttpStatus;
 
 @RequiredArgsConstructor
 public class SendDirectMessageTask implements Task {
@@ -50,10 +53,13 @@ public class SendDirectMessageTask implements Task {
     String toMxId = toActor.recall(MX_ID);
 
     DirectMessageDTO directMessage = new DirectMessageDTO()
-        .body(this.message)
+        .body(createUniqueMessageText())
         .msgtype("m.text")
         .toAccount(toMxId);
     actor.attemptsTo(SEND_DIRECT_MESSAGE.request().with(req -> req.body(directMessage)));
+    if (HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful()) {
+      addMessage(this.message, lastResponse().as(MessageDTO.class));
+    }
 
     logEventsAndSaveRoomToActor(actor, actorMxId, toMxId);
 
@@ -89,9 +95,11 @@ public class SendDirectMessageTask implements Task {
   private void handleNewRoom(Actor actor, String actorMxId, String toMxId) {
     RoomDTO room = actor.asksFor(
         ownRoom().withMembers(List.of(actorMxId, toMxId)));
-    actor.remember(DIRECT_CHAT_NAME + toMxId, room.getName());
-    toActor.remember(DIRECT_CHAT_NAME + actorMxId, room.getName());
-    addRoomToActor(room, actor);
-    addRoomToActor(room, toActor);
+    String roomNameActor = DIRECT_CHAT_NAME + toMxId;
+    String roomNameToActor = DIRECT_CHAT_NAME + actorMxId;
+    actor.remember(roomNameActor, room.getName());
+    toActor.remember(roomNameToActor, room.getName());
+    addRoomToActor(roomNameActor, room, actor);
+    addRoomToActor(roomNameToActor, room, toActor);
   }
 }

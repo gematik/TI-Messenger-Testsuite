@@ -45,8 +45,8 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
     Wenn       "B" lädt "A" in Chat-Raum "TIM Testraum 1" ein
     Dann       "A" erhält eine Einladung von "B"
     Und        "A" bestätigt eine Einladung von "B"
-    Und        "A" sendet die Nachricht "Hello from the other site" an den Raum "TIM Testraum 1"
-    Und        "B" empfängt eine Nachricht "Hello from the other site" von "A" im Raum "TIM Testraum 1"
+    Und        "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Und        "B" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
     Und        "A" verlässt Chat-Raum "TIM Testraum 1"
     Und        "B" verlässt Chat-Raum "TIM Testraum 1"
     Und        "A" löscht "B" in seiner Freigabeliste
@@ -61,8 +61,8 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName1.hasTag("practitioner"))
   @Filter(ApiName2.hasTag("practitioner"))
-  @Filter(ApiName1.hasTag("prefIOP"))
-  @Filter(ApiName2.hasTag("prefIOP"))
+  @SoftFilter(ApiName1.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1 | ApiName2 |
@@ -74,10 +74,10 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "A" hinterlegt "B" in seiner Freigabeliste
     Und        "B" hinterlegt "A" in seiner Freigabeliste
-    Wenn       "B" schreibt "A" direkt "Hello from the other site"
+    Wenn       "B" schreibt "A" direkt "Testnachricht 1"
     Dann       "A" erhält eine Einladung von "B"
     Und        "A" bestätigt eine Einladung von "B"
-    Und        "A" empfängt eine Nachricht "Hello from the other site" von "B"
+    Und        "A" empfängt eine Nachricht "Testnachricht 1" von "B"
     Und        "A" verlässt Chat mit "B"
     Und        "B" verlässt Chat mit "A"
     Und        "A" löscht "B" in seiner Freigabeliste
@@ -92,8 +92,8 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName1.hasTag("practitioner"))
   @Filter(ApiName2.hasTag("practitioner"))
-  @Filter(ApiName1.hasTag("prefIOP"))
-  @Filter(ApiName2.hasTag("prefIOP"))
+  @SoftFilter(ApiName1.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1 | ApiName2 |
@@ -107,10 +107,10 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
     Und        "C" hinterlegt "B" in seiner Freigabeliste
     Und        "B" hinterlegt "C" in seiner Freigabeliste
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
-    Wenn       "B" schreibt "C" direkt "Hello from the other site"
+    Wenn       "B" schreibt "C" direkt "Testnachricht 1"
     Dann       "C" erhält eine Einladung von "B"
     Und        "C" bestätigt eine Einladung von "B"
-    Und        "C" empfängt eine Nachricht "Hello from the other site" von "B"
+    Und        "C" empfängt eine Nachricht "Testnachricht 1" von "B"
     Und        "C" verlässt Chat mit "B"
     Und        "B" verlässt Chat mit "C"
     Und        "C" löscht "B" in seiner Freigabeliste
@@ -127,8 +127,8 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName2.hasTag("practitioner"))
-  @Filter(ApiName1B.hasTag("prefIOP"))
-  @Filter(ApiName2.hasTag("prefIOP"))
+  @SoftFilter(ApiName1B.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1A | ApiName1B | ApiName2 |
@@ -153,8 +153,8 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName1.hasTag("practitioner"))
   @Filter(ApiName2.hasTag("practitioner"))
-  @Filter(ApiName1.hasTag("prefIOP"))
-  @Filter(ApiName2.hasTag("prefIOP"))
+  @SoftFilter(ApiName1.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1 | ApiName2 |
@@ -165,7 +165,7 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
     Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
     Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "B" hinterlegt "A" in seiner Freigabeliste
-    Wenn       "B" versucht "A" direkt "Hello from the other site" zu schreiben
+    Wenn       "B" versucht "A" direkt "Testnachricht 1" zu schreiben
     Dann       "B" ist nicht berechtigt "A" zu kontaktieren
     Und        "A" erhält KEINE Einladung von "B" [Retry 10 - 3]
     Und        "B" löscht "A" in seiner Freigabeliste
@@ -178,8 +178,8 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
   @Filter(ApiName2.hasTag("client"))
   @Filter(ApiName1.hasTag("practitioner"))
   @Filter(ApiName2.hasTag("practitioner"))
-  @Filter(ApiName1.hasTag("prefIOP"))
-  @Filter(ApiName2.hasTag("prefIOP"))
+  @SoftFilter(ApiName1.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
     | ApiName1 | ApiName2 |

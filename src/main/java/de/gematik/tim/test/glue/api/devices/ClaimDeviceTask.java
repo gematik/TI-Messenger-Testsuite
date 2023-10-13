@@ -24,7 +24,7 @@ import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.TEST_CASE_ID
 import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.useDevice;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.CLAIM_DURATION;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.repeatedRequestWithLongerTimeout;
-import static de.gematik.tim.test.glue.api.utils.TestcaseIdProvider.getTestcaseId;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTestcaseId;
 import static lombok.AccessLevel.PRIVATE;
 import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
 import static org.apache.commons.lang3.StringUtils.isBlank;

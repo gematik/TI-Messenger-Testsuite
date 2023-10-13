@@ -23,6 +23,7 @@ import static de.gematik.tim.test.glue.api.media.DownloadMediaQuestion.downloadM
 import static de.gematik.tim.test.glue.api.media.UploadMediaTask.uploadMedia;
 import static de.gematik.tim.test.glue.api.message.GetRoomMessageQuestion.messageFromSenderWithTextInActiveRoom;
 import static de.gematik.tim.test.glue.api.message.SendMessageTask.sendMessage;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getCreatedMessage;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -75,7 +76,7 @@ public class MediaGlue {
 
   @SneakyThrows
   @SuppressWarnings("java:S3655")
-  // It get checked by asserThat(message).isPresent()
+  // It gets checked by asserThat(message).isPresent()
   @Dann("{string} empfängt das Attachment {string} von {string} im Raum {string}")
   public void receiveAttachmentInRoom(String actorName, String fileName, String userName,
                                       String roomName) {
@@ -93,7 +94,7 @@ public class MediaGlue {
     try (FileInputStream fis = new FileInputStream(path.toFile())) {
       assertThat(receivedMedia).isEqualTo(fis.readAllBytes());
     }
-    assertThat(message.get().getBody()).isEqualTo(fileName);
+    assertThat(message.get().getBody()).isEqualTo(getCreatedMessage(fileName).getBody());
   }
 
 }

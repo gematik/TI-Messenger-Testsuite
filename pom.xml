@@ -6,7 +6,7 @@
 
   <groupId>de.gematik.tim.test</groupId>
   <artifactId>TI-Messenger-Testsuite</artifactId>
-  <version>0.9.4</version>
+  <version>0.9.5</version>
   <packaging>jar</packaging>
   <name>TI-Messenger-Testsuite</name>
   <description>Testsuite to check functionality of TI-Messenger-Clients</description>
@@ -37,6 +37,8 @@
     <tim.truststore.pw>${env.TIM_TRUSTSTORE_PW}</tim.truststore.pw>
     <tim.keystore>${env.TIM_KEYSTORE}</tim.keystore>
     <tim.keystore.pw>${env.TIM_KEYSTORE_PW}</tim.keystore.pw>
+    <tim.fproxy.host>${env.TIM_PROXY_HOST}</tim.fproxy.host>
+    <tim.fproxy.port>${env.TIM_PROXY_PORT}</tim.fproxy.port>
     <cutest.prepare.skip>false</cutest.prepare.skip>
     <cutest.prepare.skipPrepare>false</cutest.prepare.skipPrepare>
     <cutest.prepare.skipCombine>false</cutest.prepare.skipCombine>
@@ -45,6 +47,7 @@
     <cutest.break.context>${cutest.prepare.break}</cutest.break.context>
     <cutest.break.request>${cutest.prepare.break}</cutest.break.request>
     <cutest.break.tablesize>${cutest.prepare.break}</cutest.break.tablesize>
+    <soft-filter.to.hard>false</soft-filter.to.hard>
     <cucumber.filter.tags/>
     <pool.group.string/>
     <saveConnections/>
@@ -133,6 +136,11 @@
       <artifactId>javax.annotation-api</artifactId>
       <version>1.3.2</version>
     </dependency>
+    <dependency>
+      <groupId>com.github.javafaker</groupId>
+      <artifactId>javafaker</artifactId>
+      <version>1.0.2</version>
+    </dependency>
     <!-- screenplay -->
     <dependency>
       <groupId>net.serenity-bdd</groupId>
@@ -219,7 +227,7 @@
       <plugin>
         <groupId>de.gematik</groupId>
         <artifactId>cucumber-test-combinations-maven-plugin</artifactId>
-        <version>2.9.9</version>
+        <version>2.9.12</version>
         <configuration>
           <skip>${cutest.prepare.skip}</skip>
           <skipPrep>${cutest.prepare.skipPrepare}</skipPrep>
@@ -229,11 +237,13 @@
           <combineItemsFile>${combine.items.file}</combineItemsFile>
           <breakOnContextError>${cutest.break.context}</breakOnContextError>
           <breakOnFailedRequest>${cutest.break.request}</breakOnFailedRequest>
-          <!--          Prepare item config-->
           <truststore>${tim.truststore}</truststore>
           <truststorePw>${tim.truststore.pw}</truststorePw>
           <clientCertStore>${tim.keystore}</clientCertStore>
           <clientCertStorePw>${tim.keystore.pw}</clientCertStorePw>
+          <proxyHost>${tim.fproxy.host}</proxyHost>
+          <proxyPort>${tim.fproxy.port}</proxyPort>
+          <!--          Prepare item config-->
           <poolGroupString>${pool.group.string}</poolGroupString>
           <tagExpressions>
             <tagExpression>
@@ -274,7 +284,9 @@
           <!--          Check config-->
           <checkPath>devices</checkPath>
           <defaultCheckExpressions>
-            ITEM.hasTag("orgAdmin") and ITEM.hasTag("client") ? $.devices.size() >= 4 : ITEM.hasTag("orgAdmin") ? $.devices.size() >= 1 : $.devices.size() >= 3</defaultCheckExpressions>
+            ITEM.hasTag("orgAdmin") and ITEM.hasTag("client") ? $.devices.size() >= 4 : ITEM.hasTag("orgAdmin") ?
+            $.devices.size() >= 1 : $.devices.size() >= 3
+          </defaultCheckExpressions>
           <!--          Combine config-->
           <breakIfTableToSmall>${cutest.break.tablesize}</breakIfTableToSmall>
           <outputDir>${feature_dir}</outputDir>
@@ -286,6 +298,7 @@
             <version>${cucumber.filter.version}</version>
           </projectFilters>
           <versionProperty>clientVersion</versionProperty>
+          <softFilterToHardFilter>${soft-filter.to.hard}</softFilterToHardFilter>
         </configuration>
 
         <executions>
@@ -589,6 +602,7 @@
         <saveConnections>true</saveConnections>
         <tiger.config.file>tiger-ci.yml</tiger.config.file>
         <runWithoutRetry>true</runWithoutRetry>
+        <soft-filter.to.hard>true</soft-filter.to.hard>
       </properties>
       <build>
         <plugins>
@@ -610,7 +624,7 @@
                 <artifactItem>
                   <groupId>de.gematik.tim.test</groupId>
                   <artifactId>TI-Messenger-TestdriverSim</artifactId>
-                  <version>4.1.2</version>
+                  <version>4.1.3</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}</outputDirectory>
@@ -635,6 +649,7 @@
         <timeout>240</timeout>
         <pollInterval>5</pollInterval>
         <claimDuration>300</claimDuration>
+        <soft-filter.to.hard>true</soft-filter.to.hard>
       </properties>
     </profile>
     <profile>
@@ -668,6 +683,7 @@
       <properties>
         <tiger.config.file>tiger-dev.yml</tiger.config.file>
         <runWithoutRetry>true</runWithoutRetry>
+        <soft-filter.to.hard>true</soft-filter.to.hard>
       </properties>
       <activation>
         <activeByDefault>true</activeByDefault>

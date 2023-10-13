@@ -29,8 +29,9 @@ import static de.gematik.tim.test.glue.api.info.ApiInfoQuestion.apiInfo;
 import static de.gematik.tim.test.glue.api.login.LogInGlue.loginSuccess;
 import static de.gematik.tim.test.glue.api.login.LogInGlue.logsIn;
 import static de.gematik.tim.test.glue.api.login.LoginTask.login;
-import static de.gematik.tim.test.glue.api.utils.TestcaseIdProvider.startTest;
-import static de.gematik.tim.test.glue.api.utils.TestcaseIdProvider.stopTest;
+import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.startTest;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.stopTest;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static net.serenitybdd.screenplay.actors.OnStage.setTheStage;
 import static net.serenitybdd.screenplay.actors.OnStage.stage;
@@ -134,6 +135,7 @@ public class DevicesControllerGlue {
     actor.remember(ACCOUNT_PASSWORD, password);
 
     actor.attemptsTo(login().withoutClearingRooms());
+    actor.asksFor(ownRooms());
   }
 
   @Given("{string} claims client on api {word}")

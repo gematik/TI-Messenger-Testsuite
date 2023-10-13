@@ -16,8 +16,12 @@
 
 package de.gematik.tim.test.glue.api;
 
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addHs;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addRoom;
 import static java.util.Objects.requireNonNull;
 
+import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.HealthcareServiceInfo;
+import de.gematik.tim.test.models.RoomDTO;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +45,12 @@ public abstract class MultiTargetAbility<K, V> extends TeardownAbility {
   protected void addAndSetActive(K key, V target) {
     addTarget(key, target);
     setActive(key);
+    if (target instanceof HealthcareServiceInfo t) {
+      addHs((String) key, t);
+    }
+    if (target instanceof RoomDTO t) {
+      addRoom((String) key, t);
+    }
   }
 
   public V getTarget(K key) {

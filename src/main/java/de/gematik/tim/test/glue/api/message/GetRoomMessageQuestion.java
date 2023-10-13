@@ -18,14 +18,13 @@ package de.gematik.tim.test.glue.api.message;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_MESSAGES;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.repeatedRequest;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getCreatedMessage;
 import static java.util.Objects.requireNonNull;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.models.MessageDTO;
-
 import java.util.List;
 import java.util.Optional;
-
 import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
@@ -40,9 +39,8 @@ public class GetRoomMessageQuestion implements Question<Optional<MessageDTO>> {
   private Long customPollInterval;
   private boolean shouldWaitUntilDeleted;
 
-  public static GetRoomMessageQuestion messageFromSenderWithTextInActiveRoom(String msg,
-      String mxIdSender) {
-    return new GetRoomMessageQuestion(msg, mxIdSender).shouldWaitUntilDeleted(false);
+  public static GetRoomMessageQuestion messageFromSenderWithTextInActiveRoom(String msg, String mxIdSender) {
+    return new GetRoomMessageQuestion(getCreatedMessage(msg).getBody(), mxIdSender).shouldWaitUntilDeleted(false);
   }
 
   public GetRoomMessageQuestion withCustomInterval(Long timeout, Long pollInterval) {

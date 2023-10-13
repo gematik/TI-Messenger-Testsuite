@@ -5,6 +5,18 @@
 ## Link to TI-Messenger-testsuite [`docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
 
 - - -
+## Release 0.9.5
+
+### Feature
+
+- HealthcareServiceNames, RoomNames and Messages are generate randomly with timestamps
+- User search for complete HealthcareServiceName. This reduces the search result from FHIR-VZD
+- WIP (future deleted) TC 00.02, 00.05 & 04.02
+- Update cucumber-test-combinations-maven-plugin to version 2.9.12 and take advantage of the SoftFilterFeature
+
+### Bugfix
+
+- Fix for not deleting testcase ID after fail login
 
 ## Release 0.9.4
 

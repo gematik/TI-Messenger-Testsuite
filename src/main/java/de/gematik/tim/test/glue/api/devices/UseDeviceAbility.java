@@ -17,8 +17,8 @@
 package de.gematik.tim.test.glue.api.devices;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.DEVICE_ID_VARIABLE;
-import static de.gematik.tim.test.glue.api.utils.TestcaseIdProvider.getLastTcId;
-import static de.gematik.tim.test.glue.api.utils.TestcaseIdProvider.getTestcaseId;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getLastTcId;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTestcaseId;
 import static java.util.Objects.nonNull;
 
 import de.gematik.tim.test.glue.api.TeardownAbility;

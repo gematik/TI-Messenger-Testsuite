@@ -19,7 +19,7 @@ package de.gematik.tim.test.glue.api.room;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_ID_VARIABLE;
 import static de.gematik.tim.test.glue.api.room.tasks.ForgetRoomTask.forgetRoom;
 import static de.gematik.tim.test.glue.api.room.tasks.LeaveRoomTask.leaveRoom;
-import static de.gematik.tim.test.glue.api.utils.TestcaseIdProvider.getTestcaseId;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getInternalRoomNameForActor;
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 import static lombok.AccessLevel.PRIVATE;
@@ -36,24 +36,28 @@ import net.serenitybdd.screenplay.RefersToActor;
 import net.serenitybdd.screenplay.Task;
 
 @NoArgsConstructor(access = PRIVATE)
-public class UseRoomAbility extends MultiTargetAbility<String, String> implements
+public class UseRoomAbility extends MultiTargetAbility<String, RoomDTO> implements
     TestdriverApiAbility, HasTeardown, RefersToActor {
 
-  private UseRoomAbility(RoomDTO room) {
-    addAndSetActive(room);
+  private UseRoomAbility(String roomName, RoomDTO room) {
+    addAndSetActive(roomName, room);
   }
 
   public static <T extends Actor> void addRoomToActor(RoomDTO room, T actor) {
+    addRoomToActor(getInternalRoomNameForActor(room, actor), room, actor);
+  }
+
+  public static <T extends Actor> void addRoomToActor(String roomName, RoomDTO room, T actor) {
     UseRoomAbility ability = actor.abilityTo(UseRoomAbility.class);
     if (isNull(ability)) {
-      actor.can(useRoom(room));
+      actor.can(useRoom(roomName, room));
     } else {
-      ability.addAndSetActive(room);
+      ability.addAndSetActive(roomName, room);
     }
   }
 
-  private static UseRoomAbility useRoom(RoomDTO room) {
-    return new UseRoomAbility(room);
+  private static UseRoomAbility useRoom(String roomName, RoomDTO room) {
+    return new UseRoomAbility(roomName, room);
   }
 
   private static UseRoomAbility useRooms(List<RoomDTO> rooms) {
@@ -64,13 +68,13 @@ public class UseRoomAbility extends MultiTargetAbility<String, String> implement
 
   @Override
   public RequestSpecification apply(RequestSpecification requestSpecification) {
-    String roomId = getActive();
+    String roomId = getActive().getRoomId();
     requireNonNull(roomId);
     return requestSpecification.pathParam(ROOM_ID_VARIABLE, roomId);
   }
 
   public void addAndSetActive(RoomDTO room) {
-    addAndSetActive(room.getName(), room.getRoomId());
+    addAndSetActive(getInternalRoomNameForActor(room, actor), room);
   }
 
   public static void updateAvailableRooms(List<RoomDTO> rooms, Actor actor) {
@@ -84,7 +88,7 @@ public class UseRoomAbility extends MultiTargetAbility<String, String> implement
   }
 
   public String getRoomIdByName(String roomName) {
-    return getTarget(roomName);
+    return getTarget(roomName).getName();
   }
 
   @Override

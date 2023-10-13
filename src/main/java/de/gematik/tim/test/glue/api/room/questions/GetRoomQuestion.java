@@ -18,23 +18,23 @@ package de.gematik.tim.test.glue.api.room.questions;
 
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.repeatedRequest;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getRoomByInternalName;
 import static java.util.Objects.requireNonNull;
 
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
 import de.gematik.tim.test.models.RoomDTO;
 import de.gematik.tim.test.models.RoomMemberDTO;
 import de.gematik.tim.test.models.RoomMembershipStateDTO;
-import lombok.extern.slf4j.Slf4j;
-import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.Question;
-import org.awaitility.core.ConditionTimeoutException;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import lombok.extern.slf4j.Slf4j;
+import net.serenitybdd.screenplay.Actor;
+import net.serenitybdd.screenplay.Question;
+import org.awaitility.core.ConditionTimeoutException;
+import org.jetbrains.annotations.NotNull;
 
 @Slf4j
 public class GetRoomQuestion implements Question<RoomDTO> {
@@ -56,12 +56,12 @@ public class GetRoomQuestion implements Question<RoomDTO> {
   }
 
   public GetRoomQuestion withRoomId(String roomId) {
-    this.filterList.add(r -> r.getRoomId().equals(roomId));
+    this.filterList.add(r -> requireNonNull(r.getRoomId()).equals(roomId));
     return this;
   }
 
   public GetRoomQuestion withName(String roomName) {
-    this.filterList.add(r -> requireNonNull(r.getName()).equals(roomName));
+    this.filterList.add(r -> requireNonNull(r.getName()).equals(getRoomByInternalName(roomName).getName()));
     return this;
   }
 

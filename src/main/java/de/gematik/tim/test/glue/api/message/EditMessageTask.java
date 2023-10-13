@@ -19,12 +19,16 @@ package de.gematik.tim.test.glue.api.message;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.EDIT_MESSAGE;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.MESSAGE_ID_VARIABLE;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueMessageText;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addMessage;
 import static java.util.Objects.requireNonNull;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.models.MessageContentDTO;
+import de.gematik.tim.test.models.MessageDTO;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
+import org.springframework.http.HttpStatus;
 
 public class EditMessageTask implements Task {
 
@@ -49,10 +53,13 @@ public class EditMessageTask implements Task {
   public <T extends Actor> void performAs(T actor) {
     requireNonNull(this.message);
     requireNonNull(this.messageId);
-
+    MessageContentDTO messageBody = new MessageContentDTO().body(createUniqueMessageText()).msgtype("m.text");
     actor.attemptsTo(EDIT_MESSAGE.request()
         .with(req -> req.pathParam(MESSAGE_ID_VARIABLE, this.messageId)
-            .body(new MessageContentDTO().body(this.message).msgtype("m.text"))));
+            .body(messageBody)));
     actor.remember(LAST_RESPONSE, lastResponse());
+    if (HttpStatus.valueOf(lastResponse().getStatusCode()).is2xxSuccessful()) {
+      addMessage(this.message, lastResponse().as(MessageDTO.class));
+    }
   }
 }
