@@ -17,9 +17,9 @@
 package de.gematik.tim.test.glue.api.devices;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_DEVICES;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.models.DeviceInfoDTO.DeviceStatusEnum.CLAIMED;
 import static java.util.Collections.emptyList;
-import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.models.DeviceInfoDTO;
 import de.gematik.tim.test.models.DevicesDTO;
@@ -36,7 +36,7 @@ public class UnclaimedDevicesQuestion implements Question<List<Long>> {
   @Override
   public List<Long> answeredBy(Actor actor) {
     actor.attemptsTo(GET_DEVICES.request());
-    DevicesDTO devices = lastResponse().body().as(DevicesDTO.class);
+    DevicesDTO devices = parseResponse(DevicesDTO.class);
 
     List<DeviceInfoDTO> devicesList = devices.getDevices();
     if (devicesList == null) {

@@ -1348,14 +1348,17 @@ mvn clean verify -Dcucumber.filter.tags=@TCID:TIM_11_AF_401 -Poneonly
 
 mvn clean verify -Dtiger.config.file=tiger-dev.yml
 
-*Im Terminal können Timeout und PollIntervall eingestellt werden*
+*Im Terminal können HttpTimeout, Timeout und PollIntervall eingestellt werden*
 
-mvn clean verify -Dtimeout=_<Timeout in Sekunden>_ -DpollInterval=_<PollIntervall in Sekunden>_
+mvn clean verify -DhttpTimeout=_<Timeout in Sekunden>_ -Dtimeout=_<Timeout in Sekunden>_ -DpollInterval=_<PollIntervall in Sekunden>_
 
 Default:
 
-* Timeout = 10 Sekunden
-* PollInterval = 1 Sekunde
+* HttpTimout = 180 Sekunden -> Timeout bis irgendeine Antwort erwartet wird (wird bei jeder neuen Anfrage wieder resettet)
+* Timeout = 10 Sekunden -> Zeit die bis auf die erwartete Antwort gewartet wird.
+Kann überschritten werden wenn Server nicht antwortet.
+Dann greift _HttpTimeout_
+* PollInterval = 1 Sekunde -> Zeit die gewartet wird bis nach einer nicht erwarteten Antwort eine weitere Request ausgesendet wird
 
 [WARNING]
 Das Timeout muss immer größer als das PollInterval sein!

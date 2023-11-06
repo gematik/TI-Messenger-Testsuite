@@ -17,8 +17,13 @@
 package de.gematik.tim.test.glue.api.fhir.practitioner;
 
 import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirDeleteOwnMxidTask.deleteMxidFromFhir;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequestForTeardown;
+import static java.lang.Boolean.TRUE;
+import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.glue.api.TeardownAbility;
+import java.util.Optional;
+import org.springframework.http.HttpStatus;
 
 public class CanDeleteOwnMxidAbility extends TeardownAbility {
 
@@ -28,6 +33,13 @@ public class CanDeleteOwnMxidAbility extends TeardownAbility {
 
   @Override
   protected void teardownThis() {
-    this.actor.attemptsTo(deleteMxidFromFhir());
+    repeatedRequestForTeardown(this::deleteFromFhirVzd,actor);
   }
+
+  private Optional<Boolean> deleteFromFhirVzd() {
+    this.actor.attemptsTo(deleteMxidFromFhir());
+    return HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful() ? Optional.of(TRUE) : Optional.empty();
+  }
+
+
 }

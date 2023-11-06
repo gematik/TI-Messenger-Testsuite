@@ -19,7 +19,8 @@ package de.gematik.tim.test.glue.api.room.tasks;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.JOIN_ROOM;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_ID_VARIABLE;
 import static de.gematik.tim.test.glue.api.room.UseRoomAbility.addRoomToActor;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.repeatedRequest;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.models.RoomDTO;
@@ -55,7 +56,7 @@ public class JoinRoomTask implements Task {
         .with(req -> req.pathParam(ROOM_ID_VARIABLE, roomId)));
     Response resp = lastResponse();
     if (HttpStatus.valueOf(resp.statusCode()).is2xxSuccessful()) {
-      RoomDTO room = lastResponse().body().as(RoomDTO.class);
+      RoomDTO room = parseResponse(RoomDTO.class);
       addRoomToActor(room, actor);
       return Optional.of(room);
     } else {

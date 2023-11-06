@@ -16,30 +16,19 @@
 
 package de.gematik.tim.test.glue.api.utils;
 
-import static com.networknt.schema.utils.StringUtils.isBlank;
-import static com.nimbusds.jose.util.X509CertUtils.parse;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
 import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
-import static io.cucumber.messages.types.SourceMediaType.TEXT_X_CUCUMBER_GHERKIN_PLAIN;
-import static java.lang.String.format;
-import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.groupingBy;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.javafaker.Faker;
-import de.gematik.test.tiger.lib.TigerDirector;
-import de.gematik.test.tiger.proxy.TigerProxy;
-import de.gematik.tim.test.glue.api.exceptions.RequestedRessourceNotAvailable;
-import de.gematik.tim.test.glue.api.room.UseRoomAbility;
 import de.gematik.tim.test.models.FhirBaseResourceDTO;
 import de.gematik.tim.test.models.FhirEndpointDTO;
 import de.gematik.tim.test.models.FhirEntryDTO;
@@ -53,131 +42,31 @@ import de.gematik.tim.test.models.FhirSearchResultDTO;
 import de.gematik.tim.test.models.MessageDTO;
 import de.gematik.tim.test.models.RoomDTO;
 import de.gematik.tim.test.models.RoomMemberDTO;
-import io.cucumber.gherkin.GherkinParser;
 import io.cucumber.java.ParameterType;
-import io.cucumber.messages.types.Envelope;
-import io.cucumber.messages.types.Examples;
-import io.cucumber.messages.types.Feature;
-import io.cucumber.messages.types.FeatureChild;
-import io.cucumber.messages.types.GherkinDocument;
-import io.cucumber.messages.types.Scenario;
-import io.cucumber.messages.types.Source;
-import io.cucumber.messages.types.TableCell;
-import io.cucumber.messages.types.TableRow;
-import io.restassured.RestAssured;
-import io.restassured.config.ObjectMapperConfig;
-import io.restassured.internal.mapping.Jackson2Mapper;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.nio.file.Files;
-import java.security.KeyStore;
-import java.security.cert.X509Certificate;
-import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.Random;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.awaitility.core.ConditionTimeoutException;
-import org.bouncycastle.asn1.x500.RDN;
-import org.bouncycastle.asn1.x500.style.BCStyle;
-import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.jetbrains.annotations.NotNull;
 
 @Slf4j
 public class GlueUtils {
 
   public static final String TEST_RESOURCES_JSON_PATH = "src/test/resources/json/";
-  public static final String MVN_PROPERTIES_LOCATION = "./target/classes/mvn.properties";
-  public static final String POLL_INTERVAL_PROPERTY_NAME = "pollInterval";
-  public static final String TIMEOUT_PROPERTY_NAME = "timeout";
-  public static final String CLEAR_ROOMS_PROPERTY_NAME = "clearRooms";
-  public static final Boolean SAVE_CONNECTIONS;
-  public static final Boolean CLEAR_ROOMS;
-  public static final Integer CLAIM_DURATION;
-  public static final String CERT_CN;
-  public static final String FEATURE_PATH = "./target/features";
-  public static final String FEATURE_ENDING = "feature";
-  private static final String RUN_WITHOUT_RETRY_PROPERTY_NAME = "runWithoutRetry";
-  private static final String SAVE_CONNECTIONS_PROPERTY_NAME = "saveConnections";
-  private static final String CLAIM_DURATION_PROPERTYNAME = "claimDuration";
-  private static final String KEY_STORE = "TIM_KEYSTORE";
-  private static final String KEY_STORE_PW = "TIM_KEYSTORE_PW";
-  private static final String RUN_WITHOUT_CERT = "no configured cert found";
-  private static final Long TIMEOUT_DEFAULT = 10L;
-  private static final Long POLL_INTERVAL_DEFAULT = 1L;
-  private static final boolean RUN_WITHOUT_RETRY;
-  private static final Jackson2Mapper mapper;
   private static final Faker faker = new Faker();
   private static final Random random = new Random();
-  private static Long timeout;
-  private static Long pollInterval;
 
-  static {
-    Properties p = new Properties();
-    try {
-      FileInputStream is = FileUtils.openInputStream(new File(MVN_PROPERTIES_LOCATION));
-      p.load(is);
-    } catch (IOException e) {
-      log.error("Could not find any maven properties at " + MVN_PROPERTIES_LOCATION);
-      throw new IllegalArgumentException(e);
-    }
-    String timeoutString = p.getProperty(TIMEOUT_PROPERTY_NAME);
-    String pollIntervalString = p.getProperty(POLL_INTERVAL_PROPERTY_NAME);
-    RUN_WITHOUT_RETRY = Boolean.parseBoolean(p.getProperty(RUN_WITHOUT_RETRY_PROPERTY_NAME));
-    SAVE_CONNECTIONS = Boolean.parseBoolean(p.getProperty(SAVE_CONNECTIONS_PROPERTY_NAME));
-    CLAIM_DURATION = Integer.parseInt(isBlank(p.getProperty(CLAIM_DURATION_PROPERTYNAME)) ? "180"
-        : p.getProperty(CLAIM_DURATION_PROPERTYNAME));
-    CERT_CN = parseCn();
-    CLEAR_ROOMS = Boolean.parseBoolean(p.getProperty(CLEAR_ROOMS_PROPERTY_NAME));
-    try {
-      timeout = Long.parseLong(timeoutString);
-      pollInterval = Long.parseLong(pollIntervalString);
-    } catch (Exception ex) {
-      timeout = TIMEOUT_DEFAULT;
-      pollInterval = POLL_INTERVAL_DEFAULT;
-      log.info(format(
-          "Could not parse timeout (%s) or pollInterval (%s). Will use default -> timeout: %s, pollInterval: %s",
-          timeoutString, pollIntervalString, timeout, pollInterval));
-    }
-    mapper = createMapper();
-    ObjectMapperConfig config = RestAssured.config().getObjectMapperConfig();
-    config.defaultObjectMapper(getMapper());
-    RestAssured.config().objectMapperConfig(config);
-    addHostsToTigerProxy();
-  }
-
-  public static Jackson2Mapper getMapper() {
-    return mapper;
-  }
-
-  private static Jackson2Mapper createMapper() {
-    return new Jackson2Mapper((type, s) -> {
-      ObjectMapper om = new ObjectMapper().registerModule(new JavaTimeModule());
-      om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-      return om;
-    });
-  }
 
   // Utils
   public static RoomDTO getRoomBetweenTwoActors(Actor actor, String senderName) {
@@ -247,12 +136,14 @@ public class GlueUtils {
   }
 
   public static String createUniqueHsName() {
-    return faker.gameOfThrones().character() + " of " + faker.gameOfThrones().house() + "-" + Instant.now()
+    return faker.gameOfThrones().character() + " of " + faker.gameOfThrones().house() + "-"
+        + Instant.now()
         .toEpochMilli();
   }
 
   public static String createUniqueRoomName() {
-    return faker.company().buzzword() + " " + faker.company().industry() + "-" + Instant.now().toEpochMilli();
+    return faker.company().buzzword() + " " + faker.company().industry() + "-" + Instant.now()
+        .toEpochMilli();
   }
 
   public static String createUniqueMessageText() {
@@ -304,7 +195,8 @@ public class GlueUtils {
     if (entry.isEmpty()) {
       return List.of();
     }
-    return getEndpointIdsOrLocationIdsOfHealthcareService((FhirHealthcareServiceDTO) entry.get().getResource(),
+    return getEndpointIdsOrLocationIdsOfHealthcareService(
+        (FhirHealthcareServiceDTO) entry.get().getResource(),
         filterFor);
   }
 
@@ -316,120 +208,6 @@ public class GlueUtils {
     }
     return nonNull(hs.getLocation()) ?
         hs.getLocation().stream().map(e -> e.getReference().split("/")[1]).toList() : List.of();
-  }
-
-  private static String parseCn() {
-    try (InputStream stream = new FileInputStream(System.getenv(KEY_STORE))) {
-      KeyStore store = KeyStore.getInstance("PKCS12");
-      store.load(stream, System.getenv(KEY_STORE_PW).toCharArray());
-      X509Certificate cert = parse(
-          store.getCertificate(store.aliases().nextElement()).getEncoded());
-      RDN cn = new JcaX509CertificateHolder(cert).getSubject().getRDNs(BCStyle.CN)[0];
-      return cn.getFirst().getValue().toString();
-    } catch (Exception ex) {
-      log.error("Could not parse certificat" + " KEY_STORE: " + System.getenv(KEY_STORE));
-    }
-    return RUN_WITHOUT_CERT;
-  }
-
-  public static <T> T repeatedRequest(Supplier<Optional<T>> request) {
-    return repeatedRequest(request, "resource");
-  }
-
-  public static <T> T repeatedRequest(Supplier<Optional<T>> request, String resourceType) {
-    return repeatedRequest(request, resourceType, timeout, pollInterval);
-  }
-
-  public static <T> T repeatedRequestWithLongerTimeout(Supplier<Optional<T>> request,
-      String resourceType, int factor) {
-    return repeatedRequest(request, resourceType, timeout * factor, pollInterval);
-  }
-
-  public static <T> T repeatedRequest(Supplier<Optional<T>> request, String resourceType,
-      Long customTimeout, Long customPollInterval) {
-    if (customTimeout == null || customPollInterval == null) {
-      customTimeout = timeout;
-      customPollInterval = pollInterval;
-    }
-    if (customTimeout <= 1 || RUN_WITHOUT_RETRY) {
-      return request.get().orElseThrow(() -> new ConditionTimeoutException(
-          format("Asked for %s, but could not be found", resourceType)));
-    }
-    return await().atMost(Duration.of(customTimeout, SECONDS)).pollDelay(0L, TimeUnit.SECONDS)
-        .pollInSameThread().pollInterval(Duration.of(customPollInterval, SECONDS))
-        .until(request::get, Optional::isPresent).orElseThrow(
-            () -> new RequestedRessourceNotAvailable(
-                format("Asked for %s, but could not be found", resourceType)));
-  }
-
-  @SneakyThrows
-  public static void addHostsToTigerProxy() {
-    Set<String> hosts = getHttpsApisFromFeatureFiles();
-    log.info("{} apis going to be added to alternative name of tiger proxy\n\t{}", hosts.size(),
-        String.join("\n\t", hosts));
-    TigerProxy proxy = TigerDirector.getTigerTestEnvMgr().getLocalTigerProxyOrFail();
-    hosts.forEach(host -> proxy.addAlternativeName(host));
-  }
-
-  private static Set<String> getHttpsApisFromFeatureFiles() {
-    List<File> featureFiles = getFeatureFiles(new File(FEATURE_PATH));
-    List<GherkinDocument> features = featureFiles.stream().map(GlueUtils::transformToGherkin).toList();
-    return features.stream()
-        .map(GherkinDocument::getFeature)
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .map(Feature::getChildren)
-        .flatMap(Collection::stream)
-        .map(FeatureChild::getScenario)
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .map(Scenario::getExamples)
-        .flatMap(Collection::stream)
-        .map(Examples::getTableBody)
-        .flatMap(Collection::stream)
-        .map(TableRow::getCells)
-        .flatMap(Collection::stream)
-        .map(TableCell::getValue)
-        .filter(e -> e.startsWith("https://"))
-        .map(e -> URI.create(e).getHost())
-        .filter(Objects::nonNull)
-        .collect(Collectors.toSet());
-  }
-
-  private static List<File> getFeatureFiles(File file) {
-    List<File> files = new ArrayList<>();
-    for (File f : file.listFiles()) {
-      if (f.isDirectory()) {
-        files.addAll(getFeatureFiles(f));
-      }
-      if (f.getAbsolutePath().endsWith(FEATURE_ENDING)) {
-        files.add(f);
-      }
-    }
-    return files;
-  }
-
-  @SneakyThrows
-  private static GherkinDocument transformToGherkin(File f) {
-    return parseGherkinString(Files.readString(f.toPath()));
-  }
-
-  private static GherkinDocument parseGherkinString(String gherkin) {
-    final GherkinParser parser = GherkinParser.builder()
-        .includeSource(false)
-        .includePickles(false)
-        .includeGherkinDocument(true)
-        .build();
-
-    final Source source = new Source("not needed", gherkin, TEXT_X_CUCUMBER_GHERKIN_PLAIN);
-    final Envelope envelope = Envelope.of(source);
-
-    return parser.parse(envelope)
-        .map(Envelope::getGherkinDocument)
-        .flatMap(Optional::stream)
-        .findAny()
-        .orElseThrow(
-            () -> new IllegalArgumentException("Could not parse invalid gherkin."));
   }
 
   @ParameterType(value = "(?:.*)", preferForRegexMatch = true)

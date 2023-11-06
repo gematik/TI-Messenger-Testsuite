@@ -108,9 +108,19 @@ public abstract class MultiTargetAbility<K, V> extends TeardownAbility {
 
   @Override
   public void teardownThis() {
+    update();
+    clearDouble();
     for (K key : List.copyOf(targets.keySet())) {
+      this.setActive(key);
       actor.attemptsTo(tearDownPerTarget(key));
     }
+  }
+
+  protected void update(){
+    // default: no update necessary
+  }
+  protected void clearDouble() {
+    // default: no doubles could appear
   }
 
   @SuppressWarnings("unused")

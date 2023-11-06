@@ -17,8 +17,12 @@
 package de.gematik.tim.test.glue.api.login;
 
 import static de.gematik.tim.test.glue.api.login.LogoutTask.logout;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequestForTeardown;
+import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.glue.api.TeardownAbility;
+import java.util.Optional;
+import org.springframework.http.HttpStatus;
 
 public class IsLoggedInAbility extends TeardownAbility {
 
@@ -28,6 +32,14 @@ public class IsLoggedInAbility extends TeardownAbility {
 
   @Override
   public void teardownThis() {
+    repeatedRequestForTeardown(this::runTeardown,actor);
+  }
+
+  private Optional<Boolean> runTeardown() {
     this.actor.attemptsTo(logout());
+    if (HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful()) {
+      return Optional.of(Boolean.TRUE);
+    }
+    return Optional.empty();
   }
 }

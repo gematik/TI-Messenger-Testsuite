@@ -17,8 +17,7 @@
 package de.gematik.tim.test.glue.api.fhir.organisation.location;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_LOCATION;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.getMapper;
-import static net.serenitybdd.rest.SerenityRest.lastResponse;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 
 import de.gematik.tim.test.models.FhirLocationDTO;
 import net.serenitybdd.screenplay.Actor;
@@ -35,7 +34,7 @@ public class FhirGetLocationQuestion extends LocationSpecificTask implements
   public FhirLocationDTO answeredBy(Actor actor) {
     super.performAs(actor);
     actor.attemptsTo(GET_LOCATION.request());
-    return lastResponse().body().as(FhirLocationDTO.class, getMapper());
+    return parseResponse(FhirLocationDTO.class, true);
   }
 
 }

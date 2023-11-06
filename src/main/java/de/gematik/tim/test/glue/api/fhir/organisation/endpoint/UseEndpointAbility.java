@@ -18,16 +18,21 @@ package de.gematik.tim.test.glue.api.fhir.organisation.endpoint;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ENDPOINT_ID_VARIABLE;
 import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.DeleteEndpointTask.deleteEndPoint;
-import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UseEndpointAbility.EndpointInfo;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequestForTeardown;
+import static java.lang.Boolean.TRUE;
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
+import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.glue.api.MultiTargetAbility;
 import de.gematik.tim.test.glue.api.TestdriverApiAbility;
+import de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UseEndpointAbility.EndpointInfo;
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility;
 import io.restassured.specification.RequestSpecification;
+import java.util.Optional;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
+import org.springframework.http.HttpStatus;
 
 public class UseEndpointAbility extends MultiTargetAbility<String, EndpointInfo> implements
     TestdriverApiAbility {
@@ -58,10 +63,19 @@ public class UseEndpointAbility extends MultiTargetAbility<String, EndpointInfo>
 
   @Override
   protected Task tearDownPerTarget(String endpointName) {
+    return new Task() {
+      @Override
+      public <T extends Actor> void performAs(T t) {
+        repeatedRequestForTeardown(() -> tearDownEndpoint(endpointName), actor);
+      }
+    };
+  }
+
+  private Optional<Boolean> tearDownEndpoint(String endpointName) {
     setActive(endpointName);
-    requireNonNull(actor.abilityTo(UseHealthcareServiceAbility.class))
-        .setActive(requireNonNull(getActive().hsName));
-    return deleteEndPoint().withName(endpointName);
+    actor.attemptsTo(deleteEndPoint().withName(endpointName));
+    return HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful() ? Optional.of(TRUE)
+        : Optional.empty();
   }
 
   protected record EndpointInfo(String endpointId, String hsName) {

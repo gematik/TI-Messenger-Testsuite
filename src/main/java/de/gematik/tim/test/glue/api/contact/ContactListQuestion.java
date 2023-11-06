@@ -17,7 +17,7 @@
 package de.gematik.tim.test.glue.api.contact;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_CONTACT;
-import static net.serenitybdd.rest.SerenityRest.lastResponse;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 
 import de.gematik.tim.test.models.ContactsDTO;
 import net.serenitybdd.screenplay.Actor;
@@ -32,6 +32,6 @@ public class ContactListQuestion implements Question<ContactsDTO> {
   @Override
   public ContactsDTO answeredBy(Actor actor) {
     actor.attemptsTo(GET_CONTACT.request());
-    return lastResponse().body().as(ContactsDTO.class);
+    return parseResponse(ContactsDTO.class);
   }
 }

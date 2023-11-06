@@ -31,7 +31,6 @@ import static de.gematik.tim.test.glue.api.login.LogInGlue.logsIn;
 import static de.gematik.tim.test.glue.api.login.LoginTask.login;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.startTest;
-import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.stopTest;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static net.serenitybdd.screenplay.actors.OnStage.setTheStage;
 import static net.serenitybdd.screenplay.actors.OnStage.stage;
@@ -42,6 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
+import de.gematik.tim.test.glue.api.utils.IndividualLogger;
 import de.gematik.tim.test.models.InfoObjectDTO;
 import io.cucumber.java.After;
 import io.cucumber.java.AfterAll;
@@ -69,6 +69,7 @@ public class DevicesControllerGlue {
   public void setup(Scenario scenario) {
     startTest(scenario);
     RawDataStatistics.startTest();
+    IndividualLogger.startTest();
   }
 
   @BeforeAll
@@ -80,7 +81,7 @@ public class DevicesControllerGlue {
   public void teardown() {
     stage().drawTheCurtain();
     RawDataStatistics.addToReport();
-    stopTest();
+    IndividualLogger.addToReport();
   }
 
   @AfterAll

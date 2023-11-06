@@ -18,7 +18,7 @@ package de.gematik.tim.test.glue.api.homeserver;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEARCH_ON_HOMESERVER;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.repeatedRequest;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
 import static java.util.Objects.requireNonNull;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;

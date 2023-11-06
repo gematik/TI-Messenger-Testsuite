@@ -16,9 +16,11 @@
 
 package de.gematik.tim.test.glue.api.fhir.organisation.endpoint;
 
+import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.HealthcareSpecificTask;
+import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility;
 import lombok.Getter;
 import net.serenitybdd.screenplay.Actor;
 
@@ -37,6 +39,8 @@ public abstract class EndpointSpecificTask extends HealthcareSpecificTask {
   public <T extends Actor> void performAs(T actor) {
     super.performAs(actor);
     UseEndpointAbility useEndpointAbility = actor.abilityTo(UseEndpointAbility.class);
+    UseHealthcareServiceAbility hsAbility = requireNonNull(actor.abilityTo(UseHealthcareServiceAbility.class));
+    hsAbility.setActive(useEndpointAbility.getActive().hsName());
     if (isNotBlank(getEndpointName())) {
       useEndpointAbility.setActive(getEndpointName());
     } else {

@@ -18,7 +18,7 @@ package de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HAS_REG_SERVICE_TOKEN;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEARCH_DELETED_HEALTHCARE_SERVICE;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.repeatedRequest;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;

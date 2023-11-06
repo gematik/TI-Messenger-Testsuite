@@ -17,8 +17,8 @@
 package de.gematik.tim.test.glue.api.room.questions;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_ROOM;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static lombok.AccessLevel.PRIVATE;
-import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.models.RoomDTO;
 import lombok.AllArgsConstructor;
@@ -35,6 +35,6 @@ public class GetCurrentRoomQuestion implements Question<RoomDTO> {
   @Override
   public RoomDTO answeredBy(Actor actor) {
     actor.attemptsTo(GET_ROOM.request());
-    return lastResponse().body().as(RoomDTO.class);
+    return parseResponse(RoomDTO.class);
   }
 }

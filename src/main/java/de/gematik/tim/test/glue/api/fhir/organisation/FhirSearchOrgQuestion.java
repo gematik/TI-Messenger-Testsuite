@@ -18,9 +18,9 @@ package de.gematik.tim.test.glue.api.fhir.organisation;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEARCH_ORG;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.getMapper;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.repeatedRequest;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getHsFromInternalName;
 import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
 import static java.util.Objects.requireNonNull;
@@ -127,7 +127,7 @@ public class FhirSearchOrgQuestion implements Question<FhirSearchResultDTO> {
     actor.attemptsTo(
         SEARCH_ORG.request().with(this::prepareQuery));
 
-    FhirSearchResultDTO resp = lastResponse().body().as(FhirSearchResultDTO.class, getMapper());
+    FhirSearchResultDTO resp = parseResponse(FhirSearchResultDTO.class, true);
     actor.remember(LAST_RESPONSE, lastResponse());
 
     return checkConditions(resp);

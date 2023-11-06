@@ -18,9 +18,9 @@ package de.gematik.tim.test.glue.api.fhir.practitioner;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEARCH_PRACTITIONER;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.getMapper;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.repeatedRequest;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
@@ -122,7 +122,7 @@ public class FhirSearchQuestion implements Question<FhirSearchResultDTO> {
   }
 
   private Optional<FhirSearchResultDTO> findPractitioner() {
-    FhirSearchResultDTO res = lastResponse().body().as(FhirSearchResultDTO.class, getMapper());
+    FhirSearchResultDTO res = parseResponse(FhirSearchResultDTO.class, true);
     List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(res, FhirResourceTypeDTO.ENDPOINT,
         FhirEndpointDTO.class);
     endpoints = filterForEndpoint(endpoints);
@@ -130,7 +130,7 @@ public class FhirSearchQuestion implements Question<FhirSearchResultDTO> {
   }
 
   private Optional<FhirSearchResultDTO> dontFindPractitioner() {
-    FhirSearchResultDTO res = lastResponse().body().as(FhirSearchResultDTO.class, getMapper());
+    FhirSearchResultDTO res = parseResponse(FhirSearchResultDTO.class, true);
     List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(res, FhirResourceTypeDTO.ENDPOINT,
         FhirEndpointDTO.class);
     endpoints = filterForEndpoint(endpoints);

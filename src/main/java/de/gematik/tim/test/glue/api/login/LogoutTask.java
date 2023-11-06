@@ -30,7 +30,7 @@ public class LogoutTask implements Task {
 
   @Override
   public <T extends Actor> void performAs(T actor) {
-    if (actor.recall(IS_LOGGED_IN)) {
+    if ((boolean) actor.recall(IS_LOGGED_IN)) {
       actor.attemptsTo(LOGOUT.request());
       actor.remember(IS_LOGGED_IN, false);
     }

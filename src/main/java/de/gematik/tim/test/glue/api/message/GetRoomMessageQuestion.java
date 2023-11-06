@@ -17,10 +17,10 @@
 package de.gematik.tim.test.glue.api.message;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_MESSAGES;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.repeatedRequest;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getCreatedMessage;
 import static java.util.Objects.requireNonNull;
-import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.models.MessageDTO;
 import java.util.List;
@@ -66,7 +66,7 @@ public class GetRoomMessageQuestion implements Question<Optional<MessageDTO>> {
 
   private Optional<Optional<MessageDTO>> getMessage(Actor actor) {
     actor.attemptsTo(GET_MESSAGES.request());
-    List<MessageDTO> messages = List.of(lastResponse().body().as(MessageDTO[].class));
+    List<MessageDTO> messages = List.of(parseResponse(MessageDTO[].class));
     if (shouldWaitUntilDeleted) {
       return dontFindMessage(messages);
     }

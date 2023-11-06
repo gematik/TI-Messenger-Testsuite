@@ -19,6 +19,7 @@ package de.gematik.tim.test.glue.api;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_LOGGED_IN;
 import static de.gematik.tim.test.glue.api.login.LoginTask.login;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.isActorFailed;
 import static java.util.Objects.nonNull;
 
 import de.gematik.tim.test.glue.api.devices.UseDeviceAbility;
@@ -39,10 +40,11 @@ public abstract class TeardownAbility implements RefersToActor, Ability, HasTear
 
   @Override
   public void tearDown() {
-    if (tearedDown) {
+    if (tearedDown || isActorFailed(actor)) {
       return;
     }
-    if (actor.recall(IS_LOGGED_IN) == null || !(boolean) actor.recall(IS_LOGGED_IN) && !(this instanceof UseDeviceAbility) && !(this instanceof IsLoggedInAbility)) {
+    if (!(boolean) actor.recall(IS_LOGGED_IN) && !(this instanceof UseDeviceAbility)
+        && !(this instanceof IsLoggedInAbility)) {
       actor.attemptsTo(login());
     }
     for (Class<? extends TeardownAbility> abilityClass : TeardownOrder.before(this)) {

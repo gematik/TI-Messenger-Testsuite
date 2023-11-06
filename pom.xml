@@ -6,7 +6,7 @@
 
   <groupId>de.gematik.tim.test</groupId>
   <artifactId>TI-Messenger-Testsuite</artifactId>
-  <version>0.9.5</version>
+  <version>0.9.6</version>
   <packaging>jar</packaging>
   <name>TI-Messenger-Testsuite</name>
   <description>Testsuite to check functionality of TI-Messenger-Clients</description>
@@ -18,8 +18,10 @@
     <java.version>17</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jacoco.version>0.8.8</jacoco.version>
-    <version.tiger>2.1.1</version.tiger>
-    <version.serenity.core>3.6.20</version.serenity.core>
+    <version.tiger>2.2.0</version.tiger>
+    <cucumber-test-combinations-maven-plugin.version>2.9.13
+    </cucumber-test-combinations-maven-plugin.version>
+    <version.serenity.core>3.6.23</version.serenity.core>
     <polarion.toolbox.version>2.0.0-133</polarion.toolbox.version>
     <feature_dir>${project.build.directory}/features/</feature_dir>
     <feature.template.dir>${project.basedir}/src/test/resources/templates/FeatureFiles/Zulassungstests
@@ -48,14 +50,17 @@
     <cutest.break.request>${cutest.prepare.break}</cutest.break.request>
     <cutest.break.tablesize>${cutest.prepare.break}</cutest.break.tablesize>
     <soft-filter.to.hard>false</soft-filter.to.hard>
+    <maxRetryClaimRequest/>
+    <saveConnections/>
+    <pollInterval/>
+    <timeout/>
+    <httpTimeout/>
+    <claimDuration/>
     <cucumber.filter.tags/>
     <pool.group.string/>
-    <saveConnections/>
     <clearRooms/>
-    <timeout/>
-    <claimDuration/>
-    <pollInterval/>
     <cucumber.filter.version/>
+    <cutest.count.format/>
   </properties>
   <distributionManagement>
     <repository>
@@ -112,6 +117,11 @@
         <artifactId>junit-vintage-engine</artifactId>
         <version>${version.junit.engine}</version>
       </dependency>
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.18.30</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -159,6 +169,15 @@
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources/versions</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>**/versions.txt</include>
+        </includes>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
@@ -227,7 +246,7 @@
       <plugin>
         <groupId>de.gematik</groupId>
         <artifactId>cucumber-test-combinations-maven-plugin</artifactId>
-        <version>2.9.12</version>
+        <version>${cucumber-test-combinations-maven-plugin.version}</version>
         <configuration>
           <skip>${cutest.prepare.skip}</skip>
           <skipPrep>${cutest.prepare.skipPrepare}</skipPrep>
@@ -299,6 +318,7 @@
           </projectFilters>
           <versionProperty>clientVersion</versionProperty>
           <softFilterToHardFilter>${soft-filter.to.hard}</softFilterToHardFilter>
+          <countExecutionsFormat>${cutest.count.format}</countExecutionsFormat>
         </configuration>
 
         <executions>
@@ -447,7 +467,7 @@
         <version>1.0</version>
         <executions>
           <execution>
-            <id>copy-file</id>
+            <id>rename-indes-file</id>
             <phase>post-integration-test</phase>
             <goals>
               <goal>copy</goal>
@@ -455,6 +475,17 @@
             <configuration>
               <sourceFile>${basedir}/target/site/serenity/index.html</sourceFile>
               <destinationFile>${basedir}/target/site/serenity/#index.html</destinationFile>
+            </configuration>
+          </execution>
+          <execution>
+            <id>rename-summary-file</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <sourceFile>${basedir}/target/site/serenity/serenity-summary.html</sourceFile>
+              <destinationFile>${basedir}/target/site/serenity/#serenity-summary.html</destinationFile>
             </configuration>
           </execution>
         </executions>
@@ -522,6 +553,42 @@
               <resources>
                 <resource>
                   <directory>${basedir}/target/generated-combine</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>save-used-versions</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/reports/${build.time}/versions</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}/target/classes</directory>
+                  <includes>
+                    <include>versions.txt</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>save-individual-log</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/reports/${build.time}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}/target</directory>
+                  <includes>
+                    <include>individual-log.json</include>
+                  </includes>
                 </resource>
               </resources>
             </configuration>
@@ -650,6 +717,7 @@
         <pollInterval>5</pollInterval>
         <claimDuration>300</claimDuration>
         <soft-filter.to.hard>true</soft-filter.to.hard>
+        <cutest.count.format>txt,json</cutest.count.format>
       </properties>
     </profile>
     <profile>

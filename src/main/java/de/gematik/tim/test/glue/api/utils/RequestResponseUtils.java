@@ -1,0 +1,111 @@
+/*
+ * Copyright 2023 gematik GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package de.gematik.tim.test.glue.api.utils;
+
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addFailedActor;
+import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.RUN_WITHOUT_RETRY;
+import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.getMapper;
+import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.pollInterval;
+import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.timeout;
+import static java.lang.String.format;
+import static java.time.temporal.ChronoUnit.SECONDS;
+import static net.serenitybdd.rest.SerenityRest.lastResponse;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
+
+import de.gematik.tim.test.glue.api.exceptions.RequestedRessourceNotAvailable;
+import java.time.Duration;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
+import lombok.extern.slf4j.Slf4j;
+import net.serenitybdd.screenplay.Actor;
+import org.awaitility.core.ConditionTimeoutException;
+
+@Slf4j
+public class RequestResponseUtils {
+
+  private RequestResponseUtils() {
+    throw new IllegalStateException("Utility class");
+  }
+
+  public static <T> T repeatedRequest(Supplier<Optional<T>> request) {
+    return repeatedRequest(request, "resource");
+  }
+
+  public static <T> T repeatedRequest(Supplier<Optional<T>> request, String resourceType) {
+    return repeatedRequest(request, resourceType, timeout, pollInterval);
+  }
+
+  public static <T> T repeatedRequestWithLongerTimeout(Supplier<Optional<T>> request,
+      String resourceType, int factor) {
+    return repeatedRequest(request, resourceType, timeout * factor, pollInterval);
+  }
+
+  public static <T> T repeatedRequest(Supplier<Optional<T>> request, String resourceType,
+      Long customTimeout, Long customPollInterval) {
+    if (customTimeout == null || customPollInterval == null) {
+      customTimeout = timeout;
+      customPollInterval = pollInterval;
+    }
+    if (customTimeout <= 1 || RUN_WITHOUT_RETRY) {
+      return request.get().orElseThrow(() -> new ConditionTimeoutException(
+          format("Asked for %s, but could not be found", resourceType)));
+    }
+    return await().atMost(Duration.of(customTimeout, SECONDS)).pollDelay(0L, TimeUnit.SECONDS)
+        .pollInSameThread().pollInterval(Duration.of(customPollInterval, SECONDS))
+        .until(request::get, Optional::isPresent).orElseThrow(
+            () -> new RequestedRessourceNotAvailable(
+                format("Asked for %s, but could not be found", resourceType)));
+  }
+
+  @SuppressWarnings("java:S2201") // Run without retry only used for internal CI, therefor we do not need result
+  public static void repeatedRequestForTeardown(Supplier<Optional<Boolean>> request, Actor actor) {
+    if (timeout <= 1 || RUN_WITHOUT_RETRY) {
+      request.get().orElseThrow(() -> new ConditionTimeoutException(
+          "Teardown failed! Looks like you have tried to delete a resource that should not be available"));
+      return;
+    }
+    try {
+      await().atMost(Duration.of(20, SECONDS))
+          .pollDelay(0L, TimeUnit.SECONDS)
+          .pollInSameThread()
+          .pollInterval(Duration.of(5, SECONDS))
+          .until(request::get, Optional::isPresent);
+    } catch (ConditionTimeoutException ex) {
+      log.warn("Could not teardown correctly actor " + actor.getName() + "!");
+      addFailedActor(actor);
+    }
+  }
+
+  public static <T> T parseResponse(Class<T> clazz) {
+    return parseResponse(clazz, false);
+  }
+
+  public static <T> T parseResponse(Class<T> clazz, boolean useCustomMapper) {
+    try {
+      return useCustomMapper ? lastResponse().as(clazz, getMapper()) : lastResponse().as(clazz);
+    } catch (Exception e) {
+      log.error(e.getMessage());
+      assertThat(false)
+          .as("Expected " + clazz.getSimpleName() + " but got:\n" + lastResponse().body().prettyPrint())
+          .isTrue();
+    }
+    throw new RequestedRessourceNotAvailable("This code should not be reached!");
+  }
+
+}
