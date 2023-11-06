@@ -17,7 +17,8 @@
 package de.gematik.tim.test.glue.api.fhir.organisation.endpoint;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEARCH_ENDPOINT;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.repeatedRequest;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
@@ -82,8 +83,7 @@ public class FhirEndpointSearchQuestion implements Question<FhirSearchResultDTO>
   @NotNull
   private Optional<FhirSearchResultDTO> filterEndpoint(Actor actor) {
     actor.attemptsTo(SEARCH_ENDPOINT.request().with(this::prepareQuery));
-    FhirSearchResultDTO res = lastResponse().body()
-        .as(FhirSearchResultDTO.class);
+    FhirSearchResultDTO res = parseResponse(FhirSearchResultDTO.class,true);
     if (requireNonNull(res.getTotal()) < atLeastExpectedResults) {
       return Optional.empty();
     }

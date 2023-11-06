@@ -17,7 +17,7 @@
 package de.gematik.tim.test.glue.api.room.questions;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_ROOM_STATES;
-import static net.serenitybdd.rest.SerenityRest.lastResponse;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 
 import de.gematik.tim.test.models.RoomStateDTO;
 import java.util.List;
@@ -33,6 +33,6 @@ public class GetRoomStatesQuestion implements Question<List<RoomStateDTO>> {
   @Override
   public List<RoomStateDTO> answeredBy(Actor actor) {
     actor.attemptsTo(GET_ROOM_STATES.request());
-    return List.of(lastResponse().body().as(RoomStateDTO[].class));
+    return List.of(parseResponse(RoomStateDTO[].class));
   }
 }

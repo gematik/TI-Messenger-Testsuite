@@ -18,6 +18,7 @@ package de.gematik.tim.test.glue.api.fhir.organisation.endpoint;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.CREATE_ENDPOINT;
 import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UseEndpointAbility.addEndpointToActorForHS;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.models.FhirEndpointDTO.StatusEnum.ACTIVE;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -84,7 +85,7 @@ public class CreateEndpointTask extends HealthcareSpecificTask {
 
     Response response = lastResponse();
     if (response.statusCode() == CREATED.value()) {
-      FhirEndpointDTO endpoint = response.getBody().as(FhirEndpointDTO.class);
+      FhirEndpointDTO endpoint = parseResponse(FhirEndpointDTO.class,true);
       addEndpointToActorForHS(actor, endpoint.getName(), endpoint.getId(), hsName);
     }
   }

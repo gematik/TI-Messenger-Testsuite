@@ -17,11 +17,10 @@
 package de.gematik.tim.test.glue.api.fhir.organisation.location;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_LOCATIONS;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.getMapper;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.models.FhirResourceTypeDTO.LOCATION;
 import static java.util.Objects.requireNonNull;
-import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.HealthcareSpecificTask;
 import de.gematik.tim.test.models.FhirLocationDTO;
@@ -53,7 +52,7 @@ public class FhirGetLocationListQuestion extends HealthcareSpecificTask implemen
 
     actor.attemptsTo(GET_LOCATIONS.request());
 
-    FhirSearchResultDTO result = requireNonNull(lastResponse().body().as(FhirSearchResultDTO.class, getMapper()));
+    FhirSearchResultDTO result = requireNonNull(parseResponse(FhirSearchResultDTO.class, true));
 
     List<FhirLocationDTO> fhirLocationDTOs = getResourcesFromSearchResult(result, LOCATION, FhirLocationDTO.class);
 

@@ -17,7 +17,7 @@
 package de.gematik.tim.test.glue.api.room.questions;
 
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.repeatedRequest;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getRoomByInternalName;
 import static java.util.Objects.requireNonNull;
 

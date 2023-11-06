@@ -33,5 +33,6 @@ public class FhirDeleteOwnMxidTask implements Task {
   public <T extends Actor> void performAs(T actor) {
     actor.attemptsTo(DELETE_MXID_PRACTITIONER.request());
     actor.remember(LAST_RESPONSE, lastResponse());
+    actor.abilityTo(CanDeleteOwnMxidAbility.class).setTearedDown(true);
   }
 }

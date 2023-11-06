@@ -17,7 +17,6 @@
 package de.gematik.tim.test.glue.api.devices;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.DEVICE_ID_VARIABLE;
-import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getLastTcId;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTestcaseId;
 import static java.util.Objects.nonNull;
 
@@ -49,9 +48,8 @@ public class UseDeviceAbility extends TeardownAbility implements TestdriverApiAb
 
   @Override
   public RequestSpecification apply(RequestSpecification requestSpecification) {
-    String tcId = tearedDown ? getLastTcId() : getTestcaseId();
     return requestSpecification
-        .headers(TEST_CASE_ID_HEADER, tcId)
+        .headers(TEST_CASE_ID_HEADER, getTestcaseId())
         .pathParam(DEVICE_ID_VARIABLE, deviceId);
   }
 

@@ -19,6 +19,7 @@ package de.gematik.tim.test.glue.api.fhir.organisation.location;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.CREATE_LOCATION;
 import static de.gematik.tim.test.glue.api.fhir.organisation.location.UseLocationAbility.addLocationToActorForHS;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.readJsonFile;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -53,7 +54,7 @@ public class CreateLocationTask extends HealthcareSpecificTask implements Task {
 
     Response response = lastResponse();
     if (response.statusCode() == CREATED.value()) {
-      FhirLocationDTO location = response.getBody().as(FhirLocationDTO.class);
+      FhirLocationDTO location = parseResponse(FhirLocationDTO.class,true);
       addLocationToActorForHS(locationName, location.getId(), actor, hsName);
     }
   }

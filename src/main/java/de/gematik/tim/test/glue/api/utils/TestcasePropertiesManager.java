@@ -28,15 +28,16 @@ import de.gematik.tim.test.models.MessageDTO;
 import de.gematik.tim.test.models.RoomDTO;
 import io.cucumber.core.exception.CucumberException;
 import io.cucumber.java.Scenario;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.serenitybdd.core.Serenity;
 import net.serenitybdd.screenplay.Actor;
-import org.apache.commons.lang3.StringUtils;
 
 @NoArgsConstructor(access = PRIVATE)
 public class TestcasePropertiesManager {
@@ -44,34 +45,28 @@ public class TestcasePropertiesManager {
   public static final String EXCEPTION_MESSAGE = "The requested %s with name: %s does not exist in central management. Is it created before?";
   private static final String TCID_PREFIX = "@TCID";
   private static String id;
-  private static String lastTcId;
   private static Map<String, HealthcareServiceInfo> healthcareServices;
   private static Map<String, RoomDTO> rooms;
   private static Map<String, MessageDTO> messages;
+  private static List<Actor> failedTeardownActors;
+  @Getter
+  private static Scenario currentScenario;
 
   public static void startTest(Scenario scenario) {
-    createTestcaseId(scenario);
+    currentScenario = scenario;
+    createTestcaseId();
     resetPropertiesMap();
-  }
-
-  public static void stopTest() {
     Serenity.recordReportData()
         .withTitle("TestcaseId")
         .andContents(id);
-    id = null;
   }
 
-  private static void createTestcaseId(Scenario scenario) {
-    if (StringUtils.isNotBlank(id)) {
-      throw new TestRunException(
-          "An old testcaseId is still available. Please go for sure that all tests got executed and finished correctly.");
-    }
-    String testId = scenario.getSourceTagNames().stream().filter(t -> t.startsWith(TCID_PREFIX))
+  private static void createTestcaseId() {
+    String testId = currentScenario.getSourceTagNames().stream().filter(t -> t.startsWith(TCID_PREFIX))
         .findFirst()
         .orElseThrow(() -> new CucumberException(
-            "This scenario seems to have not TCID! Name: " + scenario.getName()));
+            "This scenario seems to have no TCID! Name: " + currentScenario.getName()));
     id = format("%s/%s", testId, UUID.randomUUID());
-    lastTcId = id;
   }
 
   public static String getTestcaseId() {
@@ -81,14 +76,11 @@ public class TestcasePropertiesManager {
     return id;
   }
 
-  public static String getLastTcId() {
-    return lastTcId;
-  }
-
   private static void resetPropertiesMap() {
     healthcareServices = new HashMap<>();
     rooms = new HashMap<>();
     messages = new HashMap<>();
+    failedTeardownActors = new ArrayList<>();
   }
 
   public static void addHs(String name, HealthcareServiceInfo info) {
@@ -140,5 +132,13 @@ public class TestcasePropertiesManager {
       return messages.get(name);
     }
     throw new TestRunException(format(EXCEPTION_MESSAGE, "message", name));
+  }
+
+  public static <T extends Actor> void addFailedActor(T actor) {
+    failedTeardownActors.add(actor);
+  }
+
+  public static <T extends Actor> boolean isActorFailed(T actor) {
+    return failedTeardownActors.contains(actor);
   }
 }

@@ -18,7 +18,7 @@ package de.gematik.tim.test.glue.api.room.questions;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_ROOMS;
 import static de.gematik.tim.test.glue.api.room.UseRoomAbility.updateAvailableRooms;
-import static net.serenitybdd.rest.SerenityRest.lastResponse;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 
 import de.gematik.tim.test.models.RoomDTO;
 import java.util.List;
@@ -34,7 +34,7 @@ public class GetRoomsQuestion implements Question<List<RoomDTO>> {
   @Override
   public List<RoomDTO> answeredBy(Actor actor) {
     actor.attemptsTo(GET_ROOMS.request());
-    List<RoomDTO> rooms = List.of(lastResponse().body().as(RoomDTO[].class));
+    List<RoomDTO> rooms = List.of(parseResponse(RoomDTO[].class));
     updateAvailableRooms(rooms, actor);
     return rooms;
   }

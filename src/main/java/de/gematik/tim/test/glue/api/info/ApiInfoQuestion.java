@@ -18,8 +18,8 @@ package de.gematik.tim.test.glue.api.info;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_INFO;
 import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.TEST_CASE_ID_HEADER;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTestcaseId;
-import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.models.InfoObjectDTO;
 import net.serenitybdd.screenplay.Actor;
@@ -35,6 +35,6 @@ public class ApiInfoQuestion implements Question<InfoObjectDTO> {
   public InfoObjectDTO answeredBy(Actor actor) {
     actor.attemptsTo(
         GET_INFO.request().with(res -> res.header(TEST_CASE_ID_HEADER, getTestcaseId())));
-    return lastResponse().body().as(InfoObjectDTO.class);
+    return parseResponse(InfoObjectDTO.class);
   }
 }

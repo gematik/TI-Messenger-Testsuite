@@ -17,7 +17,7 @@
 package de.gematik.tim.test.glue.api.account;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_SESSION_KEY;
-import static net.serenitybdd.rest.SerenityRest.lastResponse;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 
 import de.gematik.tim.test.models.MatrixKeyInfoDTO;
 import net.serenitybdd.screenplay.Actor;
@@ -32,6 +32,6 @@ public class SessionKeyQuestion implements Question<MatrixKeyInfoDTO> {
   @Override
   public MatrixKeyInfoDTO answeredBy(Actor actor) {
     actor.attemptsTo(GET_SESSION_KEY.request());
-    return lastResponse().body().as(MatrixKeyInfoDTO.class);
+    return parseResponse(MatrixKeyInfoDTO.class);
   }
 }

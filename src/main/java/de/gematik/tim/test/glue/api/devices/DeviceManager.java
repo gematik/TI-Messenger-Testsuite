@@ -21,8 +21,10 @@ import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_DEVICES;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.UNCLAIM_DEVICE;
 import static de.gematik.tim.test.glue.api.devices.ClaimDeviceTask.claimDevice;
 import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.useDevice;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.CERT_CN;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.SAVE_CONNECTIONS;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequestForTeardown;
+import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.CERT_CN;
+import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.SAVE_CONNECTIONS;
 import static de.gematik.tim.test.models.DeviceInfoDTO.DeviceStatusEnum.FREE;
 import static java.lang.Boolean.FALSE;
 import static java.time.OffsetDateTime.now;
@@ -43,17 +45,17 @@ import java.util.Map;
 import java.util.Optional;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
+import org.springframework.http.HttpStatus;
 
 public class DeviceManager {
 
+  public static final Actor UNCLAIMER = theActorCalled("Unclaimer");
   private static final String UNCLAIMED = "unclaimed";
   private static final String FOREIGN_CLAIMED = "foreignClaimed";
   private static final String CLAIMED = "claimed";
   private static final String CLAIMED_OUTDATED = "outdated";
   private static DeviceManager instance;
-
   Map<String, List<Long>> devicesInUse;
-  public static final Actor UNCLAIMER = theActorCalled("Unclaimer");
 
   private DeviceManager() {
     devicesInUse = new HashMap<>();
@@ -68,11 +70,19 @@ public class DeviceManager {
 
   public void release(Actor actor) {
     if (FALSE.equals(SAVE_CONNECTIONS)) {
-      UNCLAIM_DEVICE.request().performAs(actor);
+      repeatedRequestForTeardown(() -> runTeardown(actor),actor);
       return;
     }
     String api = actor.abilityTo(CallAnApi.class).resolve("");
     devicesInUse.get(api).remove(actor.abilityTo(UseDeviceAbility.class).getDeviceId());
+  }
+
+  private Optional<Boolean> runTeardown(Actor actor) {
+    UNCLAIM_DEVICE.request().performAs(actor);
+    if (HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful()) {
+      return Optional.of(Boolean.TRUE);
+    }
+    return Optional.empty();
   }
 
   public void orderDeviceToActor(Actor actor, String api) {
@@ -125,7 +135,7 @@ public class DeviceManager {
 
   private Map<String, List<DeviceInfoDTO>> getDevicesMap(Actor actor, Long minLeftClaimTime) {
     actor.attemptsTo(GET_DEVICES.request());
-    DevicesDTO devicesInfo = lastResponse().body().as(DevicesDTO.class);
+    DevicesDTO devicesInfo = parseResponse(DevicesDTO.class);
     Map<String, List<DeviceInfoDTO>> map = requireNonNull(devicesInfo.getDevices()).stream()
         .collect(groupingBy(d -> getUsageStatus(d, minLeftClaimTime)));
     map.computeIfAbsent(CLAIMED, k -> List.of());

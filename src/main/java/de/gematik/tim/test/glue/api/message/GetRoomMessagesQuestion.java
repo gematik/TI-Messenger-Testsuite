@@ -17,7 +17,7 @@
 package de.gematik.tim.test.glue.api.message;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_MESSAGES;
-import static net.serenitybdd.rest.SerenityRest.lastResponse;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 
 import de.gematik.tim.test.models.MessageDTO;
 import java.util.List;
@@ -33,6 +33,6 @@ public class GetRoomMessagesQuestion implements Question<List<MessageDTO>> {
   @Override
   public List<MessageDTO> answeredBy(Actor actor) {
     actor.attemptsTo(GET_MESSAGES.request());
-    return List.of(lastResponse().body().as(MessageDTO[].class));
+    return List.of(parseResponse(MessageDTO[].class));
   }
 }

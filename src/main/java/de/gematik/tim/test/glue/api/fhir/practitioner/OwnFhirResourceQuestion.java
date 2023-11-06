@@ -17,11 +17,10 @@
 package de.gematik.tim.test.glue.api.fhir.practitioner;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.READ_MXID_PRACTITIONER;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.getMapper;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.orderByResourceType;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.repeatedRequest;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
 import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
-import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.models.FhirBaseResourceDTO;
 import de.gematik.tim.test.models.FhirSearchResultDTO;
@@ -52,7 +51,7 @@ public class OwnFhirResourceQuestion implements Question<FhirSearchResultDTO> {
 
   private Optional<FhirSearchResultDTO> searchOwnEntry(Actor actor) {
     actor.attemptsTo(READ_MXID_PRACTITIONER.request());
-    FhirSearchResultDTO result = lastResponse().body().as(FhirSearchResultDTO.class, getMapper());
+    FhirSearchResultDTO result = parseResponse(FhirSearchResultDTO.class, true);
 
     List<FhirBaseResourceDTO> ownInfos = orderByResourceType(result).get(ENDPOINT);
     if (ownInfos.size() >= amount) {

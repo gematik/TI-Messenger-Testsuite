@@ -5,80 +5,105 @@
 ## Link to TI-Messenger-testsuite [`docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
 
 - - -
+
+## Release 0.9.6
+
+### Features
+
+- Tiger version update to 2.2.0
+- Cutest-Combination-Plugin version update to 2.9.13 -> additional report file for all examples that should be executed
+- Used testsuite-version is now saved in report directory
+- Improved error messages for not parsable responses, especially errors. Last response and expected value are now shown also in serenity-report and do now throw an assertion exception
+- Testsuite sends several cleanup requests for `healthcare services, unclaim device, logouts, leave room and forget room` if no 2XX response delivered. This will be tried for 20 seconds. After this time the testsuite continues
+- HttpTimout for serentiy set to 5 minutes. Can be configured by -DhttpTimeout=\<seconds>
+- If a claim device fails, the testsuite will retry to claim up to 3 times (configurable via environment variable <maxRetryClaimRequest> [`read more (Parameter die das Verhalten der Testsuite anpassen)`](doc/userguide/GettingStarted.adoc)
+
+### Bugfixes
+
+- Parsing exception for some FHIR-resources do not throw an error anymore when additionally properties delivered
+- "TestcaseId is already used" - Bug is now fixed
+- Failed tear downs do not throw exception and each actor will execute his teardowns
+
 ## Release 0.9.5
 
-### Feature
+### Features
 
 - HealthcareServiceNames, RoomNames and Messages are generate randomly with timestamps
 - User search for complete HealthcareServiceName. This reduces the search result from FHIR-VZD
 - WIP (future deleted) TC 00.02, 00.05 & 04.02
 - Update cucumber-test-combinations-maven-plugin to version 2.9.12 and take advantage of the SoftFilterFeature
 
-### Bugfix
+### Bugfixes
 
 - Fix for not deleting testcase ID after fail login
 
 ## Release 0.9.4
 
-### Feature
+### Features
 
 - Better description for the use of the 'prefIOP' Tag in testsuite.adoc (chapter 6.3)
 
-### Bugfix
+### Bugfixes
 
 - Feature 3.4 -> do not cause error if _get endpoints_ of HealthcareService dos not include HealthcareService resource
 - Feature 7.1, 7.2, 9.1, 9.2 -> does not look for one single address anymore. No error if one displayname comes up twice
 
 ## Release 0.9.3
 
-### Feature
+### Features
 
 - Status for test cases in Feature File 06 is now 'implemented'
-- Make use of the new `breakOnFailedRequest` and `breakOnContextError` parameters of the [test combination plugin](https://github.com/gematik/cucumber-test-combinations-maven-plugin) -> now it's possible to keep the build running if an API responds with unexpected context or does not respond at all
+- Make use of the new `breakOnFailedRequest` and `breakOnContextError` parameters of
+  the [test combination plugin](https://github.com/gematik/cucumber-test-combinations-maven-plugin) -> now it's possible
+  to keep the build running if an API responds with unexpected context or does not respond at all
 - Toggle implemented to clean old rooms of an account. Can be activated via environment variable 'clearRooms'
 
-### Bugfix
+### Bugfixes
 
 - Changed the numbering in all Feature File for monadic numbers. Now they have a leading zero.
-- Fix rename error  for skip-saving-reports profile
+- Fix rename error for skip-saving-reports profile
 - Edit and create endpoints add necessary meta-data/tag and delete "lastUpdated" (set by VZD)
 - Certificate error resolved when use multiple https apis directly without routing via tiger proxy
 - Szenario 03.03: Comparison between empty list and null does not fail anymore
 
 ## Release 0.9.2
 
-### Feature
+### Features
 
 - Feature File 14 does check for TIM custom event and TIM custom roomType in create event
-- Check expression of goal `check` have been edited. For apis that provide an orgAdmin and client simultaneously the amount of needed devices will be checked to be greater than four.  
-- Names of healthcare-services now get generated with timestamp to be unique and shrink 
+- Check expression of goal `check` have been edited. For apis that provide an orgAdmin and client simultaneously the
+  amount of needed devices will be checked to be greater than four.
+- Names of healthcare-services now get generated with timestamp to be unique and shrink
 - TestCases in Feature File 13 adjusted. New steps for export/import of session keys
 - Fits to TestdriverApi 0.9.2 -> CodeableConcept and telecom added
 
-### Bugfix
+### Bugfixes
 
-- Join room will be performed multiple times till success or set timeout. This is needed to avoid false negative because of sync issues between homeservers
-- Checks belonging the membership status of room members will be performed multiple times, till success or set timeout. This is needed to avoid false negative because of sync issues between homeservers
+- Join room will be performed multiple times till success or set timeout. This is needed to avoid false negative because
+  of sync issues between homeservers
+- Checks belonging the membership status of room members will be performed multiple times, till success or set timeout.
+  This is needed to avoid false negative because of sync issues between homeservers
 - Error in GlueUtils, could not find File, resolved
 - An empty searchResult does not throw a NPE anymore
-- Feature File 03 - .json files edit to fit to FHIR-datastructures. OrganizationId will be requested and replaced in request (body ca be sent directly to FhirVZD)
+- Feature File 03 - .json files edit to fit to FHIR-datastructures. OrganizationId will be requested and replaced in
+  request (body ca be sent directly to FhirVZD)
 
 ## Release 0.9.0
 
-### Feature
+### Features
 
 - Changed Status of Test Cases 6.1, 6.2 & 14.2 - 14.4
 - improved look up in VZD if HCS is deleted, with customizable poll-intervals
 - Fits to TestdriverApi 0.9.0 -> implements the FHIR-datastructures
 
-### Bugfix
+### Bugfixes
 
 - Search for healthcare- services with name is fixed and returns correct result
 - Enter room with multiple participants do not check every invited member anymore and uses roomId
 
 ## Release 0.7.0
 
-### Feature
+### Features
 
 - improvements for login-counter and RegServiceToken-counter
 - Deleting Test Case 3.05 incl adjusting Testsuite.adoc
@@ -94,12 +119,12 @@
 - Renamed Feature file 14 in 15 & 15 in 16
 
 
-### Bugfix
+### Bugfixes
 
 
 ## Release 0.6.1
 
-### Feature
+### Features
 
 - more detailed counters for invite and event-system
 - http is no longer required for the values in combine-items.json
@@ -109,7 +134,7 @@
 - New Chapter 10 & 11 in Testsuite.adoc (Reports & Error Logs)
 - Delete disabled TestCases in Feature Files 3, 7, 8, 9, 10
 
-### Bugfix
+### Bugfixes
 
 - Cleanup of mxId's fixed for tests with logout
 - Filter for negative search recently deleted Healthcare-Service fixed
@@ -121,7 +146,7 @@
 
 - Response of upload media just have to be successful 
 
-### Bugfix
+### Bugfixes
 
 - Commandline bug is fixed and testcases with tags can run without errors
 - Messagetype changed `m.file` for sending media
@@ -136,11 +161,13 @@
 - New Feature File 14 for group chat (IOP) with 5 participants (incl. documentation in Testsuite.adoc)
 - New Feature File 15 for group chat (IOP) with 3 participants. Tests are excluded from Feature File 12
 - Flag `saveConnections` implemented. Set to true and testsuite will unclaim devices only at the end of run
-- New version `2.9.1` of parameter plugin allows usage of [pooling](https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc#pooling) and [check](https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc#check-goal)
+- New version `2.9.1` of parameter plugin allows usage
+  of [pooling](https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc#pooling)
+  and [check](https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc#check-goal)
 - Filter Adjustments in all Testcases
 
 
-### Bugfix
+### Bugfixes
 
 - Testcases 13.7 & 13.8 can now create less error because of old data
 - Wrong counted raw data fixed for testcases with multiple actors
@@ -155,14 +182,19 @@
 
 ### Features
 
- - This release makes use of [cucumber-test-combinations-maven-plugin](https://github.com/gematik/cucumber-test-combinations-maven-plugin) v 2.6.0 features 
-   - Control runs for specific version (see specifics [here](https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc#project-filters))
- - Remove/Comment Test Cases for editing messages in Feature Files 8 & 10
- - To every request a header is attached. This header identifies the current testcase and can be used for debugging purpose
+- This release makes use
+  of [cucumber-test-combinations-maven-plugin](https://github.com/gematik/cucumber-test-combinations-maven-plugin) v
+  2.6.0 features
+    - Control runs for specific version (see
+      specifics [here](https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc#project-filters))
+- Remove/Comment Test Cases for editing messages in Feature Files 8 & 10
+- To every request a header is attached. This header identifies the current testcase and can be used for debugging
+  purpose
     - The depending id can also be found in the serenity report
- - The certificate of the tiger proxy get updated automatically. It is no longer necessary to name every host under `alterenativeNames` in `tiger.yml` 
- - TestCase 3.3 splitted into two TestCases (new 3.3 & 3.4)
- - New Testcases for pipe data acquisition Group Chat inside and outside a homeserver (TF 12.09, 12.10)
+- The certificate of the tiger proxy get updated automatically. It is no longer necessary to name every host
+  under `alterenativeNames` in `tiger.yml`
+- TestCase 3.3 splitted into two TestCases (new 3.3 & 3.4)
+- New Testcases for pipe data acquisition Group Chat inside and outside a homeserver (TF 12.09, 12.10)
 
 ## Release 0.4.1
 
@@ -180,13 +212,13 @@ This release matches testdriver api in version 0.4.1
 
 ### Features
 
-- New rawdata counter for invitations to direct chats 
+- New rawdata counter for invitations to direct chats
 - Further information for ordering test cards (testsuite.adoc)
 - Search and invite for Org Users in Chat/Room changed into combined step
 - New rawdata counter for invitations to direct chats
 - Docu `GettingStarted` improved
 
-### Bugs
+### Bugfixes
 
 - All requests done by awaitility now appear in serenity report
 
@@ -199,8 +231,7 @@ This release matches testdriver api in version 0.4.1
 - Additionally login test for org-admin
 - Rawdata are collected and exported as yml, json, csv and copied to report
 
-
-### Bugs
+### Bugfixes
 
 - Profile disable prepare items does not use wrong combine_items.json anymore
 - Jacoco update to build with java 18

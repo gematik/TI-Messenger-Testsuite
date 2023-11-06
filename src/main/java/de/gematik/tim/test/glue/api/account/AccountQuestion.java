@@ -17,7 +17,7 @@
 package de.gematik.tim.test.glue.api.account;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_ACCOUNT;
-import static net.serenitybdd.rest.SerenityRest.lastResponse;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 
 import de.gematik.tim.test.models.AccountDTO;
 import net.serenitybdd.screenplay.Actor;
@@ -32,6 +32,6 @@ public class AccountQuestion implements Question<AccountDTO> {
   @Override
   public AccountDTO answeredBy(Actor actor) {
     actor.attemptsTo(GET_ACCOUNT.request());
-    return lastResponse().body().as(AccountDTO.class);
+    return parseResponse(AccountDTO.class);
   }
 }
