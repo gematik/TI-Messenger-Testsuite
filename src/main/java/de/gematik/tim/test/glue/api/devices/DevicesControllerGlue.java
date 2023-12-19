@@ -22,29 +22,32 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_DEVICES;
+import static de.gematik.tim.test.glue.api.devices.CheckClientKindTask.checkIs;
+import static de.gematik.tim.test.glue.api.devices.ClaimDeviceTask.claimDevice;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.MESSENGER_CLIENT;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.PRACTITIONER;
-import static de.gematik.tim.test.glue.api.info.ApiInfoQuestion.apiInfo;
 import static de.gematik.tim.test.glue.api.login.LogInGlue.loginSuccess;
 import static de.gematik.tim.test.glue.api.login.LogInGlue.logsIn;
 import static de.gematik.tim.test.glue.api.login.LoginTask.login;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
+import static de.gematik.tim.test.glue.api.threading.ParallelExecutor.parallel;
+import static de.gematik.tim.test.glue.api.utils.IndividualLogger.individualLog;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.startTest;
+import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.CLAIM_PARALLEL;
+import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.NO_PARALLEL_TAG;
+import static java.lang.Boolean.TRUE;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static net.serenitybdd.screenplay.actors.OnStage.setTheStage;
 import static net.serenitybdd.screenplay.actors.OnStage.stage;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static net.serenitybdd.screenplay.actors.OnStage.withCurrentActor;
 import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.glue.api.utils.IndividualLogger;
-import de.gematik.tim.test.models.InfoObjectDTO;
 import io.cucumber.java.After;
-import io.cucumber.java.AfterAll;
 import io.cucumber.java.Before;
 import io.cucumber.java.BeforeAll;
 import io.cucumber.java.Scenario;
@@ -55,21 +58,30 @@ import io.cucumber.java.de.Wenn;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import java.util.List;
+
+import io.cucumber.junit.CucumberOptions;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.actors.Cast;
 import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
 
-import java.util.List;
-
 @Slf4j
+@CucumberOptions(plugin = {"de.gematik.tim.test.glue.api.utils.cleaning.CucumberListener"})
 public class DevicesControllerGlue {
+
+  @Setter
+  @Getter
+  private static boolean allowParallelClaim = true;
 
   @Before
   public void setup(Scenario scenario) {
     startTest(scenario);
     RawDataStatistics.startTest();
     IndividualLogger.startTest();
+    setAllowParallelClaim(!scenario.getSourceTagNames().contains(NO_PARALLEL_TAG));
   }
 
   @BeforeAll
@@ -82,11 +94,7 @@ public class DevicesControllerGlue {
     stage().drawTheCurtain();
     RawDataStatistics.addToReport();
     IndividualLogger.addToReport();
-  }
-
-  @AfterAll
-  public static void unclaimAllDevices() {
-    DeviceManager.getInstance().unclaimAll();
+    setAllowParallelClaim(true);
   }
 
   // Get devices
@@ -102,8 +110,12 @@ public class DevicesControllerGlue {
   @Angenommen("{string} reserviert sich einen Practitioner-Client an Schnittstelle {word}")
   public void reserveClientOnApiAndCreateAccount(String actorName, String apiName) {
     Actor actor = reserveClientOnApi(actorName, apiName);
-    checkIs(actor, List.of(MESSENGER_CLIENT, PRACTITIONER));
-    logsIn(actorName);
+    if (TRUE.equals(CLAIM_PARALLEL) && allowParallelClaim) {
+      parallel().task(actor, checkIs(List.of(MESSENGER_CLIENT, PRACTITIONER)));
+    } else {
+      actor.attemptsTo(checkIs(List.of(MESSENGER_CLIENT, PRACTITIONER)));
+    }
+    logsIn(actor);
     loginSuccess(actorName);
   }
 
@@ -111,9 +123,13 @@ public class DevicesControllerGlue {
   @Angenommen("{string} reserviert sich einen Org-Admin-Client an Schnittstelle {word}")
   public void reserveOrgAdminClientOnApi(String actorName, String apiName) {
     Actor actor = reserveClientOnApi(actorName, apiName);
-    checkIs(actor, List.of(ORG_ADMIN));
+    if (TRUE.equals(CLAIM_PARALLEL) && allowParallelClaim) {
+      parallel().task(actor, checkIs(List.of(ORG_ADMIN)));
+    } else {
+      actor.attemptsTo(checkIs(List.of(ORG_ADMIN)));
+    }
     actor.remember(IS_ORG_ADMIN, true);
-    logsIn(actorName);
+    logsIn(actor);
     loginSuccess(actorName);
   }
 
@@ -121,13 +137,18 @@ public class DevicesControllerGlue {
   @Angenommen("{string} reserviert sich einen Messenger-Client an Schnittstelle {word}")
   public void reserveOrgUserClientOnApi(String actorName, String apiName) {
     Actor actor = reserveClientOnApi(actorName, apiName);
-    checkIs(actor, List.of(MESSENGER_CLIENT));
-    logsIn(actorName);
+    if (TRUE.equals(CLAIM_PARALLEL) && allowParallelClaim) {
+      parallel().task(actor, checkIs(List.of(MESSENGER_CLIENT)));
+    } else {
+      actor.attemptsTo(checkIs(List.of(MESSENGER_CLIENT)));
+    }
+    logsIn(actor);
     loginSuccess(actorName);
   }
 
   @Und("{string} meldet sich mit den Daten von {string} an der Schnittstelle {word} an")
-  public void reserveClientOnApiAndLoginWithData(String actorName, String userName, String apiName) {
+  public void reserveClientOnApiAndLoginWithData(String actorName, String userName,
+      String apiName) {
     Actor actor = reserveClientOnApi(actorName, apiName);
 
     String mxId = theActorCalled(userName).recall(MX_ID);
@@ -145,8 +166,19 @@ public class DevicesControllerGlue {
     String apiUrl = prepareApiName(apiName);
     Actor actor = theActorCalled(actorName);
     actor.whoCan(CallAnApi.at(apiUrl)).entersTheScene();
-    DeviceManager.getInstance().orderDeviceToActor(actor, apiUrl);
+    if (TRUE.equals(CLAIM_PARALLEL) && allowParallelClaim) {
+      parallel().task(actor, claimDevice());
+    } else {
+      actor.attemptsTo(claimDevice());
+    }
     return actor;
+  }
+
+  @Und("alle Devices wurden erfolgreich reserviert")
+  public void allActorHaveADevice() {
+    if (TRUE.equals(CLAIM_PARALLEL) && allowParallelClaim) {
+      parallel().join();
+    }
   }
 
   @When("get all devices")
@@ -164,26 +196,6 @@ public class DevicesControllerGlue {
         res -> res.statusCode(200)
             .body("devices.claimerName", hasItem(claimerName))
     ));
-  }
-
-  // Assertions
-  public static void checkIs(Actor actor, List<ClientKind> kind) {
-    InfoObjectDTO info = actor.asksFor(apiInfo());
-    if (kind.contains(ORG_ADMIN)) {
-      assertThat(info.getClientInfo().getCanAdministrateFhirOrganization())
-          .as("Claimed device have no org admin privileges! This information is got from the info endpoint.")
-          .isTrue();
-    }
-    if (kind.contains(MESSENGER_CLIENT)) {
-      assertThat(info.getClientInfo().getCanSendMessages())
-          .as("Claimed device have no write messages privileges! This information is got from the info endpoint.")
-          .isTrue();
-    }
-    if (kind.contains(PRACTITIONER)) {
-      assertThat(info.getClientInfo().getCanAdministrateFhirPractitioner())
-          .as("Claimed device have no practitioner privileges! This information is got from the info endpoint.")
-          .isTrue();
-    }
   }
 
   // Utils

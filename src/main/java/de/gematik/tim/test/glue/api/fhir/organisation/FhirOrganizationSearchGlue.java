@@ -16,6 +16,13 @@
 
 package de.gematik.tim.test.glue.api.fhir.organisation;
 
+import de.gematik.tim.test.models.FhirEndpointDTO;
+import de.gematik.tim.test.models.FhirSearchResultDTO;
+import io.cucumber.java.de.Dann;
+import lombok.AllArgsConstructor;
+import net.serenitybdd.core.Serenity;
+import net.serenitybdd.screenplay.Actor;
+
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.FhirEndpointSearchQuestion.endpoint;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
@@ -23,13 +30,6 @@ import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
 import static lombok.AccessLevel.PRIVATE;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static org.assertj.core.api.Assertions.assertThat;
-
-import de.gematik.tim.test.models.FhirEndpointDTO;
-import de.gematik.tim.test.models.FhirSearchResultDTO;
-import io.cucumber.java.de.Dann;
-import lombok.AllArgsConstructor;
-import net.serenitybdd.core.Serenity;
-import net.serenitybdd.screenplay.Actor;
 
 @AllArgsConstructor(access = PRIVATE)
 public class FhirOrganizationSearchGlue {

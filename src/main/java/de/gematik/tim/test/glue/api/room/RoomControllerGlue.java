@@ -30,7 +30,7 @@ import static de.gematik.tim.test.glue.api.room.tasks.ForgetRoomTask.forgetRoom;
 import static de.gematik.tim.test.glue.api.room.tasks.InviteToRoomTask.invite;
 import static de.gematik.tim.test.glue.api.room.tasks.JoinRoomTask.joinRoom;
 import static de.gematik.tim.test.glue.api.room.tasks.LeaveRoomTask.leaveRoom;
-import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getInternalRoomNameForActor;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getRoomByInternalName;
 import static de.gematik.tim.test.models.RoomMembershipStateDTO.INVITE;
 import static de.gematik.tim.test.models.RoomMembershipStateDTO.JOIN;
 import static java.lang.String.format;
@@ -90,6 +90,7 @@ public class RoomControllerGlue {
     List<String> inviteMxids = new ArrayList<>();
     inviteActors.forEach(e -> inviteMxids.add(theActorCalled(e).recall(MX_ID)));
 
+    actor.abilityTo(UseRoomAbility.class).setActive(roomName);
     RoomDTO room = actor.abilityTo(UseRoomAbility.class).getActiveValue();
     inviteActors.forEach(e -> addRoomToActor(roomName, room, theActorCalled(e)));
 
@@ -297,7 +298,7 @@ public class RoomControllerGlue {
     Actor actor = theActorCalled(actorName);
     RoomDTO room = actor.asksFor(
         ownRoom()
-            .withName(roomName)
+            .withRoomId(getRoomByInternalName(roomName).getRoomId())
             .withMemberHaveStatus(actor.recall(MX_ID), JOIN)
             .withCustomInterval(timeout, pollInterval));
     assertThat(room).as(

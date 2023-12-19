@@ -52,8 +52,7 @@ public class InviteToRoomTask implements Task {
   public <T extends Actor> void performAs(T actor) {
     requireNonNull(roomId, "roomId of InviteToRoomTask has to be set with #toRoom(roomId)");
 
-    actor.attemptsTo(INVITE_TO_ROOM.request()
-        .with(req -> req.body(invitees)));
+    actor.attemptsTo(INVITE_TO_ROOM.request().with(req -> req.body(invitees)));
     sendRawDataEvent(actor.recall(MX_ID));
   }
 

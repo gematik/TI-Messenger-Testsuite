@@ -17,13 +17,20 @@
 package de.gematik.tim.test.glue.api.room.tasks;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.FORGET_ROOM;
+import static de.gematik.tim.test.glue.api.threading.ParallelExecutor.parallelClient;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
+import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
+import de.gematik.tim.test.glue.api.threading.ActorsNotes;
+import de.gematik.tim.test.glue.api.threading.Parallel;
+import java.io.IOException;
 import net.serenitybdd.screenplay.Actor;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.springframework.http.HttpStatus;
 
-public class ForgetRoomTask extends RoomSpecificTask {
+public class ForgetRoomTask extends RoomSpecificTask implements Parallel<ActorsNotes> {
 
   public static ForgetRoomTask forgetRoom() {
     return new ForgetRoomTask();
@@ -39,6 +46,21 @@ public class ForgetRoomTask extends RoomSpecificTask {
     actor.attemptsTo(FORGET_ROOM.request());
     if (lastResponse().statusCode() == HttpStatus.NO_CONTENT.value()) {
       actor.abilityTo(UseRoomAbility.class).removeCurrent();
+    }
+  }
+
+  @Override
+  public ActorsNotes parallel(ActorsNotes notes) {
+    Request request = FORGET_ROOM.parallelRequest(notes).build();
+    try (Response res = parallelClient().get().newCall(request).execute()) {
+      if (res.isSuccessful()) {
+        return notes;
+      } else {
+        throw new TestRunException(
+            "could not forget room, response code was %d".formatted(res.code()));
+      }
+    } catch (IOException e) {
+      throw new TestRunException(e);
     }
   }
 }

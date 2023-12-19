@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 public final class TestdriverApiPath {
 
   // VARIABLES
-  private static final String PATH_VARIABLE = "{%s}";
+  public static final String PATH_VARIABLE = "{%s}";
 
   public static final String DEVICE_ID_VARIABLE = "deviceId";
   public static final String ROOM_ID_VARIABLE = "roomId";

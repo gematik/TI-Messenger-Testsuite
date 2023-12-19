@@ -96,6 +96,9 @@ public class RawDataStatistics {
   public static void login() {
     countEventFor(login);
   }
+  public static void login(int statusCode, String statusLine) {
+    countEventParallel(login,statusCode,statusLine);
+  }
 
   /**
    * Count method for this event:
@@ -274,6 +277,15 @@ public class RawDataStatistics {
       return;
     }
     counter.addError(response.getStatusLine());
+  }
+
+  public static synchronized void countEventParallel(
+      RawDataEventCounter counter, int statusCode, String statusLine){
+    if(HttpStatus.valueOf(statusCode).is2xxSuccessful()){
+      counter.countSuccess();
+      return;
+    }
+    counter.addError(statusLine);
   }
 
 }

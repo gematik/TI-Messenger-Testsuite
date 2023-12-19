@@ -35,10 +35,6 @@ public abstract class RoomSpecificTask implements Task {
     return (T) this;
   }
 
-  public <T extends RoomSpecificTask> T withName(String roomName) {
-    return this.forRoomName(roomName);
-  }
-
   @Override
   public <T extends Actor> void performAs(T actor) {
     UseRoomAbility useRoomAbility = actor.abilityTo(UseRoomAbility.class);

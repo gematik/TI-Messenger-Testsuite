@@ -16,23 +16,24 @@
 
 package de.gematik.tim.test.glue.api.utils;
 
-import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.INDIVIDUAL_LOG_PATH;
-import static org.apache.commons.lang3.StringUtils.join;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.Scenario;
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 import lombok.SneakyThrows;
 import net.serenitybdd.core.Serenity;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
+import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.INDIVIDUAL_LOG_PATH;
+import static org.apache.commons.lang3.StringUtils.join;
 
 public class IndividualLogger {
 
@@ -45,39 +46,42 @@ public class IndividualLogger {
     logs = new TreeSet<>();
   }
 
-  public static void individualLog(String msg) {
+  public static synchronized void individualLog(String msg) {
     Scenario s = TestcasePropertiesManager.getCurrentScenario();
     String tcid = TestcasePropertiesManager.getTestcaseId();
     IndividualLogEntry newEntry = new IndividualLogEntry(s.getName(), TestcasePropertiesManager.getTestcaseId(),
-        new ArrayList<>(List.of(addTimestamp(msg))));
+        new HashMap<>(Map.of(msg, Pair.of(getTimestamp(), 1))));
     if (logs.contains(newEntry)) {
       logs.stream()
           .filter(l -> l.testcaseName.equals(s.getName()) && l.testcaseId.equals(tcid))
           .findFirst()
           .orElseThrow()
-          .message.add(addTimestamp(msg));
+          .addCountingMessage(msg);
     } else {
       logs.add(newEntry);
     }
   }
 
-  private static String addTimestamp(String msg) {
-    return LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss.SSS")) + " -> " + msg;
-  }
-
   @SneakyThrows
   public static void addToReport() {
-    if (!logs.isEmpty()) {
-      Serenity.recordReportData()
-          .withTitle("Individual Log")
-          .andContents(join(logs, "\n"));
-      OVERALL_LOGS.addAll(logs);
-      FileUtils.write(file, MAPPER.writeValueAsString(OVERALL_LOGS), StandardCharsets.UTF_8);
+    if (logs.isEmpty()) {
+      return;
     }
+    Serenity.recordReportData().withTitle("Individual Log").andContents(join(logs, "\n"));
+    OVERALL_LOGS.addAll(logs);
+    FileUtils.write(file, MAPPER.writeValueAsString(OVERALL_LOGS), StandardCharsets.UTF_8);
   }
 
-  public record IndividualLogEntry(String testcaseName, String testcaseId, List<String> message) implements
-      Comparable<IndividualLogEntry> {
+  private static String getTimestamp() {
+    return LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss.SSS"));
+  }
+
+  public record IndividualLogEntry(String testcaseName, String testcaseId, Map<String, Pair> messages)
+      implements Comparable<IndividualLogEntry> {
+
+    public void addCountingMessage(String msg) {
+      messages.put(msg, Pair.of(getTimestamp(), messages.getOrDefault(msg, Pair.of(null, 0)).amount() + 1));
+    }
 
     @Override
     public boolean equals(Object other) {
@@ -98,11 +102,16 @@ public class IndividualLogger {
       sb.append("Name: ").append(this.testcaseName).append("\n");
       sb.append("\tTCID: ").append(this.testcaseId).append("\n");
       sb.append("\tMessages: ").append(this.testcaseId).append("\n");
-      for (String s : this.message) {
-        sb.append("\t\t").append(s).append("\n");
-      }
+      this.messages.forEach((k, v) -> sb.append("\t\t").append(v.lastOccurrence() + " -> times: " + v.amount() + " => " + k + "\n"));
 
       return sb.toString();
+    }
+  }
+
+  public record Pair(String lastOccurrence, Integer amount) {
+
+    static Pair of(String lastOccurrence, Integer amount) {
+      return new Pair(lastOccurrence, amount);
     }
   }
 

@@ -14,11 +14,19 @@
  * limitations under the License.
  */
 
-package de.gematik.tim.test.glue.api.utils;
+package de.gematik.tim.test.glue.api.exceptions;
 
 public class TestRunException extends RuntimeException {
 
   public TestRunException(String msg) {
     super(msg);
+  }
+
+  public TestRunException(Throwable cause) {
+    super(cause);
+  }
+
+  public TestRunException(String msg, Throwable cause) {
+    super(msg, cause);
   }
 }

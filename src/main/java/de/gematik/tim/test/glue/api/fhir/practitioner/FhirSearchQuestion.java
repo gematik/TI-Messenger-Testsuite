@@ -19,6 +19,8 @@ package de.gematik.tim.test.glue.api.fhir.practitioner;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEARCH_PRACTITIONER;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.mxidToUrl;
+import static de.gematik.tim.test.glue.api.utils.IndividualLogger.individualLog;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
 import static java.util.Objects.nonNull;
@@ -113,12 +115,23 @@ public class FhirSearchQuestion implements Question<FhirSearchResultDTO> {
   }
 
   private Optional<FhirSearchResultDTO> requestFhirPractitioner(Actor actor) {
-    actor.attemptsTo(SEARCH_PRACTITIONER.request().with(this::prepareQuery));
+    actor.attemptsTo(SEARCH_PRACTITIONER.request().with(req -> prepareQuery(req, true)));
     actor.remember(LAST_RESPONSE, lastResponse());
     if (shouldWaitTillDeleted) {
       return dontFindPractitioner();
     }
-    return findPractitioner();
+    // Todo delete if Testsuite version is higher than 0.9.7
+    Optional<FhirSearchResultDTO> res = findPractitioner();
+    if (res.isEmpty()) {
+      actor.attemptsTo(
+          SEARCH_PRACTITIONER.request().with(req -> prepareQuery(req, false)));
+      actor.remember(LAST_RESPONSE, lastResponse());
+      res = findPractitioner();
+      if (res.isPresent()) {
+        individualLog("Mxid found which is not in URL form!");
+      }
+    }
+    return res;
   }
 
   private Optional<FhirSearchResultDTO> findPractitioner() {
@@ -139,7 +152,8 @@ public class FhirSearchQuestion implements Question<FhirSearchResultDTO> {
 
   private List<FhirEndpointDTO> filterForEndpoint(List<FhirEndpointDTO> endpoints) {
     if (nonNull(mxid)) {
-      endpoints = endpoints.stream().filter(e -> e.getAddress().equals(mxid)).toList();
+      endpoints = endpoints.stream().filter(e -> e.getAddress().equals(mxid) || e.getAddress().equals(mxidToUrl(mxid)))
+          .toList();
     }
     if (nonNull(name)) {
       endpoints = endpoints.stream().filter(e -> e.getName().contains(name)).toList();
@@ -147,9 +161,9 @@ public class FhirSearchQuestion implements Question<FhirSearchResultDTO> {
     return endpoints;
   }
 
-  private RequestSpecification prepareQuery(RequestSpecification request) {
+  private RequestSpecification prepareQuery(RequestSpecification request, boolean formatMxid) {
     if (StringUtils.isNotBlank(mxid)) {
-      request.queryParam("mxid", mxid);
+      request.queryParam("mxid", formatMxid ? mxidToUrl(mxid) : mxid);
     }
     if (StringUtils.isNotBlank(name)) {
       request.queryParam("name", name);

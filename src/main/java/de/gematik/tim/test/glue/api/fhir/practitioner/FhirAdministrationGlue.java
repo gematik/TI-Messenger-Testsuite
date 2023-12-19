@@ -16,24 +16,6 @@
 
 package de.gematik.tim.test.glue.api.fhir.practitioner;
 
-import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
-import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
-import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
-import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirAuthenticateTask.authenticateOnFhirVzd;
-import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirDeleteOwnMxidTask.deleteMxidFromFhir;
-import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirSearchQuestion.practitionerInFhirDirectory;
-import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirSetMxidTask.setMxid;
-import static de.gematik.tim.test.glue.api.fhir.practitioner.OwnFhirResourceQuestion.ownFhirResource;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
-import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
-import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
-import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
-import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-
 import de.gematik.tim.test.models.FhirEndpointDTO;
 import de.gematik.tim.test.models.FhirSearchResultDTO;
 import io.cucumber.java.de.Dann;
@@ -42,8 +24,25 @@ import io.cucumber.java.de.Wenn;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.response.Response;
-import java.util.List;
 import net.serenitybdd.screenplay.Actor;
+
+import java.util.List;
+
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
+import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
+import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirAuthenticateTask.authenticateOnFhirVzd;
+import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirDeleteOwnMxidTask.deleteMxidFromFhir;
+import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirSearchQuestion.practitionerInFhirDirectory;
+import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirSetMxidTask.setMxid;
+import static de.gematik.tim.test.glue.api.fhir.practitioner.OwnFhirResourceQuestion.ownFhirResource;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.assertCorrectEndpointNameAndMxid;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
+import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
+import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
+import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.*;
 
 
 public class FhirAdministrationGlue {
@@ -96,8 +95,7 @@ public class FhirAdministrationGlue {
     Actor actor = theActorCalled(actorName);
     FhirSearchResultDTO result = actor.asksFor(ownFhirResource().withAtLeastAmountEndpoints(1));
     List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
-
-    assertThat(endpoints).extracting("address").contains((String) actor.recall(MX_ID));
+    assertCorrectEndpointNameAndMxid(endpoints, actor);
   }
 
   // Assertions

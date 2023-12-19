@@ -14,17 +14,34 @@
  * limitations under the License.
  */
 
-package de.gematik.tim.test.glue.api;
+package de.gematik.tim.test.glue.api.utils.cleaning;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
-import static lombok.AccessLevel.PRIVATE;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 
-@AllArgsConstructor(access = PRIVATE)
-public class TransferGlue {
+@Data
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
+public class CombineItem {
 
 
+  private String value;
+  private String url;
+  private Set<String> tags = new HashSet<>();
+  private Map<String, String> properties = new HashMap<>();
+
+
+  public boolean isSameAs(@NotNull String s) {
+    return s.equals(value) || s.equals(url);
+  }
 }
-
-
