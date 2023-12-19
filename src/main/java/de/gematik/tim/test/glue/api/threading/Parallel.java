@@ -14,17 +14,9 @@
  * limitations under the License.
  */
 
-package de.gematik.tim.test.glue.api;
+package de.gematik.tim.test.glue.api.threading;
 
-import lombok.AllArgsConstructor;
+public interface Parallel<R> {
 
-import static lombok.AccessLevel.PRIVATE;
-
-
-@AllArgsConstructor(access = PRIVATE)
-public class TransferGlue {
-
-
+  R parallel(ActorsNotes notes);
 }
-
-

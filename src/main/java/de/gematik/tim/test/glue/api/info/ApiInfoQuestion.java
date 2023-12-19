@@ -18,14 +18,22 @@ package de.gematik.tim.test.glue.api.info;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_INFO;
 import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.TEST_CASE_ID_HEADER;
+import static de.gematik.tim.test.glue.api.threading.ParallelExecutor.parallelClient;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTestcaseId;
 
+import de.gematik.tim.test.glue.api.threading.Parallel;
+import de.gematik.tim.test.glue.api.threading.ActorsNotes;
+import de.gematik.tim.test.glue.api.utils.ParallelUtils;
+import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.models.InfoObjectDTO;
+import java.io.IOException;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
+import okhttp3.Call;
+import okhttp3.Response;
 
-public class ApiInfoQuestion implements Question<InfoObjectDTO> {
+public class ApiInfoQuestion implements Question<InfoObjectDTO>, Parallel<InfoObjectDTO> {
 
   public static ApiInfoQuestion apiInfo() {
     return new ApiInfoQuestion();
@@ -36,5 +44,15 @@ public class ApiInfoQuestion implements Question<InfoObjectDTO> {
     actor.attemptsTo(
         GET_INFO.request().with(res -> res.header(TEST_CASE_ID_HEADER, getTestcaseId())));
     return parseResponse(InfoObjectDTO.class);
+  }
+
+  @Override
+  public InfoObjectDTO parallel(ActorsNotes notes) {
+    Call call = parallelClient().get().newCall(GET_INFO.parallelRequest(notes).build());
+    try (Response response = call.execute()) {
+      return ParallelUtils.fromJson(response.body().string(), InfoObjectDTO.class);
+    } catch (IOException e) {
+      throw new TestRunException(e);
+    }
   }
 }

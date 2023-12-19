@@ -61,6 +61,8 @@ import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.LookForD
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility;
 import de.gematik.tim.test.glue.api.fhir.organisation.location.UseLocationAbility;
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
+import de.gematik.tim.test.glue.api.threading.ActorsNotes;
+import de.gematik.tim.test.glue.api.threading.ParallelRequest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -76,6 +78,7 @@ import net.serenitybdd.screenplay.rest.interactions.RestInteraction;
 public enum TestdriverApiEndpoint {
 
   GET_INFO(GET, INFO_PATH),
+  CLEAN_REQUEST(POST, INFO_PATH),
 
   // DEVICE
   GET_DEVICES(GET, DEVICES_PATH),
@@ -188,6 +191,10 @@ public enum TestdriverApiEndpoint {
   public TestdriverApiInteraction request() {
     RestInteraction restInteraction = httpMethod.creator.apply(path);
     return new TestdriverApiInteraction(restInteraction, neededAbilities);
+  }
+  
+  public ParallelRequest parallelRequest(ActorsNotes notes) {
+    return new ParallelRequest(this, notes);
   }
 
   @RequiredArgsConstructor

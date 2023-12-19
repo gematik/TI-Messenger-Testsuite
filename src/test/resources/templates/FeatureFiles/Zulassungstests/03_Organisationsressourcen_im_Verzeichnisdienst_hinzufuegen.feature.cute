@@ -15,9 +15,10 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
 
   Inhalt
   TF 1 Healthcare Service anlegen
-  TF 2 Healthcare Service Endpoint ändern
+  TF 2 Healthcare Service MXID im Endpoint ändern
   TF 3 Healthcare Service anlegen/ändern, Endpoint anlegen/ändern und löschen
   TF 4 Healthcare Service anlegen, zwei Endpoints anlegen und löschen
+  TF 5 Healthcare Service Endpointname aktualisieren
 
   @BP:P2O @Ctl:OrgAdmin
   @TCID:TIM_11_AF_301 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
@@ -25,6 +26,7 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
     Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
     Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1C>
+    Und        alle Devices wurden erfolgreich reserviert
     Und        "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
     Wenn       "C" schreibt "B" über den Healthcare-Service "HealthcareServiceName" direkt "Testnachricht 1"
@@ -48,11 +50,12 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
 
   @BP:N2O @Ctl:OrgAdmin
   @TCID:TIM_11_AF_302 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
-  Szenariogrundriss: 03.02 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen und Endpoint ändern
+  Szenariogrundriss: 03.02 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen und MXID im Endpoint ändern
     Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
     Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
     Und        "D" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1D>
+    Und        alle Devices wurden erfolgreich reserviert
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
     Und        "D" schreibt "B" über den Healthcare-Service "HealthcareServiceName" direkt "Testnachricht 1"
     Und        "B" bestätigt eine Einladung von "D"
@@ -85,6 +88,7 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
   Szenariogrundriss: 03.03 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen/ändern, Endpoint anlegen/ändern und löschen
     Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und        alle Devices wurden erfolgreich reserviert
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName"
     Wenn       "A" ändert die Daten des Healthcare-Service "HealthcareServiceName" mit JSON "03_AenderungEinesHealthcareService.json"
     Dann       vergleicht "A" den Healthcare-Service "HealthcareServiceName" mit dem JSON "03_AenderungEinesHealthcareService.json"
@@ -109,11 +113,12 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
 
 
   @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_304 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+  @TCID:TIM_11_AF_304 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 03.04 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin mit zwei Endpoints anlegen und löschen
     Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
     Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
+    Und        alle Devices wurden erfolgreich reserviert
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName"
     Wenn       "A" erstellt Endpunkt für "B" auf Healthcare-Service "HealthcareServiceName"
     Wenn       "A" erstellt Endpunkt für "C" auf Healthcare-Service "HealthcareServiceName"
@@ -131,6 +136,30 @@ Funktionalität: 03. Organisationsressourcen im Verzeichnisdienst hinzufügen
   @EqualProperty(homeserver)
   @AllowSelfCombine(true)
   @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName1C.hasTag("client"))
+
+    Beispiele:
+    | ApiName1A | ApiName1B | ApiName1C |
+
+  @BP:N2O @Ctl:OrgAdmin
+  @TCID:TIM_11_AF_305 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 03.05 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen und Endpointname aktualisieren
+    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
+    Und "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
+    Und "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
+    Und alle Devices wurden erfolgreich reserviert
+    Und "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
+    Und "C" findet "B" im Healthcare-Service "HealthcareServiceName"
+    Wenn "A" ändert den Endpunktname von "B" des Healthcare-Services "HealthcareServiceName"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName"
+
+  @Shuffle(true)
+  @MaxSameColumnProperty(ApiName1C,homeserver,2) #
+  @EqualProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(false)
   @Filter(ApiName1A.hasTag("orgAdmin"))
   @Filter(ApiName1B.hasTag("client"))
   @Filter(ApiName1C.hasTag("client"))

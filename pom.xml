@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>de.gematik.tim.test</groupId>
   <artifactId>TI-Messenger-Testsuite</artifactId>
-  <version>0.9.6</version>
+  <version>0.9.7</version>
   <packaging>jar</packaging>
   <name>TI-Messenger-Testsuite</name>
   <description>Testsuite to check functionality of TI-Messenger-Clients</description>
@@ -18,10 +18,9 @@
     <java.version>17</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jacoco.version>0.8.8</jacoco.version>
-    <version.tiger>2.2.0</version.tiger>
-    <cucumber-test-combinations-maven-plugin.version>2.9.13
-    </cucumber-test-combinations-maven-plugin.version>
-    <version.serenity.core>3.6.23</version.serenity.core>
+    <cucumber-test-combinations-maven-plugin.version>2.9.18</cucumber-test-combinations-maven-plugin.version>
+    <version.tiger>2.3.1</version.tiger>
+    <version.serenity.core>4.0.12</version.serenity.core>
     <polarion.toolbox.version>2.0.0-133</polarion.toolbox.version>
     <feature_dir>${project.build.directory}/features/</feature_dir>
     <feature.template.dir>${project.basedir}/src/test/resources/templates/FeatureFiles/Zulassungstests
@@ -50,8 +49,10 @@
     <cutest.break.request>${cutest.prepare.break}</cutest.break.request>
     <cutest.break.tablesize>${cutest.prepare.break}</cutest.break.tablesize>
     <soft-filter.to.hard>false</soft-filter.to.hard>
+    <custom.plugin>de.gematik.tim.test.glue.api.utils.cleaning.CucumberListener</custom.plugin>
     <maxRetryClaimRequest/>
     <saveConnections/>
+    <claimParallel/>
     <pollInterval/>
     <timeout/>
     <httpTimeout/>
@@ -166,12 +167,17 @@
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp</artifactId>
+      <version>5.0.0-alpha.11</version>
+    </dependency>
   </dependencies>
 
   <build>
     <resources>
       <resource>
-        <directory>src/main/resources/versions</directory>
+        <directory>src/main/resources</directory>
         <filtering>true</filtering>
         <includes>
           <include>**/versions.txt</include>
@@ -191,9 +197,9 @@
             </goals>
             <configuration>
               <url>
-                https://raw.githubusercontent.com/gematik/api-ti-messenger/9c5d696f999e09e78a4ca64d0c96b4246711a471/src/openapi/TiMessengerTestTreiber.yaml
+                https://raw.githubusercontent.com/gematik/api-ti-messenger/63d98b0cc32445b392c253ccd909c4ba407fe47e/src/openapi/TiMessengerTestTreiber.yaml
               </url>
-              <md5>4a04bf5d7df98c743482be021b4b1211</md5>
+              <md5>e40b01e2b70ee6a49c7fa3607658b63c</md5>
               <outputFileName>TiMessengerTestTreiber.yaml</outputFileName>
               <outputDirectory>${project.build.directory}</outputDirectory>
               <overwrite>true</overwrite>
@@ -383,6 +389,7 @@
           </environmentVariables>
           <systemPropertyVariables>
             <cucumber.filter.tags>${cucumber.filter.tags}</cucumber.filter.tags>
+            <cucumber.plugin>${custom.plugin}</cucumber.plugin>
           </systemPropertyVariables>
           <forkedProcessExitTimeoutInSeconds>120</forkedProcessExitTimeoutInSeconds>
         </configuration>
@@ -462,6 +469,26 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco.version}</version>
+        <executions>
+          <execution>
+            <id>prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>report</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>com.coderplus.maven.plugins</groupId>
         <artifactId>copy-rename-maven-plugin</artifactId>
         <version>1.0</version>
@@ -497,21 +524,6 @@
           <skip>${skip.saving.reports}</skip>
         </configuration>
         <executions>
-          <execution>
-            <id>save_reports</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${basedir}/reports/${build.time}/report</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${basedir}/target/site/serenity</directory>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
           <execution>
             <id>save_raw-data-reports</id>
             <phase>post-integration-test</phase>
@@ -595,40 +607,28 @@
           </execution>
         </executions>
       </plugin>
+      <!--      Done with "cp" to keep timestamp-->
       <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>${jacoco.version}</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <skip>${skip.saving.reports}</skip>
+        </configuration>
         <executions>
           <execution>
-            <id>prepare-agent</id>
+            <id>save_reports</id>
+            <phase>post-integration-test</phase>
             <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>report</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>3.1.0</version>
-        <executions>
-          <execution>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>run</goal>
+              <goal>exec</goal>
             </goals>
             <configuration>
-              <target>
-                <delete dir="${project.build.directory}/generated-combine"/>
-              </target>
+              <executable>cp</executable>
+              <arguments>
+                <argument>-a</argument>
+                <argument>${project.build.directory}/site/serenity/</argument>
+                <argument>${basedir}/reports/${build.time}/report</argument>
+              </arguments>
             </configuration>
           </execution>
         </executions>
@@ -651,7 +651,6 @@
       </plugin>
     </plugins>
   </build>
-
 
   <profiles>
     <profile>
@@ -691,7 +690,7 @@
                 <artifactItem>
                   <groupId>de.gematik.tim.test</groupId>
                   <artifactId>TI-Messenger-TestdriverSim</artifactId>
-                  <version>4.1.3</version>
+                  <version>4.3.0</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}</outputDirectory>

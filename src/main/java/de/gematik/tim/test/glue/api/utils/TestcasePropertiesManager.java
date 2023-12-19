@@ -16,28 +16,29 @@
 
 package de.gematik.tim.test.glue.api.utils;
 
-import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DIRECT_CHAT_NAME;
-import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
-import static java.lang.String.format;
-import static java.util.Objects.nonNull;
-import static lombok.AccessLevel.PRIVATE;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-
+import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.HealthcareServiceInfo;
+import de.gematik.tim.test.models.FhirEndpointDTO;
 import de.gematik.tim.test.models.MessageDTO;
 import de.gematik.tim.test.models.RoomDTO;
 import io.cucumber.core.exception.CucumberException;
 import io.cucumber.java.Scenario;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.serenitybdd.core.Serenity;
 import net.serenitybdd.screenplay.Actor;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DIRECT_CHAT_NAME;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
+import static java.lang.String.format;
+import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
+import static lombok.AccessLevel.PRIVATE;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @NoArgsConstructor(access = PRIVATE)
 public class TestcasePropertiesManager {
@@ -46,6 +47,7 @@ public class TestcasePropertiesManager {
   private static final String TCID_PREFIX = "@TCID";
   private static String id;
   private static Map<String, HealthcareServiceInfo> healthcareServices;
+  private static Map<String, FhirEndpointDTO> endpoints;
   private static Map<String, RoomDTO> rooms;
   private static Map<String, MessageDTO> messages;
   private static List<Actor> failedTeardownActors;
@@ -78,6 +80,7 @@ public class TestcasePropertiesManager {
 
   private static void resetPropertiesMap() {
     healthcareServices = new HashMap<>();
+    endpoints = new HashMap<>();
     rooms = new HashMap<>();
     messages = new HashMap<>();
     failedTeardownActors = new ArrayList<>();
@@ -85,6 +88,10 @@ public class TestcasePropertiesManager {
 
   public static void addHs(String name, HealthcareServiceInfo info) {
     healthcareServices.put(name, info);
+  }
+
+  public static void addEndpoint(String name, FhirEndpointDTO endpoint) {
+    endpoints.put(name, endpoint);
   }
 
   public static void addRoom(String name, RoomDTO room) {
@@ -102,6 +109,13 @@ public class TestcasePropertiesManager {
     throw new TestRunException(format(EXCEPTION_MESSAGE, "HealthcareService", name));
   }
 
+  public static FhirEndpointDTO getEndpointFromInternalName(String name) {
+    if (endpoints.containsKey(name)) {
+      return endpoints.get(name);
+    }
+    throw new TestRunException(format(EXCEPTION_MESSAGE, "Endpoint", name));
+  }
+
   public static RoomDTO getRoomByInternalName(String name) {
     if (rooms.containsKey(name)) {
       return rooms.get(name);
@@ -112,7 +126,7 @@ public class TestcasePropertiesManager {
   public static String getInternalRoomNameForActor(RoomDTO room, Actor actor) {
     List<Entry<String, RoomDTO>> entries = rooms.entrySet()
         .stream()
-        .filter(e -> (e.getValue()).getRoomId().equals(room.getRoomId()))
+        .filter(e -> requireNonNull((e.getValue()).getRoomId()).equals(room.getRoomId()))
         .toList();
     if (entries.size() == 1) {
       return entries.get(0).getKey();
@@ -126,6 +140,11 @@ public class TestcasePropertiesManager {
     return room.getName();
   }
 
+  public static void removeInternalEndpointWithName(String externalName) {
+    endpoints = endpoints.entrySet().stream()
+        .filter(e -> !e.getValue().getName().equals(externalName))
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+  }
 
   public static MessageDTO getCreatedMessage(String name) {
     if (messages.containsKey(name)) {

@@ -19,6 +19,8 @@ package de.gematik.tim.test.glue.api.fhir.organisation;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEARCH_ORG;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.mxidToUrl;
+import static de.gematik.tim.test.glue.api.utils.IndividualLogger.individualLog;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getHsFromInternalName;
@@ -143,7 +145,10 @@ public class FhirSearchOrgQuestion implements Question<FhirSearchResultDTO> {
         .map(FhirEndpointDTO::getAddress)
         .filter(Objects::nonNull)
         .toList();
-    if (ids.contains(mxIdInEndpoint) && requireNonNull(resp.getTotal()) >= minimalSearchResults) {
+    if (ids.contains(mxidToUrl(mxIdInEndpoint)) && requireNonNull(resp.getTotal()) >= minimalSearchResults) {
+      return Optional.of(resp);
+    } else if (ids.contains(mxIdInEndpoint) && requireNonNull(resp.getTotal()) >= minimalSearchResults) {
+      individualLog("Mxid found which is not in URL form!");
       return Optional.of(resp);
     }
     return Optional.empty();

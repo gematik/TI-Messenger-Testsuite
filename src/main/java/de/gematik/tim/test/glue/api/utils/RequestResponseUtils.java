@@ -102,7 +102,7 @@ public class RequestResponseUtils {
     } catch (Exception e) {
       log.error(e.getMessage());
       assertThat(false)
-          .as("Expected " + clazz.getSimpleName() + " but got:\n" + lastResponse().body().prettyPrint())
+          .as("Expected " + clazz.getSimpleName() + " but got:\n" + lastResponse().body().prettyPrint() + " with status code " + lastResponse().statusCode())
           .isTrue();
     }
     throw new RequestedRessourceNotAvailable("This code should not be reached!");

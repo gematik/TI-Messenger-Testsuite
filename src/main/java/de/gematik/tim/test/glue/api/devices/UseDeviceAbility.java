@@ -16,6 +16,7 @@
 
 package de.gematik.tim.test.glue.api.devices;
 
+import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.UNCLAIM_DEVICE;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.DEVICE_ID_VARIABLE;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTestcaseId;
 import static java.util.Objects.nonNull;
@@ -59,6 +60,6 @@ public class UseDeviceAbility extends TeardownAbility implements TestdriverApiAb
     if (nonNull(loggedInAbility)) {
       loggedInAbility.tearDown();
     }
-    DeviceManager.getInstance().release(actor);
+    actor.attemptsTo(UNCLAIM_DEVICE.request());
   }
 }

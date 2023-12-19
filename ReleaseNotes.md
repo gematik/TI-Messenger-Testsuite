@@ -2,9 +2,23 @@
 
 # Release notes
 
+
+
 ## Link to TI-Messenger-testsuite [`docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
 
 - - -
+
+## Release 0.9.7
+
+### Features
+
+- Testsuite checks if the address in endpoint from VZD is in url format. :warning: For this version the testsuite will handle both (url and matrix format). For upcoming versions this will be removed
+- Adjusting Testsuite.adoc for a new Testcase
+- TestCase 03.02 adjusted
+- New Test 03.05 Healthcare-Service durch Org-Admin anlegen und Endpointname aktualisieren
+- Created endpoint get a random name
+- Fits to TestdriverApi 0.9.3 -> New api to clean system implemented. The testsuite triggers the clean-endpoint for each involved home-server on org-admin-api before each test-execution. Continues test as soon as all apis have sent any response. (Could also respond with error 404, so it is not needed to implement) 
+- Update Cucumber-Test-Parameter-Plugin for better error-messages and counting
 
 ## Release 0.9.6
 

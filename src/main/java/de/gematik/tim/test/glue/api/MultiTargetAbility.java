@@ -16,20 +16,21 @@
 
 package de.gematik.tim.test.glue.api;
 
-import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addHs;
-import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addRoom;
-import static java.util.Objects.requireNonNull;
-
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.HealthcareServiceInfo;
+import de.gematik.tim.test.models.FhirEndpointDTO;
 import de.gematik.tim.test.models.RoomDTO;
+import net.serenitybdd.screenplay.Actor;
+import net.serenitybdd.screenplay.Task;
+
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.Task;
+
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.*;
+import static java.util.Objects.requireNonNull;
 
 public abstract class MultiTargetAbility<K, V> extends TeardownAbility {
 
@@ -50,6 +51,9 @@ public abstract class MultiTargetAbility<K, V> extends TeardownAbility {
     }
     if (target instanceof RoomDTO t) {
       addRoom((String) key, t);
+    }
+    if (target instanceof FhirEndpointDTO t) {
+      addEndpoint((String) key, t);
     }
   }
 
@@ -116,9 +120,10 @@ public abstract class MultiTargetAbility<K, V> extends TeardownAbility {
     }
   }
 
-  protected void update(){
+  protected void update() {
     // default: no update necessary
   }
+
   protected void clearDouble() {
     // default: no doubles could appear
   }

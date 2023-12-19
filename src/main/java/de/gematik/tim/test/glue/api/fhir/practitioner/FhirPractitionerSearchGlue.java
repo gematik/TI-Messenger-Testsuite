@@ -16,10 +16,23 @@
 
 package de.gematik.tim.test.glue.api.fhir.practitioner;
 
+import de.gematik.tim.test.models.FhirEndpointDTO;
+import de.gematik.tim.test.models.FhirSearchResultDTO;
+import io.cucumber.java.de.Dann;
+import io.cucumber.java.de.Wenn;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+import net.serenitybdd.core.Serenity;
+import net.serenitybdd.screenplay.Actor;
+
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.OWN_ENDPOINT_ID;
 import static de.gematik.tim.test.glue.api.account.AccountQuestion.ownAccountInfos;
 import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirSearchQuestion.practitionerInFhirDirectory;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.assertCorrectEndpointNameAndMxid;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
 import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
 import static java.util.Objects.requireNonNull;
@@ -29,17 +42,6 @@ import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeT
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
-
-import de.gematik.tim.test.models.FhirEndpointDTO;
-import de.gematik.tim.test.models.FhirSearchResultDTO;
-import io.cucumber.java.de.Dann;
-import io.cucumber.java.de.Wenn;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
-import java.util.List;
-import java.util.NoSuchElementException;
-import net.serenitybdd.core.Serenity;
-import net.serenitybdd.screenplay.Actor;
 
 public class FhirPractitionerSearchGlue {
 
@@ -81,7 +83,7 @@ public class FhirPractitionerSearchGlue {
           practitionerInFhirDirectory().withMxid(actorToFind.recall(MX_ID)));
       List<FhirEndpointDTO> endpoint = getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
       assertThat(endpoint).hasSize(1);
-      assertThat(endpoint.get(0).getAddress()).isEqualTo(actorToFind.recall(MX_ID));
+      assertCorrectEndpointNameAndMxid(endpoint, actorToFind);
     });
   }
 
@@ -119,7 +121,7 @@ public class FhirPractitionerSearchGlue {
         .filter(e -> requireNonNull(e.getId()).equals(searchedEndpointId))
         .findFirst().orElseThrow(() -> new NoSuchElementException(
             "Delivered search set does not provide the search endpoint with id -> " + searchedEndpointId));
-    assertThat(endpoint.getAddress()).isEqualTo(searchedActor.recall(MX_ID));
+    assertCorrectEndpointNameAndMxid(List.of(endpoint), searchedActor);
   }
 
   @When("{string} can NOT find {string} by searching by name {string}")

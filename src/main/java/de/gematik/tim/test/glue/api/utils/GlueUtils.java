@@ -16,43 +16,11 @@
 
 package de.gematik.tim.test.glue.api.utils;
 
-import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
-import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
-import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
-import static java.util.Arrays.stream;
-import static java.util.Objects.nonNull;
-import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.groupingBy;
-import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.javafaker.Faker;
-import de.gematik.tim.test.models.FhirBaseResourceDTO;
-import de.gematik.tim.test.models.FhirEndpointDTO;
-import de.gematik.tim.test.models.FhirEntryDTO;
-import de.gematik.tim.test.models.FhirHealthcareServiceDTO;
-import de.gematik.tim.test.models.FhirLocationDTO;
-import de.gematik.tim.test.models.FhirOrganizationDTO;
-import de.gematik.tim.test.models.FhirPractitionerDTO;
-import de.gematik.tim.test.models.FhirPractitionerRoleDTO;
-import de.gematik.tim.test.models.FhirResourceTypeDTO;
-import de.gematik.tim.test.models.FhirSearchResultDTO;
-import de.gematik.tim.test.models.MessageDTO;
-import de.gematik.tim.test.models.RoomDTO;
-import de.gematik.tim.test.models.RoomMemberDTO;
+import de.gematik.tim.test.models.*;
 import io.cucumber.java.ParameterType;
-import java.io.File;
-import java.io.FileReader;
-import java.time.Instant;
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Random;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
@@ -60,13 +28,33 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.FileReader;
+import java.time.Instant;
+import java.util.*;
+
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DISPLAY_NAME;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
+import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
+import static de.gematik.tim.test.glue.api.utils.IndividualLogger.individualLog;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getEndpointFromInternalName;
+import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
+import static java.lang.String.format;
+import static java.util.Arrays.stream;
+import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.groupingBy;
+import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
+import static org.assertj.core.api.Assertions.assertThat;
+
 @Slf4j
 public class GlueUtils {
 
   public static final String TEST_RESOURCES_JSON_PATH = "src/test/resources/json/";
+  public static final String MXID_PREFIX = "@";
+  public static final String MXID_URL_PREFIX = "matrix:user/";
   private static final Faker faker = new Faker();
   private static final Random random = new Random();
-
 
   // Utils
   public static RoomDTO getRoomBetweenTwoActors(Actor actor, String senderName) {
@@ -141,6 +129,11 @@ public class GlueUtils {
         .toEpochMilli();
   }
 
+  public static String createUniqueEndpointName() {
+    return format("The %s need some %s for %s", faker.hacker().noun(), faker.hacker().ingverb(),
+        faker.hacker().abbreviation());
+  }
+
   public static String createUniqueRoomName() {
     return faker.company().buzzword() + " " + faker.company().industry() + "-" + Instant.now()
         .toEpochMilli();
@@ -208,6 +201,47 @@ public class GlueUtils {
     }
     return nonNull(hs.getLocation()) ?
         hs.getLocation().stream().map(e -> e.getReference().split("/")[1]).toList() : List.of();
+  }
+
+  public static String mxidToUrl(String mxid) {
+    return mxid.replace(MXID_PREFIX, MXID_URL_PREFIX);
+  }
+
+  public static String urlToMxid(String url) {
+    return url.replace(MXID_URL_PREFIX, MXID_PREFIX);
+  }
+
+  public static void assertMxIdsInEndpoint(List<FhirEndpointDTO> endpoint, List<String> mxids) {
+    List<String> mxidsInEndpoints = endpoint.stream().map(FhirEndpointDTO::getAddress).toList();
+    assertThat(mxidsInEndpoints).hasSize(mxids.size());
+    for (String mxid : mxids) {
+      assertThat(mxids).satisfiesAnyOf(
+          t -> {
+            assertThat(mxidsInEndpoints).contains(mxid);
+            individualLog("Mxid found which is not in URL form in assertion");
+          },
+          t -> assertThat(mxidsInEndpoints).contains(mxidToUrl(mxid))
+      );
+    }
+  }
+
+  public static void assertCorrectEndpointNameAndMxid(List<FhirEndpointDTO> endpoints, Actor searchedActor) {
+    String endpointName = getEndpointFromInternalName(searchedActor.recall(DISPLAY_NAME)).getName();
+    endpoints = endpoints.stream()
+        .filter(e -> requireNonNull(e.getName()).equals(endpointName))
+        .toList();
+    assertThat(endpoints)
+        .as(format("Could not find endpoint with name %s", endpointName))
+        .isNotEmpty();
+
+    List<String> mxids = endpoints.stream().map(FhirEndpointDTO::getAddress).toList();
+    assertThat(mxids).satisfiesAnyOf(
+        t -> {
+          individualLog("Mxid found which is not in URL form in assertion");
+          assertThat(mxids).contains((String) searchedActor.recall(MX_ID));
+        },
+        t -> assertThat(mxids).contains(mxidToUrl(searchedActor.recall(MX_ID)))
+    );
   }
 
   @ParameterType(value = "(?:.*)", preferForRegexMatch = true)
