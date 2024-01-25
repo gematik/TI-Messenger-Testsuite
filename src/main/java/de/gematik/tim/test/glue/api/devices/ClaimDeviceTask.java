@@ -23,11 +23,15 @@ import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.CLAIM_DEVICE;
 import static de.gematik.tim.test.glue.api.devices.UnclaimedDevicesQuestion.unclaimedDevices;
 import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.TEST_CASE_ID_HEADER;
 import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.useDevice;
-import static de.gematik.tim.test.glue.api.threading.ParallelExecutor.parallelClient;
+import static de.gematik.tim.test.glue.api.threading.ParallelExecutor.getParallelClient;
+import static de.gematik.tim.test.glue.api.threading.ParallelExecutor.isClaimable;
+import static de.gematik.tim.test.glue.api.threading.ParallelExecutor.saveLastResponseCode;
 import static de.gematik.tim.test.glue.api.utils.IndividualLogger.individualLog;
+import static de.gematik.tim.test.glue.api.utils.ParallelUtils.toJson;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequestWithLongerTimeout;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTestcaseId;
+import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.CERT_CN;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.CLAIM_DURATION;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.MAX_RETRY_CLAIM_REQUEST;
 import static java.lang.String.format;
@@ -35,38 +39,30 @@ import static java.util.Objects.nonNull;
 import static lombok.AccessLevel.PRIVATE;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 import de.gematik.tim.test.glue.api.exceptions.TestRunException;
-import de.gematik.tim.test.glue.api.threading.ActorsNotes;
-import de.gematik.tim.test.glue.api.threading.Parallel;
-import de.gematik.tim.test.glue.api.threading.ParallelExecutor;
+import de.gematik.tim.test.glue.api.threading.ParallelTaskRunner;
 import de.gematik.tim.test.models.ClaimDeviceRequestDTO;
 import de.gematik.tim.test.models.DeviceInfoDTO;
+import kong.unirest.UnirestInstance;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.SneakyThrows;
 import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
-import okhttp3.Response;
 import org.springframework.http.HttpStatus;
 
-import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @SuppressWarnings("BusyWait")
 @Builder
 @AllArgsConstructor(access = PRIVATE)
-public class ClaimDeviceTask implements Task, Parallel<ActorsNotes> {
+public class ClaimDeviceTask extends ParallelTaskRunner {
+  private static final String FAIL_CLAIM_LOG = "Claiming device at api %s failed!";
 
-  private final static String FAIL_CLAIM_LOG = "Claiming device at api %s failed!";
   private Long deviceId;
   private Integer claimDuration;
-  private String claimerName;
 
   public static ClaimDeviceTask claimDevice() {
     return claimDeviceFor(CLAIM_DURATION);
@@ -76,31 +72,55 @@ public class ClaimDeviceTask implements Task, Parallel<ActorsNotes> {
     return ClaimDeviceTask.builder().claimDuration(claimDuration).build();
   }
 
-  public ClaimDeviceTask withId(Long deviceId) {
-    this.deviceId = deviceId;
-    return this;
+  //<editor-fold desc="Parallel">
+  @Override
+  @SneakyThrows
+  public void runParallel() {
+    String api = actor.abilityTo(CallAnApi.class).resolve("");
+    if (deviceId == null) {
+      deviceId = repeatedRequestWithLongerTimeout(
+          () -> unclaimedDevices().withActor(actor).run().stream()
+              .filter(id -> isClaimable(api, id))
+              .findAny(), "device", 10);
+    }
+    actor.can(UseDeviceAbility.useDevice(deviceId));
+    int retryCount = 1;
+    int responseCode;
+    while ((responseCode = sendParallelRequest()) != 200 && retryCount < MAX_RETRY_CLAIM_REQUEST) {
+      saveLastResponseCode(actor.getName(), responseCode);
+      retryCount++;
+      individualLog(FAIL_CLAIM_LOG.formatted(api));
+      Thread.sleep(5000);
+    }
+    if (responseCode != 200) {
+      throw new TestRunException(
+          "claiming device failed for actor '%s'".formatted(actor.getName()));
+    }
   }
 
-  public ClaimDeviceTask withClaimerName(String name) {
-    this.claimerName = name;
-    return this;
+  private int sendParallelRequest() {
+    ClaimDeviceRequestDTO claimRequest = getClaimDeviceRequestDTO();
+    actor.remember(CLAIMER_NAME, claimRequest.getClaimerName());
+    UnirestInstance client = getParallelClient().get();
+    return client
+        .post(CLAIM_DEVICE.getResolvedPath(actor))
+        .body(toJson(claimRequest))
+        .asEmpty()
+        .getStatus();
   }
+  //</editor-fold>
 
+  //<editor-fold desc="Sequential">
   @Override
   public <T extends Actor> void performAs(T actor) {
-    sendClaimRequest(actor, claimDuration, claimerName);
-
-    actor.can(useDevice(deviceId));
+    sendClaimRequest(actor);
     actor.remember(DEVICE_ID, deviceId);
     actor.remember(IS_LOGGED_IN, false);
   }
 
   @SneakyThrows
-  private <T extends Actor> void sendClaimRequest(T actor, int claimDuration, String claimerName) {
-    final String name = isBlank(claimerName) ? UUID.randomUUID().toString() : claimerName;
-    ClaimDeviceRequestDTO claimRequest = new ClaimDeviceRequestDTO()
-        .claimerName(name)
-        .claimFor(claimDuration);
+  private <T extends Actor> void sendClaimRequest(T actor) {
+    ClaimDeviceRequestDTO claimRequest = getClaimDeviceRequestDTO();
 
     sendRequest(actor, claimRequest);
 
@@ -115,21 +135,10 @@ public class ClaimDeviceTask implements Task, Parallel<ActorsNotes> {
     actor.should(
         seeThatResponse("device is successfully claimed",
             res -> res.statusCode(200)
-                .body("claimerName", equalTo(name))));
+                .body("claimerName", equalTo(claimRequest.getClaimerName()))));
     DeviceInfoDTO device = parseResponse(DeviceInfoDTO.class);
     this.deviceId = device.getDeviceId();
-    actor.remember(CLAIMER_NAME, name);
-  }
-
-  private <T extends Actor> void sendRequest(T actor, ClaimDeviceRequestDTO claimRequest) {
-    final long useDeviceId = findFreeDeviceId(actor);
-    actor.attemptsTo(CLAIM_DEVICE.request()
-        .with(request -> request
-            .pathParam("deviceId", useDeviceId)
-            .header("Accept", "application/json")
-            .header("Content-Type", "application/json")
-            .header(TEST_CASE_ID_HEADER, getTestcaseId())
-            .body(claimRequest)));
+    actor.remember(CLAIMER_NAME, claimRequest.getClaimerName());
   }
 
   private <T extends Actor> Long findFreeDeviceId(T actor) {
@@ -140,54 +149,26 @@ public class ClaimDeviceTask implements Task, Parallel<ActorsNotes> {
   }
 
   private Optional<Long> findDeviceToClaim(Actor actor) {
-    List<Long> unclaimedDevices = actor.asksFor(unclaimedDevices());
-    return unclaimedDevices.stream().findAny();
+    return unclaimedDevices().withActor(actor).run().stream().findAny();
   }
 
-  @Override
-  @SneakyThrows
-  public ActorsNotes parallel(ActorsNotes notes) {
-    if (deviceId == null) {
-      deviceId = repeatedRequestWithLongerTimeout(
-          () -> unclaimedDevices().parallel(notes).stream()
-              .filter(ParallelExecutor::isClaimable)
-              .findAny(), "device", 10);
-    }
+  private <T extends Actor> void sendRequest(T actor, ClaimDeviceRequestDTO claimRequest) {
+    final long useDeviceId = findFreeDeviceId(actor);
+    actor.can(useDevice(useDeviceId));
+    actor.attemptsTo(CLAIM_DEVICE.request()
+        .with(request -> request
+            .pathParam("deviceId", useDeviceId)
+            .header("Accept", "application/json")
+            .header("Content-Type", "application/json")
+            .header(TEST_CASE_ID_HEADER, getTestcaseId())
+            .body(claimRequest)));
+  }
 
-    final String name = isBlank(claimerName) ? UUID.randomUUID().toString() : claimerName;
-    ClaimDeviceRequestDTO claimRequest = new ClaimDeviceRequestDTO()
-        .claimerName(name)
+  //</editor-fold>
+
+  private ClaimDeviceRequestDTO getClaimDeviceRequestDTO() {
+    return new ClaimDeviceRequestDTO()
+        .claimerName(CERT_CN)
         .claimFor(claimDuration);
-    notes.remember(DEVICE_ID, deviceId);
-
-    int responseCode = sendRequest(notes, claimRequest);
-    int retryCount = 1;
-    while (responseCode != 200 && retryCount < MAX_RETRY_CLAIM_REQUEST) {
-      retryCount++;
-      individualLog(format(FAIL_CLAIM_LOG, notes.getApi()));
-      Thread.sleep(5000);
-      responseCode = sendRequest(notes, claimRequest);
-    }
-
-    if (responseCode != 200) {
-      throw new TestRunException(
-          "claiming device failed for actor '%s'".formatted(notes.getName()));
-    }
-
-    notes.remember(CLAIMER_NAME, name);
-    notes.remember(DEVICE_ID, deviceId);
-    notes.addAbility(useDevice(deviceId));
-    notes.remember(IS_LOGGED_IN, false);
-    return notes;
-  }
-
-  private int sendRequest(ActorsNotes notes, ClaimDeviceRequestDTO claimRequest) {
-    try (Response response = parallelClient().get()
-        .newCall(CLAIM_DEVICE.parallelRequest(notes).build(claimRequest))
-        .execute()) {
-      return response.code();
-    } catch (IOException e) {
-      throw new TestRunException("error executing claim request", e);
-    }
   }
 }

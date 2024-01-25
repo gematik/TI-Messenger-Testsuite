@@ -28,6 +28,8 @@ import static de.gematik.tim.test.glue.api.message.GetRoomMessagesQuestion.messa
 import static de.gematik.tim.test.glue.api.message.SendDirectMessageTask.sendDirectMessageTo;
 import static de.gematik.tim.test.glue.api.message.SendDirectMessageToMxIdTask.sendDirectMessageToMxIdOutOfFederation;
 import static de.gematik.tim.test.glue.api.message.SendMessageTask.sendMessage;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.checkRoomMembershipState;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.checkRoomMembershipStateInDirectChatOf;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.filterMessageForSenderAndText;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getRoomBetweenTwoActors;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getCreatedMessage;
@@ -47,10 +49,11 @@ import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Wenn;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import java.util.List;
-import java.util.Optional;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.actors.Cast;
+
+import java.util.List;
+import java.util.Optional;
 
 public class MessageControllerGlue {
 
@@ -68,6 +71,7 @@ public class MessageControllerGlue {
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
     actor.attemptsTo(sendMessage(messageText));
     checkResponseCode(actorName, OK.value());
+    checkRoomMembershipState(actor, roomName);
   }
 
   @When("{string} writes {string} directly {string}")
@@ -77,6 +81,7 @@ public class MessageControllerGlue {
     Actor actor2 = theActorCalled(userName);
     actor1.attemptsTo(sendDirectMessageTo(actor2, message));
     checkResponseCode(actorName, OK.value());
+    checkRoomMembershipStateInDirectChatOf(actorName, userName);
   }
 
   @When("{string} writes {string} via healthcare service {string} directly {string}")
@@ -85,6 +90,7 @@ public class MessageControllerGlue {
       String message) {
     findsAddressInHealthcareService(actorName, userName, hsName);
     sendDirectMessage(actorName, userName, message);
+    checkRoomMembershipStateInDirectChatOf(actorName, userName);
   }
 
   @Wenn("{string} versucht {string} direkt {string} zu schreiben")
@@ -115,8 +121,7 @@ public class MessageControllerGlue {
   @Dann("{listOfStrings} empfängt die Nachrichten {listOfStrings} von {string} im Raum {string}")
   @Dann("{listOfStrings} empfangen eine Nachricht {listOfStrings} von {string} im Raum {string}")
   @Dann("{listOfStrings} empfangen die Nachrichten {listOfStrings} von {string} im Raum {string}")
-  public void canSeeMessagesInRoom(List<String> actorNames, List<String> messageTexts,
-      String authorName, String roomName) {
+  public void canSeeMessagesInRoom(List<String> actorNames, List<String> messageTexts, String authorName, String roomName) {
 
     String authorId = theActorCalled(authorName).recall(MX_ID);
 
@@ -127,6 +132,7 @@ public class MessageControllerGlue {
         assertThat(
             actor.asksFor(messageFromSenderWithTextInActiveRoom(message, authorId))).isNotNull();
       }
+      checkRoomMembershipState(actor, roomName);
     });
   }
 
@@ -137,6 +143,7 @@ public class MessageControllerGlue {
     actor.abilityTo(UseRoomAbility.class).setActive(getInternalRoomNameForActor(room, actor));
     actor.asksFor(messageFromSenderWithTextInActiveRoom(textMessage,
         theActorCalled(senderName).recall(MX_ID)));
+    checkRoomMembershipState(room);
   }
 
   @Then("{string} sees {int} messages in room {string}")
@@ -154,6 +161,7 @@ public class MessageControllerGlue {
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
     List<MessageDTO> messages = actor.asksFor(messagesInActiveRoom());
     assertThat(messages).extracting("body").contains(getCreatedMessage(messageText).getBody());
+    checkRoomMembershipState(actor, roomName);
   }
 
   @Then("{string} could not see message {string} from {string} in chat with {string}")

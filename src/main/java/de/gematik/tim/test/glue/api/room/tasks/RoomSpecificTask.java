@@ -20,12 +20,13 @@ import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
+import de.gematik.tim.test.glue.api.threading.ParallelTaskRunner;
 import lombok.Getter;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 
 @Getter
-public abstract class RoomSpecificTask implements Task {
+public abstract class RoomSpecificTask extends ParallelTaskRunner {
 
   private String roomName;
 
@@ -36,11 +37,17 @@ public abstract class RoomSpecificTask implements Task {
   }
 
   @Override
-  public <T extends Actor> void performAs(T actor) {
+  public void run() {
+    adjustRoom(actor);
+    super.run();
+  }
+
+  public <T extends Actor> void adjustRoom(T actor) {
     UseRoomAbility useRoomAbility = actor.abilityTo(UseRoomAbility.class);
     if (isNotBlank(getRoomName())) {
       useRoomAbility.setActive(getRoomName());
     }
-    requireNonNull(useRoomAbility.getActive(), "An active Room have to be set");
+    requireNonNull(useRoomAbility.getActive(), "An active Room has to be set");
+    roomName = useRoomAbility.getActiveKey();
   }
 }

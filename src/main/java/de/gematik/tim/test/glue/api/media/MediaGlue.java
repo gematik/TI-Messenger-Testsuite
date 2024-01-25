@@ -23,6 +23,7 @@ import static de.gematik.tim.test.glue.api.media.DownloadMediaQuestion.downloadM
 import static de.gematik.tim.test.glue.api.media.UploadMediaTask.uploadMedia;
 import static de.gematik.tim.test.glue.api.message.GetRoomMessageQuestion.messageFromSenderWithTextInActiveRoom;
 import static de.gematik.tim.test.glue.api.message.SendMessageTask.sendMessage;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.checkRoomMembershipState;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getCreatedMessage;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,8 +71,8 @@ public class MediaGlue {
         .withMimetype(Files.probeContentType(path))
         .withSize((int) Files.size(path))
         .withMsgType("m.file"));
-
     checkResponseCode(actorName, OK.value());
+    checkRoomMembershipState(actor, roomName);
   }
 
   @SneakyThrows
@@ -79,7 +80,7 @@ public class MediaGlue {
   // It gets checked by asserThat(message).isPresent()
   @Dann("{string} empfängt das Attachment {string} von {string} im Raum {string}")
   public void receiveAttachmentInRoom(String actorName, String fileName, String userName,
-                                      String roomName) {
+      String roomName) {
     Actor actor = theActorCalled(actorName);
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
     String senderMxId = theActorCalled(userName).recall(MX_ID);
@@ -95,6 +96,7 @@ public class MediaGlue {
       assertThat(receivedMedia).isEqualTo(fis.readAllBytes());
     }
     assertThat(message.get().getBody()).isEqualTo(getCreatedMessage(fileName).getBody());
+    checkRoomMembershipState(actor, roomName);
   }
 
 }

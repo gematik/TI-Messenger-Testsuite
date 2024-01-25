@@ -19,8 +19,8 @@ Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
   @Ctl:OneHomeServer
   @TCID:TIM_11_AF_501 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 05.01 Akteur im Verzeichnisdienst - Hinzufügen - HBA-User legt sich an und sucht seinen Eintrag
-    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRACTITIONER | <ApiName1> |
     Und        "A" hinterlegt seine MXID im Verzeichnis Dienst
     Wenn       "A" sucht die MXID des Benutzers "A" im Verzeichnis Dienst
     Dann       "A" findet seine MXID im Verzeichnis Dienst
@@ -34,9 +34,9 @@ Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
   @Ctl:OneHomeServer
   @TCID:TIM_11_AF_502 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 05.02 Akteur im Verzeichnisdienst - Hinzufügen - HBA-User legt sich an und sucht anderen Eintrag
-    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRACTITIONER | <ApiName1A> |
+      | B | PRACTITIONER | <ApiName1B> |
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Wenn       "A" sucht die MXID des Benutzers "A" im Verzeichnis Dienst
     Und        "A" findet seine MXID im Verzeichnis Dienst
@@ -57,9 +57,9 @@ Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
 
   @TCID:TIM_11_AF_503 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 05.03 Akteur im Verzeichnisdienst - Hinzufügen - HBA-User aus anderer Organisation sucht HBA-User Eintrag
-    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
-    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRACTITIONER  | <ApiName1> |
+      | B | PRACTITIONER  | <ApiName2> |
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Wenn       "A" sucht die MXID des Benutzers "A" im Verzeichnis Dienst
     Und        "A" findet seine MXID im Verzeichnis Dienst
@@ -84,9 +84,9 @@ Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
   @Ctl:OneHomeServer
   @TCID:TIM_11_AF_504 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 05.04 Akteur im Verzeichnisdienst - Löschen - HBA-User löscht Eintrag und ist nicht auffindbar für HBA-User gleicher Organisation
-    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRACTITIONER   | <ApiName1A> |
+      | B | PRACTITIONER   | <ApiName1B> |
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "B" findet "A" in FHIR
     Wenn       "A" löscht seine MXID im Verzeichnis Dienst
@@ -107,9 +107,9 @@ Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
 
   @TCID:TIM_11_AF_505 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 05.05 Akteur im Verzeichnisdienst - Löschen - HBA-User löscht Eintrag und ist nicht auffindbar für HBA-User anderer Organisation
-    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
-    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRACTITIONER | <ApiName1>  |
+      | B | PRACTITIONER | <ApiName2>  |
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "B" findet "A" in FHIR
     Wenn       "A" löscht seine MXID im Verzeichnis Dienst
@@ -134,8 +134,8 @@ Funktionalität:  05. Akteur (User-HBA) im Verzeichnisdienst hinzufügen
   @Ctl:OneHomeServer
   @TCID:TIM_11_AF_506 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 05.06 Akteur im Verzeichnisdienst - Hinzufügen - Nicht erfolgreich ohne Authentication im Verzeichnisdienst
-    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRACTITIONER | <ApiName1> |
     Wenn       "A" versucht seine MXID im Verzeichnis Dienst ohne Authentication zu hinterlegen
     Dann       erhält "A" einen Responsecode 401
 

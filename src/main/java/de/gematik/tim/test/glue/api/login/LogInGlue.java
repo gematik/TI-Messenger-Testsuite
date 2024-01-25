@@ -19,15 +19,13 @@ package de.gematik.tim.test.glue.api.login;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
 import static de.gematik.tim.test.glue.api.devices.CheckClientKindTask.checkIs;
-import static de.gematik.tim.test.glue.api.devices.ClientKind.MESSENGER_CLIENT;
+import static de.gematik.tim.test.glue.api.devices.ClientKind.CLIENT;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.PRACTITIONER;
 import static de.gematik.tim.test.glue.api.login.LoginTask.login;
 import static de.gematik.tim.test.glue.api.login.LogoutTask.logout;
-import static de.gematik.tim.test.glue.api.threading.ParallelExecutor.parallel;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.CLAIM_PARALLEL;
 import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
@@ -37,55 +35,22 @@ import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Wenn;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import java.util.List;
 import net.serenitybdd.screenplay.Actor;
 
-public class LogInGlue {
+import java.util.List;
 
-  @When("{string} logs out")
-  @Wenn("{string} loggt sich im TI-Messenger aus")
-  public void logsOut(String actorName) {
-    theActorCalled(actorName).attemptsTo(logout());
-    checkResponseCode(actorName, OK.value());
-  }
+public class LogInGlue {
 
   @When("{string} logs in")
   @Wenn("{string} loggt sich im TI-Messenger ein")
   public static void logsIn(String actorName) {
     Actor actor = theActorCalled(actorName);
-    actor.attemptsTo(login());
-    checkResponseCode(actorName, OK.value());
+    logsIn(actor);
   }
 
   public static void logsIn(Actor actor) {
-    if (TRUE.equals(CLAIM_PARALLEL) && DevicesControllerGlue.isAllowParallelClaim()) {
-      parallel().task(actor, login());
-    } else {
-      logsIn(actor.getName());
-    }
-  }
-
-  @Wenn("{string} sich als HBA-User einloggt")
-  public void logsInAsHbaUser(String actorName) {
-    Actor actor = theActorCalled(actorName);
-    logsIn(actorName);
-    actor.attemptsTo(checkIs(List.of(MESSENGER_CLIENT, PRACTITIONER)));
-  }
-
-  @Wenn("{string} sich als Org-User einloggt")
-  public void logsInAsOrgUser(String actorName) {
-    Actor actor = theActorCalled(actorName);
-    logsIn(actorName);
-    actor.attemptsTo(checkIs(List.of(MESSENGER_CLIENT)));
-  }
-
-  @Wenn("{string} sich als OrgAdmin einloggt")
-  public void sichAlsOrgAdminRegistriert(String actorName) {
-    Actor actor = theActorCalled(actorName);
-    actor.remember(IS_ORG_ADMIN, true);
-    theActorCalled(actorName).attemptsTo(login().withoutClearingRooms());
-    checkResponseCode(actorName, OK.value());
-    actor.attemptsTo(checkIs(List.of(ORG_ADMIN)));
+    login().withActor(actor).run();
+    checkResponseCode(actor, OK.value());
   }
 
   @Then("registration successful for {string}")
@@ -96,9 +61,43 @@ public class LogInGlue {
     }
   }
 
+  public static void loginSuccess(Actor actor) {
+    checkResponseCode(actor, OK.value());
+  }
+
   @Then("registration failed for {string}")
   @Dann("schlägt das Login für {string} fehl")
   public static void loginFailure(String actorName) {
     checkResponseCode(actorName, BAD_REQUEST.value());
+  }
+
+  @When("{string} logs out")
+  @Wenn("{string} loggt sich im TI-Messenger aus")
+  public void logsOut(String actorName) {
+    theActorCalled(actorName).attemptsTo(logout());
+    checkResponseCode(actorName, OK.value());
+  }
+
+  @Wenn("{string} sich als HBA-User einloggt")
+  public void logsInAsHbaUser(String actorName) {
+    Actor actor = theActorCalled(actorName);
+    logsIn(actor);
+    checkIs(List.of(CLIENT, PRACTITIONER)).withActor(actor).run();
+  }
+
+  @Wenn("{string} sich als Org-User einloggt")
+  public void logsInAsOrgUser(String actorName) {
+    Actor actor = theActorCalled(actorName);
+    logsIn(actor);
+    checkIs(List.of(CLIENT)).withActor(actor).run();
+  }
+
+  @Wenn("{string} sich als OrgAdmin einloggt")
+  public void sichAlsOrgAdminRegistriert(String actorName) {
+    Actor actor = theActorCalled(actorName);
+    actor.remember(IS_ORG_ADMIN, true);
+    theActorCalled(actorName).attemptsTo(login().withoutClearingRooms());
+    checkResponseCode(actorName, OK.value());
+    checkIs(List.of(ORG_ADMIN)).withActor(actor).run();
   }
 }

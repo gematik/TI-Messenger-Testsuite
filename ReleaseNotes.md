@@ -8,6 +8,21 @@
 
 - - -
 
+## Release 0.9.8
+
+### Features
+
+- Create room request: Access Lvl set to private 
+- Check room states in different stages. Hard fail can be switched off. [`read more`](doc/userguide/GettingStarted.adoc)
+- New Testcases 10.20 and 10.21 - User verlässt den Chat-Raum
+- Update Combinations-Plugin for better view of used groups in serenity report
+- Reworked claim parallel
+
+### Bugs
+
+- Matrix url changed to correct schema like defined at https://spec.matrix.org/v1.9/appendices/#matrix-uri-scheme
+- Clean step runs with correct client cert (Use tiger proxy)
+
 ## Release 0.9.7
 
 ### Features

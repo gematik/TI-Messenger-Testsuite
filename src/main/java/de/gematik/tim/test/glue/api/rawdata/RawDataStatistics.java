@@ -24,12 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import io.restassured.response.Response;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
@@ -40,6 +34,13 @@ import org.springframework.http.HttpStatus;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RawDataStatistics {
@@ -96,8 +97,9 @@ public class RawDataStatistics {
   public static void login() {
     countEventFor(login);
   }
+
   public static void login(int statusCode, String statusLine) {
-    countEventParallel(login,statusCode,statusLine);
+    countEventParallel(statusCode, statusLine);
   }
 
   /**
@@ -187,6 +189,16 @@ public class RawDataStatistics {
         .andContents(join(currentDataObjectList, " "));
   }
 
+  public static void startTest() {
+    copiedCounter.put(LOGIN_KEY, login.copy());
+    copiedCounter.put(SEARCH_KEY, search.copy());
+    copiedCounter.put(ITRSH_KEY, inviteToRoomSameHomeserver.copy());
+    copiedCounter.put(EMSH_KEY, exchangeMessageSameHomeserver.copy());
+    copiedCounter.put(ECM_KEY, editContactManagement.copy());
+    copiedCounter.put(ITRMH_KEY, inviteToRoomMultiHomeserver.copy());
+    copiedCounter.put(EMMH_KEY, exchangeMessageMultiHomeserver.copy());
+    copiedCounter.put(GRTFVE_KEY, getRegTokenForVZDEvent.copy());
+  }
 
   private static List<RawDataObject> buildTotalDataObjectList() {
     return List.of(
@@ -224,19 +236,8 @@ public class RawDataStatistics {
             exchangeMessageMultiHomeserver.getDiff(copiedCounter.get(EMMH_KEY))),
         new RawDataObject(TIM_UC_10062_01_02,
             exchangeMessageMultiHomeserver.getDiff(copiedCounter.get(EMMH_KEY))),
-            new RawDataObject(TIM_UC_10059_01_02,getRegTokenForVZDEvent.getDiff(copiedCounter.get(
-                GRTFVE_KEY))));
-  }
-
-  public static void startTest() {
-    copiedCounter.put(LOGIN_KEY, login.copy());
-    copiedCounter.put(SEARCH_KEY, search.copy());
-    copiedCounter.put(ITRSH_KEY, inviteToRoomSameHomeserver.copy());
-    copiedCounter.put(EMSH_KEY, exchangeMessageSameHomeserver.copy());
-    copiedCounter.put(ECM_KEY, editContactManagement.copy());
-    copiedCounter.put(ITRMH_KEY, inviteToRoomMultiHomeserver.copy());
-    copiedCounter.put(EMMH_KEY, exchangeMessageMultiHomeserver.copy());
-    copiedCounter.put(GRTFVE_KEY, getRegTokenForVZDEvent.copy());
+        new RawDataObject(TIM_UC_10059_01_02, getRegTokenForVZDEvent.getDiff(copiedCounter.get(
+            GRTFVE_KEY))));
   }
 
   @SneakyThrows
@@ -279,13 +280,12 @@ public class RawDataStatistics {
     counter.addError(response.getStatusLine());
   }
 
-  public static synchronized void countEventParallel(
-      RawDataEventCounter counter, int statusCode, String statusLine){
-    if(HttpStatus.valueOf(statusCode).is2xxSuccessful()){
-      counter.countSuccess();
+  private static synchronized void countEventParallel(int statusCode, String statusLine) {
+    if (HttpStatus.valueOf(statusCode).is2xxSuccessful()) {
+      login.countSuccess();
       return;
     }
-    counter.addError(statusLine);
+    login.addError(statusLine);
   }
 
 }

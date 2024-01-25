@@ -16,19 +16,19 @@
 
 package de.gematik.tim.test.glue.api.room.tasks;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.LEAVE_ROOM;
-import static de.gematik.tim.test.glue.api.threading.ParallelExecutor.parallelClient;
+import static de.gematik.tim.test.glue.api.threading.ClientFactory.getClient;
+import static de.gematik.tim.test.models.RoomMembershipStateDTO.LEAVE;
 
 import de.gematik.tim.test.glue.api.exceptions.TestRunException;
-import de.gematik.tim.test.glue.api.threading.ActorsNotes;
-import de.gematik.tim.test.glue.api.threading.Parallel;
-import java.io.IOException;
+import de.gematik.tim.test.glue.api.room.UseRoomAbility;
+import kong.unirest.Empty;
+import kong.unirest.HttpResponse;
+import kong.unirest.UnirestInstance;
 import net.serenitybdd.screenplay.Actor;
-import okhttp3.Request;
-import okhttp3.Response;
 
-public class LeaveRoomTask extends RoomSpecificTask implements
-    Parallel<ActorsNotes> {
+public class LeaveRoomTask extends RoomSpecificTask {
 
   public static LeaveRoomTask leaveRoom() {
     return new LeaveRoomTask();
@@ -40,22 +40,17 @@ public class LeaveRoomTask extends RoomSpecificTask implements
 
   @Override
   public <T extends Actor> void performAs(T actor) {
-    super.performAs(actor);
     actor.attemptsTo(LEAVE_ROOM.request());
+    actor.remember(actor.abilityTo(UseRoomAbility.class).getActiveValue().getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX, LEAVE);
   }
 
   @Override
-  public ActorsNotes parallel(ActorsNotes notes) {
-    Request request = LEAVE_ROOM.parallelRequest(notes).build();
-    try (Response res = parallelClient().get().newCall(request).execute()) {
-      if (res.isSuccessful()) {
-        return notes;
-      } else {
-        throw new TestRunException(
-            "could not leave room, response code was %d".formatted(res.code()));
-      }
-    } catch (IOException e) {
-      throw new TestRunException(e);
+  public void runParallel() {
+    UnirestInstance client = getClient();
+    HttpResponse<Empty> res = client.get(LEAVE_ROOM.getResolvedPath(actor)).asEmpty();
+    if (!res.isSuccess()) {
+      throw new TestRunException("could not leave room, response code was %d".formatted(res.getStatus()));
     }
+    actor.remember(actor.abilityTo(UseRoomAbility.class).getActiveValue().getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX, LEAVE);
   }
 }

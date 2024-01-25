@@ -16,20 +16,23 @@
 
 package de.gematik.tim.test.glue.api.room.tasks;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.JOIN_ROOM;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_ID_VARIABLE;
 import static de.gematik.tim.test.glue.api.room.UseRoomAbility.addRoomToActor;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
+import static de.gematik.tim.test.models.RoomMembershipStateDTO.JOIN;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.models.RoomDTO;
 import io.restassured.response.Response;
-import java.util.Objects;
-import java.util.Optional;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 import org.springframework.http.HttpStatus;
+
+import java.util.Objects;
+import java.util.Optional;
 
 public class JoinRoomTask implements Task {
 
@@ -58,6 +61,7 @@ public class JoinRoomTask implements Task {
     if (HttpStatus.valueOf(resp.statusCode()).is2xxSuccessful()) {
       RoomDTO room = parseResponse(RoomDTO.class);
       addRoomToActor(room, actor);
+      actor.remember(room.getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX, JOIN);
       return Optional.of(room);
     } else {
       return Optional.empty();

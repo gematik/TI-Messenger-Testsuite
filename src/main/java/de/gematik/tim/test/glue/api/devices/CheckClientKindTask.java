@@ -16,22 +16,22 @@
 
 package de.gematik.tim.test.glue.api.devices;
 
-import static de.gematik.tim.test.glue.api.devices.ClientKind.MESSENGER_CLIENT;
+import static de.gematik.tim.test.glue.api.devices.ClientKind.CLIENT;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.PRACTITIONER;
 import static de.gematik.tim.test.glue.api.info.ApiInfoQuestion.apiInfo;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import de.gematik.tim.test.glue.api.threading.Parallel;
-import de.gematik.tim.test.glue.api.threading.ActorsNotes;
+import de.gematik.tim.test.glue.api.threading.ParallelTaskRunner;
 import de.gematik.tim.test.models.InfoObjectDTO;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.Task;
+import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
+
+import java.util.List;
 
 @RequiredArgsConstructor
-public class CheckClientKindTask implements Task, Parallel<ActorsNotes> {
+public class CheckClientKindTask extends ParallelTaskRunner {
 
 
   private final List<ClientKind> kind;
@@ -41,33 +41,36 @@ public class CheckClientKindTask implements Task, Parallel<ActorsNotes> {
   }
 
   @Override
-  public <T extends Actor> void performAs(T actor) {
-    InfoObjectDTO info = actor.asksFor(apiInfo());
-    checkForKinds(info);
+  public void runParallel() {
+    this.performAs(actor);
   }
 
   @Override
-  public ActorsNotes parallel(ActorsNotes notes) {
-    InfoObjectDTO info = apiInfo().parallel(notes);
+  public <T extends Actor> void performAs(T actor) {
+    this.actor= actor;
+    InfoObjectDTO info = apiInfo().withActor(actor).run();
     checkForKinds(info);
-    return notes;
   }
 
   private void checkForKinds(InfoObjectDTO info) {
     if (kind.contains(ORG_ADMIN)) {
       assertThat(info.getClientInfo().getCanAdministrateFhirOrganization())
-          .as("Claimed device have no org admin privileges! This information is got from the info endpoint.")
+          .as("Claimed device failed for actor %s on api %s because api have no org admin privileges! This information is got from the info endpoint."
+              .formatted(actor.getName(), actor.abilityTo(CallAnApi.class).resolve("")))
           .isTrue();
     }
-    if (kind.contains(MESSENGER_CLIENT)) {
+    if (kind.contains(CLIENT)) {
       assertThat(info.getClientInfo().getCanSendMessages())
-          .as("Claimed device have no write messages privileges! This information is got from the info endpoint.")
+          .as("Claimed device failed for actor %s on api %s because api have no write messages privileges! This information is got from the info endpoint."
+              .formatted(actor.getName(), actor.abilityTo(CallAnApi.class).resolve("")))
           .isTrue();
     }
     if (kind.contains(PRACTITIONER)) {
       assertThat(info.getClientInfo().getCanAdministrateFhirPractitioner())
-          .as("Claimed device have no practitioner privileges! This information is got from the info endpoint.")
+          .as("Claimed device failed for actor %s on api %s because api have no practitioner privileges! This information is got from the info endpoint."
+              .formatted(actor.getName(), actor.abilityTo(CallAnApi.class).resolve("")))
           .isTrue();
     }
   }
+
 }

@@ -21,36 +21,35 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DISPLAY_NAME;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_LOGGED_IN;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
-import static de.gematik.tim.test.glue.api.ActorMemoryKeys.ROOM_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.LOGIN;
 import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirAuthenticateTask.authenticateOnFhirVzd;
 import static de.gematik.tim.test.glue.api.login.IsLoggedInAbility.logOut;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
 import static de.gematik.tim.test.glue.api.room.tasks.ForgetRoomTask.forgetRoom;
 import static de.gematik.tim.test.glue.api.room.tasks.LeaveRoomTask.leaveRoom;
-import static de.gematik.tim.test.glue.api.threading.ParallelExecutor.parallelClient;
+import static de.gematik.tim.test.glue.api.threading.ParallelExecutor.getParallelClient;
+import static de.gematik.tim.test.glue.api.threading.ParallelExecutor.saveLastResponseCode;
+import static de.gematik.tim.test.glue.api.utils.ParallelUtils.fromJson;
+import static de.gematik.tim.test.glue.api.utils.ParallelUtils.toJson;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.models.AuthStageNameDTO.BASICAUTH;
 import static java.util.Objects.nonNull;
 
-import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.glue.api.fhir.practitioner.CanDeleteOwnMxidAbility;
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
-import de.gematik.tim.test.glue.api.threading.ActorsNotes;
-import de.gematik.tim.test.glue.api.threading.Parallel;
-import de.gematik.tim.test.glue.api.utils.ParallelUtils;
+import de.gematik.tim.test.glue.api.threading.ParallelTaskRunner;
 import de.gematik.tim.test.glue.api.utils.TestsuiteInitializer;
 import de.gematik.tim.test.models.AccountDTO;
 import de.gematik.tim.test.models.LoginDTO;
-import java.io.IOException;
-import java.util.Optional;
+import kong.unirest.HttpResponse;
+import kong.unirest.JsonNode;
+import kong.unirest.UnirestInstance;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
-import okhttp3.Request;
-import okhttp3.Response;
-import org.springframework.http.HttpStatus;
 
-public class LoginTask implements Task, Parallel<ActorsNotes> {
+import java.util.Optional;
+
+public class LoginTask extends ParallelTaskRunner implements Task {
 
   private boolean clearRooms = TestsuiteInitializer.CLEAR_ROOMS;
 
@@ -58,6 +57,33 @@ public class LoginTask implements Task, Parallel<ActorsNotes> {
     return new LoginTask();
   }
 
+  public LoginTask withoutClearingRooms() {
+    this.clearRooms = false;
+    return this;
+  }
+
+  //<editor-fold desc="Parallel">
+  @Override
+  public void runParallel() {
+    UnirestInstance client = getParallelClient().get();
+    Optional<LoginDTO> loginDto = getLoginDto(actor);
+
+    HttpResponse<JsonNode> resp;
+    if (loginDto.isPresent()) {
+      resp = client.post(LOGIN.getResolvedPath(actor)).body(toJson(loginDto.get())).asJson();
+    } else {
+      resp = client.post(LOGIN.getResolvedPath(actor)).asJson();
+    }
+    AccountDTO account = fromJson(resp.getBody().toString(), AccountDTO.class);
+    if (actor.recall(IS_ORG_ADMIN) == null) {
+      RawDataStatistics.login(resp.getStatus(), resp.getStatusText());
+    }
+    saveLastResponseCode(actor.getName(), resp.getStatus());
+    cleanRoomAndSetProperties(actor, account);
+  }
+  //</editor-fold ">
+
+  //<editor-fold desc="Sync">
   @Override
   public <T extends Actor> void performAs(T actor) {
     Optional<LoginDTO> loginDto = getLoginDto(actor);
@@ -67,80 +93,42 @@ public class LoginTask implements Task, Parallel<ActorsNotes> {
       actor.attemptsTo(LOGIN.request());
     }
     AccountDTO account = parseResponse(AccountDTO.class);
+    if (actor.recall(IS_ORG_ADMIN) == null) {
+      RawDataStatistics.login();
+    }
+    cleanRoomAndSetProperties(actor, account);
+  }
+  //</editor-fold>
+
+  //<editor-fold desc="General">
+  private <T extends Actor> void cleanRoomAndSetProperties(T actor, AccountDTO account) {
     actor.remember(MX_ID, account.getMxid());
     actor.remember(ACCOUNT_PASSWORD, account.getPassword());
     actor.remember(DISPLAY_NAME, account.getDisplayName());
+    actor.can(logOut());
+    actor.remember(IS_LOGGED_IN, true);
+
     if (clearRooms) {
-      actor.asksFor(ownRooms())
+      ownRooms().withActor(actor).run()
           .forEach(room -> {
-            actor.attemptsTo(leaveRoom().withName(room.getName()));
-            actor.attemptsTo(forgetRoom().withName(room.getName()));
+            leaveRoom().withName(room.getName()).withActor(actor).run();
+            forgetRoom().withName(room.getName()).withActor(actor).run();
           });
     }
     if (nonNull(actor.abilityTo(CanDeleteOwnMxidAbility.class))) {
       actor.attemptsTo(authenticateOnFhirVzd());
     }
-    actor.can(logOut());
-    actor.remember(IS_LOGGED_IN, true);
-    if (actor.recall(IS_ORG_ADMIN) == null) {
-      RawDataStatistics.login();
-    }
   }
 
   private <T extends Actor> Optional<LoginDTO> getLoginDto(T actor) {
-    return getLoginDto(new ActorsNotes(actor));
-  }
-
-  private Optional<LoginDTO> getLoginDto(ActorsNotes notes) {
-    if (notes.recall(MX_ID) != null) {
+    if (actor.recall(MX_ID) != null) {
       return Optional.of(new LoginDTO()
           .authStage(BASICAUTH)
-          .username((String) notes.recall(MX_ID))
-          .password((String) notes.recall(ACCOUNT_PASSWORD)));
+          .username(actor.recall(MX_ID))
+          .password(actor.recall(ACCOUNT_PASSWORD)));
     }
     return Optional.empty();
   }
+  //</editor-fold>
 
-  public LoginTask withoutClearingRooms() {
-    this.clearRooms = false;
-    return this;
-  }
-
-  @Override
-  public ActorsNotes parallel(ActorsNotes notes) {
-    String statusLine = "Undefined error";
-    int code = HttpStatus.BAD_REQUEST.value();
-    Request request = getLoginDto(notes)
-        .map(loginDTO -> LOGIN.parallelRequest(notes).build(loginDTO))
-        .orElseGet(() -> LOGIN.parallelRequest(notes).build());
-    try (Response res = parallelClient().get().newCall(request).execute()) {
-      code = res.code();
-      if (!res.isSuccessful()) {
-        statusLine = "%s %d %s".formatted(res.protocol(), res.code(), res.message());
-        throw new TestRunException("Login failed: " + res.body().string());
-      }
-      AccountDTO account = ParallelUtils.fromJson(res.body().string(), AccountDTO.class);
-      notes.remember(MX_ID, account.getMxid());
-      notes.remember(ACCOUNT_PASSWORD, account.getPassword());
-      notes.remember(DISPLAY_NAME, account.getDisplayName());
-    } catch (IOException e) {
-      throw new TestRunException("login failed for actor '%s'".formatted(notes.getName()), e);
-    } finally {
-      if (notes.recall(IS_ORG_ADMIN) == null) {
-        RawDataStatistics.login(code, statusLine);
-      }
-    }
-
-    if (clearRooms) {
-      ownRooms().parallel(notes)
-          .forEach(room -> {
-            notes.remember(ROOM_ID, room.getRoomId());
-            leaveRoom().parallel(notes);
-            forgetRoom().parallel(notes);
-          });
-    }
-    notes.addAbility(logOut());
-    notes.remember(IS_LOGGED_IN, true);
-    return notes;
-  }
 }

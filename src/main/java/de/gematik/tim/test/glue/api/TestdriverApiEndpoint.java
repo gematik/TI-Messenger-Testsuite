@@ -25,6 +25,7 @@ import static de.gematik.tim.test.glue.api.TestdriverApiPath.CLAIM_DEVICE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.CONTACT_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.DELETE_CONTACT_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.DEVICES_PATH;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.DEVICE_ID_VARIABLE;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.DIRECT_MESSAGE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_AUTHENTICATE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_ENDPOINT_ADMIN_PATH;
@@ -49,30 +50,34 @@ import static de.gematik.tim.test.glue.api.TestdriverApiPath.MESSAGE_ID_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.MESSAGE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOMS_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_ID_PATH;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_ID_VARIABLE;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_INVITE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_JOIN_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_LEAVE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_STATE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.UNCLAIM_DEVICE_PATH;
+import static java.util.Objects.requireNonNull;
 
 import de.gematik.tim.test.glue.api.devices.UseDeviceAbility;
+import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UseEndpointAbility;
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.LookForDeletedHealthcareServiceAbility;
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility;
 import de.gematik.tim.test.glue.api.fhir.organisation.location.UseLocationAbility;
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
-import de.gematik.tim.test.glue.api.threading.ActorsNotes;
-import de.gematik.tim.test.glue.api.threading.ParallelRequest;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Function;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import net.serenitybdd.screenplay.Actor;
+import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
 import net.serenitybdd.screenplay.rest.interactions.Delete;
 import net.serenitybdd.screenplay.rest.interactions.Get;
 import net.serenitybdd.screenplay.rest.interactions.Post;
 import net.serenitybdd.screenplay.rest.interactions.Put;
 import net.serenitybdd.screenplay.rest.interactions.RestInteraction;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
 
 @Getter
 public enum TestdriverApiEndpoint {
@@ -82,7 +87,7 @@ public enum TestdriverApiEndpoint {
 
   // DEVICE
   GET_DEVICES(GET, DEVICES_PATH),
-  CLAIM_DEVICE(POST, CLAIM_DEVICE_PATH),
+  CLAIM_DEVICE(POST, CLAIM_DEVICE_PATH, UseDeviceAbility.class),
   UNCLAIM_DEVICE(POST, UNCLAIM_DEVICE_PATH, UseDeviceAbility.class),
 
   // ACCOUNT
@@ -192,9 +197,23 @@ public enum TestdriverApiEndpoint {
     RestInteraction restInteraction = httpMethod.creator.apply(path);
     return new TestdriverApiInteraction(restInteraction, neededAbilities);
   }
-  
-  public ParallelRequest parallelRequest(ActorsNotes notes) {
-    return new ParallelRequest(this, notes);
+
+  public String getResolvedPath(Actor actor) {
+    String resourcePath = this.getPath();
+    for (Class<? extends TestdriverApiAbility> c : this.neededAbilities) {
+      if (c == UseDeviceAbility.class) {
+        UseDeviceAbility ability = (UseDeviceAbility) actor.abilityTo(c);
+        requireNonNull(ability, "Actor '%s' needs the '%s' to perform this request!".formatted(actor.getName(), c.getSimpleName()));
+        resourcePath = resourcePath.replaceAll("\\{" + DEVICE_ID_VARIABLE + "\\}", String.valueOf(ability.getDeviceId()));
+      } else if (c == UseRoomAbility.class) {
+        UseRoomAbility ability = (UseRoomAbility) actor.abilityTo(c);
+        requireNonNull(ability, "Actor '%s' needs the '%s' to perform this request!".formatted(actor.getName(), c.getSimpleName()));
+        resourcePath = resourcePath.replaceAll("\\{" + ROOM_ID_VARIABLE + "\\}", String.valueOf(ability.getActive().getRoomId()));
+      } else {
+        throw new TestRunException("Please implement behaviour for needed ability %s".formatted(c.getSimpleName()));
+      }
+    }
+    return actor.abilityTo(CallAnApi.class).resolve("") + resourcePath;
   }
 
   @RequiredArgsConstructor

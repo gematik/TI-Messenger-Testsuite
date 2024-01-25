@@ -31,6 +31,8 @@ import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.HasTeardown;
 import net.serenitybdd.screenplay.RefersToActor;
 
+import java.util.HashMap;
+
 public abstract class TeardownAbility implements RefersToActor, Ability, HasTeardown {
 
   @Getter
@@ -43,7 +45,7 @@ public abstract class TeardownAbility implements RefersToActor, Ability, HasTear
     if (tearedDown || isActorFailed(actor)) {
       return;
     }
-    if (!(boolean) actor.recall(IS_LOGGED_IN) && !(this instanceof UseDeviceAbility)
+    if (actor.recall(IS_LOGGED_IN) != null && !(boolean) actor.recall(IS_LOGGED_IN) && !(this instanceof UseDeviceAbility)
         && !(this instanceof IsLoggedInAbility)) {
       actor.attemptsTo(login());
     }

@@ -28,13 +28,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
 import de.gematik.tim.test.glue.api.exceptions.RequestedRessourceNotAvailable;
+import lombok.extern.slf4j.Slf4j;
+import net.serenitybdd.screenplay.Actor;
+import org.awaitility.core.ConditionTimeoutException;
+
 import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-import lombok.extern.slf4j.Slf4j;
-import net.serenitybdd.screenplay.Actor;
-import org.awaitility.core.ConditionTimeoutException;
 
 @Slf4j
 public class RequestResponseUtils {
@@ -77,7 +78,7 @@ public class RequestResponseUtils {
   public static void repeatedRequestForTeardown(Supplier<Optional<Boolean>> request, Actor actor) {
     if (timeout <= 1 || RUN_WITHOUT_RETRY) {
       request.get().orElseThrow(() -> new ConditionTimeoutException(
-          "Teardown failed! Looks like you have tried to delete a resource that should not be available"));
+          "Teardown failed for actor " + actor.getName() + "! Looks like you have tried to delete a resource that should not be available"));
       return;
     }
     try {
