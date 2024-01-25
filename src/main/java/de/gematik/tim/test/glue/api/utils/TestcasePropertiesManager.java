@@ -16,6 +16,14 @@
 
 package de.gematik.tim.test.glue.api.utils;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DIRECT_CHAT_NAME;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
+import static java.lang.String.format;
+import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
+import static lombok.AccessLevel.PRIVATE;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.HealthcareServiceInfo;
 import de.gematik.tim.test.models.FhirEndpointDTO;
@@ -28,17 +36,14 @@ import lombok.NoArgsConstructor;
 import net.serenitybdd.core.Serenity;
 import net.serenitybdd.screenplay.Actor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
-
-import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DIRECT_CHAT_NAME;
-import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
-import static java.lang.String.format;
-import static java.util.Objects.nonNull;
-import static java.util.Objects.requireNonNull;
-import static lombok.AccessLevel.PRIVATE;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @NoArgsConstructor(access = PRIVATE)
 public class TestcasePropertiesManager {
@@ -51,24 +56,19 @@ public class TestcasePropertiesManager {
   private static Map<String, RoomDTO> rooms;
   private static Map<String, MessageDTO> messages;
   private static List<Actor> failedTeardownActors;
+  private static CopyOnWriteArrayList<Actor> activeActors;
   @Getter
   private static Scenario currentScenario;
+  @Getter
+  private static boolean runningParallel;
 
   public static void startTest(Scenario scenario) {
     currentScenario = scenario;
     createTestcaseId();
-    resetPropertiesMap();
+    reset();
     Serenity.recordReportData()
         .withTitle("TestcaseId")
         .andContents(id);
-  }
-
-  private static void createTestcaseId() {
-    String testId = currentScenario.getSourceTagNames().stream().filter(t -> t.startsWith(TCID_PREFIX))
-        .findFirst()
-        .orElseThrow(() -> new CucumberException(
-            "This scenario seems to have no TCID! Name: " + currentScenario.getName()));
-    id = format("%s/%s", testId, UUID.randomUUID());
   }
 
   public static String getTestcaseId() {
@@ -76,14 +76,6 @@ public class TestcasePropertiesManager {
       throw new TestRunException("The testcase has no id! Please provide id first!");
     }
     return id;
-  }
-
-  private static void resetPropertiesMap() {
-    healthcareServices = new HashMap<>();
-    endpoints = new HashMap<>();
-    rooms = new HashMap<>();
-    messages = new HashMap<>();
-    failedTeardownActors = new ArrayList<>();
   }
 
   public static void addHs(String name, HealthcareServiceInfo info) {
@@ -123,6 +115,14 @@ public class TestcasePropertiesManager {
     throw new TestRunException(format(EXCEPTION_MESSAGE, "room", name));
   }
 
+  public static String getInternalRoomNameByDisplayNames(String name1, String name2) {
+    return rooms.keySet()
+        .stream()
+        .filter(k -> k.contains(name1) && k.contains(name2))
+        .findFirst()
+        .orElseThrow(() -> new TestRunException(format(EXCEPTION_MESSAGE, "room", name1 + " - " + name2)));
+  }
+
   public static String getInternalRoomNameForActor(RoomDTO room, Actor actor) {
     List<Entry<String, RoomDTO>> entries = rooms.entrySet()
         .stream()
@@ -159,5 +159,48 @@ public class TestcasePropertiesManager {
 
   public static <T extends Actor> boolean isActorFailed(T actor) {
     return failedTeardownActors.contains(actor);
+  }
+
+  public static <T extends Actor> void registerActor(T actor) {
+    activeActors.add(actor);
+  }
+
+  public static List<Actor> getAllActiveActors() {
+    return activeActors;
+  }
+
+  public static List<Actor> getAllActiveActorsByMxIds(List<String> mxids) {
+    return getAllActiveActorsByMxIds(mxids, true);
+  }
+
+  public static List<Actor> getAllActiveActorsByMxIds(List<String> mxids, boolean shouldFindAllMxidsAsActiveActor) {
+    List<Actor> actors = activeActors.stream().filter(a -> mxids.contains(a.recall(MX_ID))).toList();
+    if (shouldFindAllMxidsAsActiveActor && mxids.size() != actors.size()) {
+      throw new TestRunException(format("Unknown actor/s with mxid/s <%s> was requested",
+          mxids.stream().filter(m -> !actors.stream().map(a -> a.recall(MX_ID)).toList().contains(m))));
+    }
+    return actors;
+  }
+
+  public static void setParallelFlag(boolean status) {
+    runningParallel = status;
+  }
+
+  private static void createTestcaseId() {
+    String testId = currentScenario.getSourceTagNames().stream().filter(t -> t.startsWith(TCID_PREFIX))
+        .findFirst()
+        .orElseThrow(() -> new CucumberException(
+            "This scenario seems to have no TCID! Name: " + currentScenario.getName()));
+    id = format("%s/%s", testId, UUID.randomUUID());
+  }
+
+  private static void reset() {
+    healthcareServices = new HashMap<>();
+    endpoints = new HashMap<>();
+    rooms = new HashMap<>();
+    messages = new HashMap<>();
+    failedTeardownActors = new ArrayList<>();
+    activeActors = new CopyOnWriteArrayList<>();
+    runningParallel = false;
   }
 }

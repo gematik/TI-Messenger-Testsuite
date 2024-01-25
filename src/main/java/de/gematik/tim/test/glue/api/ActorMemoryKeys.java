@@ -35,4 +35,5 @@ public final class ActorMemoryKeys {
   public static final String HAS_REG_SERVICE_TOKEN = "hasRegServiceToken";
   public static final String IS_ORG_ADMIN = "isOrgAdmin";
   public static final String OWN_ENDPOINT_ID = "ownEndpointId";
+  public static final String OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX = "_ownStatusInRoom";
 }

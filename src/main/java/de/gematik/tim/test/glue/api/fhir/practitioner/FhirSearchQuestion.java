@@ -120,7 +120,7 @@ public class FhirSearchQuestion implements Question<FhirSearchResultDTO> {
     if (shouldWaitTillDeleted) {
       return dontFindPractitioner();
     }
-    // Todo delete if Testsuite version is higher than 0.9.7
+    // Todo delete MXID Stuff if Testsuite version is higher than 0.9.8
     Optional<FhirSearchResultDTO> res = findPractitioner();
     if (res.isEmpty()) {
       actor.attemptsTo(

@@ -15,11 +15,12 @@ Funktionalität: 13. Nutzung von mehreren Geräten
   @BP:P2P
   @TCID:TIM_11_AF_1301 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NoParallel
   Szenariogrundriss: 13.01 Events außerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices
-    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRACTITIONER | <ApiName1A> |
+      | C | PRACTITIONER | <ApiName2>  |
     Und        "A" exportiert seinen Session-Key
     Und        "B" meldet sich mit den Daten von "A" an der Schnittstelle <ApiName1B> an
     Und        "B" importiert den Session-Key von "A"
-    Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "A", "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "C" findet "A" in FHIR
     Wenn       "C" schreibt "A" direkt "Testnachricht 1"
@@ -55,14 +56,14 @@ Funktionalität: 13. Nutzung von mehreren Geräten
   @BP:O2O @Ctl:OrgAdmin
   @TCID:TIM_11_AF_1302 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NoParallel
   Szenariogrundriss: 13.02 Events außerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices
-    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName2A>
-    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN | <ApiName1A> |
+      | B | ORG_ADMIN | <ApiName2A> |
+      | C | CLIENT    | <ApiName1B> |
+      | E | CLIENT    | <ApiName2B> |
     Und        "C" exportiert seinen Session-Key
     Und        "D" meldet sich mit den Daten von "C" an der Schnittstelle <ApiName1C> an
     Und        "D" importiert den Session-Key von "C"
-    Und        "E" reserviert sich einen Messenger-Client an Schnittstelle <ApiName2B>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
     Und        "B" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "E"
     Und        "E" findet "C" im Healthcare-Service "HealthcareServiceName1"
@@ -101,9 +102,10 @@ Funktionalität: 13. Nutzung von mehreren Geräten
   @BP:P2P
   @TCID:TIM_11_AF_1303 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NoParallel
   Szenariogrundriss: 13.03 Events außerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices - Erhalt vorheriger Nachrichten
-    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRACTITIONER | <ApiName1A> |
+      | B | PRACTITIONER | <ApiName2>  |
     Und        "A" exportiert seinen Session-Key
-    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "B" findet "A" in FHIR
     Wenn       "B" schreibt "A" direkt "Testnachricht 1"
@@ -140,12 +142,12 @@ Funktionalität: 13. Nutzung von mehreren Geräten
   @BP:O2O @Ctl:OrgAdmin
   @TCID:TIM_11_AF_1304 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NoParallel
   Szenariogrundriss: 13.04 Events außerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices - Erhalt vorheriger Nachrichten
-    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName2A>
-    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN | <ApiName1A> |
+      | B | ORG_ADMIN | <ApiName2A> |
+      | C | CLIENT | <ApiName1B> |
+      | D | CLIENT | <ApiName2B> |
     Und        "C" exportiert seinen Session-Key
-    Und        "D" reserviert sich einen Messenger-Client an Schnittstelle <ApiName2B>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
     Und        "B" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "D"
     Und        "D" findet "C" im Healthcare-Service "HealthcareServiceName1"
@@ -185,11 +187,12 @@ Funktionalität: 13. Nutzung von mehreren Geräten
   @BP:P2P @Ctl:OneHomeServer
   @TCID:TIM_11_AF_1305 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NoParallel
   Szenariogrundriss: 13.05 Events innerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices
-    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRACTITIONER | <ApiName1A> |
+      | C | PRACTITIONER | <ApiName1C> |
     Und        "A" exportiert seinen Session-Key
     Und        "B" meldet sich mit den Daten von "A" an der Schnittstelle <ApiName1B> an
     Und        "B" importiert den Session-Key von "A"
-    Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1C>
     Und        "A", "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "C" findet "A" in FHIR
     Wenn       "C" schreibt "A" direkt "Testnachricht 1"
@@ -221,13 +224,13 @@ Funktionalität: 13. Nutzung von mehreren Geräten
   @BP:O2O @Ctl:OneHomeServer @Ctl:OrgAdmin
   @TCID:TIM_11_AF_1306 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NoParallel
   Szenariogrundriss: 13.06 Events innerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices
-    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN | <ApiName1A> |
+      | B | CLIENT | <ApiName1B> |
+      | D | CLIENT | <ApiName1D> |
     Und        "B" exportiert seinen Session-Key
     Und        "C" meldet sich mit den Daten von "B" an der Schnittstelle <ApiName1C> an
     Und        "C" importiert den Session-Key von "B"
-    Und        "D" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1D>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "D"
     Und        "D" findet "B" im Healthcare-Service "HealthcareServiceName1"
@@ -259,9 +262,10 @@ Funktionalität: 13. Nutzung von mehreren Geräten
   @BP:P2P
   @TCID:TIM_11_AF_1307 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NoParallel
   Szenariogrundriss: 13.07 Events innerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices - Erhalt vorheriger Nachrichten
-    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRACTITIONER | <ApiName1A> |
+      | B | PRACTITIONER | <ApiName1B> |
     Und        "A" exportiert seinen Session-Key
-    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "B" findet "A" in FHIR
     Wenn       "B" schreibt "A" direkt "Testnachricht 1"
@@ -294,11 +298,11 @@ Funktionalität: 13. Nutzung von mehreren Geräten
   @BP:O2O @Ctl:OrgAdmin
   @TCID:TIM_11_AF_1308 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NoParallel
   Szenariogrundriss: 13.08 Events innerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices - Erhalt vorheriger Nachrichten
-    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN | <ApiName1A> |
+      | B | CLIENT | <ApiName1B> |
+      | C | CLIENT | <ApiName1C> |
     Und        "B" exportiert seinen Session-Key
-    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
     Und        "C" findet "B" im Healthcare-Service "HealthcareServiceName1"

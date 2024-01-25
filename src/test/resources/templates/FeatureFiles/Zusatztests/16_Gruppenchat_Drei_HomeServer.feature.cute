@@ -14,11 +14,12 @@ Funktionalität:  16. Gruppenchat mit 3 Teilnehmern
   TF 4     Gruppenchat unterschiedliche Organisationen (HBA lädt OrgUser ein)
 
   @BP:P2P @Ctl:MsgForward
-  @TCID:TIM_11_AF_1601 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_1601 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 16.01 Events außerhalb einer Organisation - Gruppenchat mit 3 Teilnehmern - Test-Client "A" sendet eine Nachricht (HBA-User)
-    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
-    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
-    Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName3>
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRACTITIONER | <ApiName1> |
+      | B | PRACTITIONER | <ApiName2> |
+      | C | PRACTITIONER | <ApiName3> |
     Und        "A", "B", "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B", "C" in FHIR
@@ -44,10 +45,10 @@ Funktionalität:  16. Gruppenchat mit 3 Teilnehmern
   @BP:P2P @Ctl:MsgBackward
   @TCID:TIM_11_AF_1602 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 16.02 Events außerhalb einer Organisation - Gruppenchat mit 3 Teilnehmern - Test-Client "C" sendet eine Nachricht (HBA-User)
-    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
-    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
-    Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName3>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRACTITIONER | <ApiName1> |
+      | B | PRACTITIONER | <ApiName2> |
+      | C | PRACTITIONER | <ApiName3> |
     Und        "A", "B", "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B", "C" in FHIR
@@ -68,18 +69,18 @@ Funktionalität:  16. Gruppenchat mit 3 Teilnehmern
   @Filter(ApiName3.hasTag("practitioner"))
 
     Beispiele:
-    | ApiName1 | ApiName2 | ApiName3 |
+      | ApiName1 | ApiName2 | ApiName3 |
 
   @BP:O2O @Ctl:OrgAdmin @Ctl:MsgForward
   @TCID:TIM_11_AF_1603 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 16.03 Events außerhalb einer Organisation - Gruppenchat mit 3 Teilnehmern - Test-Client "D" sendet eine Nachricht (Organisations-User)
-    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName2A>
-    Und        "C" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName3A>
-    Und        "D" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
-    Und        "E" reserviert sich einen Messenger-Client an Schnittstelle <ApiName2B>
-    Und        "F" reserviert sich einen Messenger-Client an Schnittstelle <ApiName3B>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN | <ApiName1A> |
+      | B | ORG_ADMIN | <ApiName2A> |
+      | C | ORG_ADMIN | <ApiName3A> |
+      | D | CLIENT    | <ApiName1B> |
+      | E | CLIENT    | <ApiName2B> |
+      | F | CLIENT    | <ApiName3B> |
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "D"
     Und        "B" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "E"
     Und        "C" erstellt einen Healthcare-Service "HealthcareServiceName3" und setzen einen Endpunkt auf "F"
@@ -91,29 +92,33 @@ Funktionalität:  16. Gruppenchat mit 3 Teilnehmern
     Wenn       "D" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Dann       "E", "F" empfangen eine Nachricht "Testnachricht 1" von "D" im Raum "TIM Testraum 1"
 
-  @Shuffle
-  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
-  @Filter(ApiName3A.properties["homeserver"].equals(ApiName3B.properties["homeserver"]))
-  @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
-  @Filter(!ApiName1A.properties["homeserver"].equals(ApiName3A.properties["homeserver"]))
-  @Filter(!ApiName2A.properties["homeserver"].equals(ApiName3A.properties["homeserver"]))
-  @MinimalTable(true)
+    @Shuffle
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+    @Filter(ApiName3A.properties["homeserver"].equals(ApiName3B.properties["homeserver"]))
+    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
+    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName3A.properties["homeserver"]))
+    @Filter(!ApiName2A.properties["homeserver"].equals(ApiName3A.properties["homeserver"]))
+    @MinimalTable(true)
   #@DistinctColumn(ApiName1B)
   #@MaxSameColumnProperty(ApiName1B,homeserver,1)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName2A.hasTag("orgAdmin"))
-  @Filter(ApiName3A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName2B.hasTag("client"))
-  @Filter(ApiName3B.hasTag("client"))
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName2A.hasTag("orgAdmin"))
+    @Filter(ApiName3A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName2B.hasTag("client"))
+    @Filter(ApiName3B.hasTag("client"))
 
     Beispiele:
-    | ApiName1A | ApiName2A | ApiName3A | ApiName1B | ApiName2B | ApiName3B |
+      | ApiName1A | ApiName2A | ApiName3A | ApiName1B | ApiName2B | ApiName3B |
 
   @BP:P2O @Ctl:OrgAdmin @Ctl:MsgBackward
-  @TCID:TIM_11_AF_1604 @PRIO:3 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_1604 @PRIO:3 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 16.04 Events außerhalb einer Organisation - Gruppenchat mit 3 Teilnehmern - Test-Client "C" sendet eine Nachricht (HBA-User lädt Organisations-User ein)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRACTITIONER | <ApiName1> |
+      | B | PRACTITIONER | <ApiName2> |
+      | C | PRACTITIONER | <ApiName3> |
     Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
     Und        "B" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName2A>
     Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
@@ -131,19 +136,19 @@ Funktionalität:  16. Gruppenchat mit 3 Teilnehmern
     Wenn       "C" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Dann       "D", "E" empfangen eine Nachricht "Testnachricht 1" von "C" im Raum "TIM Testraum 1"
 
-  @Shuffle
-  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
-  @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
-  @Filter(!ApiName1A.properties["homeserver"].equals(ApiName3.properties["homeserver"]))
-  @Filter(!ApiName2A.properties["homeserver"].equals(ApiName3.properties["homeserver"]))
-  @MaxSameColumnProperty(ApiName3,homeserver,2)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName2A.hasTag("orgAdmin"))
-  @Filter(ApiName2B.hasTag("client"))
-  @Filter(ApiName3.hasTag("client"))
-  @Filter(ApiName3.hasTag("practitioner"))
+    @Shuffle
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
+    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName3.properties["homeserver"]))
+    @Filter(!ApiName2A.properties["homeserver"].equals(ApiName3.properties["homeserver"]))
+    @MaxSameColumnProperty(ApiName3,homeserver,2)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName2A.hasTag("orgAdmin"))
+    @Filter(ApiName2B.hasTag("client"))
+    @Filter(ApiName3.hasTag("client"))
+    @Filter(ApiName3.hasTag("practitioner"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName2A | ApiName2B | ApiName3 |
+      | ApiName1A | ApiName1B | ApiName2A | ApiName2B | ApiName3 |

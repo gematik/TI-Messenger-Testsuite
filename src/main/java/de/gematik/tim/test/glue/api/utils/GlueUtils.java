@@ -16,11 +16,45 @@
 
 package de.gematik.tim.test.glue.api.utils;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DISPLAY_NAME;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX;
+import static de.gematik.tim.test.glue.api.room.questions.GetRoomQuestion.ownRoom;
+import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
+import static de.gematik.tim.test.glue.api.utils.IndividualLogger.individualLog;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getAllActiveActors;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getEndpointFromInternalName;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getInternalRoomNameByDisplayNames;
+import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.CHECK_ROOM_STATE_FAIL;
+import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
+import static java.lang.String.format;
+import static java.util.Arrays.stream;
+import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.groupingBy;
+import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.javafaker.Faker;
-import de.gematik.tim.test.models.*;
+import de.gematik.tim.test.models.FhirBaseResourceDTO;
+import de.gematik.tim.test.models.FhirEndpointDTO;
+import de.gematik.tim.test.models.FhirEntryDTO;
+import de.gematik.tim.test.models.FhirHealthcareServiceDTO;
+import de.gematik.tim.test.models.FhirLocationDTO;
+import de.gematik.tim.test.models.FhirOrganizationDTO;
+import de.gematik.tim.test.models.FhirPractitionerDTO;
+import de.gematik.tim.test.models.FhirPractitionerRoleDTO;
+import de.gematik.tim.test.models.FhirResourceTypeDTO;
+import de.gematik.tim.test.models.FhirSearchResultDTO;
+import de.gematik.tim.test.models.MessageDTO;
+import de.gematik.tim.test.models.RoomDTO;
+import de.gematik.tim.test.models.RoomMemberDTO;
+import de.gematik.tim.test.models.RoomMembershipStateDTO;
 import io.cucumber.java.ParameterType;
+import jxl.common.AssertionFailed;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
@@ -31,28 +65,20 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.FileReader;
 import java.time.Instant;
-import java.util.*;
-
-import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DISPLAY_NAME;
-import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
-import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
-import static de.gematik.tim.test.glue.api.utils.IndividualLogger.individualLog;
-import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getEndpointFromInternalName;
-import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
-import static java.lang.String.format;
-import static java.util.Arrays.stream;
-import static java.util.Objects.nonNull;
-import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.groupingBy;
-import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Random;
 
 @Slf4j
 public class GlueUtils {
 
   public static final String TEST_RESOURCES_JSON_PATH = "src/test/resources/json/";
   public static final String MXID_PREFIX = "@";
-  public static final String MXID_URL_PREFIX = "matrix:user/";
+  public static final String MXID_URL_PREFIX = "matrix:u/";
   private static final Faker faker = new Faker();
   private static final Random random = new Random();
 
@@ -63,6 +89,27 @@ public class GlueUtils {
     List<String> membersIds = List.of(actorId, senderId);
     List<RoomDTO> rooms = actor.asksFor(ownRooms());
     return requireNonNull(filterForRoomWithSpecificMembers(rooms, membersIds));
+  }
+
+  public static void checkRoomMembershipStateInDirectChatOf(String actorName, String userName) {
+    Actor actor1 = theActorCalled(actorName);
+    Actor actor2 = theActorCalled(userName);
+    checkRoomMembershipState(
+        actor1.asksFor(
+            ownRoom().withName(getInternalRoomNameByDisplayNames(actor1.recall(DISPLAY_NAME), actor2.recall(DISPLAY_NAME)))));
+  }
+
+  public static void checkRoomMembershipState() {
+    checkRoomMembershipState(parseResponse(RoomDTO.class));
+  }
+
+  public static void checkRoomMembershipState(Actor actor, String internalRoomName) {
+    checkRoomMembershipState(actor.asksFor(ownRoom().withName(internalRoomName)));
+  }
+
+  public static void checkRoomMembershipState(RoomDTO room) {
+    checkIfAllMembersAreCorrect(room);
+    checkIfAllActorsRelatedToRoomHaveCorrectMembershipState(room);
   }
 
   public static RoomDTO filterForRoomWithSpecificMembers(List<RoomDTO> rooms,
@@ -207,10 +254,6 @@ public class GlueUtils {
     return mxid.replace(MXID_PREFIX, MXID_URL_PREFIX);
   }
 
-  public static String urlToMxid(String url) {
-    return url.replace(MXID_URL_PREFIX, MXID_PREFIX);
-  }
-
   public static void assertMxIdsInEndpoint(List<FhirEndpointDTO> endpoint, List<String> mxids) {
     List<String> mxidsInEndpoints = endpoint.stream().map(FhirEndpointDTO::getAddress).toList();
     assertThat(mxidsInEndpoints).hasSize(mxids.size());
@@ -242,6 +285,59 @@ public class GlueUtils {
         },
         t -> assertThat(mxids).contains(mxidToUrl(searchedActor.recall(MX_ID)))
     );
+  }
+
+  public static String prepareApiNameForHttp(String apiName) {
+    if (!apiName.startsWith("http")) {
+      apiName = "http://" + apiName;
+    }
+    if (apiName.endsWith("/")) {
+      apiName = apiName.substring(0, apiName.length() - 1);
+    }
+    return apiName;
+  }
+
+  private static void checkIfAllActorsRelatedToRoomHaveCorrectMembershipState(RoomDTO room) {
+    getAllActiveActors()
+        .stream()
+        .filter(a -> nonNull(a.recall(room.getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX)))
+        .forEach(a -> {
+          RoomMembershipStateDTO status = a.recall(room.getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX);
+          String mxid = a.recall(MX_ID);
+          if (!requireNonNull(room.getMembers()).stream().map(RoomMemberDTO::getMxid).toList().contains(mxid)) {
+            handleRoomStateInconsistency(format("%s expected to be in room <%s>", a.getName(), room.getName()));
+          }
+          boolean membershipStatusCorrect = room.getMembers()
+              .stream()
+              .filter(m -> requireNonNull(m.getMxid()).equals(mxid))
+              .map(m -> requireNonNull(m.getMembershipState()))
+              .findFirst()
+              .orElseThrow()
+              .equals(status);
+          if (!membershipStatusCorrect) {
+            handleRoomStateInconsistency(format("%s should have membership-status <%s> in room <%s>", a.getName(), status, room.getName()));
+          }
+        });
+  }
+
+  private static void checkIfAllMembersAreCorrect(RoomDTO room) {
+    requireNonNull(room.getMembers()).forEach(m -> {
+      Actor actor = getAllActiveActors().stream()
+          .filter(a -> a.recall(MX_ID).equals(m.getMxid()))
+          .findFirst()
+          .orElseThrow(() -> new AssertionError(format("Mxid %s should not be in room %s", m.getMxid(), room.getName())));
+      RoomMembershipStateDTO status = actor.recall(room.getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX);
+      if (!requireNonNull(m.getMembershipState()).equals(status)) {
+        handleRoomStateInconsistency(format("%s should have membership-status <%s> in room <%s>, but <%s> was found", actor.getName(), status, room.getName(), m.getMembershipState()));
+      }
+    });
+  }
+
+  private static void handleRoomStateInconsistency(String msg) {
+    if (!CHECK_ROOM_STATE_FAIL) {
+      throw new AssertionFailed(msg);
+    }
+    individualLog(msg);
   }
 
   @ParameterType(value = "(?:.*)", preferForRegexMatch = true)

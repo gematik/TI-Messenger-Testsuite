@@ -16,99 +16,67 @@
 
 package de.gematik.tim.test.glue.api.threading;
 
-import static java.util.Objects.isNull;
-import static java.util.concurrent.CompletableFuture.completedFuture;
-import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.concurrent.Executors.newFixedThreadPool;
+import static lombok.AccessLevel.PRIVATE;
 
 import de.gematik.tim.test.glue.api.exceptions.TestRunException;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
+import kong.unirest.UnirestInstance;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import net.serenitybdd.screenplay.Actor;
-import okhttp3.OkHttpClient;
-import org.jetbrains.annotations.NotNull;
+import java.util.concurrent.Future;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ParallelExecutor {
+@NoArgsConstructor(access = PRIVATE)
+public class ParallelExecutor {
 
-  @Setter
-  private static ParallelExecution execution;
   private static final ExecutorService executor = newFixedThreadPool(10);
-  private static final ThreadLocal<OkHttpClient> client =
-      ThreadLocal.withInitial(ThreadClientFactory::getOkHttpClient);
+  private static final ThreadLocal<UnirestInstance> client =
+      ThreadLocal.withInitial(ClientFactory::getClient);
+  private static final ConcurrentHashMap<String, ConcurrentSkipListSet<Long>> devices = new ConcurrentHashMap<>();
+  private static final ConcurrentHashMap<String, Integer> lastResponses = new ConcurrentHashMap<>();
 
-  public static ParallelExecution parallel() {
-    if (isNull(execution)) {
-      setExecution(new ParallelExecution());
+
+  @SuppressWarnings("java:S2142")
+  public static void run(List<Callable<Void>> calls) {
+    try {
+      List<Future<Void>> futures = executor.invokeAll(calls);
+      for (Future<Void> future : futures) {
+        future.get();
+      }
+    } catch (InterruptedException | ExecutionException e) {
+      throw new TestRunException("Claiming parallel failed...", e);
     }
-    return execution;
   }
 
-  public static synchronized boolean isClaimable(Long deviceId) {
-    return execution.isClaimable(deviceId);
-  }
-
-  public static synchronized ThreadLocal<OkHttpClient> parallelClient() {
+  public static ThreadLocal<UnirestInstance> getParallelClient() {
     return client;
   }
 
-  public static void teardown() {
+  public static boolean isClaimable(String api, Long deviceId) {
+    return devices.computeIfAbsent(api, k -> new ConcurrentSkipListSet<>()).add(deviceId);
+  }
+
+  public static void saveLastResponseCode(String actorName, int statusCode) {
+    lastResponses.put(actorName, statusCode);
+  }
+
+  public static Integer getLastResponseCodeForActor(String actorName) {
+    return lastResponses.get(actorName);
+  }
+
+  public static void reset() {
+    devices.clear();
+    lastResponses.clear();
+  }
+
+  public static void removeClientOnParallelExecutor() {
     client.remove();
-    executor.shutdown();
   }
 
-  @NoArgsConstructor(access = AccessLevel.PRIVATE)
-  public static final class ParallelExecution {
 
-    private final Map<Actor, CompletableFuture<ActorsNotes>> threads = new ConcurrentHashMap<>();
-    private final Set<Long> notClaimable = new ConcurrentSkipListSet<>();
-
-    public synchronized boolean isClaimable(Long deviceId) {
-      return notClaimable.add(deviceId);
-    }
-
-    public void task(Actor actor, Parallel<ActorsNotes> task) {
-      CompletableFuture<ActorsNotes> actorThread =
-          threads.getOrDefault(actor, supplyAsync(() -> new ActorsNotes(actor), executor));
-      threads.put(actor, actorThread.thenApplyAsync(task::parallel));
-    }
-
-    public void join() {
-      if (threads.isEmpty()) {
-        return;
-      }
-      threads.entrySet().forEach(this::joinNotesWithActor);
-      setExecution(null);
-    }
-
-    private void joinNotesWithActor(Entry<Actor, CompletableFuture<ActorsNotes>> thread) {
-      thread.getValue()
-          .handle((notes, exception) -> {
-            if (isNull(exception)) {
-              return notes;
-            }
-            throw new TestRunException("parallel claim for actor '%s' failed"
-                .formatted(thread.getKey().getName()), exception.getCause());
-          })
-          .thenAcceptBoth(
-              getActorFrom(thread), (notes, actor) -> {
-                notes.getNotepad().forEach(actor::remember);
-                notes.getAbilities().forEach(actor::can);
-              })
-          .join();
-    }
-
-    @NotNull
-    private static CompletableFuture<Actor> getActorFrom(Entry<Actor, ?> entry) {
-      return completedFuture(entry.getKey());
-    }
-  }
 }

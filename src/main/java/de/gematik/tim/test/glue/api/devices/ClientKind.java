@@ -19,6 +19,6 @@ package de.gematik.tim.test.glue.api.devices;
 public enum ClientKind {
 
   PRACTITIONER,
-  MESSENGER_CLIENT,
+  CLIENT,
   ORG_ADMIN
 }

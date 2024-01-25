@@ -29,17 +29,17 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
 
   Inhalt
   TF 1 & 2 Einladung via Freigabeliste Chat/Raum HBA
-  TF 3     OrgUser lädt HBA via Friagbeliste ein
-  TF 4 - 5 Negativ-Tets für die Freigabeliste
+  TF 3     OrgUser lädt HBA via Freigabeliste ein
+  TF 4 - 5 Negativ-Tests für die Freigabeliste
 
   # TODO Bei mehreren Anbietern MaxSameColumnProperty & Shuffle anschalten
 
   @BP:FL @@Ctl:NOVZD
   @TCID:TIM_11_AF_1101 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 11.01 Einladung via Freigabeliste außerhalb einer Organisation - Raum - Beide User jeweils in Freigabeliste (HBA-User an HBA-User)
-    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
-    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRACTITIONER | <ApiName1> |
+      | B | PRACTITIONER | <ApiName2> |
     Und        "A" hinterlegt "B" in seiner Freigabeliste
     Und        "B" hinterlegt "A" in seiner Freigabeliste
     Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
@@ -71,9 +71,9 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
   @BP:FL @@Ctl:NOVZD
   @TCID:TIM_11_AF_1102 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 11.02 Einladung via Freigabeliste außerhalb einer Oganisation - Chat - Beide User jeweils in Freigabeliste (HBA-User an HBA-User)
-    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
-    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRACTITIONER | <ApiName1> |
+      | B | PRACTITIONER | <ApiName2> |
     Und        "A" hinterlegt "B" in seiner Freigabeliste
     Und        "B" hinterlegt "A" in seiner Freigabeliste
     Wenn       "B" schreibt "A" direkt "Testnachricht 1"
@@ -103,10 +103,10 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
   @BP:FL @Ctl:OrgAdmin @@Ctl:NOVZD
   @TCID:TIM_11_AF_1103 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 11.03 Einladung via Freigabeliste außerhalb einer Oganisation - Chat - Beide User jeweils in Freigabeliste (Organisations-User an HBA-User)
-    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
-    Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN    | <ApiName1A> |
+      | B | CLIENT       | <ApiName1B> |
+      | C | PRACTITIONER | <ApiName2>  |
     Und        "C" hinterlegt "B" in seiner Freigabeliste
     Und        "B" hinterlegt "C" in seiner Freigabeliste
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
@@ -139,9 +139,9 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
   @BP:FL @@Ctl:NOVZD
   @TCID:TIM_11_AF_1104 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 11.04 Einladung via Freigabeliste außerhalb einer Oganisation - Raum - Nur ein User in Freigabeliste (HBA-User an HBA-User)
-    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
-    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRACTITIONER | <ApiName1> |
+      | B | PRACTITIONER | <ApiName2> |
     Und        "B" hinterlegt "A" in seiner Freigabeliste
     Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
     Wenn       "B" versucht "A" in Chat-Raum "TIM Testraum 1" einzuladen
@@ -166,9 +166,9 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
   @BP:FL @@Ctl:NOVZD
   @TCID:TIM_11_AF_1105 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 11.05 Einladung via Freigabeliste außerhalb einer Oganisation - Chat - Nur User in eigener Freigabeliste (HBA-User an HBA-User)
-    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
-    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRACTITIONER | <ApiName1> |
+      | B | PRACTITIONER | <ApiName2> |
     Und        "B" hinterlegt "A" in seiner Freigabeliste
     Wenn       "B" versucht "A" direkt "Testnachricht 1" zu schreiben
     Dann       "B" ist nicht berechtigt "A" zu kontaktieren

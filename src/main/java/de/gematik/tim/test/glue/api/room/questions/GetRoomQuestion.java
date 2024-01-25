@@ -25,16 +25,17 @@ import de.gematik.tim.test.glue.api.room.UseRoomAbility;
 import de.gematik.tim.test.models.RoomDTO;
 import de.gematik.tim.test.models.RoomMemberDTO;
 import de.gematik.tim.test.models.RoomMembershipStateDTO;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 import org.awaitility.core.ConditionTimeoutException;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 @Slf4j
 public class GetRoomQuestion implements Question<RoomDTO> {
@@ -65,10 +66,16 @@ public class GetRoomQuestion implements Question<RoomDTO> {
     return this;
   }
 
-  public GetRoomQuestion withMemberHaveStatus(String mxId, RoomMembershipStateDTO status) {
+  public GetRoomQuestion withMemberHasStatus(String mxId, RoomMembershipStateDTO status) {
     this.filterList.add(r -> requireNonNull(r.getMembers()).stream()
         .anyMatch(m -> requireNonNull(m.getMxid()).equals(mxId)
             && m.getMembershipState() == status));
+    return this;
+  }
+
+  public Question<RoomDTO> notHavingMember(String mxId) {
+    this.filterList.add(r -> requireNonNull(r.getMembers()).stream()
+        .noneMatch(m -> requireNonNull(m.getMxid()).equals(mxId)));
     return this;
   }
 
@@ -98,5 +105,4 @@ public class GetRoomQuestion implements Question<RoomDTO> {
         .filter(filterList.stream().reduce(Predicate::and).orElseThrow())
         .findFirst();
   }
-
 }

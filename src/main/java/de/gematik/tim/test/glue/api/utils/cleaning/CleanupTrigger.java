@@ -16,25 +16,21 @@
 
 package de.gematik.tim.test.glue.api.utils.cleaning;
 
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.prepareApiNameForHttp;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.COMBINE_ITEMS_FILE_NAME;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.COMBINE_ITEMS_FILE_URL;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.apache.logging.log4j.util.Strings.isBlank;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.xstream.InitializationException;
-import de.gematik.tim.test.glue.api.threading.ThreadClientFactory;
+import de.gematik.tim.test.glue.api.threading.ClientFactory;
 import io.cucumber.plugin.event.PickleStepTestStep;
 import io.cucumber.plugin.event.TestStep;
+import kong.unirest.UnirestInstance;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -47,6 +43,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -56,7 +53,7 @@ public class CleanupTrigger {
   public static final String ORG_ADMIN_TAG = "orgAdmin";
   private static final List<CombineItem> items;
   private static final Set<String> values;
-  private static final ThreadLocal<OkHttpClient> client = ThreadLocal.withInitial(ThreadClientFactory::getOkHttpClient);
+  private static final ThreadLocal<UnirestInstance> client = ThreadLocal.withInitial(ClientFactory::getClient);
   private static final ExecutorService exService = Executors.newFixedThreadPool(5);
 
   static {
@@ -81,43 +78,40 @@ public class CleanupTrigger {
   public static void sendCleanupRequest(List<TestStep> testSteps) {
     Set<String> urlsToTrigger = getOrgAdminApisForApisUsedInTestSteps(testSteps);
     List<Callable<Integer>> calls = createCalls(urlsToTrigger);
-    exService.invokeAll(calls);
+    for (Future<Integer> future : exService.invokeAll(calls)) {
+      future.get();
+    }
   }
 
-  public static void endTestCase() {
+  public static void removeClientOnCleanupTrigger() {
     client.remove();
   }
 
   private static List<Callable<Integer>> createCalls(Set<String> urlToTrigger) {
-    return urlToTrigger.stream().map(url -> (Callable<Integer>) () -> {
-      Request request = new Request.Builder().post(RequestBody.create("", MediaType.get("application/json"))).url(url).build();
-      try (Response res = client.get().newCall(request).execute()) {
-        return res.code();
-      }
-    }).toList();
+    return urlToTrigger.stream().map(url -> (Callable<Integer>) () -> client.get().post(url).asEmpty().getStatus()).toList();
   }
 
 
   @SneakyThrows
   private static Set<String> getOrgAdminApisForApisUsedInTestSteps(List<TestStep> testSteps) {
     List<String> stepLines = testSteps.stream()
-            .filter(PickleStepTestStep.class::isInstance)
-            .map(t -> (PickleStepTestStep) t)
-            .map(t -> t.getStep().getText()).toList();
+        .filter(PickleStepTestStep.class::isInstance)
+        .map(t -> (PickleStepTestStep) t)
+        .map(t -> t.getStep().getText()).toList();
     Set<String> inTestCalledUrls = values.stream().filter(v -> stepLines.stream().anyMatch(s -> s.contains(v))).collect(Collectors.toSet());
     return inTestCalledUrls.stream()
-            .map(CleanupTrigger::toItem)
-            .map(i -> i.getProperties().get(HOME_SERVER_PROPERTY))
-            .map(CleanupTrigger::getOrgAdminForHomeServer)
-            .collect(Collectors.toSet());
+        .map(CleanupTrigger::toItem)
+        .map(i -> i.getProperties().get(HOME_SERVER_PROPERTY))
+        .map(CleanupTrigger::getOrgAdminForHomeServer)
+        .collect(Collectors.toSet());
   }
 
   private static String getOrgAdminForHomeServer(String s) {
     CombineItem orgadmin = items.stream()
-            .filter(i -> i.getProperties().get(HOME_SERVER_PROPERTY).equals(s) && i.getTags().contains(ORG_ADMIN_TAG))
-            .findFirst()
-            .orElseThrow(() -> new InitializationException("Did not found any Orgadmin for " + s));
-    return isBlank(orgadmin.getUrl()) ? orgadmin.getValue() : orgadmin.getUrl();
+        .filter(i -> i.getProperties().get(HOME_SERVER_PROPERTY).equals(s) && i.getTags().contains(ORG_ADMIN_TAG))
+        .findFirst()
+        .orElseThrow(() -> new InitializationException("Did not found any Orgadmin for " + s));
+    return prepareApiNameForHttp(orgadmin.getValue());
   }
 
   private static CombineItem toItem(String s) {

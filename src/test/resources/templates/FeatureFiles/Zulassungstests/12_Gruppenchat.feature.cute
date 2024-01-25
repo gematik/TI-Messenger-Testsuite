@@ -15,10 +15,10 @@ Funktionalität:  12. Gruppenchat
   @BP:P2P @Ctl:OneHomeServer @Ctl:MsgForward
   @TCID:TIM_11_AF_1201 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 12.01 Events innerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht (HBA-User)
-    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
-    Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1C>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRACTITIONER | <ApiName1A> |
+      | B | PRACTITIONER | <ApiName1B> |
+      | C | PRACTITIONER | <ApiName1C> |
     Und        "A", "B", "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B", "C" in FHIR
@@ -45,10 +45,10 @@ Funktionalität:  12. Gruppenchat
   @BP:P2P @Ctl:OneHomeServer @Ctl:MsgBackward
   @TCID:TIM_11_AF_1202 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 12.02 Events innerhalb einer Organisation - Gruppenchat - Test-Client "C" sendet eine Nachricht (HBA-User)
-    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
-    Und        "C" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1C>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRACTITIONER | <ApiName1A> |
+      | B | PRACTITIONER | <ApiName1B> |
+      | C | PRACTITIONER | <ApiName1C> |
     Und        "A", "B", "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B", "C" in FHIR
@@ -75,11 +75,11 @@ Funktionalität:  12. Gruppenchat
   @BP:O2O @Ctl:OneHomeServer @Ctl:OrgAdmin @Ctl:MsgForward
   @TCID:TIM_11_AF_1203 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 12.03 Events innerhalb einer Organisation - Gruppenchat - Test-Client "B" sendet eine Nachricht (Organisations-User)
-    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
-    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
-    Und        "D" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1D>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN | <ApiName1A> |
+      | B | CLIENT    | <ApiName1B> |
+      | C | CLIENT    | <ApiName1C> |
+      | D | CLIENT    | <ApiName1D> |
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName3" und setzen einen Endpunkt auf "D"
@@ -106,11 +106,11 @@ Funktionalität:  12. Gruppenchat
   @BP:P2O @Ctl:OneHomeServer @Ctl:OrgAdmin @Ctl:MsgBackward
   @TCID:TIM_11_AF_1204 @PRIO:3 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 12.04 Events innerhalb einer Organisation - Gruppenchat - Test-Client "B" sendet eine Nachricht (HBA-User lädt Organisations-User ein)
-    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
-    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
-    Und        "D" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1D>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN    | <ApiName1A> |
+      | B | PRACTITIONER | <ApiName1B> |
+      | C | CLIENT       | <ApiName1C> |
+      | D | CLIENT       | <ApiName1D> |
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "D"
     Und        "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
@@ -139,12 +139,12 @@ Funktionalität:  12. Gruppenchat
   @BP:O2O @Ctl:MsgBackward @Ctl:OrgAdmin
   @TCID:TIM_11_AF_1205 @PRIO:2 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 12.05 Events innerhalb/außerhalb einer Organisation - Gruppenchat - Test-Client "C" sendet eine Nachricht (Organisations-User)
-    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
-    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
-    Und        "D" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName2A>
-    Und        "E" reserviert sich einen Messenger-Client an Schnittstelle <ApiName2B>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN | <ApiName1A> |
+      | B | CLIENT    | <ApiName1B> |
+      | C | CLIENT    | <ApiName1C> |
+      | D | ORG_ADMIN | <ApiName2A> |
+      | E | CLIENT    | <ApiName2B> |
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
     Und        "D" erstellt einen Healthcare-Service "HealthcareServiceName3" und setzen einen Endpunkt auf "E"
@@ -175,11 +175,11 @@ Funktionalität:  12. Gruppenchat
   @BP:P2O @Ctl:OrgAdmin @Ctl:MsgForward
   @TCID:TIM_11_AF_1206 @PRIO:2 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 12.06 Events innerhalb/außerhalb einer Organisation - Gruppenchat - Test-Client "D" sendet eine Nachricht (HBA-User lädt HBA- und Organisations-User ein)
-    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1B>
-    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1C>
-    Und        "D" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN    | <ApiName1A> |
+      | B | PRACTITIONER | <ApiName1B> |
+      | C | CLIENT       | <ApiName1C> |
+      | D | PRACTITIONER | <ApiName2>  |
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
     Und        "B","D" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "D" erstellt einen Chat-Raum "TIM Testraum 1"

@@ -24,15 +24,16 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_DEVICES;
 import static de.gematik.tim.test.glue.api.devices.CheckClientKindTask.checkIs;
 import static de.gematik.tim.test.glue.api.devices.ClaimDeviceTask.claimDevice;
-import static de.gematik.tim.test.glue.api.devices.ClientKind.MESSENGER_CLIENT;
+import static de.gematik.tim.test.glue.api.devices.ClientKind.CLIENT;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.PRACTITIONER;
 import static de.gematik.tim.test.glue.api.login.LogInGlue.loginSuccess;
 import static de.gematik.tim.test.glue.api.login.LogInGlue.logsIn;
 import static de.gematik.tim.test.glue.api.login.LoginTask.login;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
-import static de.gematik.tim.test.glue.api.threading.ParallelExecutor.parallel;
-import static de.gematik.tim.test.glue.api.utils.IndividualLogger.individualLog;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.prepareApiNameForHttp;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.registerActor;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.setParallelFlag;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.startTest;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.CLAIM_PARALLEL;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.NO_PARALLEL_TAG;
@@ -46,7 +47,9 @@ import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeT
 import static org.hamcrest.Matchers.hasItem;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
+import de.gematik.tim.test.glue.api.threading.ParallelExecutor;
 import de.gematik.tim.test.glue.api.utils.IndividualLogger;
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.BeforeAll;
@@ -55,11 +58,8 @@ import io.cucumber.java.de.Angenommen;
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Und;
 import io.cucumber.java.de.Wenn;
-import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import java.util.List;
-
 import io.cucumber.junit.CucumberOptions;
 import lombok.Getter;
 import lombok.Setter;
@@ -67,6 +67,10 @@ import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.actors.Cast;
 import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 @Slf4j
 @CucumberOptions(plugin = {"de.gematik.tim.test.glue.api.utils.cleaning.CucumberListener"})
@@ -82,11 +86,9 @@ public class DevicesControllerGlue {
     RawDataStatistics.startTest();
     IndividualLogger.startTest();
     setAllowParallelClaim(!scenario.getSourceTagNames().contains(NO_PARALLEL_TAG));
-  }
-
-  @BeforeAll
-  public static void setupStageForAll() {
-    setTheStage(Cast.ofStandardActors());
+    if (TRUE.equals(CLAIM_PARALLEL) && allowParallelClaim) {
+      setParallelFlag(true);
+    }
   }
 
   @After
@@ -94,6 +96,9 @@ public class DevicesControllerGlue {
     stage().drawTheCurtain();
     RawDataStatistics.addToReport();
     IndividualLogger.addToReport();
+    if (TRUE.equals(CLAIM_PARALLEL)) {
+      ParallelExecutor.reset();
+    }
     setAllowParallelClaim(true);
   }
 
@@ -106,44 +111,42 @@ public class DevicesControllerGlue {
   }
 
   // Claim Device
-  @Given("{string} claims a HBA user client at interface {word}")
-  @Angenommen("{string} reserviert sich einen Practitioner-Client an Schnittstelle {word}")
-  public void reserveClientOnApiAndCreateAccount(String actorName, String apiName) {
-    Actor actor = reserveClientOnApi(actorName, apiName);
+  @Angenommen("Es werden folgende Clients reserviert:")
+  public void followingClientsWillBeClaimed(DataTable data) {
+    List<ClaimInfo> claimInfos = data.asLists().stream().map(this::toClaimInfo).toList();
     if (TRUE.equals(CLAIM_PARALLEL) && allowParallelClaim) {
-      parallel().task(actor, checkIs(List.of(MESSENGER_CLIENT, PRACTITIONER)));
+      handleParallel(claimInfos);
+      setParallelFlag(false);
     } else {
-      actor.attemptsTo(checkIs(List.of(MESSENGER_CLIENT, PRACTITIONER)));
+      claimInfos.forEach(this::claimSpecificDevice);
     }
-    logsIn(actor);
-    loginSuccess(actorName);
   }
 
-  @Given("{string} reserves org admin client on api {word}")
-  @Angenommen("{string} reserviert sich einen Org-Admin-Client an Schnittstelle {word}")
-  public void reserveOrgAdminClientOnApi(String actorName, String apiName) {
-    Actor actor = reserveClientOnApi(actorName, apiName);
-    if (TRUE.equals(CLAIM_PARALLEL) && allowParallelClaim) {
-      parallel().task(actor, checkIs(List.of(ORG_ADMIN)));
-    } else {
-      actor.attemptsTo(checkIs(List.of(ORG_ADMIN)));
-    }
-    actor.remember(IS_ORG_ADMIN, true);
-    logsIn(actor);
-    loginSuccess(actorName);
+  private void handleParallel(List<ClaimInfo> claimInfos) {
+    List<Callable<Void>> calls = claimInfos.stream().map(claimInfo -> (Callable<Void>) () -> {
+      claimSpecificDevice(claimInfo);
+      return null;
+    }).toList();
+    ParallelExecutor.run(calls);
   }
 
-  @Given("{string} reserves org user client on api {word}")
-  @Angenommen("{string} reserviert sich einen Messenger-Client an Schnittstelle {word}")
-  public void reserveOrgUserClientOnApi(String actorName, String apiName) {
-    Actor actor = reserveClientOnApi(actorName, apiName);
-    if (TRUE.equals(CLAIM_PARALLEL) && allowParallelClaim) {
-      parallel().task(actor, checkIs(List.of(MESSENGER_CLIENT)));
-    } else {
-      actor.attemptsTo(checkIs(List.of(MESSENGER_CLIENT)));
+  private void claimSpecificDevice(ClaimInfo claimInfo) {
+    switch (claimInfo.kind) {
+      case PRACTITIONER -> reserveClient(claimInfo.actor, claimInfo.api, CLIENT, PRACTITIONER);
+      case ORG_ADMIN -> reserveClient(claimInfo.actor, claimInfo.api, ORG_ADMIN);
+      case CLIENT -> reserveClient(claimInfo.actor, claimInfo.api, CLIENT);
+    }
+  }
+
+  private void reserveClient(Actor actor, String apiName, ClientKind... neededKinds) {
+    reserveClientOnApi(actor, apiName);
+
+    checkIs(List.of(neededKinds)).withActor(actor).run();
+    if (Arrays.asList(neededKinds).contains(ORG_ADMIN)) {
+      actor.remember(IS_ORG_ADMIN, true);
     }
     logsIn(actor);
-    loginSuccess(actorName);
+    loginSuccess(actor);
   }
 
   @Und("{string} meldet sich mit den Daten von {string} an der Schnittstelle {word} an")
@@ -160,25 +163,16 @@ public class DevicesControllerGlue {
     actor.asksFor(ownRooms());
   }
 
-  @Given("{string} claims client on api {word}")
-  @Angenommen("{string} reserviert sich einen Test-Client an der Schnittstelle {word}")
-  public Actor reserveClientOnApi(String actorName, String apiName) {
-    String apiUrl = prepareApiName(apiName);
-    Actor actor = theActorCalled(actorName);
-    actor.whoCan(CallAnApi.at(apiUrl)).entersTheScene();
-    if (TRUE.equals(CLAIM_PARALLEL) && allowParallelClaim) {
-      parallel().task(actor, claimDevice());
-    } else {
-      actor.attemptsTo(claimDevice());
-    }
-    return actor;
+  private Actor reserveClientOnApi(String actorName, String apiName) {
+    return reserveClientOnApi(theActorCalled(actorName), apiName);
   }
 
-  @Und("alle Devices wurden erfolgreich reserviert")
-  public void allActorHaveADevice() {
-    if (TRUE.equals(CLAIM_PARALLEL) && allowParallelClaim) {
-      parallel().join();
-    }
+  public Actor reserveClientOnApi(Actor actor, String apiName) {
+    String apiUrl = prepareApiNameForHttp(apiName);
+    actor.whoCan(CallAnApi.at(apiUrl)).entersTheScene();
+    registerActor(actor);
+    claimDevice().withActor(actor).run();
+    return actor;
   }
 
   @When("get all devices")
@@ -198,11 +192,10 @@ public class DevicesControllerGlue {
     ));
   }
 
-  // Utils
-  private String prepareApiName(String apiName) {
-    if (!apiName.startsWith("http")) {
-      apiName = "http://" + apiName;
-    }
-    return apiName;
+  private ClaimInfo toClaimInfo(List<String> data) {
+    return new ClaimInfo(theActorCalled(data.get(0)), ClientKind.valueOf(data.get(1)), data.get(2));
+  }
+
+  private record ClaimInfo(Actor actor, ClientKind kind, String api) {
   }
 }

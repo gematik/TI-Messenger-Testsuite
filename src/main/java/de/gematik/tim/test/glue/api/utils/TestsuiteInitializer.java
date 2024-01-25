@@ -71,28 +71,29 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = PRIVATE)
 public class TestsuiteInitializer {
 
-  public static final Integer MAX_RETRY_CLAIM_REQUEST;
-  public static final Boolean SAVE_CONNECTIONS;
-  public static final Boolean CLEAR_ROOMS;
-  public static final Integer CLAIM_DURATION;
-  public static final Boolean CLAIM_PARALLEL;
-  public static final String CERT_CN;
-  public static final String COMBINE_ITEMS_FILE_NAME;
-  public static final String COMBINE_ITEMS_FILE_URL;
-  public static final String FEATURE_PATH = "./target/features";
-  public static final String INDIVIDUAL_LOG_PATH = "./target/individual-log.json";
+  public static final String FEATURE_PATH_PROPERTY_NAME = "feature_dir";
   public static final String CLEAR_ROOMS_PROPERTY_NAME = "clearRooms";
-  public static final String FEATURE_ENDING = "feature";
-  public static final boolean RUN_WITHOUT_RETRY;
   public static final String MVN_PROPERTIES_LOCATION = "./target/classes/mvn.properties";
   public static final String CLAIM_PARALLEL_PROPERTY_NAME = "claimParallel";
   public static final String POLL_INTERVAL_PROPERTY_NAME = "pollInterval";
   public static final String TIMEOUT_PROPERTY_NAME = "timeout";
   public static final String HTTP_TIMEOUT_PROPERTY_NAME = "httpTimeout";
   public static final String RUN_WITHOUT_RETRY_PROPERTY_NAME = "runWithoutRetry";
-  public static final String SAVE_CONNECTIONS_PROPERTY_NAME = "saveConnections";
   public static final String CLAIM_DURATION_PROPERTY_NAME = "claimDuration";
   public static final String COMBINE_ITEMS_FILE_PROPERTY_NAME = "combine.items.file";
+  public static final String CHECK_ROOM_STATE_FAIL_PROPERTY_NAME = "skipRoomStateCheck";
+  public static final Integer MAX_RETRY_CLAIM_REQUEST;
+  public static final Boolean CLEAR_ROOMS;
+  public static final Integer CLAIM_DURATION;
+  public static final Boolean CLAIM_PARALLEL;
+  public static final boolean RUN_WITHOUT_RETRY;
+  public static final boolean CHECK_ROOM_STATE_FAIL;
+  public static final String CERT_CN;
+  public static final String COMBINE_ITEMS_FILE_NAME;
+  public static final String COMBINE_ITEMS_FILE_URL;
+  public static final String FEATURE_PATH;
+  public static final String INDIVIDUAL_LOG_PATH = "./target/individual-log.json";
+  public static final String FEATURE_ENDING = "feature";
   public static final String KEY_STORE_ENV_VAR = "TIM_KEYSTORE";
   public static final String KEY_STORE_PW_ENV_VAR = "TIM_KEYSTORE_PW";
   public static final String TRUST_STORE_ENV_VAR = "TIM_TRUSTSTORE";
@@ -119,15 +120,16 @@ public class TestsuiteInitializer {
     String timeoutString = p.getProperty(TIMEOUT_PROPERTY_NAME);
     String pollIntervalString = p.getProperty(POLL_INTERVAL_PROPERTY_NAME);
     RUN_WITHOUT_RETRY = Boolean.parseBoolean(p.getProperty(RUN_WITHOUT_RETRY_PROPERTY_NAME));
-    SAVE_CONNECTIONS = Boolean.parseBoolean(p.getProperty(SAVE_CONNECTIONS_PROPERTY_NAME));
     CLAIM_DURATION = Integer.parseInt(isBlank(p.getProperty(CLAIM_DURATION_PROPERTY_NAME)) ? "180" : p.getProperty(CLAIM_DURATION_PROPERTY_NAME));
     HTTP_TIMEOUT = Integer.parseInt(isBlank(p.getProperty(HTTP_TIMEOUT_PROPERTY_NAME)) ? "180" : p.getProperty(HTTP_TIMEOUT_PROPERTY_NAME));
     MAX_RETRY_CLAIM_REQUEST = Integer.parseInt(isBlank(p.getProperty(MAX_RETRY_CLAIM_REQUEST_NAME)) ? "3" : p.getProperty(MAX_RETRY_CLAIM_REQUEST_NAME));
+    CHECK_ROOM_STATE_FAIL = Boolean.parseBoolean(p.getProperty(CHECK_ROOM_STATE_FAIL_PROPERTY_NAME));
     CERT_CN = parseCn();
     CLEAR_ROOMS = Boolean.parseBoolean(p.getProperty(CLEAR_ROOMS_PROPERTY_NAME));
     CLAIM_PARALLEL = Boolean.parseBoolean(p.getProperty(CLAIM_PARALLEL_PROPERTY_NAME));
     COMBINE_ITEMS_FILE_URL = p.getProperty(COMBINE_ITEMS_FILE_PROPERTY_NAME);
     COMBINE_ITEMS_FILE_NAME = new File(COMBINE_ITEMS_FILE_URL).getName();
+    FEATURE_PATH = p.getProperty(FEATURE_PATH_PROPERTY_NAME);
     try {
       timeout = Long.parseLong(timeoutString);
       pollInterval = Long.parseLong(pollIntervalString);
@@ -135,8 +137,8 @@ public class TestsuiteInitializer {
       timeout = TIMEOUT_DEFAULT;
       pollInterval = POLL_INTERVAL_DEFAULT;
       log.info(format(
-              "Could not parse timeout (%s) or pollInterval (%s). Will use default -> timeout: %s, pollInterval: %s",
-              timeoutString, pollIntervalString, timeout, pollInterval));
+          "Could not parse timeout (%s) or pollInterval (%s). Will use default -> timeout: %s, pollInterval: %s",
+          timeoutString, pollIntervalString, timeout, pollInterval));
     }
     mapper = createMapper();
     ObjectMapperConfig config = RestAssured.config().getObjectMapperConfig();
@@ -146,16 +148,25 @@ public class TestsuiteInitializer {
     configRestAssured();
   }
 
+  @SneakyThrows
+  public static void addHostsToTigerProxy() {
+    Set<String> hosts = getHttpsApisFromFeatureFiles();
+    log.info("{} apis going to be added to alternative name of tiger proxy\n\t{}", hosts.size(),
+        String.join("\n\t", hosts));
+    TigerProxy proxy = TigerDirector.getTigerTestEnvMgr().getLocalTigerProxyOrFail();
+    hosts.forEach(proxy::addAlternativeName);
+  }
+
   private static void configRestAssured() {
 
     HttpClientConfig httpClientFactory = HttpClientConfig
-            .httpClientConfig()
-            .setParam("http.socket.timeout", HTTP_TIMEOUT * 1000)
-            .setParam("http.connection.timout", HTTP_TIMEOUT * 1000);
+        .httpClientConfig()
+        .setParam("http.socket.timeout", HTTP_TIMEOUT * 1000)
+        .setParam("http.connection.timout", HTTP_TIMEOUT * 1000);
 
     RestAssured.config = RestAssured
-            .config()
-            .httpClient(httpClientFactory);
+        .config()
+        .httpClient(httpClientFactory);
   }
 
   static Jackson2Mapper getMapper() {
@@ -183,39 +194,30 @@ public class TestsuiteInitializer {
     return files;
   }
 
-  @SneakyThrows
-  public static void addHostsToTigerProxy() {
-    Set<String> hosts = getHttpsApisFromFeatureFiles();
-    log.info("{} apis going to be added to alternative name of tiger proxy\n\t{}", hosts.size(),
-            String.join("\n\t", hosts));
-    TigerProxy proxy = TigerDirector.getTigerTestEnvMgr().getLocalTigerProxyOrFail();
-    hosts.forEach(proxy::addAlternativeName);
-  }
-
   private static Set<String> getHttpsApisFromFeatureFiles() {
     List<File> featureFiles = getFeatureFiles(new File(FEATURE_PATH));
     List<GherkinDocument> features = featureFiles.stream()
-            .map(TestsuiteInitializer::transformToGherkin).toList();
+        .map(TestsuiteInitializer::transformToGherkin).toList();
     return features.stream()
-            .map(GherkinDocument::getFeature)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .map(Feature::getChildren)
-            .flatMap(Collection::stream)
-            .map(FeatureChild::getScenario)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .map(Scenario::getExamples)
-            .flatMap(Collection::stream)
-            .map(Examples::getTableBody)
-            .flatMap(Collection::stream)
-            .map(TableRow::getCells)
-            .flatMap(Collection::stream)
-            .map(TableCell::getValue)
-            .filter(e -> e.startsWith("https://"))
-            .map(e -> URI.create(e).getHost())
-            .filter(Objects::nonNull)
-            .collect(Collectors.toSet());
+        .map(GherkinDocument::getFeature)
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .map(Feature::getChildren)
+        .flatMap(Collection::stream)
+        .map(FeatureChild::getScenario)
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .map(Scenario::getExamples)
+        .flatMap(Collection::stream)
+        .map(Examples::getTableBody)
+        .flatMap(Collection::stream)
+        .map(TableRow::getCells)
+        .flatMap(Collection::stream)
+        .map(TableCell::getValue)
+        .filter(e -> e.startsWith("https://"))
+        .map(e -> URI.create(e).getHost())
+        .filter(Objects::nonNull)
+        .collect(Collectors.toSet());
   }
 
   private static String parseCn() {
@@ -223,7 +225,7 @@ public class TestsuiteInitializer {
       KeyStore store = KeyStore.getInstance("PKCS12");
       store.load(stream, System.getenv(KEY_STORE_PW_ENV_VAR).toCharArray());
       X509Certificate cert = parse(
-              store.getCertificate(store.aliases().nextElement()).getEncoded());
+          store.getCertificate(store.aliases().nextElement()).getEncoded());
       RDN cn = new JcaX509CertificateHolder(cert).getSubject().getRDNs(BCStyle.CN)[0];
       return cn.getFirst().getValue().toString();
     } catch (Exception ex) {
@@ -234,20 +236,20 @@ public class TestsuiteInitializer {
 
   private static GherkinDocument parseGherkinString(String gherkin) {
     final GherkinParser parser = GherkinParser.builder()
-            .includeSource(false)
-            .includePickles(false)
-            .includeGherkinDocument(true)
-            .build();
+        .includeSource(false)
+        .includePickles(false)
+        .includeGherkinDocument(true)
+        .build();
 
     final Source source = new Source("not needed", gherkin, TEXT_X_CUCUMBER_GHERKIN_PLAIN);
     final Envelope envelope = Envelope.of(source);
 
     return parser.parse(envelope)
-            .map(Envelope::getGherkinDocument)
-            .flatMap(Optional::stream)
-            .findAny()
-            .orElseThrow(
-                    () -> new IllegalArgumentException("Could not parse invalid gherkin."));
+        .map(Envelope::getGherkinDocument)
+        .flatMap(Optional::stream)
+        .findAny()
+        .orElseThrow(
+            () -> new IllegalArgumentException("Could not parse invalid gherkin."));
   }
 
   @SneakyThrows

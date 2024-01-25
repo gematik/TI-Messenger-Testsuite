@@ -6,7 +6,7 @@
 
   <groupId>de.gematik.tim.test</groupId>
   <artifactId>TI-Messenger-Testsuite</artifactId>
-  <version>0.9.7</version>
+  <version>0.9.8</version>
   <packaging>jar</packaging>
   <name>TI-Messenger-Testsuite</name>
   <description>Testsuite to check functionality of TI-Messenger-Clients</description>
@@ -18,7 +18,7 @@
     <java.version>17</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jacoco.version>0.8.8</jacoco.version>
-    <cucumber-test-combinations-maven-plugin.version>2.9.18</cucumber-test-combinations-maven-plugin.version>
+    <cucumber-test-combinations-maven-plugin.version>2.9.19</cucumber-test-combinations-maven-plugin.version>
     <version.tiger>2.3.1</version.tiger>
     <version.serenity.core>4.0.12</version.serenity.core>
     <polarion.toolbox.version>2.0.0-133</polarion.toolbox.version>
@@ -62,6 +62,8 @@
     <clearRooms/>
     <cucumber.filter.version/>
     <cutest.count.format/>
+    <ti.m.mtls.certs.version>1.0.0</ti.m.mtls.certs.version>
+    <skipRoomStateCheck/>
   </properties>
   <distributionManagement>
     <repository>
@@ -167,11 +169,6 @@
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.squareup.okhttp3</groupId>
-      <artifactId>okhttp</artifactId>
-      <version>5.0.0-alpha.11</version>
-    </dependency>
   </dependencies>
 
   <build>
@@ -269,6 +266,7 @@
           <proxyHost>${tim.fproxy.host}</proxyHost>
           <proxyPort>${tim.fproxy.port}</proxyPort>
           <!--          Prepare item config-->
+          <envVarFormat>html</envVarFormat>
           <poolGroupString>${pool.group.string}</poolGroupString>
           <tagExpressions>
             <tagExpression>
@@ -494,7 +492,7 @@
         <version>1.0</version>
         <executions>
           <execution>
-            <id>rename-indes-file</id>
+            <id>rename-index-file</id>
             <phase>post-integration-test</phase>
             <goals>
               <goal>copy</goal>
@@ -518,8 +516,9 @@
         </executions>
       </plugin>
       <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>3.0.2</version>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.3.1</version>
         <configuration>
           <skip>${skip.saving.reports}</skip>
         </configuration>
@@ -690,7 +689,7 @@
                 <artifactItem>
                   <groupId>de.gematik.tim.test</groupId>
                   <artifactId>TI-Messenger-TestdriverSim</artifactId>
-                  <version>4.3.0</version>
+                  <version>4.3.1</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}</outputDirectory>
@@ -704,13 +703,53 @@
     </profile>
     <profile>
       <id>prod</id>
+      <build>
+        <plugins>
+          <!--Extract mtls-certs resources-->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>3.3.0</version>
+            <executions>
+              <execution>
+                <id>get-resources-for-prod</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                <artifactItems>
+                  <artifactItem>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>TI-Messenger-mTLS-Certs</artifactId>
+                    <version>${ti.m.mtls.certs.version}</version>
+                    <type>jar</type>
+                    <overWrite>true</overWrite>
+                    <outputDirectory>${project.build.directory}/profile-resources/certs</outputDirectory>
+                    <includes>**/*.yml,**/*.json,gemRoot/cert/gem/*.p12</includes>
+                    <excludes>META-INF/**</excludes>
+                  </artifactItem>
+                </artifactItems>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
       <properties>
-        <combine.items.file>${project.basedir}/src/test/resources/combine_items_prod.json
+        <combine.items.file>${project.build.directory}/profile-resources/certs/combine_items_prod.json
         </combine.items.file>
-        <tiger.config.file>tiger-prod.yml</tiger.config.file>
-        <tim.truststore>${project.basedir}/src/main/resources/certs/gemRoot/cert/gem/gemTruststore.p12</tim.truststore>
+
+        <!--tester node user need tiger-prod-proxy.yml with proxy configuration/ dev client user need tiger-prod.yml
+        this will soon be fixed in tiger,hence we don't need this switch for long-->
+
+        <!--<tiger.config.file>${project.build.directory}/profile-resources/certs/tiger-prod-proxy.yml</tiger.config.file>-->
+        <tiger.config.file>${project.build.directory}/profile-resources/certs/tiger-prod.yml</tiger.config.file>
+
+        <tim.truststore>${project.build.directory}/profile-resources/certs/gemRoot/cert/gem/gemTruststore.p12</tim.truststore>
         <tim.truststore.pw>changeit</tim.truststore.pw>
-        <tim.keystore>${project.basedir}/src/main/resources/certs/gemRoot/cert/gem/gemKeystore.p12</tim.keystore>
+        <tim.keystore>${project.build.directory}/profile-resources/certs/gemRoot/cert/gem/gemKeystore.p12</tim.keystore>
         <tim.keystore.pw>changeit</tim.keystore.pw>
         <timeout>240</timeout>
         <pollInterval>5</pollInterval>
@@ -718,6 +757,13 @@
         <soft-filter.to.hard>true</soft-filter.to.hard>
         <cutest.count.format>txt,json</cutest.count.format>
       </properties>
+      <dependencies>
+        <dependency>
+          <groupId>de.gematik.tim.test</groupId>
+          <artifactId>TI-Messenger-mTLS-Certs</artifactId>
+          <version>${ti.m.mtls.certs.version}</version>
+        </dependency>
+      </dependencies>
     </profile>
     <profile>
       <id>disable-prepare-items</id>

@@ -18,22 +18,17 @@ package de.gematik.tim.test.glue.api.info;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_INFO;
 import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.TEST_CASE_ID_HEADER;
-import static de.gematik.tim.test.glue.api.threading.ParallelExecutor.parallelClient;
+import static de.gematik.tim.test.glue.api.threading.ClientFactory.getClient;
+import static de.gematik.tim.test.glue.api.utils.ParallelUtils.fromJson;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTestcaseId;
 
-import de.gematik.tim.test.glue.api.threading.Parallel;
-import de.gematik.tim.test.glue.api.threading.ActorsNotes;
-import de.gematik.tim.test.glue.api.utils.ParallelUtils;
-import de.gematik.tim.test.glue.api.exceptions.TestRunException;
+import de.gematik.tim.test.glue.api.threading.ParallelQuestionRunner;
 import de.gematik.tim.test.models.InfoObjectDTO;
-import java.io.IOException;
+import kong.unirest.UnirestInstance;
 import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.Question;
-import okhttp3.Call;
-import okhttp3.Response;
 
-public class ApiInfoQuestion implements Question<InfoObjectDTO>, Parallel<InfoObjectDTO> {
+public class ApiInfoQuestion extends ParallelQuestionRunner<InfoObjectDTO> {
 
   public static ApiInfoQuestion apiInfo() {
     return new ApiInfoQuestion();
@@ -47,12 +42,8 @@ public class ApiInfoQuestion implements Question<InfoObjectDTO>, Parallel<InfoOb
   }
 
   @Override
-  public InfoObjectDTO parallel(ActorsNotes notes) {
-    Call call = parallelClient().get().newCall(GET_INFO.parallelRequest(notes).build());
-    try (Response response = call.execute()) {
-      return ParallelUtils.fromJson(response.body().string(), InfoObjectDTO.class);
-    } catch (IOException e) {
-      throw new TestRunException(e);
-    }
+  public InfoObjectDTO searchParallel() {
+    UnirestInstance client = getClient();
+    return fromJson(client.get(GET_INFO.getResolvedPath(actor)).asString().getBody(), InfoObjectDTO.class);
   }
 }

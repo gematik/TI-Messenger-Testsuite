@@ -22,6 +22,7 @@ import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.U
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueHsName;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.readJsonFile;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.CREATED;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
@@ -69,6 +70,7 @@ public class CreateHealthcareServiceTask implements Task {
     Response response = lastResponse();
     if (response.statusCode() == CREATED.value()) {
       FhirHealthcareServiceDTO hsDTO = response.body().as(FhirHealthcareServiceDTO.class);
+      assertThat(hsDTO.getId()).isNotBlank();
       addHsToActor(hsName, new HealthcareServiceInfo(hsDTO.getName(), hsDTO.getId()), actor);
     }
   }

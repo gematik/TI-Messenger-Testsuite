@@ -83,7 +83,6 @@ public class FhirOrgAdminGlue {
     FhirSearchResultDTO result = actor.asksFor(
         organizationEndpoints().withHsName(hsName).havingMxIdInEndpoint(mxId));
     List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
-//    assertMxIdInEndpoint(endpoints, mxId);
     assertCorrectEndpointNameAndMxid(endpoints, theActorCalled(userName));
   }
 

@@ -17,13 +17,18 @@
 package de.gematik.tim.test.glue.api.message;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DIRECT_CHAT_NAME;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DISPLAY_NAME;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEND_DIRECT_MESSAGE;
 import static de.gematik.tim.test.glue.api.room.UseRoomAbility.addRoomToActor;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomQuestion.ownRoom;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueMessageText;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.isSameHomeserver;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addMessage;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addRoom;
+import static de.gematik.tim.test.models.RoomMembershipStateDTO.INVITE;
+import static de.gematik.tim.test.models.RoomMembershipStateDTO.JOIN;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -95,11 +100,14 @@ public class SendDirectMessageTask implements Task {
   private void handleNewRoom(Actor actor, String actorMxId, String toMxId) {
     RoomDTO room = actor.asksFor(
         ownRoom().withMembers(List.of(actorMxId, toMxId)));
+    actor.remember(room.getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX, JOIN);
+    toActor.remember(room.getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX, INVITE);
     String roomNameActor = DIRECT_CHAT_NAME + toMxId;
     String roomNameToActor = DIRECT_CHAT_NAME + actorMxId;
     actor.remember(roomNameActor, room.getName());
     toActor.remember(roomNameToActor, room.getName());
     addRoomToActor(roomNameActor, room, actor);
     addRoomToActor(roomNameToActor, room, toActor);
+    addRoom(actor.recall(DISPLAY_NAME) + " - " + toActor.recall(DISPLAY_NAME), room);
   }
 }

@@ -16,13 +16,14 @@
 
 package de.gematik.tim.test.glue.api.utils.cleaning;
 
+import static de.gematik.tim.test.glue.api.threading.ParallelExecutor.removeClientOnParallelExecutor;
+import static de.gematik.tim.test.glue.api.utils.cleaning.CleanupTrigger.removeClientOnCleanupTrigger;
+import static de.gematik.tim.test.glue.api.utils.cleaning.CleanupTrigger.sendCleanupRequest;
+
 import io.cucumber.core.plugin.SerenityReporter;
 import io.cucumber.plugin.event.EventPublisher;
 import io.cucumber.plugin.event.TestCaseStarted;
 import io.cucumber.plugin.event.TestRunFinished;
-
-import static de.gematik.tim.test.glue.api.utils.cleaning.CleanupTrigger.sendCleanupRequest;
-import static de.gematik.tim.test.glue.api.utils.cleaning.CleanupTrigger.endTestCase;
 
 public class CucumberListener extends SerenityReporter {
 
@@ -35,7 +36,8 @@ public class CucumberListener extends SerenityReporter {
   }
 
   private void endTest(TestRunFinished t) {
-    endTestCase();
+    removeClientOnCleanupTrigger();
+    removeClientOnParallelExecutor();
   }
 
   private void startTest(TestCaseStarted tcs) {

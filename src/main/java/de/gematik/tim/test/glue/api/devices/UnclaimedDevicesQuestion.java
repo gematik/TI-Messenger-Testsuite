@@ -17,30 +17,25 @@
 package de.gematik.tim.test.glue.api.devices;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_DEVICES;
-import static de.gematik.tim.test.glue.api.threading.ParallelExecutor.parallelClient;
 import static de.gematik.tim.test.glue.api.utils.IndividualLogger.individualLog;
+import static de.gematik.tim.test.glue.api.utils.ParallelUtils.fromJson;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.models.DeviceInfoDTO.DeviceStatusEnum.CLAIMED;
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 
-import de.gematik.tim.test.glue.api.exceptions.TestRunException;
-import de.gematik.tim.test.glue.api.threading.ActorsNotes;
-import de.gematik.tim.test.glue.api.threading.Parallel;
-import de.gematik.tim.test.glue.api.utils.ParallelUtils;
+import de.gematik.tim.test.glue.api.threading.ParallelExecutor;
+import de.gematik.tim.test.glue.api.threading.ParallelQuestionRunner;
 import de.gematik.tim.test.models.DeviceInfoDTO;
 import de.gematik.tim.test.models.DevicesDTO;
+import kong.unirest.UnirestInstance;
 import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.Question;
 import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
-import okhttp3.Call;
-import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.List;
 
-public class UnclaimedDevicesQuestion implements Question<List<Long>>, Parallel<List<Long>> {
+public class UnclaimedDevicesQuestion extends ParallelQuestionRunner<List<Long>> {
 
   public static final String NO_FREE_DEVICE_LOG = "No free device found at %s";
 
@@ -48,29 +43,28 @@ public class UnclaimedDevicesQuestion implements Question<List<Long>>, Parallel<
     return new UnclaimedDevicesQuestion();
   }
 
+  //<editor-fold desc="Parallel">
+  public List<Long> searchParallel() {
+    UnirestInstance client = ParallelExecutor.getParallelClient().get();
+    String jsonString = client.get(GET_DEVICES.getResolvedPath(actor)).asJson().getBody().toString();
+    return getUnclaimedDevices(fromJson(jsonString, DevicesDTO.class));
+  }
+  //</editor-fold>
+
+  //<editor-fold desc="Sync">
   @Override
   public List<Long> answeredBy(Actor actor) {
     actor.attemptsTo(GET_DEVICES.request());
     DevicesDTO res = parseResponse(DevicesDTO.class);
-    return getUnclaimedDevices(res, actor.abilityTo(CallAnApi.class).toString());
-
+    return getUnclaimedDevices(res);
   }
+  //</editor-fold>
 
-  @Override
-  public List<Long> parallel(ActorsNotes notes) {
-    Call call = parallelClient().get().newCall(GET_DEVICES.parallelRequest(notes).build());
-    try (Response response = call.execute()) {
-      DevicesDTO devicesDTO = ParallelUtils.fromJson(response.body().string(), DevicesDTO.class);
-      return getUnclaimedDevices(devicesDTO, notes.getApi());
-    } catch (IOException e) {
-      throw new TestRunException(e);
-    }
-  }
-
-  private List<Long> getUnclaimedDevices(DevicesDTO res, String api) {
+  //<editor-fold desc="General">
+  private List<Long> getUnclaimedDevices(DevicesDTO res) {
     List<Long> freeDeviceIds = getResult(res.getDevices());
     if (freeDeviceIds.isEmpty()) {
-      individualLog(format(NO_FREE_DEVICE_LOG, api));
+      individualLog(format(NO_FREE_DEVICE_LOG, actor.abilityTo(CallAnApi.class).resolve("")));
     }
     return freeDeviceIds;
   }
@@ -82,4 +76,5 @@ public class UnclaimedDevicesQuestion implements Question<List<Long>>, Parallel<
     }
     return devices.stream().filter(device -> !CLAIMED.equals(device.getDeviceStatus())).map(DeviceInfoDTO::getDeviceId).toList();
   }
+  //</editor-fold>
 }

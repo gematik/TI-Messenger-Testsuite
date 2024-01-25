@@ -17,24 +17,27 @@
 package de.gematik.tim.test.glue.api.room.tasks;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.INVITE_TO_ROOM;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.homeserverFromMxId;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getAllActiveActorsByMxIds;
+import static de.gematik.tim.test.models.RoomMembershipStateDTO.INVITE;
 import static java.util.Objects.requireNonNull;
-import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.MxIdDTO;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 public class InviteToRoomTask implements Task {
 
-  private String roomId;
-
   private final List<MxIdDTO> invitees;
+  private String roomId;
+  private boolean shouldFindMxid = true;
 
   public static InviteToRoomTask invite(List<String> mxIds) {
     List<MxIdDTO> mxIdDTOS = mxIds.stream()
@@ -48,11 +51,20 @@ public class InviteToRoomTask implements Task {
     return this;
   }
 
+  public InviteToRoomTask actorCouldBeFound(boolean couldBeFound) {
+    this.shouldFindMxid = couldBeFound;
+    return this;
+  }
+
   @Override
   public <T extends Actor> void performAs(T actor) {
     requireNonNull(roomId, "roomId of InviteToRoomTask has to be set with #toRoom(roomId)");
 
     actor.attemptsTo(INVITE_TO_ROOM.request().with(req -> req.body(invitees)));
+
+    getAllActiveActorsByMxIds(invitees.stream().map(MxIdDTO::getMxid).toList(), shouldFindMxid)
+        .forEach(a -> a.remember(roomId + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX, INVITE));
+
     sendRawDataEvent(actor.recall(MX_ID));
   }
 

@@ -23,6 +23,7 @@ import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseRespo
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addEndpoint;
 import static de.gematik.tim.test.models.FhirEndpointDTO.StatusEnum.ACTIVE;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.CREATED;
 
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.HealthcareSpecificTask;
@@ -88,6 +89,7 @@ public class CreateEndpointTask extends HealthcareSpecificTask {
     Response response = lastResponse();
     if (response.statusCode() == CREATED.value()) {
       FhirEndpointDTO endpoint = parseResponse(FhirEndpointDTO.class, true);
+      assertThat(endpoint.getId()).isNotBlank();
       addEndpointToActorForHS(actor, name, endpoint.getId(), hsName);
       addEndpoint(name, endpoint);
     }

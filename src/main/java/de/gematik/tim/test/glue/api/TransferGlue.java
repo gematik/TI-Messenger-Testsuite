@@ -16,6 +16,8 @@
 
 package de.gematik.tim.test.glue.api;
 
+import io.cucumber.java.de.Dann;
+import io.cucumber.java.de.Wenn;
 import lombok.AllArgsConstructor;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -24,7 +26,15 @@ import static lombok.AccessLevel.PRIVATE;
 @AllArgsConstructor(access = PRIVATE)
 public class TransferGlue {
 
+    @Wenn("{string} verlässt den Chat-Raum")
+    public void verlässtDenChatRaum(String actorName) {
+        //Implement me
+    }
 
+    @Dann("{string} bestätigt, dass {string} den Chat-Raum verlassen hat")
+    public void bestätigtDassDenChatRaumVerlassenHat(String actorName, String userName) {
+        //Implement me
+    }
 }
 
 
