@@ -16,18 +16,6 @@
 
 package de.gematik.tim.test.glue.api.fhir.practitioner;
 
-import de.gematik.tim.test.models.FhirEndpointDTO;
-import de.gematik.tim.test.models.FhirSearchResultDTO;
-import io.cucumber.java.de.Dann;
-import io.cucumber.java.de.Und;
-import io.cucumber.java.de.Wenn;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
-import io.restassured.response.Response;
-import net.serenitybdd.screenplay.Actor;
-
-import java.util.List;
-
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
@@ -42,12 +30,25 @@ import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
+import de.gematik.tim.test.models.FhirEndpointDTO;
+import de.gematik.tim.test.models.FhirSearchResultDTO;
+import io.cucumber.java.de.Dann;
+import io.cucumber.java.de.Und;
+import io.cucumber.java.de.Wenn;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+import io.restassured.response.Response;
+import net.serenitybdd.screenplay.Actor;
+
+import java.util.List;
 
 public class FhirAdministrationGlue {
 
-  // Register own MXID in vzd
   @When("{listOfStrings} sets MXID in own TIPractitioner resource")
   @Wenn("{listOfStrings} hinterlegt seine MXID im Verzeichnis Dienst")
   @Wenn("{listOfStrings} hinterlegen ihre MXIDs im Verzeichnis Dienst")
@@ -61,7 +62,6 @@ public class FhirAdministrationGlue {
     });
   }
 
-  // Delete own MXID
   @Then("{listOfStrings} removes the MXID in the own TIPractitioner FHIR resource")
   @Then("{listOfStrings} remove their MXIDs in the own TIPractitioner FHIR resource")
   @Dann("{listOfStrings} löscht seine MXID im Verzeichnis Dienst")
@@ -76,7 +76,6 @@ public class FhirAdministrationGlue {
     });
   }
 
-  // Search and find MXID
   @Wenn("{string} search MXID of user {string} in vzd")
   @Und("{string} sucht die MXID des Benutzers {string} im Verzeichnis Dienst")
   public void searchUserInFhir(String actorName, String userName) {
@@ -98,7 +97,6 @@ public class FhirAdministrationGlue {
     assertCorrectEndpointNameAndMxid(endpoints, actor);
   }
 
-  // Assertions
   @Then("{string} has no MXID in Fhir")
   @Dann("{string} hat keine MXID im Fhir")
   public void getsOwnNullMXID(String actorName) {
@@ -115,5 +113,4 @@ public class FhirAdministrationGlue {
     theActorCalled(actorName).attemptsTo(setMxid());
     checkResponseCode(actorName, UNAUTHORIZED.value());
   }
-
 }

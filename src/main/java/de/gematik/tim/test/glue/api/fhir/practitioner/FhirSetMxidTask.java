@@ -23,6 +23,7 @@ import static de.gematik.tim.test.glue.api.fhir.practitioner.CanDeleteOwnMxidAbi
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addEndpoint;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
+import static org.springframework.http.HttpStatus.CREATED;
 
 import de.gematik.tim.test.models.FhirEndpointDTO;
 import io.restassured.response.Response;
@@ -39,11 +40,11 @@ public class FhirSetMxidTask implements Task {
   public <T extends Actor> void performAs(T actor) {
     actor.attemptsTo(SET_MXID_PRACTITIONER.request());
     Response res = lastResponse();
-    if (res.statusCode() == 201) {
+    if (res.statusCode() == CREATED.value()) {
       actor.can(deleteOwnMxid());
       FhirEndpointDTO endpoint = parseResponse(FhirEndpointDTO.class, true);
       actor.remember(OWN_ENDPOINT_ID, endpoint.getId());
-      addEndpoint(actor.recall(DISPLAY_NAME),endpoint);
+      addEndpoint(actor.recall(DISPLAY_NAME), endpoint);
     }
   }
 }

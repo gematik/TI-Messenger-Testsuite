@@ -51,6 +51,5 @@ public class DeleteHealthcareServicesTask extends HealthcareSpecificTask {
       RawDataStatistics.getRegTokenForVZDEvent();
       actor.remember(HAS_REG_SERVICE_TOKEN, true);
     }
-
   }
 }

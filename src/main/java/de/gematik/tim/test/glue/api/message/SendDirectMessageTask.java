@@ -36,11 +36,12 @@ import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.DirectMessageDTO;
 import de.gematik.tim.test.models.MessageDTO;
 import de.gematik.tim.test.models.RoomDTO;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 import org.springframework.http.HttpStatus;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 public class SendDirectMessageTask implements Task {
@@ -67,7 +68,6 @@ public class SendDirectMessageTask implements Task {
     }
 
     logEventsAndSaveRoomToActor(actor, actorMxId, toMxId);
-
   }
 
   private <T extends Actor> void logEventsAndSaveRoomToActor(T actor, String actorMxId,

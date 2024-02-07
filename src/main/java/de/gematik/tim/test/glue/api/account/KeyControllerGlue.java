@@ -23,10 +23,12 @@ import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 
 import de.gematik.tim.test.models.MatrixKeyInfoDTO;
 import io.cucumber.java.de.Und;
+import io.cucumber.java.en.And;
 import net.serenitybdd.screenplay.Actor;
 
 public class KeyControllerGlue {
 
+  @And("{string} exports their session key")
   @Und("{string} exportiert seinen Session-Key")
   public void exportSessionKey(String actorName) {
     Actor actor = theActorCalled(actorName);
@@ -34,6 +36,7 @@ public class KeyControllerGlue {
     actor.remember(SESSION_KEY, keyInfo.getKey());
   }
 
+  @And("{string} imports their session key from {string}")
   @Und("{string} importiert den Session-Key von {string}")
   public void importSessionKey(String actorName, String userName) {
     Actor actor = theActorCalled(actorName);

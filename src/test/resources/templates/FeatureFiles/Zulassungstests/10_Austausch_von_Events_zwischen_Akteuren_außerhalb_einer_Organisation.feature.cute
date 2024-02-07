@@ -14,31 +14,31 @@
 Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Organisation
 
   AF_10062 - Austausch von Events zwischen Akteuren außerhalb einer Organisation
-    ML-123665 - Messenger-Proxy des Senders prüft Domain des Empfängers
-    ML-123666 - Messenger-Proxy des Empfängers prüft Domain des Senders
-    ML-123667 - Auslösen einer Notifikation
-    ML-123668 - Nachricht wird angezeigt
-    ML-132593 - TI-M Rohdatenerfassung und -lieferung
+  ML-123665 - Messenger-Proxy des Senders prüft Domain des Empfängers
+  ML-123666 - Messenger-Proxy des Empfängers prüft Domain des Senders
+  ML-123667 - Auslösen einer Notifikation
+  ML-123668 - Nachricht wird angezeigt
+  ML-132593 - TI-M Rohdatenerfassung und -lieferung
 
   AF_10061 - Einladung von Akteuren außerhalb einer Organisation
-    ML-123654 - Suche im VZD-FHIR-Directory
-    ML-123663 - Akteure sind dem Chatraum beigetreten
-    ML-132864 - Berechtigungsprüfung aller Stufen
-    ML-132592 - TI-M Rohdatenerfassung und -lieferung
+  ML-123654 - Suche im VZD-FHIR-Directory
+  ML-123663 - Akteure sind dem Chatraum beigetreten
+  ML-132864 - Berechtigungsprüfung aller Stufen
+  ML-132592 - TI-M Rohdatenerfassung und -lieferung
 
   AF_10064 - Föderationszugehörigkeit eines Messenger-Service prüfen
-    ML-123672 - Föderationsliste vom VZD-FHIR-Directory abrufen
-    ML-123891 - Matrix-Domain Teil der Föderationsliste & Aktualitätscheck
-    ML-132589 - TI-M Rohdatenerfassung und -lieferung
-    ML-137902 - Aktualität - Föderationsliste Messenger-Proxy
+  ML-123672 - Föderationsliste vom VZD-FHIR-Directory abrufen
+  ML-123891 - Matrix-Domain Teil der Föderationsliste & Aktualitätscheck
+  ML-132589 - TI-M Rohdatenerfassung und -lieferung
+  ML-137902 - Aktualität - Föderationsliste Messenger-Proxy
 
   AF_10058 Akteur (User-HBA) im Verzeichnisdienst hinzufügen
-    ML-123612 - Akteur als Practitioner hinzufügen
-    ML-132588 - TI-M Rohdatenerfassung und -lieferung
+  ML-123612 - Akteur als Practitioner hinzufügen
+  ML-132588 - TI-M Rohdatenerfassung und -lieferung
 
   AF_10059 - Organisationsressourcen im Verzeichnisdienst hinzufügen
-    ML-123627 - Organisationsressourcen im VZD-FHIR-Directory hinzufügen
-    ML-132586 - TI-M Rohdatenerfassung und -lieferung
+  ML-123627 - Organisationsressourcen im VZD-FHIR-Directory hinzufügen
+  ML-132586 - TI-M Rohdatenerfassung und -lieferung
 
   In diesem Anwendungsfall erfolgt gleichzeitig eine Prüfung des Berechtigungskonzept.
   Zusätzlich werden in diesem Feature File Anforderungen aus Feature File 9 (AF_10061) betrachtet,
@@ -57,7 +57,7 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
   # TODO Bei mehreren Anbietern MaxSameColumnProperty & Shuffle anschalten
 
   @BP:P2P @Ctl:Chat @Ctl:MsgForward
-  @TCID:TIM_11_AF_1001 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_1001 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.01 Events außerhalb einer Organisation - Chat - Test-Client "A" sendet und empfängt eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1> |
@@ -73,21 +73,21 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1,homeserver,2)
-  @DistinctProperty(homeserver)
-  @AllowSelfCombine(false)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1.hasTag("client"))
-  @Filter(ApiName2.hasTag("client"))
-  @Filter(ApiName1.hasTag("practitioner"))
-  @Filter(ApiName2.hasTag("practitioner"))
-  @SoftFilter(ApiName1.hasTag("prefIOP"))
-  @SoftFilter(ApiName2.hasTag("prefIOP"))
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("client"))
+    @Filter(ApiName2.hasTag("client"))
+    @Filter(ApiName1.hasTag("practitioner"))
+    @Filter(ApiName2.hasTag("practitioner"))
+    @SoftFilter(ApiName1.hasTag("prefIOP"))
+    @SoftFilter(ApiName2.hasTag("prefIOP"))
 
-      Beispiele:
-    | ApiName1 | ApiName2 |
+    Beispiele:
+      | ApiName1 | ApiName2 |
 
   @BP:P2P @Ctl:Raum @Ctl:MsgForward
-  @TCID:TIM_11_AF_1002 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_1002 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.02 Events außerhalb einer Organisation - Raum - Test-Client "A" sendet eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1> |
@@ -103,21 +103,21 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1,homeserver,2)
-  @DistinctProperty(homeserver)
-  @AllowSelfCombine(false)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1.hasTag("client"))
-  @Filter(ApiName2.hasTag("client"))
-  @Filter(ApiName1.hasTag("practitioner"))
-  @Filter(ApiName2.hasTag("practitioner"))
-  @SoftFilter(ApiName1.hasTag("prefIOP"))
-  @SoftFilter(ApiName2.hasTag("prefIOP"))
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("client"))
+    @Filter(ApiName2.hasTag("client"))
+    @Filter(ApiName1.hasTag("practitioner"))
+    @Filter(ApiName2.hasTag("practitioner"))
+    @SoftFilter(ApiName1.hasTag("prefIOP"))
+    @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
-    | ApiName1 | ApiName2 |
+      | ApiName1 | ApiName2 |
 
   @BP:P2P @Ctl:Raum @Ctl:MsgBackward
-  @TCID:TIM_11_AF_1003 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_1003 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.03 Events außerhalb einer Organisation - Raum - Test-Client "B" sendet eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1> |
@@ -133,21 +133,21 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName2,homeserver,2)
-  @DistinctProperty(homeserver)
-  @AllowSelfCombine(false)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1.hasTag("client"))
-  @Filter(ApiName2.hasTag("client"))
-  @Filter(ApiName1.hasTag("practitioner"))
-  @Filter(ApiName2.hasTag("practitioner"))
-  @SoftFilter(ApiName1.hasTag("prefIOP"))
-  @SoftFilter(ApiName2.hasTag("prefIOP"))
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("client"))
+    @Filter(ApiName2.hasTag("client"))
+    @Filter(ApiName1.hasTag("practitioner"))
+    @Filter(ApiName2.hasTag("practitioner"))
+    @SoftFilter(ApiName1.hasTag("prefIOP"))
+    @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
-    | ApiName1 | ApiName2 |
+      | ApiName1 | ApiName2 |
 
   @BP:P2O @Ctl:OrgAdmin @Ctl:Chat @Ctl:MsgForward
-  @TCID:TIM_11_AF_1004 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_1004 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.04 Events außerhalb einer Organisation - Chat - HBA-User sendet Organisations-User eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN    | <ApiName1A> |
@@ -165,22 +165,22 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1,homeserver,2)
-  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-  @Filter(!ApiName1B.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
-  @AllowSelfCombine(false)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName2.hasTag("client"))
-  @Filter(ApiName2.hasTag("practitioner"))
-  @SoftFilter(ApiName1B.hasTag("prefIOP"))
-  @SoftFilter(ApiName2.hasTag("prefIOP"))
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(!ApiName1B.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName2.hasTag("client"))
+    @Filter(ApiName2.hasTag("practitioner"))
+    @SoftFilter(ApiName1B.hasTag("prefIOP"))
+    @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName2 |
+      | ApiName1A | ApiName1B | ApiName2 |
 
   @BP:P2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgForward
-  @TCID:TIM_11_AF_1005 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_1005 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.05 Events außerhalb einer Organisation - Raum - HBA-User sendet Organisations-User eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN    | <ApiName1A> |
@@ -197,22 +197,22 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1,homeserver,2)
-  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-  @Filter(!ApiName1B.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
-  @AllowSelfCombine(false)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName2.hasTag("client"))
-  @Filter(ApiName2.hasTag("practitioner"))
-  @SoftFilter(ApiName1B.hasTag("prefIOP"))
-  @SoftFilter(ApiName2.hasTag("prefIOP"))
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(!ApiName1B.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName2.hasTag("client"))
+    @Filter(ApiName2.hasTag("practitioner"))
+    @SoftFilter(ApiName1B.hasTag("prefIOP"))
+    @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName2 |
+      | ApiName1A | ApiName1B | ApiName2 |
 
   @BP:O2O @Ctl:OrgAdmin @Ctl:Chat @Ctl:MsgForward
-  @TCID:TIM_11_AF_1006 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_1006 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.06 Events außerhalb einer Organisation - Chat - Organisations-User sendet Organisations-User eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN | <ApiName1A> |
@@ -230,23 +230,23 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1B,homeserver,2)
-  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
-  @Filter(!ApiName1B.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
-  @AllowSelfCombine(false)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName2A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName2B.hasTag("client"))
-  @SoftFilter(ApiName1B.hasTag("prefIOP"))
-  @SoftFilter(ApiName2B.hasTag("prefIOP"))
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+    @Filter(!ApiName1B.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName2A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName2B.hasTag("client"))
+    @SoftFilter(ApiName1B.hasTag("prefIOP"))
+    @SoftFilter(ApiName2B.hasTag("prefIOP"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName2A | ApiName2B |
+      | ApiName1A | ApiName1B | ApiName2A | ApiName2B |
 
   @BP:O2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgForward
-  @TCID:TIM_11_AF_1007 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_1007 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.07 Events außerhalb einer Organisation - Raum - Organisations-User sendet Organisations-User eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN | <ApiName1A> |
@@ -265,23 +265,23 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1B,homeserver,2)
-  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
-  @Filter(!ApiName1B.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
-  @AllowSelfCombine(false)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName2A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName2B.hasTag("client"))
-  @SoftFilter(ApiName1B.hasTag("prefIOP"))
-  @SoftFilter(ApiName2B.hasTag("prefIOP"))
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+    @Filter(!ApiName1B.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName2A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName2B.hasTag("client"))
+    @SoftFilter(ApiName1B.hasTag("prefIOP"))
+    @SoftFilter(ApiName2B.hasTag("prefIOP"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName2A | ApiName2B |
+      | ApiName1A | ApiName1B | ApiName2A | ApiName2B |
 
   @BP:O2P_extern @Ctl:OrgAdmin @Ctl:Chat @Ctl:Forbidden
-  @TCID:TIM_11_AF_1008 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+    @TCID:TIM_11_AF_1008 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 10.08 Events außerhalb einer Organisation - Chat - Organisations-User sendet HBA-User eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN    | <ApiName1A> |
@@ -296,22 +296,22 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1B,homeserver,2)
-  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-  @Filter(!ApiName1B.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
-  @AllowSelfCombine(false)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName2.hasTag("client"))
-  @Filter(ApiName2.hasTag("practitioner"))
-  @SoftFilter(ApiName1B.hasTag("prefIOP"))
-  @SoftFilter(ApiName2.hasTag("prefIOP"))
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(!ApiName1B.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName2.hasTag("client"))
+    @Filter(ApiName2.hasTag("practitioner"))
+    @SoftFilter(ApiName1B.hasTag("prefIOP"))
+    @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName2 |
+      | ApiName1A | ApiName1B | ApiName2 |
 
   @BP:O2P @Ctl:OrgAdmin @Ctl:Raum @Ctl:Forbidden
-  @TCID:TIM_11_AF_1009 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+    @TCID:TIM_11_AF_1009 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 10.09 Events außerhalb einer Organisation - Raum - Organisations-User sendet HBA-User eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN    | <ApiName1A> |
@@ -327,22 +327,22 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1B,homeserver,2)
-  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-  @Filter(!ApiName1B.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
-  @AllowSelfCombine(false)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName2.hasTag("client"))
-  @Filter(ApiName2.hasTag("practitioner"))
-  @SoftFilter(ApiName1B.hasTag("prefIOP"))
-  @SoftFilter(ApiName2.hasTag("prefIOP"))
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(!ApiName1B.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName2.hasTag("client"))
+    @Filter(ApiName2.hasTag("practitioner"))
+    @SoftFilter(ApiName1B.hasTag("prefIOP"))
+    @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName2 |
+      | ApiName1A | ApiName1B | ApiName2 |
 
   @BP:P2P @Ctl:Chat @Ctl:MsgForward @Ctl:MsgDelete
-  @TCID:TIM_11_AF_1010 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_1010 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.10 Events außerhalb einer Organisation - Chat - HBA-User "B" löscht eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1> |
@@ -361,21 +361,21 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName2,homeserver,2)
-  @DistinctProperty(homeserver)
-  @AllowSelfCombine(false)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1.hasTag("client"))
-  @Filter(ApiName2.hasTag("client"))
-  @Filter(ApiName1.hasTag("practitioner"))
-  @Filter(ApiName2.hasTag("practitioner"))
-  @SoftFilter(ApiName1.hasTag("prefIOP"))
-  @SoftFilter(ApiName2.hasTag("prefIOP"))
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("client"))
+    @Filter(ApiName2.hasTag("client"))
+    @Filter(ApiName1.hasTag("practitioner"))
+    @Filter(ApiName2.hasTag("practitioner"))
+    @SoftFilter(ApiName1.hasTag("prefIOP"))
+    @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
-    | ApiName1 | ApiName2 |
+      | ApiName1 | ApiName2 |
 
   @BP:O2O @Ctl:OrgAdmin @Ctl:Chat @Ctl:MsgForward @Ctl:MsgDelete
-  @TCID:TIM_11_AF_1011 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_1011 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.11 Events außerhalb einer Organisation - Chat - Organisations-User "D" löscht eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN | <ApiName1A> |
@@ -397,23 +397,23 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName2B,homeserver,2)
   #@DistinctColumn(ApiName2B)
-  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
-  @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
-  @AllowSelfCombine(false)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName2A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName2B.hasTag("client"))
-  @SoftFilter(ApiName1B.hasTag("prefIOP"))
-  @SoftFilter(ApiName2B.hasTag("prefIOP"))
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName2A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName2B.hasTag("client"))
+    @SoftFilter(ApiName1B.hasTag("prefIOP"))
+    @SoftFilter(ApiName2B.hasTag("prefIOP"))
 
     Beispiele:
-    | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
+      | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
 
   @BP:P2P @Ctl:Raum @Ctl:MsgForward @Ctl:MsgDelete
-  @TCID:TIM_11_AF_1012 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_1012 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.12 Events außerhalb einer Organisation - Raum - HBA-User "A" löscht eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1> |
@@ -432,21 +432,21 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1,homeserver,2)
-  @DistinctProperty(homeserver)
-  @AllowSelfCombine(false)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1.hasTag("client"))
-  @Filter(ApiName2.hasTag("client"))
-  @Filter(ApiName1.hasTag("practitioner"))
-  @Filter(ApiName2.hasTag("practitioner"))
-  @SoftFilter(ApiName1.hasTag("prefIOP"))
-  @SoftFilter(ApiName2.hasTag("prefIOP"))
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("client"))
+    @Filter(ApiName2.hasTag("client"))
+    @Filter(ApiName1.hasTag("practitioner"))
+    @Filter(ApiName2.hasTag("practitioner"))
+    @SoftFilter(ApiName1.hasTag("prefIOP"))
+    @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
-    | ApiName1 | ApiName2 |
+      | ApiName1 | ApiName2 |
 
   @BP:O2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgForward @Ctl:MsgDelete
-  @TCID:TIM_11_AF_1013 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_1013 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.13 Events außerhalb einer Organisation - Raum - Organisations-User "C" löscht eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN | <ApiName1A> |
@@ -468,23 +468,23 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1B,homeserver,2)
   #@DistinctColumn(ApiName1B)
-  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
-  @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
-  @AllowSelfCombine(false)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName2A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName2B.hasTag("client"))
-  @SoftFilter(ApiName1B.hasTag("prefIOP"))
-  @SoftFilter(ApiName2B.hasTag("prefIOP"))
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName2A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName2B.hasTag("client"))
+    @SoftFilter(ApiName1B.hasTag("prefIOP"))
+    @SoftFilter(ApiName2B.hasTag("prefIOP"))
 
     Beispiele:
-    | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
+      | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
 
   @BP:P2P @Ctl:Raum @Ctl:MsgForward @Ctl:MsgLogout
-  @TCID:TIM_11_AF_1014 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_1014 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.14 Events außerhalb einer Organisation - Raum - HBA-User "A" sendet eine Nachricht an ausgeloggten "B"
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1> |
@@ -502,21 +502,21 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1,homeserver,2)
-  @DistinctProperty(homeserver)
-  @AllowSelfCombine(false)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1.hasTag("client"))
-  @Filter(ApiName2.hasTag("client"))
-  @Filter(ApiName1.hasTag("practitioner"))
-  @Filter(ApiName2.hasTag("practitioner"))
-  @SoftFilter(ApiName1.hasTag("prefIOP"))
-  @SoftFilter(ApiName2.hasTag("prefIOP"))
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("client"))
+    @Filter(ApiName2.hasTag("client"))
+    @Filter(ApiName1.hasTag("practitioner"))
+    @Filter(ApiName2.hasTag("practitioner"))
+    @SoftFilter(ApiName1.hasTag("prefIOP"))
+    @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
-    | ApiName1 | ApiName2 |
+      | ApiName1 | ApiName2 |
 
   @BP:O2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgForward @Ctl:MsgLogout
-  @TCID:TIM_11_AF_1015 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_1015 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.15 Events außerhalb einer Organisation - Raum - Organisations-User "A" sendet eine Nachricht an ausgeloggten "B"
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN | <ApiName1A> |
@@ -537,23 +537,23 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName2B,homeserver,2)
   #@DistinctColumn(ApiName2B)
-  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
-  @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
-  @AllowSelfCombine(false)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName2A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName2B.hasTag("client"))
-  @SoftFilter(ApiName1B.hasTag("prefIOP"))
-  @SoftFilter(ApiName2B.hasTag("prefIOP"))
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName2A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName2B.hasTag("client"))
+    @SoftFilter(ApiName1B.hasTag("prefIOP"))
+    @SoftFilter(ApiName2B.hasTag("prefIOP"))
 
     Beispiele:
-    | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
+      | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
 
   @BP:P2P @Ctl:Raum @Ctl:MsgBackward @Ctl:Attachment
-  @TCID:TIM_11_AF_1016 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_1016 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.16 Events außerhalb einer Organisation - Raum - HBA-User "B" sendet ein Attachment
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1> |
@@ -569,21 +569,21 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName2,homeserver,2)
-  @DistinctProperty(homeserver)
-  @AllowSelfCombine(false)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1.hasTag("client"))
-  @Filter(ApiName2.hasTag("client"))
-  @Filter(ApiName1.hasTag("practitioner"))
-  @Filter(ApiName2.hasTag("practitioner"))
-  @SoftFilter(ApiName1.hasTag("prefIOP"))
-  @SoftFilter(ApiName2.hasTag("prefIOP"))
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("client"))
+    @Filter(ApiName2.hasTag("client"))
+    @Filter(ApiName1.hasTag("practitioner"))
+    @Filter(ApiName2.hasTag("practitioner"))
+    @SoftFilter(ApiName1.hasTag("prefIOP"))
+    @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
-    | ApiName1 | ApiName2 |
+      | ApiName1 | ApiName2 |
 
   @BP:O2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgBackward @Ctl:Attachment
-  @TCID:TIM_11_AF_1017 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_1017 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.17 Events außerhalb einer Organisation - Raum - Organisations-User "D" sendet ein Attachment
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN | <ApiName1A> |
@@ -602,23 +602,23 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName2B,homeserver,2)
   #@DistinctColumn(ApiName2B)
-  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
-  @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
-  @AllowSelfCombine(false)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName2A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName2B.hasTag("client"))
-  @SoftFilter(ApiName1B.hasTag("prefIOP"))
-  @SoftFilter(ApiName2B.hasTag("prefIOP"))
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName2A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName2B.hasTag("client"))
+    @SoftFilter(ApiName1B.hasTag("prefIOP"))
+    @SoftFilter(ApiName2B.hasTag("prefIOP"))
 
     Beispiele:
-    | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
+      | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
 
   @BP:P2P @Ctl:Raum @Ctl:MsgForward @Ctl:Attachment
-  @TCID:TIM_11_AF_1018 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_1018 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.18 Events außerhalb einer Organisation - Raum - HBA-User "A" sendet ein Attachment
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1> |
@@ -634,21 +634,21 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1,homeserver,2)
-  @DistinctProperty(homeserver)
-  @AllowSelfCombine(false)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1.hasTag("client"))
-  @Filter(ApiName2.hasTag("client"))
-  @Filter(ApiName1.hasTag("practitioner"))
-  @Filter(ApiName2.hasTag("practitioner"))
-  @SoftFilter(ApiName1.hasTag("prefIOP"))
-  @SoftFilter(ApiName2.hasTag("prefIOP"))
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("client"))
+    @Filter(ApiName2.hasTag("client"))
+    @Filter(ApiName1.hasTag("practitioner"))
+    @Filter(ApiName2.hasTag("practitioner"))
+    @SoftFilter(ApiName1.hasTag("prefIOP"))
+    @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
-    | ApiName1 | ApiName2 |
+      | ApiName1 | ApiName2 |
 
   @BP:O2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgForward @Ctl:Attachment
-  @TCID:TIM_11_AF_1019 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_1019 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.19 Events außerhalb einer Organisation - Raum - Organisations-User "A" sendet ein Attachment
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN | <ApiName1A> |
@@ -667,59 +667,57 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1B,homeserver,2)
   #@DistinctColumn(ApiName1B)
-  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-  @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
-  @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
-  @AllowSelfCombine(false)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName2A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName2B.hasTag("client"))
-  @SoftFilter(ApiName1B.hasTag("prefIOP"))
-  @SoftFilter(ApiName2B.hasTag("prefIOP"))
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName2A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName2B.hasTag("client"))
+    @SoftFilter(ApiName1B.hasTag("prefIOP"))
+    @SoftFilter(ApiName2B.hasTag("prefIOP"))
 
     Beispiele:
-    | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
+      | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
 
-  @WIP
   @BP:P2P @Ctl:Chat @Ctl:MsgForward
-  @TCID:TIM_11_AF_1020 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+    @TCID:TIM_11_AF_1020 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
   Szenariogrundriss: 10.20 Events außerhalb einer Organisation - Chat - User verlässt den Chat
-    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
-    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRACTITIONER | <ApiName1> |
+      | B | PRACTITIONER | <ApiName2> |
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" findet "B" in FHIR
     Wenn       "A" schreibt "B" direkt "Testnachricht 1"
     Und        "B" erhält eine Einladung von "A"
     Und        "B" bestätigt eine Einladung von "A"
     Dann       "B" empfängt eine Nachricht "Testnachricht 1" von "A"
-    Wenn       "A" verlässt den Chat-Raum
+    Wenn       "A" verlässt Chat mit "B"
     Dann       "B" bestätigt, dass "A" den Chat-Raum verlassen hat
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1,homeserver,2)
-  @DistinctProperty(homeserver)
-  @AllowSelfCombine(false)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1.hasTag("client"))
-  @Filter(ApiName2.hasTag("client"))
-  @Filter(ApiName1.hasTag("practitioner"))
-  @Filter(ApiName2.hasTag("practitioner"))
-  @SoftFilter(ApiName1.hasTag("prefIOP"))
-  @SoftFilter(ApiName2.hasTag("prefIOP"))
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("client"))
+    @Filter(ApiName2.hasTag("client"))
+    @Filter(ApiName1.hasTag("practitioner"))
+    @Filter(ApiName2.hasTag("practitioner"))
+    @SoftFilter(ApiName1.hasTag("prefIOP"))
+    @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
-    | ApiName1 | ApiName2 |
+      | ApiName1 | ApiName2 |
 
-  @WIP
   @BP:P2P @Ctl:Raum @Ctl:MsgForward
-  @TCID:TIM_11_AF_1021 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+    @TCID:TIM_11_AF_1021 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
   Szenariogrundriss: 10.21 Events außerhalb einer Organisation - Raum - User verlässt den Raum
-    Angenommen "A" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName1>
-    Und        "B" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName2>
-    Und        alle Devices wurden erfolgreich reserviert
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRACTITIONER | <ApiName1> |
+      | B | PRACTITIONER | <ApiName2> |
     Und        "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B" in FHIR
@@ -728,20 +726,20 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
     Wenn       "B" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Dann       "A" empfängt eine Nachricht "Testnachricht 1" von "B" im Raum "TIM Testraum 1"
-    Wenn       "B" verlässt den Chat-Raum
-    Dann       "A" bestätigt, dass "B" den Chat-Raum verlassen hat
+    Wenn       "B" verlässt Raum "TIM Testraum 1"
+    Dann       "A" bestätigt, dass "B" den Raum "TIM Testraum 1" verlassen hat
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName2,homeserver,2)
-  @DistinctProperty(homeserver)
-  @AllowSelfCombine(false)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1.hasTag("client"))
-  @Filter(ApiName2.hasTag("client"))
-  @Filter(ApiName1.hasTag("practitioner"))
-  @Filter(ApiName2.hasTag("practitioner"))
-  @SoftFilter(ApiName1.hasTag("prefIOP"))
-  @SoftFilter(ApiName2.hasTag("prefIOP"))
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("client"))
+    @Filter(ApiName2.hasTag("client"))
+    @Filter(ApiName1.hasTag("practitioner"))
+    @Filter(ApiName2.hasTag("practitioner"))
+    @SoftFilter(ApiName1.hasTag("prefIOP"))
+    @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
-    | ApiName1 | ApiName2 |
+      | ApiName1 | ApiName2 |

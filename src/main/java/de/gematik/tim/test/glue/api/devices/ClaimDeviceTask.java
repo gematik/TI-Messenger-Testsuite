@@ -61,6 +61,8 @@ import java.util.Optional;
 public class ClaimDeviceTask extends ParallelTaskRunner {
   private static final String FAIL_CLAIM_LOG = "Claiming device at api %s failed!";
 
+  private static final int FACTOR_WAIT_FOR_FREE_DEVICE = 2;
+
   private Long deviceId;
   private Integer claimDuration;
 
@@ -81,7 +83,7 @@ public class ClaimDeviceTask extends ParallelTaskRunner {
       deviceId = repeatedRequestWithLongerTimeout(
           () -> unclaimedDevices().withActor(actor).run().stream()
               .filter(id -> isClaimable(api, id))
-              .findAny(), "device", 10);
+              .findAny(), "device", FACTOR_WAIT_FOR_FREE_DEVICE);
     }
     actor.can(UseDeviceAbility.useDevice(deviceId));
     int retryCount = 1;
@@ -145,7 +147,7 @@ public class ClaimDeviceTask extends ParallelTaskRunner {
     if (nonNull(deviceId)) {
       return deviceId;
     }
-    return repeatedRequestWithLongerTimeout(() -> findDeviceToClaim(actor), "device", 10);
+    return repeatedRequestWithLongerTimeout(() -> findDeviceToClaim(actor), "device", FACTOR_WAIT_FOR_FREE_DEVICE);
   }
 
   private Optional<Long> findDeviceToClaim(Actor actor) {

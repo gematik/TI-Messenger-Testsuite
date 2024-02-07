@@ -22,7 +22,6 @@ import static org.apache.commons.lang3.StringUtils.join;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import io.restassured.response.Response;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -34,6 +33,10 @@ import org.springframework.http.HttpStatus;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.nodes.Tag;
+import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -73,7 +76,7 @@ public class RawDataStatistics {
 
   private static final String[] HEADERS = new String[]{"description", "success", "error", "errors"};
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-  private static final YAMLMapper YAML_MAPPER = new YAMLMapper();
+  private static final Yaml YAML_MAPPER;
 
   private static final String LOGIN_KEY = "login";
   private static final String SEARCH_KEY = "search";
@@ -85,6 +88,15 @@ public class RawDataStatistics {
   private static final String GRTFVE_KEY = "getRegTokenForVZDEvent";
   private static final Map<String, RawDataEventCounter> copiedCounter = new HashMap<>();
 
+  static {
+    OBJECT_MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
+
+    DumperOptions options = new DumperOptions();
+    options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+    Representer representer = new Representer(options);
+    representer.addClassTag(RawDataObject.class, Tag.MAP);
+    YAML_MAPPER = new Yaml(representer);
+  }
 
   /**
    * Count method for these events:
@@ -242,7 +254,6 @@ public class RawDataStatistics {
 
   @SneakyThrows
   private static void rawToJson(List<RawDataObject> dataObjectList) {
-    OBJECT_MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
     String s = OBJECT_MAPPER.writeValueAsString(dataObjectList);
     File jsonFile = new File(JSON_PATHNAME);
     FileUtils.writeStringToFile(jsonFile, s, UTF_8);
@@ -250,9 +261,8 @@ public class RawDataStatistics {
 
   @SneakyThrows
   private static void rawToYaml(List<RawDataObject> dataObjectList) {
-    String s = YAML_MAPPER.writeValueAsString(dataObjectList);
-    File yamlFile = new File(YML_PATHNAME);
-    FileUtils.writeStringToFile(yamlFile, s, UTF_8);
+    String yaml = YAML_MAPPER.dumpAsMap(dataObjectList);
+    FileUtils.write(new File(YML_PATHNAME), yaml, UTF_8);
   }
 
   @SneakyThrows

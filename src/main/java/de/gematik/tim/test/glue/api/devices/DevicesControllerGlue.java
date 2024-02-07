@@ -18,6 +18,7 @@ package de.gematik.tim.test.glue.api.devices;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.ACCOUNT_PASSWORD;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.CLAIMER_NAME;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HOME_SERVER;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
@@ -39,7 +40,6 @@ import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.CLAIM_PARA
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.NO_PARALLEL_TAG;
 import static java.lang.Boolean.TRUE;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
-import static net.serenitybdd.screenplay.actors.OnStage.setTheStage;
 import static net.serenitybdd.screenplay.actors.OnStage.stage;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static net.serenitybdd.screenplay.actors.OnStage.withCurrentActor;
@@ -52,12 +52,13 @@ import de.gematik.tim.test.glue.api.utils.IndividualLogger;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
-import io.cucumber.java.BeforeAll;
 import io.cucumber.java.Scenario;
 import io.cucumber.java.de.Angenommen;
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Und;
 import io.cucumber.java.de.Wenn;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.junit.CucumberOptions;
@@ -65,7 +66,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.actors.Cast;
 import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
 
 import java.util.Arrays;
@@ -111,6 +111,7 @@ public class DevicesControllerGlue {
   }
 
   // Claim Device
+  @Given("Following clients are claimed:")
   @Angenommen("Es werden folgende Clients reserviert:")
   public void followingClientsWillBeClaimed(DataTable data) {
     List<ClaimInfo> claimInfos = data.asLists().stream().map(this::toClaimInfo).toList();
@@ -149,6 +150,7 @@ public class DevicesControllerGlue {
     loginSuccess(actor);
   }
 
+  @And("{string} uses the data of {string} to log into api {word}")
   @Und("{string} meldet sich mit den Daten von {string} an der Schnittstelle {word} an")
   public void reserveClientOnApiAndLoginWithData(String actorName, String userName,
       String apiName) {
@@ -156,8 +158,10 @@ public class DevicesControllerGlue {
 
     String mxId = theActorCalled(userName).recall(MX_ID);
     String password = theActorCalled(userName).recall(ACCOUNT_PASSWORD);
+    String homeServer = theActorCalled(userName).recall(HOME_SERVER);
     actor.remember(MX_ID, mxId);
     actor.remember(ACCOUNT_PASSWORD, password);
+    actor.remember(HOME_SERVER, homeServer);
 
     actor.attemptsTo(login().withoutClearingRooms());
     actor.asksFor(ownRooms());
@@ -181,7 +185,7 @@ public class DevicesControllerGlue {
     withCurrentActor(GET_DEVICES.request());
   }
 
-  @Then("{string} has a claimed device")
+  @Then("{string} has claimed a device")
   @Dann("prüfe ob {string} ein Gerät reserviert hat")
   public void checkIfDeviceIsClaimedGivenActor(String actorName) {
     Actor actor = theActorCalled(actorName);

@@ -20,11 +20,9 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEARCH_PRACTITIONER;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.mxidToUrl;
-import static de.gematik.tim.test.glue.api.utils.IndividualLogger.individualLog;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
 import static java.util.Objects.nonNull;
-import static java.util.Objects.requireNonNull;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.models.FhirEndpointDTO;
@@ -32,26 +30,22 @@ import de.gematik.tim.test.models.FhirResourceTypeDTO;
 import de.gematik.tim.test.models.FhirSearchResultDTO;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import java.util.List;
-import java.util.Optional;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 import org.apache.commons.lang3.StringUtils;
 import org.awaitility.core.ConditionTimeoutException;
 
+import java.util.List;
+import java.util.Optional;
+
 public class FhirSearchQuestion implements Question<FhirSearchResultDTO> {
 
-  String mxid;
-  String name;
-  String address;
-  String telematikId;
-  String typeCode;
-  String typeDisplay;
-  Integer atLeastExpectedResults;
-  Long customTimeout;
-  Long customPollInterval;
-  boolean shouldWaitTillDeleted;
-
+  private String mxid;
+  private String name;
+  private Integer atLeastExpectedResults;
+  private Long customTimeout;
+  private Long customPollInterval;
+  private boolean shouldWaitTillDeleted;
 
   public static FhirSearchQuestion practitionerInFhirDirectory() {
     return new FhirSearchQuestion().withAtLeastExpectedEntries(1);
@@ -64,26 +58,6 @@ public class FhirSearchQuestion implements Question<FhirSearchResultDTO> {
 
   public FhirSearchQuestion withName(String name) {
     this.name = name;
-    return this;
-  }
-
-  public FhirSearchQuestion withAddress(String address) {
-    this.address = address;
-    return this;
-  }
-
-  public FhirSearchQuestion withTelematikId(String telematikId) {
-    this.telematikId = telematikId;
-    return this;
-  }
-
-  public FhirSearchQuestion withTypeCode(String typeCode) {
-    this.typeCode = typeCode;
-    return this;
-  }
-
-  public FhirSearchQuestion withTypeDisplay(String typeDisplay) {
-    this.typeDisplay = typeDisplay;
     return this;
   }
 
@@ -115,72 +89,53 @@ public class FhirSearchQuestion implements Question<FhirSearchResultDTO> {
   }
 
   private Optional<FhirSearchResultDTO> requestFhirPractitioner(Actor actor) {
-    actor.attemptsTo(SEARCH_PRACTITIONER.request().with(req -> prepareQuery(req, true)));
+    actor.attemptsTo(SEARCH_PRACTITIONER.request().with(this::prepareQuery));
     actor.remember(LAST_RESPONSE, lastResponse());
     if (shouldWaitTillDeleted) {
       return dontFindPractitioner();
     }
-    // Todo delete MXID Stuff if Testsuite version is higher than 0.9.8
-    Optional<FhirSearchResultDTO> res = findPractitioner();
-    if (res.isEmpty()) {
-      actor.attemptsTo(
-          SEARCH_PRACTITIONER.request().with(req -> prepareQuery(req, false)));
-      actor.remember(LAST_RESPONSE, lastResponse());
-      res = findPractitioner();
-      if (res.isPresent()) {
-        individualLog("Mxid found which is not in URL form!");
-      }
-    }
-    return res;
+    return findPractitioner();
   }
 
   private Optional<FhirSearchResultDTO> findPractitioner() {
-    FhirSearchResultDTO res = parseResponse(FhirSearchResultDTO.class, true);
-    List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(res, FhirResourceTypeDTO.ENDPOINT,
+    FhirSearchResultDTO response = parseResponse(FhirSearchResultDTO.class, true);
+    List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(response, FhirResourceTypeDTO.ENDPOINT,
         FhirEndpointDTO.class);
     endpoints = filterForEndpoint(endpoints);
-    return requireNonNull(endpoints.size()) >= atLeastExpectedResults ? Optional.of(res) : Optional.empty();
+    return endpoints.size() >= atLeastExpectedResults ? Optional.of(response) : Optional.empty();
   }
 
   private Optional<FhirSearchResultDTO> dontFindPractitioner() {
-    FhirSearchResultDTO res = parseResponse(FhirSearchResultDTO.class, true);
-    List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(res, FhirResourceTypeDTO.ENDPOINT,
+    FhirSearchResultDTO response = parseResponse(FhirSearchResultDTO.class, true);
+    List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(response, FhirResourceTypeDTO.ENDPOINT,
         FhirEndpointDTO.class);
     endpoints = filterForEndpoint(endpoints);
-    return requireNonNull(endpoints.size()) == 0 ? Optional.of(res) : Optional.empty();
+    return endpoints.isEmpty() ? Optional.of(response) : Optional.empty();
   }
 
   private List<FhirEndpointDTO> filterForEndpoint(List<FhirEndpointDTO> endpoints) {
     if (nonNull(mxid)) {
-      endpoints = endpoints.stream().filter(e -> e.getAddress().equals(mxid) || e.getAddress().equals(mxidToUrl(mxid)))
+      endpoints = endpoints.stream().filter(
+              e -> e.getAddress() != null
+                  && e.getAddress().equals(mxidToUrl(mxid)))
           .toList();
     }
     if (nonNull(name)) {
-      endpoints = endpoints.stream().filter(e -> e.getName().contains(name)).toList();
+      endpoints = endpoints.stream().filter(
+              e -> e.getName() != null
+                  && e.getName().contains(name))
+          .toList();
     }
     return endpoints;
   }
 
-  private RequestSpecification prepareQuery(RequestSpecification request, boolean formatMxid) {
+  private RequestSpecification prepareQuery(RequestSpecification request) {
     if (StringUtils.isNotBlank(mxid)) {
-      request.queryParam("mxid", formatMxid ? mxidToUrl(mxid) : mxid);
+      request.queryParam("mxid", mxidToUrl(mxid));
     }
     if (StringUtils.isNotBlank(name)) {
       request.queryParam("name", name);
     }
-    if (StringUtils.isNotBlank(address)) {
-      request.queryParam("address", address);
-    }
-    if (StringUtils.isNotBlank(telematikId)) {
-      request.queryParam("telematikId", telematikId);
-    }
-    if (StringUtils.isNotBlank(typeCode)) {
-      request.queryParam("typeCode", typeCode);
-    }
-    if (StringUtils.isNotBlank(typeDisplay)) {
-      request.queryParam("typeDisplay", typeDisplay);
-    }
     return request;
   }
-
 }

@@ -20,18 +20,22 @@ import static de.gematik.tim.test.glue.api.utils.GlueUtils.prepareApiNameForHttp
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.COMBINE_ITEMS_FILE_NAME;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.COMBINE_ITEMS_FILE_URL;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.xstream.InitializationException;
 import de.gematik.tim.test.glue.api.threading.ClientFactory;
+import io.cucumber.core.gherkin.DataTableArgument;
 import io.cucumber.plugin.event.PickleStepTestStep;
 import io.cucumber.plugin.event.TestStep;
 import kong.unirest.UnirestInstance;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,13 +43,16 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CleanupTrigger {
 
@@ -53,8 +60,9 @@ public class CleanupTrigger {
   public static final String ORG_ADMIN_TAG = "orgAdmin";
   private static final List<CombineItem> items;
   private static final Set<String> values;
-  private static final ThreadLocal<UnirestInstance> client = ThreadLocal.withInitial(ClientFactory::getClient);
+  private static final ThreadLocal<UnirestInstance> cleanUpClient = ThreadLocal.withInitial(ClientFactory::getCleanUpClient);
   private static final ExecutorService exService = Executors.newFixedThreadPool(5);
+  private static final String CLAIMING_STEP_TEXT = "Es werden folgende Clients reserviert:";
 
   static {
     try {
@@ -75,47 +83,71 @@ public class CleanupTrigger {
   }
 
   @SneakyThrows
+  @SuppressWarnings("java:S2142")
   public static void sendCleanupRequest(List<TestStep> testSteps) {
     Set<String> urlsToTrigger = getOrgAdminApisForApisUsedInTestSteps(testSteps);
     List<Callable<Integer>> calls = createCalls(urlsToTrigger);
     for (Future<Integer> future : exService.invokeAll(calls)) {
-      future.get();
+      try {
+        future.get();
+      } catch (InterruptedException | ExecutionException e) {
+        log.error("Was not able to clean up before test.", e);
+      }
     }
   }
 
   public static void removeClientOnCleanupTrigger() {
-    client.remove();
+    cleanUpClient.remove();
   }
 
   private static List<Callable<Integer>> createCalls(Set<String> urlToTrigger) {
-    return urlToTrigger.stream().map(url -> (Callable<Integer>) () -> client.get().post(url).asEmpty().getStatus()).toList();
+    return urlToTrigger.stream().map(
+            url -> (Callable<Integer>)
+                () -> cleanUpClient.get().post(url).asEmpty().getStatus())
+        .toList();
   }
-
 
   @SneakyThrows
   private static Set<String> getOrgAdminApisForApisUsedInTestSteps(List<TestStep> testSteps) {
-    List<String> stepLines = testSteps.stream()
+    Optional<DataTableArgument> dataTable = testSteps.stream()
         .filter(PickleStepTestStep.class::isInstance)
-        .map(t -> (PickleStepTestStep) t)
-        .map(t -> t.getStep().getText()).toList();
-    Set<String> inTestCalledUrls = values.stream().filter(v -> stepLines.stream().anyMatch(s -> s.contains(v))).collect(Collectors.toSet());
-    return inTestCalledUrls.stream()
+        .map(PickleStepTestStep.class::cast)
+        .filter(pickleStepTestStep -> pickleStepTestStep.getStep().getArgument() != null)
+        .filter(pickleStepTestStep -> pickleStepTestStep.getStep().getText().equals(CLAIMING_STEP_TEXT))
+        .map(pickleStepTestStep -> pickleStepTestStep.getStep().getArgument())
+        .filter(DataTableArgument.class::isInstance)
+        .map(DataTableArgument.class::cast)
+        .findFirst();
+    if (dataTable.isEmpty()) {
+      return Set.of();
+    }
+    List<String> apiUrls = getApiFromDataTable(dataTable.get());
+    assertThat(values)
+        .as("Unknown api. You tried to call an api that is not included in combine_item.json.")
+        .containsAll(apiUrls);
+    return apiUrls.stream()
         .map(CleanupTrigger::toItem)
         .map(i -> i.getProperties().get(HOME_SERVER_PROPERTY))
         .map(CleanupTrigger::getOrgAdminForHomeServer)
         .collect(Collectors.toSet());
   }
 
+  @NotNull
+  private static List<String> getApiFromDataTable(DataTableArgument dataTable) {
+    return dataTable.cells().stream()
+        .map(c -> c.get(2))
+        .toList();
+  }
+
   private static String getOrgAdminForHomeServer(String s) {
     CombineItem orgadmin = items.stream()
         .filter(i -> i.getProperties().get(HOME_SERVER_PROPERTY).equals(s) && i.getTags().contains(ORG_ADMIN_TAG))
         .findFirst()
-        .orElseThrow(() -> new InitializationException("Did not found any Orgadmin for " + s));
+        .orElseThrow(() -> new InitializationException("Did not find any Orgadmin for " + s));
     return prepareApiNameForHttp(orgadmin.getValue());
   }
 
   private static CombineItem toItem(String s) {
     return items.stream().filter(i -> i.isSameAs(s)).findAny().orElseThrow();
   }
-
 }

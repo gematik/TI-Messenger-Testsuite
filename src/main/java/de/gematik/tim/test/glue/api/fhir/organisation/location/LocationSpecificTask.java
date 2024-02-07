@@ -43,5 +43,4 @@ public abstract class LocationSpecificTask extends HealthcareSpecificTask {
       locationName = useLocationAbility.getActiveKey();
     }
   }
-
 }

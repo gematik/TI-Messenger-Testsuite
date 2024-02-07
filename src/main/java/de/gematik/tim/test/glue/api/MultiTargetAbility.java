@@ -16,6 +16,11 @@
 
 package de.gematik.tim.test.glue.api;
 
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addEndpoint;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addHs;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addRoom;
+import static java.util.Objects.requireNonNull;
+
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.HealthcareServiceInfo;
 import de.gematik.tim.test.models.FhirEndpointDTO;
 import de.gematik.tim.test.models.RoomDTO;
@@ -28,9 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.*;
-import static java.util.Objects.requireNonNull;
 
 public abstract class MultiTargetAbility<K, V> extends TeardownAbility {
 
@@ -104,7 +106,6 @@ public abstract class MultiTargetAbility<K, V> extends TeardownAbility {
     currentTarget = new SimpleImmutableEntry<>(key, target);
     return target;
   }
-
 
   protected void clear() {
     targets.clear();

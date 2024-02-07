@@ -18,9 +18,9 @@ package de.gematik.tim.test.glue.api.utils;
 
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addFailedActor;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.RUN_WITHOUT_RETRY;
+import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.TIMEOUT;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.getMapper;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.pollInterval;
-import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.timeout;
 import static java.lang.String.format;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
@@ -49,18 +49,18 @@ public class RequestResponseUtils {
   }
 
   public static <T> T repeatedRequest(Supplier<Optional<T>> request, String resourceType) {
-    return repeatedRequest(request, resourceType, timeout, pollInterval);
+    return repeatedRequest(request, resourceType, TIMEOUT, pollInterval);
   }
 
   public static <T> T repeatedRequestWithLongerTimeout(Supplier<Optional<T>> request,
       String resourceType, int factor) {
-    return repeatedRequest(request, resourceType, timeout * factor, pollInterval);
+    return repeatedRequest(request, resourceType, TIMEOUT * factor, pollInterval);
   }
 
   public static <T> T repeatedRequest(Supplier<Optional<T>> request, String resourceType,
       Long customTimeout, Long customPollInterval) {
     if (customTimeout == null || customPollInterval == null) {
-      customTimeout = timeout;
+      customTimeout = TIMEOUT;
       customPollInterval = pollInterval;
     }
     if (customTimeout <= 1 || RUN_WITHOUT_RETRY) {
@@ -76,7 +76,7 @@ public class RequestResponseUtils {
 
   @SuppressWarnings("java:S2201") // Run without retry only used for internal CI, therefor we do not need result
   public static void repeatedRequestForTeardown(Supplier<Optional<Boolean>> request, Actor actor) {
-    if (timeout <= 1 || RUN_WITHOUT_RETRY) {
+    if (TIMEOUT <= 1 || RUN_WITHOUT_RETRY) {
       request.get().orElseThrow(() -> new ConditionTimeoutException(
           "Teardown failed for actor " + actor.getName() + "! Looks like you have tried to delete a resource that should not be available"));
       return;

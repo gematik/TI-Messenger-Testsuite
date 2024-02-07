@@ -49,5 +49,4 @@ public abstract class HealthcareSpecificTask implements Task {
       actor.remember(HAS_REG_SERVICE_TOKEN, true);
     }
   }
-
 }

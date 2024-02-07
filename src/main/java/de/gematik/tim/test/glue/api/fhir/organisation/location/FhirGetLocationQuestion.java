@@ -36,5 +36,4 @@ public class FhirGetLocationQuestion extends LocationSpecificTask implements
     actor.attemptsTo(GET_LOCATION.request());
     return parseResponse(FhirLocationDTO.class, true);
   }
-
 }

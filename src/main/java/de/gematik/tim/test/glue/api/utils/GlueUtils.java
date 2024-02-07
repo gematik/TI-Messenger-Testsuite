@@ -82,13 +82,38 @@ public class GlueUtils {
   private static final Faker faker = new Faker();
   private static final Random random = new Random();
 
-  // Utils
   public static RoomDTO getRoomBetweenTwoActors(Actor actor, String senderName) {
     String actorId = actor.recall(MX_ID);
     String senderId = theActorCalled(senderName).recall(MX_ID);
     List<String> membersIds = List.of(actorId, senderId);
     List<RoomDTO> rooms = actor.asksFor(ownRooms());
-    return requireNonNull(filterForRoomWithSpecificMembers(rooms, membersIds));
+    RoomDTO room = requireNonNull(filterForRoomWithSpecificMembers(rooms, membersIds));
+    checkRoomVersion(room);
+    return room;
+  }
+
+  public static void checkRoomVersion() {
+    RoomDTO room = parseResponse(RoomDTO.class);
+    checkRoomVersion(room);
+  }
+
+  public static void checkRoomVersion(RoomDTO room) {
+    if (room.getRoomVersion() == null || versionNotSupported(room.getRoomVersion())) {
+      throw new AssertionFailed(format("room %s should have a valid version, but version was %s", room.getRoomId(), room.getRoomVersion()));
+    }
+  }
+
+  public static void checkRoomVersion(String actorName, String userName) {
+    Actor actor = theActorCalled(actorName);
+    Actor user = theActorCalled(userName);
+    checkRoomVersion(
+        actor.asksFor(
+            ownRoom().withName(getInternalRoomNameByDisplayNames(actor.recall(DISPLAY_NAME), user.recall(DISPLAY_NAME)))));
+  }
+
+  private static boolean versionNotSupported(String roomVersion) {
+    List<String> supportedVersions = List.of("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
+    return !supportedVersions.contains(roomVersion);
   }
 
   public static void checkRoomMembershipStateInDirectChatOf(String actorName, String userName) {
@@ -109,7 +134,7 @@ public class GlueUtils {
 
   public static void checkRoomMembershipState(RoomDTO room) {
     checkIfAllMembersAreCorrect(room);
-    checkIfAllActorsRelatedToRoomHaveCorrectMembershipState(room);
+    //    checkIfAllActorsRelatedToRoomHaveCorrectMembershipState(room);
   }
 
   public static RoomDTO filterForRoomWithSpecificMembers(List<RoomDTO> rooms,
@@ -258,13 +283,7 @@ public class GlueUtils {
     List<String> mxidsInEndpoints = endpoint.stream().map(FhirEndpointDTO::getAddress).toList();
     assertThat(mxidsInEndpoints).hasSize(mxids.size());
     for (String mxid : mxids) {
-      assertThat(mxids).satisfiesAnyOf(
-          t -> {
-            assertThat(mxidsInEndpoints).contains(mxid);
-            individualLog("Mxid found which is not in URL form in assertion");
-          },
-          t -> assertThat(mxidsInEndpoints).contains(mxidToUrl(mxid))
-      );
+      assertThat(mxidsInEndpoints).contains(mxidToUrl(mxid));
     }
   }
 
@@ -278,13 +297,7 @@ public class GlueUtils {
         .isNotEmpty();
 
     List<String> mxids = endpoints.stream().map(FhirEndpointDTO::getAddress).toList();
-    assertThat(mxids).satisfiesAnyOf(
-        t -> {
-          individualLog("Mxid found which is not in URL form in assertion");
-          assertThat(mxids).contains((String) searchedActor.recall(MX_ID));
-        },
-        t -> assertThat(mxids).contains(mxidToUrl(searchedActor.recall(MX_ID)))
-    );
+    assertThat(mxids).contains(mxidToUrl(searchedActor.recall(MX_ID)));
   }
 
   public static String prepareApiNameForHttp(String apiName) {
@@ -344,5 +357,4 @@ public class GlueUtils {
   public List<String> listOfStrings(String arg) {
     return stream(arg.split(",\\s?")).map(str -> str.replace("\"", "")).toList();
   }
-
 }

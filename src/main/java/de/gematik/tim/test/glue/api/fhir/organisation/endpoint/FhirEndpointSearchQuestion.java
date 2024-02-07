@@ -25,12 +25,13 @@ import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.models.FhirSearchResultDTO;
 import io.restassured.specification.RequestSpecification;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 import org.awaitility.core.ConditionTimeoutException;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 @Slf4j
 public class FhirEndpointSearchQuestion implements Question<FhirSearchResultDTO> {
@@ -55,11 +56,6 @@ public class FhirEndpointSearchQuestion implements Question<FhirSearchResultDTO>
     return this;
   }
 
-  public FhirEndpointSearchQuestion withAtLeastResults(int amount) {
-    this.atLeastExpectedResults = amount;
-    return this;
-  }
-
   public FhirEndpointSearchQuestion withCustomInterval(Long timeout, Long pollInterval) {
     this.customTimeout = timeout;
     this.customPollInterval = pollInterval;
@@ -73,7 +69,7 @@ public class FhirEndpointSearchQuestion implements Question<FhirSearchResultDTO>
           customTimeout, customPollInterval);
     } catch (ConditionTimeoutException ex) {
       log.error(
-          "Endpoint could not bee found with requested parameters. MxId: {} endpointName: {}",
+          "Endpoint could not be found with requested parameters. MxId: {} endpointName: {}",
           this.mxId, this.endpointName);
     }
     return lastResponse().body()
@@ -83,7 +79,7 @@ public class FhirEndpointSearchQuestion implements Question<FhirSearchResultDTO>
   @NotNull
   private Optional<FhirSearchResultDTO> filterEndpoint(Actor actor) {
     actor.attemptsTo(SEARCH_ENDPOINT.request().with(this::prepareQuery));
-    FhirSearchResultDTO res = parseResponse(FhirSearchResultDTO.class,true);
+    FhirSearchResultDTO res = parseResponse(FhirSearchResultDTO.class, true);
     if (requireNonNull(res.getTotal()) < atLeastExpectedResults) {
       return Optional.empty();
     }

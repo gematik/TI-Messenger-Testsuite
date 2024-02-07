@@ -48,7 +48,7 @@ public class ParallelExecutor {
       for (Future<Void> future : futures) {
         future.get();
       }
-    } catch (InterruptedException | ExecutionException e) {
+    } catch (ExecutionException | InterruptedException e) {
       throw new TestRunException("Claiming parallel failed...", e);
     }
   }

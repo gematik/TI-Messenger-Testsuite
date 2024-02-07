@@ -24,15 +24,19 @@ import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.models.HomeserverSearchResultDTO;
 import de.gematik.tim.test.models.HomeserverSearchResultListDTO;
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Wenn;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import net.serenitybdd.screenplay.Actor;
 
 public class HomeserverSearchGlue {
 
 
+  @When("{string} can find the TI-Messenger user {string} when searching in the homeserver")
   @Wenn("{string} findet TI-Messenger-Nutzer {string} bei der Suche im HomeServer")
   public void findsTimUserWhenSearchingOnHomeserver(String actorName, String userName) {
     Actor actor = theActorCalled(actorName);
@@ -51,28 +55,31 @@ public class HomeserverSearchGlue {
             .contains((String) actorToFind.recall(DISPLAY_NAME)));
   }
 
+  @When("{string} can find the TI-Messenger user {string} when searching in the homeserver by name omitting {int}-{int} \\(number of chars front-back)")
   @Wenn("{string} findet TI-Messenger-Nutzer {string} bei der Suche im HomeServer nach Namen minus {int}-{int} \\(Anzahl vorne-hinten) Char\\(s) abgeschnitten")
   public void findsTimUserWhenSearchingOnHomeserver(
       String actorName, String userName, int beginCutoff, int endCutoff) {
     Actor actor = theActorCalled(actorName);
     Actor actorToFind = theActorCalled(userName);
     String displayName = actorToFind.recall(DISPLAY_NAME);
+    String cuttedDisplayName = displayName.substring(beginCutoff, displayName.length() - endCutoff);
 
     HomeserverSearchResultListDTO res = actor.asksFor(
-        userOnHomeserver().withDisplayName(
-            displayName.substring(beginCutoff, displayName.length() - endCutoff)));
+        userOnHomeserver().withDisplayName(cuttedDisplayName));
     HomeserverSearchResultDTO res2 = requireNonNull(res.getSearchResults()).stream()
         .filter(r -> requireNonNull(r.getMxId()).equals(actorToFind.recall(MX_ID)))
         .findFirst()
-        .orElseThrow();
+        .orElseThrow(() -> new TestRunException("Could not find any endpoint with cutted display name: %s -> cutted to %s".formatted(displayName, cuttedDisplayName)));
     assertThat(res2.getDisplayName()).isEqualTo(displayName);
   }
 
+  @Then("{string} cannot find TI-Messenger user {string} when searching in the homeserver")
   @Dann("{string} findet TI-Messenger-Nutzer {string} bei der Suche im HomeServer nicht")
   public void doesNotFindTIMUserWhenSearchingOnHomeserver(String actorName, String userName) {
     doesNotFindTIMUserWhenSearchingOnHomeserver(actorName, userName, null, null);
   }
 
+  @Then("{string} cannot find TI-Messenger user {string} when searching in the homeserver [retry {long} - {long}]")
   @Dann("{string} findet TI-Messenger-Nutzer {string} bei der Suche im HomeServer nicht [Retry {long} - {long}]")
   public void doesNotFindTIMUserWhenSearchingOnHomeserver(String actorName, String userName,
       Long customTimeout, Long customPollInterval) {

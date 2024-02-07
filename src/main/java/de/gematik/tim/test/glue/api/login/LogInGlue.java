@@ -78,6 +78,7 @@ public class LogInGlue {
     checkResponseCode(actorName, OK.value());
   }
 
+  @When("{string} logs in as HBA-User")
   @Wenn("{string} sich als HBA-User einloggt")
   public void logsInAsHbaUser(String actorName) {
     Actor actor = theActorCalled(actorName);
@@ -85,6 +86,7 @@ public class LogInGlue {
     checkIs(List.of(CLIENT, PRACTITIONER)).withActor(actor).run();
   }
 
+  @When("{string} logs in as Org-User")
   @Wenn("{string} sich als Org-User einloggt")
   public void logsInAsOrgUser(String actorName) {
     Actor actor = theActorCalled(actorName);
@@ -92,6 +94,7 @@ public class LogInGlue {
     checkIs(List.of(CLIENT)).withActor(actor).run();
   }
 
+  @When("{string} logs in as OrgAdmin")
   @Wenn("{string} sich als OrgAdmin einloggt")
   public void sichAlsOrgAdminRegistriert(String actorName) {
     Actor actor = theActorCalled(actorName);

@@ -41,7 +41,8 @@ public class UseEndpointAbility extends MultiTargetAbility<String, EndpointInfo>
       String endpointId, String hsName) {
     UseEndpointAbility ability = actor.abilityTo(UseEndpointAbility.class);
     if (isNull(ability)) {
-      actor.can(ability = new UseEndpointAbility());
+      ability = new UseEndpointAbility();
+      actor.can(ability);
     }
     ability.addAndSetActive(endpointName, new EndpointInfo(endpointId, hsName));
   }

@@ -27,6 +27,7 @@ import static org.hamcrest.Matchers.lessThan;
 import de.gematik.tim.test.glue.api.threading.ParallelExecutor;
 import de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager;
 import io.cucumber.java.de.Dann;
+import io.cucumber.java.en.Then;
 import net.serenitybdd.screenplay.Actor;
 import org.hamcrest.Matcher;
 
@@ -35,6 +36,7 @@ public class GeneralStepsGlue {
   private GeneralStepsGlue() {
   }
 
+  @Then("{string} receives a response code {int}")
   @Dann("erhält {string} einen Responsecode {int}")
   public static void checkResponseCode(String actorName, int responseCode) {
     checkResponseCode(theActorCalled(actorName), responseCode);
@@ -48,10 +50,10 @@ public class GeneralStepsGlue {
     }
   }
 
+  @Then("the operation was successful")
   @Dann("war die Operation erfolgreich")
   public static void checkResponseCode() {
     Matcher<Integer> is2xx = allOf(greaterThanOrEqualTo(200), lessThan(300));
     theActorInTheSpotlight().should(seeThatResponse(res -> res.statusCode(is2xx)));
   }
-
 }

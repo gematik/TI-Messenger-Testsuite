@@ -31,8 +31,6 @@ import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.HasTeardown;
 import net.serenitybdd.screenplay.RefersToActor;
 
-import java.util.HashMap;
-
 public abstract class TeardownAbility implements RefersToActor, Ability, HasTeardown {
 
   @Getter

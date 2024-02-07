@@ -37,6 +37,7 @@ public final class TestdriverApiPath {
   public static final String MEDIA_ID_VARIABLE = "mediaId";
 
   public static final String INFO_PATH = "/";
+  public static final String SUPPORTED_VERSIONS_PATH = "/_matrix/client/versions";
 
   // DEVICE
   public static final String DEVICES_PATH = "/devices";
@@ -85,7 +86,7 @@ public final class TestdriverApiPath {
   public static final String FHIR_SEARCH_ORG_PATH =
       FHIR_BASE_PATH + "/searchOrganizationInFhirDirectory";
   public static final String FHIR_SEARCH_ENDPOINT_PATH = FHIR_BASE_PATH + "/searchHealthcareServiceEndpointInFhirDirectory";
-  public static final String FHIR_HEALTHCARE_SERVICE_PATH = FHIR_ORG_PATH +"/healthcareService";
+  public static final String FHIR_HEALTHCARE_SERVICE_PATH = FHIR_ORG_PATH + "/healthcareService";
   public static final String FHIR_HS_ADMIN_PATH =
       FHIR_HEALTHCARE_SERVICE_PATH + "/" + PATH_VARIABLE.formatted(HEALTHCARE_SERVICE_ID_VARIABLE);
 
@@ -106,5 +107,4 @@ public final class TestdriverApiPath {
 
   public static final String MEDIA_DOWNLOAD_PATH =
       MEDIA_PATH + "/" + PATH_VARIABLE.formatted(MEDIA_ID_VARIABLE);
-
 }
