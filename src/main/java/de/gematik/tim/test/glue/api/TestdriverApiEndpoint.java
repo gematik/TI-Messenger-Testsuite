@@ -55,6 +55,7 @@ import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_INVITE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_JOIN_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_LEAVE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_STATE_PATH;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.SUPPORTED_VERSIONS_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.UNCLAIM_DEVICE_PATH;
 import static java.util.Objects.requireNonNull;
 
@@ -84,6 +85,8 @@ public enum TestdriverApiEndpoint {
 
   GET_INFO(GET, INFO_PATH),
   CLEAN_REQUEST(POST, INFO_PATH),
+
+  GET_SUPPORTED_VERSIONS(GET, SUPPORTED_VERSIONS_PATH),
 
   // DEVICE
   GET_DEVICES(GET, DEVICES_PATH),
@@ -224,5 +227,4 @@ public enum TestdriverApiEndpoint {
     DELETE(Delete::from);
     private final Function<String, RestInteraction> creator;
   }
-
 }

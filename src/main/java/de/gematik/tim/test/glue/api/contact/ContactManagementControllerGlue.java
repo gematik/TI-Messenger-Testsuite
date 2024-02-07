@@ -21,36 +21,27 @@ import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
 import static de.gematik.tim.test.glue.api.contact.AddContactTask.addContact;
 import static de.gematik.tim.test.glue.api.contact.ContactListQuestion.ownContactList;
 import static de.gematik.tim.test.glue.api.contact.DeleteContactTask.deleteContact;
-import static de.gematik.tim.test.glue.api.message.SendDirectMessageTask.sendDirectMessageTo;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.OK;
 
 import de.gematik.tim.test.models.ContactDTO;
 import de.gematik.tim.test.models.ContactsDTO;
 import io.cucumber.java.de.Dann;
-import io.cucumber.java.en.When;
+import io.cucumber.java.en.Then;
 import net.serenitybdd.screenplay.Actor;
 
 public class ContactManagementControllerGlue {
 
+  @Then("{string} puts {string} into their contact management")
   @Dann("{string} hinterlegt {string} in seiner Freigabeliste")
-  @When("{string} put {string} into his contact management")
   public void putIntoHisContactManagement(String actorName, String userName) {
     Actor actor = theActorCalled(actorName);
     actor.attemptsTo(addContact(theActorCalled(userName).recall(MX_ID)));
     checkResponseCode(actorName, OK.value());
   }
 
-  @When("{string} tries to contact {string} directly {string}")
-  public void triesToContactDirectly(String actorName, String userName, String message) {
-    Actor actor = theActorCalled(actorName);
-    Actor user = theActorCalled(userName);
-    actor.attemptsTo(sendDirectMessageTo(user, message));
-    checkResponseCode(actorName, FORBIDDEN.value());
-  }
-
+  @Then("{string} deletes {string} from their contact management")
   @Dann("{string} löscht {string} in seiner Freigabeliste")
   public void deletesFromHisContactManagement(String actorName, String userName) {
     Actor actor = theActorCalled(actorName);

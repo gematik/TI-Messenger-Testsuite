@@ -37,8 +37,8 @@ import org.apache.commons.lang3.StringUtils;
 public class CreateHealthcareServiceTask implements Task {
 
   private final String hsName;
-  FhirHealthcareServiceDTO healthcareServiceDTO = new FhirHealthcareServiceDTO();
-  String healthcareServiceString;
+  private final FhirHealthcareServiceDTO healthcareServiceDTO = new FhirHealthcareServiceDTO();
+  private String healthcareServiceString;
 
   public static CreateHealthcareServiceTask createHealthcareService(String hsName) {
     CreateHealthcareServiceTask createHealthcareServiceTask = new CreateHealthcareServiceTask(hsName);
@@ -54,7 +54,6 @@ public class CreateHealthcareServiceTask implements Task {
 
   @Override
   public <T extends Actor> void performAs(T actor) {
-
     if (StringUtils.isNotBlank(healthcareServiceString)) {
       actor.attemptsTo(CREATE_HEALTHCARE_SERVICE.request()
           .with(req -> req.body(healthcareServiceString)));
@@ -70,10 +69,8 @@ public class CreateHealthcareServiceTask implements Task {
     Response response = lastResponse();
     if (response.statusCode() == CREATED.value()) {
       FhirHealthcareServiceDTO hsDTO = response.body().as(FhirHealthcareServiceDTO.class);
-      assertThat(hsDTO.getId()).isNotBlank();
+      assertThat(hsDTO.getId()).as("Healthcare-Service %s id is empty".formatted(hsDTO.getName())).isNotBlank();
       addHsToActor(hsName, new HealthcareServiceInfo(hsDTO.getName(), hsDTO.getId()), actor);
     }
   }
-
-
 }

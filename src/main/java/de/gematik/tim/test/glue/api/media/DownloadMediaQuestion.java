@@ -24,8 +24,6 @@ import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 
-import java.util.UUID;
-
 public class DownloadMediaQuestion implements Question<byte[]> {
 
   private String fileId;

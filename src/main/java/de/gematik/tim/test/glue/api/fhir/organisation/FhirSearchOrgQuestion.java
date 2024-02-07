@@ -20,7 +20,6 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEARCH_ORG;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.mxidToUrl;
-import static de.gematik.tim.test.glue.api.utils.IndividualLogger.individualLog;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getHsFromInternalName;
@@ -31,29 +30,21 @@ import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import de.gematik.tim.test.models.FhirEndpointDTO;
 import de.gematik.tim.test.models.FhirSearchResultDTO;
 import io.restassured.specification.RequestSpecification;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 public class FhirSearchOrgQuestion implements Question<FhirSearchResultDTO> {
 
   private String hsName;
-  private String orgName;
-  private String address;
-  private String telematikId;
-  private String typeCode;
-  private String typeDisplay;
-  private String contactMxid;
-  private String contactName;
-  private String contactPurpose;
   private String mxIdInEndpoint;
   private int minimalSearchResults = 1;
   private Long customTimeout;
   private Long customPollInterval;
-
 
   public static FhirSearchOrgQuestion organizationEndpoints() {
     return new FhirSearchOrgQuestion();
@@ -61,46 +52,6 @@ public class FhirSearchOrgQuestion implements Question<FhirSearchResultDTO> {
 
   public FhirSearchOrgQuestion withHsName(String hsName) {
     this.hsName = hsName;
-    return this;
-  }
-
-  public FhirSearchOrgQuestion withOrgName(String orgName) {
-    this.orgName = orgName;
-    return this;
-  }
-
-  public FhirSearchOrgQuestion withAddress(String address) {
-    this.address = address;
-    return this;
-  }
-
-  public FhirSearchOrgQuestion withTelematikId(String telematikId) {
-    this.telematikId = telematikId;
-    return this;
-  }
-
-  public FhirSearchOrgQuestion withTypeCode(String typeCode) {
-    this.typeCode = typeCode;
-    return this;
-  }
-
-  public FhirSearchOrgQuestion withTypeDisplay(String typeDisplay) {
-    this.typeDisplay = typeDisplay;
-    return this;
-  }
-
-  public FhirSearchOrgQuestion withContactMxid(String contactMxid) {
-    this.contactMxid = contactMxid;
-    return this;
-  }
-
-  public FhirSearchOrgQuestion withContactName(String contactName) {
-    this.contactName = contactName;
-    return this;
-  }
-
-  public FhirSearchOrgQuestion withContactPurpose(String contactPurpose) {
-    this.contactPurpose = contactPurpose;
     return this;
   }
 
@@ -135,21 +86,20 @@ public class FhirSearchOrgQuestion implements Question<FhirSearchResultDTO> {
     return checkConditions(resp);
   }
 
-  private Optional<FhirSearchResultDTO> checkConditions(FhirSearchResultDTO resp) {
-    List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(resp, ENDPOINT, FhirEndpointDTO.class);
+  private Optional<FhirSearchResultDTO> checkConditions(FhirSearchResultDTO searchResult) {
+    List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(searchResult, ENDPOINT, FhirEndpointDTO.class);
     if (mxIdInEndpoint == null && endpoints.size() >= minimalSearchResults) {
-      return Optional.of(resp);
+      return Optional.of(searchResult);
     }
 
     List<String> ids = endpoints.stream()
         .map(FhirEndpointDTO::getAddress)
         .filter(Objects::nonNull)
         .toList();
-    if (ids.contains(mxidToUrl(mxIdInEndpoint)) && requireNonNull(resp.getTotal()) >= minimalSearchResults) {
-      return Optional.of(resp);
-    } else if (ids.contains(mxIdInEndpoint) && requireNonNull(resp.getTotal()) >= minimalSearchResults) {
-      individualLog("Mxid found which is not in URL form!");
-      return Optional.of(resp);
+    if (mxIdInEndpoint != null
+        && ids.contains(mxidToUrl(mxIdInEndpoint))
+        && requireNonNull(searchResult.getTotal()) >= minimalSearchResults) {
+      return Optional.of(searchResult);
     }
     return Optional.empty();
   }
@@ -157,30 +107,6 @@ public class FhirSearchOrgQuestion implements Question<FhirSearchResultDTO> {
   private RequestSpecification prepareQuery(RequestSpecification request) {
     if (StringUtils.isNotBlank(hsName)) {
       request.queryParam("healthcareServiceName", getHsFromInternalName(hsName).name());
-    }
-    if (StringUtils.isNotBlank(address)) {
-      request.queryParam("address", address);
-    }
-    if (StringUtils.isNotBlank(orgName)) {
-      request.queryParam("name", orgName);
-    }
-    if (StringUtils.isNotBlank(telematikId)) {
-      request.queryParam("telematikId", telematikId);
-    }
-    if (StringUtils.isNotBlank(typeCode)) {
-      request.queryParam("typeCode", typeCode);
-    }
-    if (StringUtils.isNotBlank(typeDisplay)) {
-      request.queryParam("typeDisplay", typeDisplay);
-    }
-    if (StringUtils.isNotBlank(contactMxid)) {
-      request.queryParam("contactMxid", contactMxid);
-    }
-    if (StringUtils.isNotBlank(contactName)) {
-      request.queryParam("contactName", contactName);
-    }
-    if (StringUtils.isNotBlank(contactPurpose)) {
-      request.queryParam("contactPurpose", contactPurpose);
     }
     return request;
   }

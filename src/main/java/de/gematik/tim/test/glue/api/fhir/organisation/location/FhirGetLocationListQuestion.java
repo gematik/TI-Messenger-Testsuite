@@ -25,10 +25,11 @@ import static java.util.Objects.requireNonNull;
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.HealthcareSpecificTask;
 import de.gematik.tim.test.models.FhirLocationDTO;
 import de.gematik.tim.test.models.FhirSearchResultDTO;
-import java.util.List;
-import java.util.Optional;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
+
+import java.util.List;
+import java.util.Optional;
 
 public class FhirGetLocationListQuestion extends HealthcareSpecificTask implements
     Question<List<FhirLocationDTO>> {
@@ -62,6 +63,4 @@ public class FhirGetLocationListQuestion extends HealthcareSpecificTask implemen
             .orElse(true))
         .toList();
   }
-
-
 }

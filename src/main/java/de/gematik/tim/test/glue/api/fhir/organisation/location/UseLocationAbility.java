@@ -36,7 +36,8 @@ public class UseLocationAbility extends MultiTargetAbility<String, LocationInfo>
       T actor, String hsName) {
     UseLocationAbility ability = actor.abilityTo(UseLocationAbility.class);
     if (isNull(ability)) {
-      actor.can(ability = new UseLocationAbility());
+      ability = new UseLocationAbility();
+      actor.can(ability);
     }
     ability.addAndSetActive(locationName, new LocationInfo(locationId, hsName));
   }

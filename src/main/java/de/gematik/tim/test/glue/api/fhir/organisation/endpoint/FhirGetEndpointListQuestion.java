@@ -29,9 +29,10 @@ import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.Healthca
 import de.gematik.tim.test.models.FhirEndpointDTO;
 import de.gematik.tim.test.models.FhirHealthcareServiceDTO;
 import de.gematik.tim.test.models.FhirSearchResultDTO;
-import java.util.List;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
+
+import java.util.List;
 
 public class FhirGetEndpointListQuestion extends HealthcareSpecificTask implements
     Question<List<FhirEndpointDTO>> {
@@ -45,11 +46,6 @@ public class FhirGetEndpointListQuestion extends HealthcareSpecificTask implemen
 
   public FhirGetEndpointListQuestion withHsId(String hsId) {
     this.hsId = hsId;
-    return this;
-  }
-
-  public FhirGetEndpointListQuestion filterForName(String endpointName) {
-    this.endpointName = endpointName;
     return this;
   }
 
@@ -70,9 +66,6 @@ public class FhirGetEndpointListQuestion extends HealthcareSpecificTask implemen
       List<String> ids = getEndpointIdsOrLocationIdsOfHealthcareService(hs, ENDPOINT);
       endpoints = endpoints.stream().filter(e -> ids.contains(e.getId())).toList();
     }
-
     return endpoints;
   }
-
-
 }

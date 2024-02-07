@@ -36,5 +36,4 @@ public class LookForDeletedHealthcareServiceAbility implements
   public RequestSpecification apply(RequestSpecification requestSpecification) {
     return requestSpecification.pathParam(HEALTHCARE_SERVICE_ID_VARIABLE, hsId);
   }
-
 }

@@ -22,8 +22,9 @@ import static java.lang.Boolean.TRUE;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.glue.api.TeardownAbility;
-import java.util.Optional;
 import org.springframework.http.HttpStatus;
+
+import java.util.Optional;
 
 public class CanDeleteOwnMxidAbility extends TeardownAbility {
 
@@ -33,13 +34,11 @@ public class CanDeleteOwnMxidAbility extends TeardownAbility {
 
   @Override
   protected void teardownThis() {
-    repeatedRequestForTeardown(this::deleteFromFhirVzd,actor);
+    repeatedRequestForTeardown(this::deleteFromFhirVzd, actor);
   }
 
   private Optional<Boolean> deleteFromFhirVzd() {
     this.actor.attemptsTo(deleteMxidFromFhir());
     return HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful() ? Optional.of(TRUE) : Optional.empty();
   }
-
-
 }

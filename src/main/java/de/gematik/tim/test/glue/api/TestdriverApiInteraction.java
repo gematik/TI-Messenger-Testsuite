@@ -21,13 +21,14 @@ import static java.util.Objects.requireNonNull;
 import de.gematik.test.tiger.lib.TigerDirector;
 import de.gematik.test.tiger.proxy.TigerProxy;
 import io.restassured.RestAssured;
-import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.rest.interactions.RestInteraction;
 import net.serenitybdd.screenplay.rest.questions.RestQueryFunction;
+
+import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class TestdriverApiInteraction implements Performable {
@@ -55,5 +56,4 @@ public class TestdriverApiInteraction implements Performable {
     });
     restInteraction.performAs(actor);
   }
-
 }

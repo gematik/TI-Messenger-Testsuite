@@ -34,6 +34,7 @@ import de.gematik.tim.test.glue.api.room.UseRoomAbility;
 import de.gematik.tim.test.models.MessageDTO;
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Wenn;
+import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import lombok.SneakyThrows;
 import net.serenitybdd.screenplay.Actor;
@@ -49,17 +50,7 @@ public class MediaGlue {
   public static final String RESOURCES_PATH = "src/test/resources/media/";
 
   @SneakyThrows
-  @When("{string} uploads a media file {string}")
-  public void uploadsAMediaFile(String actorName, String media) {
-    Path path = Path.of(RESOURCES_PATH + media);
-    try (FileInputStream fis = new FileInputStream(path.toFile())) {
-      theActorCalled(actorName).attemptsTo(
-          uploadMedia().withMedia(fis.readAllBytes()));
-    }
-    checkResponseCode(actorName, CREATED.value());
-  }
-
-  @SneakyThrows
+  @When("{string} sends an attachment {string} into the room {string}")
   @Wenn("{string} sendet ein Attachment {string} an den Raum {string}")
   public void sendsAttachmentToRoom(String actorName, String fileName, String roomName) {
     uploadsAMediaFile(actorName, fileName);
@@ -76,8 +67,19 @@ public class MediaGlue {
   }
 
   @SneakyThrows
+  private void uploadsAMediaFile(String actorName, String media) {
+    Path path = Path.of(RESOURCES_PATH + media);
+    try (FileInputStream fis = new FileInputStream(path.toFile())) {
+      theActorCalled(actorName).attemptsTo(
+          uploadMedia().withMedia(fis.readAllBytes()));
+    }
+    checkResponseCode(actorName, CREATED.value());
+  }
+
+  @SneakyThrows
   @SuppressWarnings("java:S3655")
   // It gets checked by asserThat(message).isPresent()
+  @Then("{string} receives the attachment {string} from {string} in the room {string}")
   @Dann("{string} empfängt das Attachment {string} von {string} im Raum {string}")
   public void receiveAttachmentInRoom(String actorName, String fileName, String userName,
       String roomName) {

@@ -31,6 +31,7 @@ import de.gematik.tim.test.models.MessageDTO;
 import de.gematik.tim.test.models.RoomDTO;
 import io.cucumber.core.exception.CucumberException;
 import io.cucumber.java.Scenario;
+import io.cucumber.plugin.event.TestCaseStarted;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.serenitybdd.core.Serenity;
@@ -62,9 +63,16 @@ public class TestcasePropertiesManager {
   @Getter
   private static boolean runningParallel;
 
+  public static void createTestcaseId(TestCaseStarted tcs) {
+    String testId = tcs.getTestCase().getTags().stream().filter(t -> t.startsWith(TCID_PREFIX))
+        .findFirst()
+        .orElseThrow(() -> new CucumberException(
+            "This scenario seems to have no TCID! Name: " + tcs.getTestCase().getName()));
+    id = format("%s/%s", testId, UUID.randomUUID());
+  }
+
   public static void startTest(Scenario scenario) {
     currentScenario = scenario;
-    createTestcaseId();
     reset();
     Serenity.recordReportData()
         .withTitle("TestcaseId")
@@ -184,14 +192,6 @@ public class TestcasePropertiesManager {
 
   public static void setParallelFlag(boolean status) {
     runningParallel = status;
-  }
-
-  private static void createTestcaseId() {
-    String testId = currentScenario.getSourceTagNames().stream().filter(t -> t.startsWith(TCID_PREFIX))
-        .findFirst()
-        .orElseThrow(() -> new CucumberException(
-            "This scenario seems to have no TCID! Name: " + currentScenario.getName()));
-    id = format("%s/%s", testId, UUID.randomUUID());
   }
 
   private static void reset() {

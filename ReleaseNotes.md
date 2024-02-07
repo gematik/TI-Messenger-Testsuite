@@ -2,17 +2,34 @@
 
 # Release notes
 
-
-
 ## Link to TI-Messenger-testsuite [`docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
 
 - - -
+
+## Release 0.10.0
+
+## Features
+
+- Updated to new tiger version 2.3.2
+- Fits to TestdriverApi 0.9.4 -> Add room version and check rooms for valid room version in the range 1 to 10
+- Activates new Testcases 10.20 and 10.21 - User verlässt den Chat-Raum
+- The clean-up before each test will be set as two times the property '
+  timeout'  [`read more`](doc/userguide/GettingStarted.adoc)
+- All glue steps now have the German and a translated English version
+- The mxid to be stored in the FHIR VZD is only accepted and expected in its url form (i.e. "matrix:u/name:homeserver"),
+  support for the matrix format was removed.
+- Removed TFs 00.2, 00.5 & 04.2 - before all in status WIP
+- New Testcase 00.07 Abfrage der Matrix-Server-Version. Request Matrix-Homeserver-Api directly at `/_matrix/client/versions`
+
+### Changes
+
+- Search for free device now just wait double the time till abort testcase
 
 ## Release 0.9.8
 
 ### Features
 
-- Create room request: Access Lvl set to private 
+- Create room request: Access Lvl set to private
 - Check room states in different stages. Hard fail can be switched off. [`read more`](doc/userguide/GettingStarted.adoc)
 - New Testcases 10.20 and 10.21 - User verlässt den Chat-Raum
 - Update Combinations-Plugin for better view of used groups in serenity report
@@ -27,12 +44,15 @@
 
 ### Features
 
-- Testsuite checks if the address in endpoint from VZD is in url format. :warning: For this version the testsuite will handle both (url and matrix format). For upcoming versions this will be removed
+- Testsuite checks if the address in endpoint from VZD is in url format. :warning: For this version the testsuite will
+  handle both (url and matrix format). For upcoming versions this will be removed
 - Adjusting Testsuite.adoc for a new Testcase
 - TestCase 03.02 adjusted
 - New Test 03.05 Healthcare-Service durch Org-Admin anlegen und Endpointname aktualisieren
 - Created endpoint get a random name
-- Fits to TestdriverApi 0.9.3 -> New api to clean system implemented. The testsuite triggers the clean-endpoint for each involved home-server on org-admin-api before each test-execution. Continues test as soon as all apis have sent any response. (Could also respond with error 404, so it is not needed to implement) 
+- Fits to TestdriverApi 0.9.3 -> New api to clean system implemented. The testsuite triggers the clean-endpoint for each
+  involved home-server on org-admin-api before each test-execution. Continues test as soon as all apis have sent any
+  response. (Could also respond with error 404, so it is not needed to implement)
 - Update Cucumber-Test-Parameter-Plugin for better error-messages and counting
 
 ## Release 0.9.6
@@ -42,10 +62,14 @@
 - Tiger version update to 2.2.0
 - Cutest-Combination-Plugin version update to 2.9.13 -> additional report file for all examples that should be executed
 - Used testsuite-version is now saved in report directory
-- Improved error messages for not parsable responses, especially errors. Last response and expected value are now shown also in serenity-report and do now throw an assertion exception
-- Testsuite sends several cleanup requests for `healthcare services, unclaim device, logouts, leave room and forget room` if no 2XX response delivered. This will be tried for 20 seconds. After this time the testsuite continues
+- Improved error messages for not parsable responses, especially errors. Last response and expected value are now shown
+  also in serenity-report and do now throw an assertion exception
+- Testsuite sends several cleanup requests
+  for `healthcare services, unclaim device, logouts, leave room and forget room` if no 2XX response delivered. This will
+  be tried for 20 seconds. After this time the testsuite continues
 - HttpTimout for serentiy set to 5 minutes. Can be configured by -DhttpTimeout=\<seconds>
-- If a claim device fails, the testsuite will retry to claim up to 3 times (configurable via environment variable <maxRetryClaimRequest> [`read more (Parameter die das Verhalten der Testsuite anpassen)`](doc/userguide/GettingStarted.adoc)
+- If a claim device fails, the testsuite will retry to claim up to 3 times (configurable via environment
+  variable <maxRetryClaimRequest> [`read more (Parameter die das Verhalten der Testsuite anpassen)`](doc/userguide/GettingStarted.adoc)
 
 ### Bugfixes
 
@@ -147,9 +171,7 @@
 - New Feature File 14 (RoomStateTests) incl adjustments in Testsuite.adoc
 - Renamed Feature file 14 in 15 & 15 in 16
 
-
 ### Bugfixes
-
 
 ## Release 0.6.1
 
@@ -173,7 +195,7 @@
 
 ### Features
 
-- Response of upload media just have to be successful 
+- Response of upload media just have to be successful
 
 ### Bugfixes
 
@@ -194,7 +216,6 @@
   of [pooling](https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc#pooling)
   and [check](https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc#check-goal)
 - Filter Adjustments in all Testcases
-
 
 ### Bugfixes
 

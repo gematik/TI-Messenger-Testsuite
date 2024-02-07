@@ -19,6 +19,7 @@ package de.gematik.tim.test.glue.api.utils;
 import static com.nimbusds.jose.util.X509CertUtils.parse;
 import static io.cucumber.messages.types.SourceMediaType.TEXT_X_CUCUMBER_GHERKIN_PLAIN;
 import static java.lang.String.format;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
 import static lombok.AccessLevel.PRIVATE;
 import static org.apache.logging.log4j.util.Strings.isBlank;
@@ -105,7 +106,7 @@ public class TestsuiteInitializer {
   public static final Long POLL_INTERVAL_DEFAULT = 1L;
   public static final Integer HTTP_TIMEOUT;
   private static final Jackson2Mapper mapper;
-  static Long timeout;
+  public static Long TIMEOUT;
   static Long pollInterval;
 
   static {
@@ -131,14 +132,14 @@ public class TestsuiteInitializer {
     COMBINE_ITEMS_FILE_NAME = new File(COMBINE_ITEMS_FILE_URL).getName();
     FEATURE_PATH = p.getProperty(FEATURE_PATH_PROPERTY_NAME);
     try {
-      timeout = Long.parseLong(timeoutString);
+      TIMEOUT = Long.parseLong(timeoutString);
       pollInterval = Long.parseLong(pollIntervalString);
     } catch (Exception ex) {
-      timeout = TIMEOUT_DEFAULT;
+      TIMEOUT = TIMEOUT_DEFAULT;
       pollInterval = POLL_INTERVAL_DEFAULT;
       log.info(format(
           "Could not parse timeout (%s) or pollInterval (%s). Will use default -> timeout: %s, pollInterval: %s",
-          timeoutString, pollIntervalString, timeout, pollInterval));
+          timeoutString, pollIntervalString, TIMEOUT, pollInterval));
     }
     mapper = createMapper();
     ObjectMapperConfig config = RestAssured.config().getObjectMapperConfig();
@@ -146,6 +147,23 @@ public class TestsuiteInitializer {
     RestAssured.config().objectMapperConfig(config);
     addHostsToTigerProxy();
     configRestAssured();
+    saveMavenProperties(p);
+  }
+
+  private static void saveMavenProperties(Properties p) {
+    StringBuilder sb = new StringBuilder();
+    List<String> secrets = List.of("tim.keystore.pw", "tim.truststore.pw");
+    p.forEach((k, v) -> {
+      if (secrets.stream().noneMatch(secret -> k.toString().equals(secret))) {
+        sb.append("%s=%s%n".formatted(k, v));
+      }
+    });
+    try {
+      FileUtils.write(new File("./target/saved_mvn.properties"), sb.toString(), UTF_8);
+    } catch (IOException e) {
+      log.error("Could not save maven properties.");
+      throw new IllegalArgumentException(e);
+    }
   }
 
   @SneakyThrows

@@ -35,9 +35,10 @@ import de.gematik.tim.test.models.FhirEndpointDTO.StatusEnum;
 import de.gematik.tim.test.models.FhirMetaDTO;
 import de.gematik.tim.test.models.FhirTagDTO;
 import io.restassured.response.Response;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 public class CreateEndpointTask extends HealthcareSpecificTask {
@@ -45,9 +46,6 @@ public class CreateEndpointTask extends HealthcareSpecificTask {
   private final String name;
   private String mxId;
   private StatusEnum status;
-  private List<String> payloadType;
-  private String connectionType;
-  private String managingOrganization;
 
   public static CreateEndpointTask addHealthcareServiceEndpoint(String endpointName) {
     return new CreateEndpointTask(endpointName);
@@ -55,26 +53,6 @@ public class CreateEndpointTask extends HealthcareSpecificTask {
 
   public CreateEndpointTask withMxId(String mxId) {
     this.mxId = mxId;
-    return this;
-  }
-
-  public CreateEndpointTask withStatus(StatusEnum status) {
-    this.status = status;
-    return this;
-  }
-
-  public CreateEndpointTask withPayloadType(List<String> payloadType) {
-    this.payloadType = payloadType;
-    return this;
-  }
-
-  public CreateEndpointTask withConnectionType(String connectionType) {
-    this.connectionType = connectionType;
-    return this;
-  }
-
-  public CreateEndpointTask withManagingOrganization(String managingOrganization) {
-    this.managingOrganization = managingOrganization;
     return this;
   }
 
@@ -89,7 +67,7 @@ public class CreateEndpointTask extends HealthcareSpecificTask {
     Response response = lastResponse();
     if (response.statusCode() == CREATED.value()) {
       FhirEndpointDTO endpoint = parseResponse(FhirEndpointDTO.class, true);
-      assertThat(endpoint.getId()).isNotBlank();
+      assertThat(endpoint.getId()).as("Endpoint %s id is empty".formatted(endpoint.getName())).isNotBlank();
       addEndpointToActorForHS(actor, name, endpoint.getId(), hsName);
       addEndpoint(name, endpoint);
     }

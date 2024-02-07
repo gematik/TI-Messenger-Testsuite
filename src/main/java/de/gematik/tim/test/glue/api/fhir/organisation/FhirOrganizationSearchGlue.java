@@ -16,13 +16,6 @@
 
 package de.gematik.tim.test.glue.api.fhir.organisation;
 
-import de.gematik.tim.test.models.FhirEndpointDTO;
-import de.gematik.tim.test.models.FhirSearchResultDTO;
-import io.cucumber.java.de.Dann;
-import lombok.AllArgsConstructor;
-import net.serenitybdd.core.Serenity;
-import net.serenitybdd.screenplay.Actor;
-
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.FhirEndpointSearchQuestion.endpoint;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
@@ -31,27 +24,37 @@ import static lombok.AccessLevel.PRIVATE;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import de.gematik.tim.test.models.FhirEndpointDTO;
+import de.gematik.tim.test.models.FhirSearchResultDTO;
+import io.cucumber.java.de.Dann;
+import io.cucumber.java.en.Then;
+import lombok.AllArgsConstructor;
+import net.serenitybdd.core.Serenity;
+import net.serenitybdd.screenplay.Actor;
+
+import java.util.List;
+
 @AllArgsConstructor(access = PRIVATE)
 public class FhirOrganizationSearchGlue {
 
+  @Then("{string} does NOT find TI-Messenger user {string} in the Organisations-Verzeichnis of the VZD")
   @Dann("{string} findet TI-Messenger-Nutzer {string} bei Suche im Organisations-Verzeichnis im VZD NICHT")
-  public static Void dontFindUserWithNameInOrgVzd(String actorName, String userName) {
+  public static void dontFindUserWithNameInOrgVzd(String actorName, String userName) {
     Actor actor = theActorCalled(actorName);
     Actor user = theActorCalled(userName);
     dontFindUserWithNameInOrgVzd(actor, user, null, null);
-    return null;
   }
 
+  @Then("{string} does NOT find TI-Messenger user {string} in the Organisations-Verzeichnis of the VZD [Retry {long} - {long}]")
   @Dann("{string} findet TI-Messenger-Nutzer {string} bei Suche im Organisations-Verzeichnis im VZD NICHT [Retry {long} - {long}]")
-  public static Void dontFindUserWithNameInOrgVzd(String actorName, String userName,
+  public static void dontFindUserWithNameInOrgVzd(String actorName, String userName,
       Long customTimeout, Long customPollInterval) {
     Actor actor = theActorCalled(actorName);
     Actor user = theActorCalled(userName);
     dontFindUserWithNameInOrgVzd(actor, user, customTimeout, customPollInterval);
-    return null;
   }
 
-  public static Void dontFindUserWithNameInOrgVzd(Actor actor, Actor user,
+  private static void dontFindUserWithNameInOrgVzd(Actor actor, Actor user,
       Long customTimeout, Long customPollInterval) {
     Serenity.recordReportData();
 
@@ -59,8 +62,7 @@ public class FhirOrganizationSearchGlue {
     FhirSearchResultDTO result = actor.asksFor(endpoint()
         .withMxId(mxIdOfUserToFind)
         .withCustomInterval(customTimeout, customPollInterval));
-    assertThat(getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class)).hasSize(0);
-    return null;
+    List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
+    assertThat(endpoints).isEmpty();
   }
-
 }

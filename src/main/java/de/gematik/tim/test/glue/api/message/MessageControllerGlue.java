@@ -30,6 +30,7 @@ import static de.gematik.tim.test.glue.api.message.SendDirectMessageToMxIdTask.s
 import static de.gematik.tim.test.glue.api.message.SendMessageTask.sendMessage;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.checkRoomMembershipState;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.checkRoomMembershipStateInDirectChatOf;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.checkRoomVersion;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.filterMessageForSenderAndText;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getRoomBetweenTwoActors;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getCreatedMessage;
@@ -64,8 +65,8 @@ public class MessageControllerGlue {
 
 
   //<editor-fold desc="send message">
-  @Wenn("{string} sendet die Nachricht {string} an den Raum {string}")
   @When("{string} sends message {string} in room {string}")
+  @Wenn("{string} sendet die Nachricht {string} an den Raum {string}")
   public void sendsMessageInRoom(String actorName, String messageText, String roomName) {
     Actor actor = theActorCalled(actorName);
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
@@ -82,17 +83,19 @@ public class MessageControllerGlue {
     actor1.attemptsTo(sendDirectMessageTo(actor2, message));
     checkResponseCode(actorName, OK.value());
     checkRoomMembershipStateInDirectChatOf(actorName, userName);
+    checkRoomVersion(actorName, userName);
   }
 
   @When("{string} writes {string} via healthcare service {string} directly {string}")
   @Wenn("{string} schreibt {string} über den Healthcare-Service {string} direkt {string}")
-  public void writsDirectlyToHealthcareService(String actorName, String userName, String hsName,
+  public void writesDirectlyToHealthcareService(String actorName, String userName, String hsName,
       String message) {
     findsAddressInHealthcareService(actorName, userName, hsName);
     sendDirectMessage(actorName, userName, message);
     checkRoomMembershipStateInDirectChatOf(actorName, userName);
   }
 
+  @When("{string} tries to write {string} directly {string}")
   @Wenn("{string} versucht {string} direkt {string} zu schreiben")
   public void triesToWriteDirectly(String actorName, String userName, String message) {
     Actor actor1 = theActorCalled(actorName);
@@ -101,13 +104,15 @@ public class MessageControllerGlue {
     checkResponseCode(actorName, FORBIDDEN.value());
   }
 
-  @Then("{string} versucht der MXID {string} direkt {string} zu schreiben")
+  @Then("{string} tries to write to MXID {string} directly {string}")
+  @Dann("{string} versucht der MXID {string} direkt {string} zu schreiben")
   public void directMessageMxid(String actorName, String mxid, String message) {
     Actor actor = theActorCalled(actorName);
     actor.attemptsTo(sendDirectMessageToMxIdOutOfFederation(mxid, message));
     checkResponseCode(actorName, FORBIDDEN.value());
   }
 
+  @When("{string} does not have the rights to contact {string}")
   @Wenn("{string} ist nicht berechtigt {string} zu kontaktieren")
   public void notAuthorizedForCommunication(String actorName, String userName) {
     checkResponseCode(actorName, FORBIDDEN.value());
@@ -136,6 +141,7 @@ public class MessageControllerGlue {
     });
   }
 
+  @Then("{string} receives a message {string} from {string}")
   @Dann("{string} empfängt eine Nachricht {string} von {string}")
   public void receiveMessageChat(String actorName, String textMessage, String senderName) {
     Actor actor = theActorCalled(actorName);
@@ -146,15 +152,8 @@ public class MessageControllerGlue {
     checkRoomMembershipState(room);
   }
 
-  @Then("{string} sees {int} messages in room {string}")
-  public void seesMessagesInRoom(String actorName, int messagesCount, String roomName) {
-    Actor actor = theActorCalled(actorName);
-    actor.abilityTo(UseRoomAbility.class).setActive(roomName);
-    List<MessageDTO> messages = actor.asksFor(messagesInActiveRoom());
-    assertThat(messages).hasSize(messagesCount);
-  }
-
-  @Then("{string} empfängt seine Nachricht {string} im Chat mit {string}")
+  @Then("{string} receives the message {string} in the chat with {string}")
+  @Dann("{string} empfängt seine Nachricht {string} im Chat mit {string}")
   public void findOwnMessageInChat(String actorName, String messageText, String userName) {
     Actor actor = theActorCalled(actorName);
     String roomName = DIRECT_CHAT_NAME + theActorCalled(userName).recall(MX_ID);
@@ -164,14 +163,14 @@ public class MessageControllerGlue {
     checkRoomMembershipState(actor, roomName);
   }
 
-  @Then("{string} could not see message {string} from {string} in chat with {string}")
+  @Then("{string} could not see message {string} from {string} in the chat with {string}")
   @Dann("{string} kann die Nachricht {string} von {string} im Chat mit {string} nicht sehen")
   public void canNotSeeChatMessage(String actorName, String message, String messageAuthor,
       String chatPartner) {
     canNotSeeChatMessage(actorName, message, messageAuthor, chatPartner, null, null);
   }
 
-  @Wenn("{string} could not see message {string} from {string} in chat with {string} [Retry {long} - {long}]")
+  @Wenn("{string} could not see message {string} from {string} in the chat with {string} [Retry {long} - {long}]")
   @Dann("{string} kann die Nachricht {string} von {string} im Chat mit {string} nicht sehen [Retry {long} - {long}]")
   public void canNotSeeChatMessage(String actorName, String messageText, String messageAuthor,
       String chatPartner, Long timeout, Long pollInterval) {
@@ -259,23 +258,14 @@ public class MessageControllerGlue {
   //</editor-fold>
 
   //<editor-fold desc="Delete Message">
-
-  @When("{string} deletes her last sent message in room {string}")
-  public void deletesHerLastSentMessageInRoom(String actorName, String roomName) {
-    Actor actor = theActorCalled(actorName);
-    actor.abilityTo(UseRoomAbility.class).setActive(roomName);
-    MessageDTO message = actor.asksFor(lastOwnMessage());
-    actor.attemptsTo(deleteMessageWithId(message.getMessageId()));
-    checkResponseCode(actorName, NO_CONTENT.value());
-  }
-
-  @When("{string} deletes his message {string} in chat with {string}")
+  @When("{string} deletes their message {string} in chat with {string}")
   @Wenn("{string} löscht seine Nachricht {string} im Chat mit {string}")
   public void deleteMessageInChat(String actorName, String messageText, String userName) {
     deleteMessageInRoom(actorName, messageText, DIRECT_CHAT_NAME + theActorCalled(userName).recall(MX_ID));
   }
 
-  @When("{string} löscht seine Nachricht {string} im Raum {string}")
+  @When("{string} deletes their message {string} in the room with {string}")
+  @Wenn("{string} löscht seine Nachricht {string} im Raum {string}")
   public void deleteMessageInRoom(String actorName, String messageName, String roomName) {
     Actor actor = theActorCalled(actorName);
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
@@ -284,7 +274,6 @@ public class MessageControllerGlue {
     actor.attemptsTo(deleteMessageWithId(message.getMessageId()));
     checkResponseCode(actorName, NO_CONTENT.value());
   }
-
   //</editor-fold>
 
 }

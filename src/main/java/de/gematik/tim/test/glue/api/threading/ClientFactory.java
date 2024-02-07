@@ -19,6 +19,7 @@ package de.gematik.tim.test.glue.api.threading;
 import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.TEST_CASE_ID_HEADER;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTestcaseId;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.HTTP_TIMEOUT;
+import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.TIMEOUT;
 
 import de.gematik.test.tiger.lib.TigerDirector;
 import de.gematik.test.tiger.proxy.TigerProxy;
@@ -31,6 +32,7 @@ public class ClientFactory {
   private static final String CONTENT_TYPE = "application/json";
   private static ClientFactory instance;
   private static final UnirestInstance client = Unirest.spawnInstance();
+  private static final UnirestInstance cleanUpClient = Unirest.spawnInstance();
 
   private ClientFactory() {
     TigerProxy proxy = TigerDirector.getTigerTestEnvMgr().getLocalTigerProxyOrFail();
@@ -43,6 +45,15 @@ public class ClientFactory {
         .connectTimeout(HTTP_TIMEOUT * 1000)
         .socketTimeout(HTTP_TIMEOUT * 1000)
         .sslContext(proxy.buildSslContext());
+    cleanUpClient.config()
+        .proxy("localhost", proxy.getProxyPort())
+        .addDefaultHeader("Accept", ACCEPT)
+        .addDefaultHeader("Content-Type", CONTENT_TYPE)
+        .addDefaultHeader(TEST_CASE_ID_HEADER, getTestcaseId())
+        .interceptor(new CurlInterceptor())
+        .connectTimeout((int) (TIMEOUT * 2000))
+        .socketTimeout((int) (TIMEOUT * 2000))
+        .sslContext(proxy.buildSslContext());
   }
 
   public static UnirestInstance getClient() {
@@ -52,4 +63,10 @@ public class ClientFactory {
     return ClientFactory.client;
   }
 
+  public static UnirestInstance getCleanUpClient() {
+    if (instance == null) {
+      instance = new ClientFactory();
+    }
+    return ClientFactory.cleanUpClient;
+  }
 }

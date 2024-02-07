@@ -16,6 +16,9 @@
 
 package de.gematik.tim.test.glue.api.utils;
 
+import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.INDIVIDUAL_LOG_PATH;
+import static org.apache.commons.lang3.StringUtils.join;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.Scenario;
 import lombok.SneakyThrows;
@@ -32,9 +35,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.INDIVIDUAL_LOG_PATH;
-import static org.apache.commons.lang3.StringUtils.join;
-
 public class IndividualLogger {
 
   private static final File file = new File(INDIVIDUAL_LOG_PATH);
@@ -47,16 +47,21 @@ public class IndividualLogger {
   }
 
   public static synchronized void individualLog(String msg) {
+    individualLog(msg, null, null);
+  }
+
+  public static synchronized void individualLog(String msg, String key, Object customObject) {
     Scenario s = TestcasePropertiesManager.getCurrentScenario();
     String tcid = TestcasePropertiesManager.getTestcaseId();
     IndividualLogEntry newEntry = new IndividualLogEntry(s.getName(), TestcasePropertiesManager.getTestcaseId(),
-        new HashMap<>(Map.of(msg, Pair.of(getTimestamp(), 1))));
+        new HashMap<>(Map.of(msg, Pair.of(getTimestamp(), 1))), Map.of(key, customObject));
     if (logs.contains(newEntry)) {
       logs.stream()
           .filter(l -> l.testcaseName.equals(s.getName()) && l.testcaseId.equals(tcid))
           .findFirst()
           .orElseThrow()
-          .addCountingMessage(msg);
+          .addCountingMessage(msg)
+          .addCustomObject(key, customObject);
     } else {
       logs.add(newEntry);
     }
@@ -76,11 +81,16 @@ public class IndividualLogger {
     return LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss.SSS"));
   }
 
-  public record IndividualLogEntry(String testcaseName, String testcaseId, Map<String, Pair> messages)
+  public record IndividualLogEntry(String testcaseName, String testcaseId, Map<String, Pair> messages, Map<String, Object> customObjects)
       implements Comparable<IndividualLogEntry> {
 
-    public void addCountingMessage(String msg) {
+    public IndividualLogEntry addCountingMessage(String msg) {
       messages.put(msg, Pair.of(getTimestamp(), messages.getOrDefault(msg, Pair.of(null, 0)).amount() + 1));
+      return this;
+    }
+
+    public void addCustomObject(String key, Object customObject) {
+      customObjects.put(key, customObject);
     }
 
     @Override
@@ -102,7 +112,8 @@ public class IndividualLogger {
       sb.append("Name: ").append(this.testcaseName).append("\n");
       sb.append("\tTCID: ").append(this.testcaseId).append("\n");
       sb.append("\tMessages: ").append(this.testcaseId).append("\n");
-      this.messages.forEach((k, v) -> sb.append("\t\t").append(v.lastOccurrence() + " -> times: " + v.amount() + " => " + k + "\n"));
+      this.messages.forEach((k, v) -> sb.append("\t\t").append(v.lastOccurrence()).append(" -> times: ").append(v.amount()).append(" => ").append(k).append("\n"));
+      this.customObjects.forEach((k, v) -> sb.append("\t\t Custom object with key: ").append(k).append("\n"));
 
       return sb.toString();
     }

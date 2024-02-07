@@ -24,11 +24,11 @@ import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
 
 import de.gematik.tim.test.models.FhirBaseResourceDTO;
 import de.gematik.tim.test.models.FhirSearchResultDTO;
-import java.util.List;
-import java.util.Optional;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 
+import java.util.List;
+import java.util.Optional;
 
 public class OwnFhirResourceQuestion implements Question<FhirSearchResultDTO> {
 
@@ -45,7 +45,6 @@ public class OwnFhirResourceQuestion implements Question<FhirSearchResultDTO> {
 
   @Override
   public FhirSearchResultDTO answeredBy(Actor actor) {
-
     return repeatedRequest(() -> searchOwnEntry(actor), "SearchOwnPractitionerInfos");
   }
 

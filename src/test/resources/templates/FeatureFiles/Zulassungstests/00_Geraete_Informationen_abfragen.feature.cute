@@ -6,8 +6,8 @@ Funktionalität: 00. Abfragen der Schnittstellen-Information und die Geräte-Lis
   die nicht weiter in der Spezifikationen des TI-Messengers beschrieben sind.
 
   Inhalt
-  TF 1 - 3 Schnittstellen-Information
-  TF 4 - 6 Geräte-Liste
+  TF 1 - 2 Schnittstellen-Information
+  TF 3 - 4 Geräte-Liste
 
   @@Ctl:NOVZD
   @TCID:TIM_11_AF_001 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
@@ -17,78 +17,59 @@ Funktionalität: 00. Abfragen der Schnittstellen-Information und die Geräte-Lis
     Wenn       "A" Informationen über den Testtreiber anfragt
     Dann       werden Informationen über den Testtreiber an "A" zurückgegeben
 
-    @Filter(ApiName1.hasTag("client"))
-    @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
 
     Beispiele:
     | ApiName1 |
 
-  @WIP
   @@Ctl:NOVZD
-  @TCID:TIM_11_AF_002 @PRIO:1 @TESTFALL:Positiv @STATUS:Zurückgestellt
-  Szenariogrundriss: 00.02 Abfragen der Schnittstellen-Information durch Organisations-User-Client
+  @TCID:TIM_11_AF_002 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 00.02 Abfragen der Schnittstellen-Information durch Org-Admin-Client
     Angenommen Es werden folgende Clients reserviert:
-      | A | CLIENT | <ApiName1> |
+      | A | ORG_ADMIN | <ApiName1> |
     Wenn       "A" Informationen über den Testtreiber anfragt
     Dann       werden Informationen über den Testtreiber an "A" zurückgegeben
 
-    @Filter(ApiName1.hasTag("client"))
-    @Filter(!ApiName1.hasTag("practitioner"))
+  @Filter(ApiName1.hasTag("orgAdmin"))
 
     Beispiele:
     | ApiName1 |
 
   @@Ctl:NOVZD
   @TCID:TIM_11_AF_003 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
-  Szenariogrundriss: 00.03 Abfragen der Schnittstellen-Information durch Org-Admin-Client
+  Szenariogrundriss: 00.03 Abfragen der Geräte-Liste durch HBA-User-Client
     Angenommen Es werden folgende Clients reserviert:
-      | A | ORG_ADMIN | <ApiName1> |
-    Wenn       "A" Informationen über den Testtreiber anfragt
-    Dann       werden Informationen über den Testtreiber an "A" zurückgegeben
+      | A | PRACTITIONER | <ApiName1> |
+    Wenn       die Liste der Geräte abgerufen wird
+    Dann       prüfe ob "A" ein Gerät reserviert hat
 
-    @Filter(ApiName1.hasTag("orgAdmin"))
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
 
     Beispiele:
     | ApiName1 |
 
   @@Ctl:NOVZD
   @TCID:TIM_11_AF_004 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
-  Szenariogrundriss: 00.04 Abfragen der Geräte-Liste durch HBA-User-Client
-    Angenommen Es werden folgende Clients reserviert:
-      | A | PRACTITIONER | <ApiName1> |
-    Wenn       die Liste der Geräte abgerufen wird
-    Dann       prüfe ob "A" ein Gerät reserviert hat
-
-    @Filter(ApiName1.hasTag("client"))
-    @Filter(ApiName1.hasTag("practitioner"))
-
-    Beispiele:
-    | ApiName1 |
-
-  @WIP
-  @@Ctl:NOVZD
-  @TCID:TIM_11_AF_005 @PRIO:1 @TESTFALL:Positiv @STATUS:Zurückgestellt
-  Szenariogrundriss: 00.05 Abfragen der Geräte-Liste durch Organisations-User-Client
-    Angenommen Es werden folgende Clients reserviert:
-      | A | CLIENT | <ApiName1> |
-    Wenn       die Liste der Geräte abgerufen wird
-    Dann       prüfe ob "A" ein Gerät reserviert hat
-
-    @Filter(ApiName1.hasTag("client"))
-    @Filter(!ApiName1.hasTag("practitioner"))
-
-    Beispiele:
-    | ApiName1 |
-
-  @@Ctl:NOVZD
-  @TCID:TIM_11_AF_006 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
-  Szenariogrundriss: 00.06 Abfragen der Geräte-Liste durch Org-Admin-Client
+  Szenariogrundriss: 00.04 Abfragen der Geräte-Liste durch Org-Admin-Client
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN | <ApiName1> |
     Wenn       die Liste der Geräte abgerufen wird
     Dann       prüfe ob "A" ein Gerät reserviert hat
 
-    @Filter(ApiName1.hasTag("orgAdmin"))
+  @Filter(ApiName1.hasTag("orgAdmin"))
 
+    Beispiele:
+    | ApiName1 |
+
+  @@Ctl:NOVZD
+  @TCID:TIM_11_AF_007 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 00.07 Abfrage der Matrix-Server-Version
+    Angenommen A fragt an Schnittstelle <ApiName1> die Home-Server-Adresse ab
+    Wenn A die supporteten Matrix-Versions vom Home-Server abfragt
+    Dann ist keine unterstützte Version über "1.3"
+
+    @Filter(ApiName1.hasTag("client")||ApiName1.hasTag("practitioner"))
     Beispiele:
     | ApiName1 |

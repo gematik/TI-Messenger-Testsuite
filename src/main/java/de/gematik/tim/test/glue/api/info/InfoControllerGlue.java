@@ -16,16 +16,29 @@
 
 package de.gematik.tim.test.glue.api.info;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HOME_SERVER;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MATRIX_CLIENT_VERSION;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_INFO;
+import static de.gematik.tim.test.glue.api.info.ApiInfoQuestion.apiInfo;
+import static de.gematik.tim.test.glue.api.info.SupportedMatrixVersionQuestion.matrixSupportedServerVersion;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.prepareApiNameForHttp;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
+import static net.serenitybdd.screenplay.actors.OnStage.theActorInTheSpotlight;
 import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.not;
 
+import io.cucumber.java.de.Angenommen;
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Wenn;
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import net.serenitybdd.screenplay.Actor;
+import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
+
+import java.util.List;
 
 public class InfoControllerGlue {
 
@@ -42,11 +55,38 @@ public class InfoControllerGlue {
         res -> res.statusCode(200)
             .body("title", not(emptyOrNullString()))
             .body("description", not(emptyOrNullString()))
-            //.body("termsOfService", not(emptyOrNullString()))
             .body("contact", not(emptyOrNullString()))
             .body("clientInfo.version", not(emptyOrNullString()))
             .body("fachdienstInfo.version", not(emptyOrNullString()))
             .body("testDriverVersion", not(emptyOrNullString()))
     ));
+  }
+
+  @Given("{word} request Home-Server-Address at api {word}")
+  @Angenommen("{word} fragt an Schnittstelle {word} die Home-Server-Adresse ab")
+  public void requestHomeServerAddressOnInfoEndpoint(String actorName, String apiName) {
+    String apiUrl = prepareApiNameForHttp(apiName);
+    Actor actor = theActorCalled(actorName).can(CallAnApi.at(apiUrl));
+    apiInfo().withActor(actor).run();
+  }
+
+  @When("{word} request supported Matrix-Versions from Home-Server")
+  @Wenn("{word} die supporteten Matrix-Versions vom Home-Server abfragt")
+  public void requestMatrixVersionFromHomeServer(String actorName) {
+    Actor actor = theActorCalled(actorName);
+
+    actor.can(CallAnApi.at(actor.recall(HOME_SERVER)));
+    actor.asksFor(matrixSupportedServerVersion());
+  }
+
+  @Then("no version is higher than {string}")
+  @Dann("ist keine unterstützte Version über {string}")
+  public void noVersionIsHigherThan(String highestVersion) {
+    SupportedMatrixVersionInfo supportedMatrixVersionInfo = theActorInTheSpotlight().recall(MATRIX_CLIENT_VERSION);
+    List<SemVersion> supportedVersions = supportedMatrixVersionInfo.versions().stream().map(SemVersion::new).toList();
+    SemVersion maxVersion = new SemVersion(highestVersion);
+    assertThat(supportedVersions.stream().anyMatch(version -> version.compareTo(maxVersion) > 0))
+        .as("Found higher version than %s in %s", maxVersion, supportedVersions)
+        .isFalse();
   }
 }

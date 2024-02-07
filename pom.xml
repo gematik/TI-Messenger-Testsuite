@@ -6,7 +6,7 @@
 
   <groupId>de.gematik.tim.test</groupId>
   <artifactId>TI-Messenger-Testsuite</artifactId>
-  <version>0.9.8</version>
+  <version>0.10.0</version>
   <packaging>jar</packaging>
   <name>TI-Messenger-Testsuite</name>
   <description>Testsuite to check functionality of TI-Messenger-Clients</description>
@@ -17,20 +17,23 @@
     <maven.compiler.target>17</maven.compiler.target>
     <java.version>17</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
     <jacoco.version>0.8.8</jacoco.version>
     <cucumber-test-combinations-maven-plugin.version>2.9.19</cucumber-test-combinations-maven-plugin.version>
-    <version.tiger>2.3.1</version.tiger>
-    <version.serenity.core>4.0.12</version.serenity.core>
+    <tiger.version>2.3.2</tiger.version>
+    <serenity.core.version>4.0.12</serenity.core.version>
     <polarion.toolbox.version>2.0.0-133</polarion.toolbox.version>
+    <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
+    <maven.javadoc.plugin.version>3.0.1</maven.javadoc.plugin.version>
+    <junit.engine.version>5.8.2</junit.engine.version>
+
     <feature_dir>${project.build.directory}/features/</feature_dir>
-    <feature.template.dir>${project.basedir}/src/test/resources/templates/FeatureFiles/Zulassungstests
+    <feature.template.dir>
+      ${project.basedir}/src/test/resources/templates/FeatureFiles/Zulassungstests
     </feature.template.dir>
     <sonar.coverage.exclusions>**/*</sonar.coverage.exclusions>
     <feature.tables.max_rows>9999</feature.tables.max_rows>
     <maven.build.timestamp.format>yyyy-MM-dd_HH_mm_ss</maven.build.timestamp.format>
-    <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
-    <version.junit.engine>5.8.2</version.junit.engine>
-    <maven.javadoc.plugin.version>3.0.1</maven.javadoc.plugin.version>
     <skip.saving.reports>false</skip.saving.reports>
     <tiger.config.file>tiger.yml</tiger.config.file>
     <combine.items.file>${project.basedir}/src/test/resources/combine_items.json</combine.items.file>
@@ -62,7 +65,7 @@
     <clearRooms/>
     <cucumber.filter.version/>
     <cutest.count.format/>
-    <ti.m.mtls.certs.version>1.0.0</ti.m.mtls.certs.version>
+    <ti.m.mtls.certs.version>1.0.3</ti.m.mtls.certs.version>
     <skipRoomStateCheck/>
   </properties>
   <distributionManagement>
@@ -83,42 +86,42 @@
       <dependency>
         <groupId>net.serenity-bdd</groupId>
         <artifactId>serenity-core</artifactId>
-        <version>${version.serenity.core}</version>
+        <version>${serenity.core.version}</version>
       </dependency>
       <dependency>
         <groupId>net.serenity-bdd</groupId>
         <artifactId>serenity-model</artifactId>
-        <version>${version.serenity.core}</version>
+        <version>${serenity.core.version}</version>
       </dependency>
       <dependency>
         <groupId>net.serenity-bdd</groupId>
         <artifactId>serenity-cucumber</artifactId>
-        <version>${version.serenity.core}</version>
+        <version>${serenity.core.version}</version>
       </dependency>
       <dependency>
         <groupId>net.serenity-bdd</groupId>
         <artifactId>serenity-rest-assured</artifactId>
-        <version>${version.serenity.core}</version>
+        <version>${serenity.core.version}</version>
       </dependency>
       <dependency>
         <groupId>net.serenity-bdd</groupId>
         <artifactId>serenity-screenplay</artifactId>
-        <version>${version.serenity.core}</version>
+        <version>${serenity.core.version}</version>
       </dependency>
       <dependency>
         <groupId>net.serenity-bdd</groupId>
         <artifactId>serenity-screenplay-rest</artifactId>
-        <version>${version.serenity.core}</version>
+        <version>${serenity.core.version}</version>
       </dependency>
       <dependency>
         <groupId>net.serenity-bdd</groupId>
         <artifactId>serenity-ensure</artifactId>
-        <version>${version.serenity.core}</version>
+        <version>${serenity.core.version}</version>
       </dependency>
       <dependency>
         <groupId>org.junit.vintage</groupId>
         <artifactId>junit-vintage-engine</artifactId>
-        <version>${version.junit.engine}</version>
+        <version>${junit.engine.version}</version>
       </dependency>
       <dependency>
         <groupId>org.projectlombok</groupId>
@@ -132,12 +135,12 @@
     <dependency>
       <groupId>de.gematik.test</groupId>
       <artifactId>tiger-test-lib</artifactId>
-      <version>${version.tiger}</version>
+      <version>${tiger.version}</version>
     </dependency>
     <dependency>
       <groupId>de.gematik</groupId>
       <artifactId>tiger-cloud-extension</artifactId>
-      <version>1.0.3</version>
+      <version>1.0.9</version>
     </dependency>
     <dependency>
       <groupId>net.sf.supercsv</groupId>
@@ -158,16 +161,21 @@
     <dependency>
       <groupId>net.serenity-bdd</groupId>
       <artifactId>serenity-screenplay-rest</artifactId>
-      <version>${version.serenity.core}</version>
+      <version>${serenity.core.version}</version>
     </dependency>
     <dependency>
       <groupId>net.serenity-bdd</groupId>
       <artifactId>serenity-ensure</artifactId>
-      <version>${version.serenity.core}</version>
+      <version>${serenity.core.version}</version>
     </dependency>
     <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.nimbusds</groupId>
+      <artifactId>nimbus-jose-jwt</artifactId>
+      <version>9.37.3</version>
     </dependency>
   </dependencies>
 
@@ -194,9 +202,9 @@
             </goals>
             <configuration>
               <url>
-                https://raw.githubusercontent.com/gematik/api-ti-messenger/63d98b0cc32445b392c253ccd909c4ba407fe47e/src/openapi/TiMessengerTestTreiber.yaml
+                https://raw.githubusercontent.com/gematik/api-ti-messenger/Release-1.1.1-4/src/openapi/TiMessengerTestTreiber.yaml
               </url>
-              <md5>e40b01e2b70ee6a49c7fa3607658b63c</md5>
+              <sha256>3d7566f3fb18a4a8d83cbaabc04d502d3137f542a2bc6256be0492f9b4b2d937</sha256>
               <outputFileName>TiMessengerTestTreiber.yaml</outputFileName>
               <outputDirectory>${project.build.directory}</outputDirectory>
               <overwrite>true</overwrite>
@@ -349,7 +357,7 @@
       <plugin>
         <groupId>de.gematik.test</groupId>
         <artifactId>tiger-maven-plugin</artifactId>
-        <version>${version.tiger}</version>
+        <version>${tiger.version}</version>
         <executions>
           <execution>
             <configuration>
@@ -516,9 +524,9 @@
         </executions>
       </plugin>
       <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>3.3.1</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.3.1</version>
         <configuration>
           <skip>${skip.saving.reports}</skip>
         </configuration>
@@ -587,7 +595,7 @@
             </configuration>
           </execution>
           <execution>
-            <id>save-individual-log</id>
+            <id>save-single-files</id>
             <phase>post-integration-test</phase>
             <goals>
               <goal>copy-resources</goal>
@@ -599,6 +607,7 @@
                   <directory>${basedir}/target</directory>
                   <includes>
                     <include>individual-log.json</include>
+                    <include>saved_mvn.properties</include>
                   </includes>
                 </resource>
               </resources>
@@ -689,7 +698,7 @@
                 <artifactItem>
                   <groupId>de.gematik.tim.test</groupId>
                   <artifactId>TI-Messenger-TestdriverSim</artifactId>
-                  <version>4.3.1</version>
+                  <version>4.5.0</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}</outputDirectory>
@@ -718,18 +727,18 @@
                   <goal>unpack</goal>
                 </goals>
                 <configuration>
-                <artifactItems>
-                  <artifactItem>
-                    <groupId>${project.groupId}</groupId>
-                    <artifactId>TI-Messenger-mTLS-Certs</artifactId>
-                    <version>${ti.m.mtls.certs.version}</version>
-                    <type>jar</type>
-                    <overWrite>true</overWrite>
-                    <outputDirectory>${project.build.directory}/profile-resources/certs</outputDirectory>
-                    <includes>**/*.yml,**/*.json,gemRoot/cert/gem/*.p12</includes>
-                    <excludes>META-INF/**</excludes>
-                  </artifactItem>
-                </artifactItems>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>${project.groupId}</groupId>
+                      <artifactId>TI-Messenger-mTLS-Certs</artifactId>
+                      <version>${ti.m.mtls.certs.version}</version>
+                      <type>jar</type>
+                      <overWrite>true</overWrite>
+                      <outputDirectory>${project.build.directory}/profile-resources</outputDirectory>
+                      <includes>**/*.yml,**/*.json,gemRoot/cert/gem/*.p12</includes>
+                      <excludes>META-INF/**</excludes>
+                    </artifactItem>
+                  </artifactItems>
                   <overWriteSnapshots>true</overWriteSnapshots>
                 </configuration>
               </execution>
@@ -738,18 +747,14 @@
         </plugins>
       </build>
       <properties>
-        <combine.items.file>${project.build.directory}/profile-resources/certs/combine_items_prod.json
+        <combine.items.file>${project.build.directory}/profile-resources/combine_items_prod.json
         </combine.items.file>
+        <tiger.config.file>${project.build.directory}/profile-resources/tiger-prod.yml</tiger.config.file>
 
-        <!--tester node user need tiger-prod-proxy.yml with proxy configuration/ dev client user need tiger-prod.yml
-        this will soon be fixed in tiger,hence we don't need this switch for long-->
-
-        <!--<tiger.config.file>${project.build.directory}/profile-resources/certs/tiger-prod-proxy.yml</tiger.config.file>-->
-        <tiger.config.file>${project.build.directory}/profile-resources/certs/tiger-prod.yml</tiger.config.file>
-
-        <tim.truststore>${project.build.directory}/profile-resources/certs/gemRoot/cert/gem/gemTruststore.p12</tim.truststore>
+        <tim.truststore>${project.build.directory}/profile-resources/gemRoot/cert/gem/gemTruststore.p12
+        </tim.truststore>
         <tim.truststore.pw>changeit</tim.truststore.pw>
-        <tim.keystore>${project.build.directory}/profile-resources/certs/gemRoot/cert/gem/gemKeystore.p12</tim.keystore>
+        <tim.keystore>${project.build.directory}/profile-resources/gemRoot/cert/gem/gemKeystore.p12</tim.keystore>
         <tim.keystore.pw>changeit</tim.keystore.pw>
         <timeout>240</timeout>
         <pollInterval>5</pollInterval>

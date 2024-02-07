@@ -29,21 +29,21 @@ Funktionalität:  16. Gruppenchat mit 3 Teilnehmern
     Wenn       "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Dann       "B", "C" empfangen eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
 
-  @Shuffle
-  @DistinctProperty(homeserver)
-  @MinimalTable(true)
-  @Filter(ApiName1.hasTag("client"))
-  @Filter(ApiName2.hasTag("client"))
-  @Filter(ApiName3.hasTag("client"))
-  @Filter(ApiName1.hasTag("practitioner"))
-  @Filter(ApiName2.hasTag("practitioner"))
-  @Filter(ApiName3.hasTag("practitioner"))
+    @Shuffle
+    @DistinctProperty(homeserver)
+    @MinimalTable(true)
+    @Filter(ApiName1.hasTag("client"))
+    @Filter(ApiName2.hasTag("client"))
+    @Filter(ApiName3.hasTag("client"))
+    @Filter(ApiName1.hasTag("practitioner"))
+    @Filter(ApiName2.hasTag("practitioner"))
+    @Filter(ApiName3.hasTag("practitioner"))
 
     Beispiele:
-    | ApiName1 | ApiName2 | ApiName3 |
+      | ApiName1 | ApiName2 | ApiName3 |
 
   @BP:P2P @Ctl:MsgBackward
-  @TCID:TIM_11_AF_1602 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_1602 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 16.02 Events außerhalb einer Organisation - Gruppenchat mit 3 Teilnehmern - Test-Client "C" sendet eine Nachricht (HBA-User)
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1> |
@@ -58,21 +58,21 @@ Funktionalität:  16. Gruppenchat mit 3 Teilnehmern
     Wenn       "C" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Dann       "A", "B" empfangen eine Nachricht "Testnachricht 1" von "C" im Raum "TIM Testraum 1"
 
-  @Shuffle
-  @DistinctProperty(homeserver)
-  @MinimalTable(true)
-  @Filter(ApiName1.hasTag("client"))
-  @Filter(ApiName2.hasTag("client"))
-  @Filter(ApiName3.hasTag("client"))
-  @Filter(ApiName1.hasTag("practitioner"))
-  @Filter(ApiName2.hasTag("practitioner"))
-  @Filter(ApiName3.hasTag("practitioner"))
+    @Shuffle
+    @DistinctProperty(homeserver)
+    @MinimalTable(true)
+    @Filter(ApiName1.hasTag("client"))
+    @Filter(ApiName2.hasTag("client"))
+    @Filter(ApiName3.hasTag("client"))
+    @Filter(ApiName1.hasTag("practitioner"))
+    @Filter(ApiName2.hasTag("practitioner"))
+    @Filter(ApiName3.hasTag("practitioner"))
 
     Beispiele:
       | ApiName1 | ApiName2 | ApiName3 |
 
   @BP:O2O @Ctl:OrgAdmin @Ctl:MsgForward
-  @TCID:TIM_11_AF_1603 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_1603 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 16.03 Events außerhalb einer Organisation - Gruppenchat mit 3 Teilnehmern - Test-Client "D" sendet eine Nachricht (Organisations-User)
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN | <ApiName1A> |
@@ -116,15 +116,11 @@ Funktionalität:  16. Gruppenchat mit 3 Teilnehmern
     @TCID:TIM_11_AF_1604 @PRIO:3 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 16.04 Events außerhalb einer Organisation - Gruppenchat mit 3 Teilnehmern - Test-Client "C" sendet eine Nachricht (HBA-User lädt Organisations-User ein)
     Angenommen Es werden folgende Clients reserviert:
-      | A | PRACTITIONER | <ApiName1> |
-      | B | PRACTITIONER | <ApiName2> |
-      | C | PRACTITIONER | <ApiName3> |
-    Angenommen "A" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName1A>
-    Und        "B" reserviert sich einen Org-Admin-Client an Schnittstelle <ApiName2A>
-    Und        "C" reserviert sich einen Messenger-Client an Schnittstelle <ApiName1B>
-    Und        "D" reserviert sich einen Messenger-Client an Schnittstelle <ApiName2B>
-    Und        "E" reserviert sich einen Practitioner-Client an Schnittstelle <ApiName3>
-    Und        alle Devices wurden erfolgreich reserviert
+      | A | ORG_ADMIN    | <ApiName1A> |
+      | B | ORG_ADMIN    | <ApiName2A> |
+      | C | CLIENT       | <ApiName1B> |
+      | D | CLIENT       | <ApiName2B> |
+      | E | PRACTITIONER | <ApiName3>  |
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
     Und        "B" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "D"
     Und        "E" hinterlegen ihre MXIDs im Verzeichnis Dienst

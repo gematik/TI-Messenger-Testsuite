@@ -20,18 +20,18 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HAS_REG_SERVICE_TOKEN
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEARCH_DELETED_HEALTHCARE_SERVICE;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
-import java.util.Optional;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
-import org.springframework.http.HttpStatus;
+
+import java.util.Optional;
 
 public class FhirIsHealthcareServiceDeletedQuestion implements Question<Boolean> {
 
   private Long customPollInterval;
   private Long customTimeout;
-
 
   public static FhirIsHealthcareServiceDeletedQuestion getDeletedHealthcareService() {
     return new FhirIsHealthcareServiceDeletedQuestion();
@@ -57,9 +57,8 @@ public class FhirIsHealthcareServiceDeletedQuestion implements Question<Boolean>
       actor.remember(HAS_REG_SERVICE_TOKEN, true);
     }
     return
-        lastResponse().getStatusCode() == HttpStatus.NOT_FOUND.value()
+        lastResponse().getStatusCode() == NOT_FOUND.value()
             ? Optional.of(true)
             : Optional.empty();
   }
-
 }

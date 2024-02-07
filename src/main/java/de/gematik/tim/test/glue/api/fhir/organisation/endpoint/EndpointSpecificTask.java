@@ -47,5 +47,4 @@ public abstract class EndpointSpecificTask extends HealthcareSpecificTask {
       endpointName = useEndpointAbility.getActiveKey();
     }
   }
-
 }

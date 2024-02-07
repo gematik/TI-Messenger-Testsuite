@@ -36,5 +36,4 @@ public class FhirGetEndpointQuestion extends EndpointSpecificTask implements
     actor.attemptsTo(GET_ENDPOINT.request());
     return parseResponse(FhirEndpointDTO.class, true);
   }
-
 }

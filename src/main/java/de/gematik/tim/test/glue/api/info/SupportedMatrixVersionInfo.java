@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-package de.gematik.tim.test.glue.api;
+package de.gematik.tim.test.glue.api.info;
 
-import static lombok.AccessLevel.PRIVATE;
+import java.util.List;
+import java.util.Map;
 
-import lombok.AllArgsConstructor;
-
-
-@AllArgsConstructor(access = PRIVATE)
-public class TransferGlue {
-
+public record SupportedMatrixVersionInfo(List<String> versions, Map<String, Boolean> unstableFeatures) {
 }

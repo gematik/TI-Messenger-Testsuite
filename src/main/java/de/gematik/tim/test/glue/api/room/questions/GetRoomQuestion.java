@@ -85,7 +85,6 @@ public class GetRoomQuestion implements Question<RoomDTO> {
     return this;
   }
 
-
   @Override
   public RoomDTO answeredBy(Actor actor) {
     try {

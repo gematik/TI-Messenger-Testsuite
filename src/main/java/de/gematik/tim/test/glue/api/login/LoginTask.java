@@ -18,6 +18,7 @@ package de.gematik.tim.test.glue.api.login;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.ACCOUNT_PASSWORD;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DISPLAY_NAME;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HOME_SERVER;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_LOGGED_IN;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
@@ -34,6 +35,7 @@ import static de.gematik.tim.test.glue.api.utils.ParallelUtils.toJson;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.models.AuthStageNameDTO.BASICAUTH;
 import static java.util.Objects.nonNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import de.gematik.tim.test.glue.api.fhir.practitioner.CanDeleteOwnMxidAbility;
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
@@ -102,6 +104,10 @@ public class LoginTask extends ParallelTaskRunner implements Task {
 
   //<editor-fold desc="General">
   private <T extends Actor> void cleanRoomAndSetProperties(T actor, AccountDTO account) {
+    assertThat(account.getMxid())
+        .as("The client mxid (%s) does not match the home server (%s)", account.getMxid(),
+            actor.recall(HOME_SERVER))
+        .contains(getHomeServerWithoutHttpAndPort(actor));
     actor.remember(MX_ID, account.getMxid());
     actor.remember(ACCOUNT_PASSWORD, account.getPassword());
     actor.remember(DISPLAY_NAME, account.getDisplayName());
@@ -128,6 +134,10 @@ public class LoginTask extends ParallelTaskRunner implements Task {
           .password(actor.recall(ACCOUNT_PASSWORD)));
     }
     return Optional.empty();
+  }
+
+  private static <T extends Actor> String getHomeServerWithoutHttpAndPort(T actor) {
+    return actor.recall(HOME_SERVER).toString().replaceAll("http.?://", "").split(":")[0];
   }
   //</editor-fold>
 
