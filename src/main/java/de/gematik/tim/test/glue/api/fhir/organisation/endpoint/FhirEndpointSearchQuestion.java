@@ -40,13 +40,12 @@ public class FhirEndpointSearchQuestion implements Question<FhirSearchResultDTO>
   private Long customPollInterval;
   private String mxId;
   private String endpointName;
-  private int atLeastExpectedResults = 1;
 
   public static FhirEndpointSearchQuestion endpoint() {
     return new FhirEndpointSearchQuestion();
   }
 
-  public FhirEndpointSearchQuestion withMxId(String mxId) {
+  public FhirEndpointSearchQuestion withMxIdAsUri(String mxId) {
     this.mxId = mxId;
     return this;
   }
@@ -80,7 +79,7 @@ public class FhirEndpointSearchQuestion implements Question<FhirSearchResultDTO>
   private Optional<FhirSearchResultDTO> filterEndpoint(Actor actor) {
     actor.attemptsTo(SEARCH_ENDPOINT.request().with(this::prepareQuery));
     FhirSearchResultDTO res = parseResponse(FhirSearchResultDTO.class, true);
-    if (requireNonNull(res.getTotal()) < atLeastExpectedResults) {
+    if (requireNonNull(res.getTotal()) < 1) {
       return Optional.empty();
     }
     return Optional.of(res);

@@ -19,7 +19,6 @@ package de.gematik.tim.test.glue.api.fhir.organisation;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEARCH_ORG;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.mxidToUrl;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getHsFromInternalName;
@@ -55,7 +54,7 @@ public class FhirSearchOrgQuestion implements Question<FhirSearchResultDTO> {
     return this;
   }
 
-  public FhirSearchOrgQuestion havingMxIdInEndpoint(String mxId) {
+  public FhirSearchOrgQuestion havingMxIdAsUriInEndpoint(String mxId) {
     this.mxIdInEndpoint = mxId;
     return this;
   }
@@ -97,7 +96,7 @@ public class FhirSearchOrgQuestion implements Question<FhirSearchResultDTO> {
         .filter(Objects::nonNull)
         .toList();
     if (mxIdInEndpoint != null
-        && ids.contains(mxidToUrl(mxIdInEndpoint))
+        && ids.contains(mxIdInEndpoint)
         && requireNonNull(searchResult.getTotal()) >= minimalSearchResults) {
       return Optional.of(searchResult);
     }

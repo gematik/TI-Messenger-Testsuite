@@ -19,6 +19,7 @@ package de.gematik.tim.test.glue.api.fhir.organisation;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.FhirEndpointSearchQuestion.endpoint;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.mxidToUri;
 import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
 import static lombok.AccessLevel.PRIVATE;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
@@ -60,7 +61,7 @@ public class FhirOrganizationSearchGlue {
 
     String mxIdOfUserToFind = user.recall(MX_ID);
     FhirSearchResultDTO result = actor.asksFor(endpoint()
-        .withMxId(mxIdOfUserToFind)
+        .withMxIdAsUri(mxidToUri(mxIdOfUserToFind))
         .withCustomInterval(customTimeout, customPollInterval));
     List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
     assertThat(endpoints).isEmpty();

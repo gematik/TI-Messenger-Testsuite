@@ -57,6 +57,7 @@ import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_LEAVE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_STATE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.SUPPORTED_VERSIONS_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.UNCLAIM_DEVICE_PATH;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.WELL_KNOWN_SERVER_PATH;
 import static java.util.Objects.requireNonNull;
 
 import de.gematik.tim.test.glue.api.devices.UseDeviceAbility;
@@ -86,6 +87,7 @@ public enum TestdriverApiEndpoint {
   GET_INFO(GET, INFO_PATH),
   CLEAN_REQUEST(POST, INFO_PATH),
 
+  GET_WELL_KNOWN_MATRIX_SERVER(GET, WELL_KNOWN_SERVER_PATH),
   GET_SUPPORTED_VERSIONS(GET, SUPPORTED_VERSIONS_PATH),
 
   // DEVICE
@@ -124,7 +126,6 @@ public enum TestdriverApiEndpoint {
   DELETE_MESSAGE(DELETE, MESSAGE_ID_PATH, UseDeviceAbility.class, UseRoomAbility.class),
 
   // HOMESERVER SEARCH
-
   SEARCH_ON_HOMESERVER(GET, HOMESERVER_SEARCH_PATH, UseDeviceAbility.class),
 
   // FHIR PRACTITIONER

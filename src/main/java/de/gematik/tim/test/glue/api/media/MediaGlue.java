@@ -25,11 +25,13 @@ import static de.gematik.tim.test.glue.api.message.GetRoomMessageQuestion.messag
 import static de.gematik.tim.test.glue.api.message.SendMessageTask.sendMessage;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.checkRoomMembershipState;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getCreatedMessage;
+import static java.lang.String.format;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
+import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
 import de.gematik.tim.test.models.MessageDTO;
 import io.cucumber.java.de.Dann;
@@ -77,8 +79,6 @@ public class MediaGlue {
   }
 
   @SneakyThrows
-  @SuppressWarnings("java:S3655")
-  // It gets checked by asserThat(message).isPresent()
   @Then("{string} receives the attachment {string} from {string} in the room {string}")
   @Dann("{string} empfängt das Attachment {string} von {string} im Raum {string}")
   public void receiveAttachmentInRoom(String actorName, String fileName, String userName,
@@ -89,8 +89,9 @@ public class MediaGlue {
     Optional<MessageDTO> message = actor
         .asksFor(messageFromSenderWithTextInActiveRoom(fileName, senderMxId));
 
-    assertThat(message).isPresent();
-
+    if (message.isEmpty()) {
+      throw new TestRunException(format("Could not find message %s from sender %s", fileName, senderMxId));
+    }
     byte[] receivedMedia = actor.asksFor(downloadMedia().withFileId(message.get().getFileId()));
 
     Path path = Path.of(RESOURCES_PATH + fileName);

@@ -154,43 +154,54 @@ public class RoomControllerGlue {
   @Wenn("{listOfStrings} erhält eine Einladung von {string}")
   @Wenn("{listOfStrings} erhalten eine Einladung von {string}")
   public void receiveInvitation(List<String> actorNames, String userName) {
-    String roomId = theActorCalled(userName).abilityTo(UseRoomAbility.class).getActive().getRoomId();
+    Actor invitingActor = theActorCalled(userName);
+    String roomId = invitingActor.abilityTo(UseRoomAbility.class).getActive().getRoomId();
     actorNames.forEach(actorName -> {
-      RoomDTO room = theActorCalled(actorName).asksFor(ownRoom()
+      Actor invitedActor = theActorCalled(actorName);
+      RoomDTO room = invitingActor.asksFor(ownRoom()
           .withRoomId(roomId)
-          .withMemberHasStatus(theActorCalled(actorName).recall(MX_ID), INVITE));
+          .withMemberHasStatus(invitedActor.recall(MX_ID), INVITE));
       checkRoomMembershipState(room);
       checkRoomVersion(room);
     });
   }
 
-  @When("{string} accepts the invitation to room {string}")
-  @Wenn("{string} bestätigt eine Einladung in Raum {string}")
-  public void acceptsTheInvitationToRoom(String actorName, String roomName) {
-    Actor actor = theActorCalled(actorName);
-    RoomDTO room = actor.asksFor(ownRoom()
+  @When("{string} accepts the invitation to room {string} from {string}")
+  @Wenn("{string} bestätigt eine Einladung in Raum {string} von {string}")
+  public void acceptsTheInvitationToRoom(String actorName, String roomName, String invitingActorName) {
+    Actor invitingActor = theActorCalled(invitingActorName);
+    Actor invitedActor = theActorCalled(actorName);
+    RoomDTO room = invitingActor.asksFor(ownRoom()
         .withName(roomName)
-        .withMemberHasStatus(actor.recall(MX_ID), INVITE));
+        .withMemberHasStatus(invitedActor.recall(MX_ID), INVITE));
     checkRoomMembershipState(room);
-    actor.attemptsTo(joinRoom().withRoomId(room.getRoomId()));
+
+    RoomDTO roomWithLimitedMemberView = invitedActor.asksFor(ownRoom()
+        .withMemberHasStatus(invitedActor.recall(MX_ID), INVITE));
+    invitedActor.attemptsTo(joinRoom().withRoomId(roomWithLimitedMemberView.getRoomId()));
     checkResponseCode(actorName, OK.value());
     checkRoomMembershipState();
   }
 
-  @When("{string} confirms the invitation from {string}")
+  @When("{listOfStrings} confirms the invitation from {string}")
   @Wenn("{listOfStrings} bestätigt eine Einladung von {string}")
   @Wenn("{listOfStrings} bestätigen eine Einladung von {string}")
   public void acceptChatInvitation(List<String> actorNames, String inviter) {
     Actor invitingActor = theActorCalled(inviter);
     String invitingMxid = invitingActor.recall(MX_ID);
+
     for (String actorName : actorNames) {
       Actor invitedActor = theActorCalled(actorName);
       String invitedMxid = invitedActor.recall(MX_ID);
-      RoomDTO room = theActorCalled(actorName).asksFor(ownRoom()
+      RoomDTO room = invitingActor.asksFor(ownRoom()
           .withMemberHasStatus(invitedMxid, INVITE)
           .withMembers(List.of(invitedMxid, invitingMxid)));
       checkRoomMembershipState(room);
-      invitedActor.attemptsTo(joinRoom().withRoomId(room.getRoomId()));
+
+      RoomDTO roomWithLimitedMemberView = invitedActor.asksFor(ownRoom()
+          .withMemberHasStatus(invitedMxid, INVITE)
+          .withMembers(List.of(invitedMxid)));
+      invitedActor.attemptsTo(joinRoom().withRoomId(roomWithLimitedMemberView.getRoomId()));
       checkResponseCode(actorName, OK.value());
       checkRoomMembershipState();
     }
@@ -198,11 +209,14 @@ public class RoomControllerGlue {
   //</editor-fold>
 
   //<editor-fold desc="Leave & Delete room">
-  @When("{string} denies invitation to room {string}")
-  @Wenn("{string} lehnt eine Einladung für Raum {string} ab")
-  public void denyRoomInvitationTo(String actorName, String roomName) {
+  @When("{string} denies invitation from {string} to room {string}")
+  @Wenn("{string} lehnt eine Einladung von {string} für Raum {string} ab")
+  public void denyRoomInvitationTo(String actorName, String invitingActorName, String roomName) {
+    Actor invitingActor = theActorCalled(invitingActorName);
     Actor actor = theActorCalled(actorName);
-    RoomDTO room = actor.asksFor(ownRoom().withName(roomName).withMemberHasStatus(actor.recall(MX_ID), INVITE));
+    RoomDTO room = invitingActor.asksFor(ownRoom()
+        .withName(roomName)
+        .withMemberHasStatus(actor.recall(MX_ID), INVITE));
     checkRoomMembershipState(room);
     addRoomToActor(roomName, room, actor);
     leaveAndForgetRoom(actor, room);
@@ -211,14 +225,15 @@ public class RoomControllerGlue {
   @When("{string} denies chat invitation with {string}")
   @Wenn("{string} lehnt eine Einladung zum Chat mit {string} ab")
   public void denyChatInvitationTo(String actorName, String userName) {
-    String roomId = theActorCalled(userName).abilityTo(UseRoomAbility.class).getActive().getRoomId();
-    Actor actor = theActorCalled(actorName);
-    RoomDTO room = actor.asksFor(ownRoom()
+    Actor invitingActor = theActorCalled(userName);
+    String roomId = invitingActor.abilityTo(UseRoomAbility.class).getActive().getRoomId();
+    Actor invitedActor = theActorCalled(actorName);
+    RoomDTO room = invitingActor.asksFor(ownRoom()
         .withRoomId(roomId)
-        .withMemberHasStatus(actor.recall(MX_ID), INVITE));
+        .withMemberHasStatus(invitedActor.recall(MX_ID), INVITE));
     checkRoomMembershipState(room);
-    addRoomToActor(room, actor);
-    leaveAndForgetRoom(actor, room);
+    addRoomToActor(room, invitedActor);
+    leaveAndForgetRoom(invitedActor, room);
   }
 
   @When("{string} leaves chat with {string}")
@@ -378,13 +393,14 @@ public class RoomControllerGlue {
     assertThat(room).isNull();
   }
 
-  @Then("{string} receives invitation to room {string}")
-  @Dann("{string} erhält eine Einladung in Raum {string}")
-  public void receiveInvitationToRoom(String actorName, String roomName) {
-    Actor actor = theActorCalled(actorName);
-    RoomDTO room = actor.asksFor(ownRoom()
+  @Then("{string} receives invitation to room {string} from {string}")
+  @Dann("{string} erhält eine Einladung in Raum {string} von {string}")
+  public void receiveInvitationToRoom(String actorName, String roomName, String invitingActorName) {
+    Actor invitedActor = theActorCalled(actorName);
+    Actor invitingActor = theActorCalled(invitingActorName);
+    RoomDTO room = invitingActor.asksFor(ownRoom()
         .withName(roomName)
-        .withMemberHasStatus(actor.recall(MX_ID), INVITE));
+        .withMemberHasStatus(invitedActor.recall(MX_ID), INVITE));
     assertThat(room).as(format("Actor %s has no invitation to room %s", actorName, roomName)).isNotNull();
     checkRoomMembershipState(room);
     checkRoomVersion(room);

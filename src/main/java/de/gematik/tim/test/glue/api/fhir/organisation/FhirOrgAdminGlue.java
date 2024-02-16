@@ -40,6 +40,7 @@ import static de.gematik.tim.test.glue.api.utils.GlueUtils.assertCorrectEndpoint
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.assertMxIdsInEndpoint;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueEndpointName;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.mxidToUri;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.readJsonFile;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addEndpoint;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getEndpointFromInternalName;
@@ -90,7 +91,7 @@ public class FhirOrgAdminGlue {
     Actor actor = theActorCalled(actorName);
     String mxId = theActorCalled(userName).recall(MX_ID);
     FhirSearchResultDTO result = actor.asksFor(
-        organizationEndpoints().withHsName(hsName).havingMxIdInEndpoint(mxId));
+        organizationEndpoints().withHsName(hsName).havingMxIdAsUriInEndpoint(mxidToUri(mxId)));
     List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
     assertCorrectEndpointNameAndMxid(endpoints, theActorCalled(userName));
   }
@@ -112,7 +113,7 @@ public class FhirOrgAdminGlue {
     Actor endpointActor = theActorCalled(client);
     String endpointMxId = endpointActor.recall(MX_ID);
     admin.attemptsTo(addHealthcareServiceEndpoint(endpointActor.recall(DISPLAY_NAME))
-        .withMxId(endpointMxId)
+        .withMxIdAsUri(mxidToUri(endpointMxId))
         .forHealthcareService(hsName));
     checkResponseCode(orgAdmin, CREATED.value());
   }
