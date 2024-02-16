@@ -51,7 +51,7 @@ public class CreateEndpointTask extends HealthcareSpecificTask {
     return new CreateEndpointTask(endpointName);
   }
 
-  public CreateEndpointTask withMxId(String mxId) {
+  public CreateEndpointTask withMxIdAsUri(String mxId) {
     this.mxId = mxId;
     return this;
   }

@@ -37,6 +37,7 @@ public final class TestdriverApiPath {
   public static final String MEDIA_ID_VARIABLE = "mediaId";
 
   public static final String INFO_PATH = "/";
+  public static final String WELL_KNOWN_SERVER_PATH = "/.well-known/matrix/server";
   public static final String SUPPORTED_VERSIONS_PATH = "/_matrix/client/versions";
 
   // DEVICE

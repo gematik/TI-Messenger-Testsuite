@@ -96,8 +96,8 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B" in FHIR
     Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
-    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Wenn       "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Dann       "B" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
 
@@ -126,8 +126,8 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B" in FHIR
     Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
-    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Wenn       "B" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Dann       "A" empfängt eine Nachricht "Testnachricht 1" von "B" im Raum "TIM Testraum 1"
 
@@ -190,8 +190,8 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Und        "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "C" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "C" lädt "B" über den HealthcareService "HealthcareServiceName1" in den Chat-Raum "TIM Testraum 1" ein
-    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
     Wenn       "C" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Dann       "B" empfängt eine Nachricht "Testnachricht 1" von "C" im Raum "TIM Testraum 1"
 
@@ -258,8 +258,8 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Und        "B" findet "D" im Healthcare-Service "HealthcareServiceName2"
     Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "B" lädt "D" in Chat-Raum "TIM Testraum 1" ein
-    Und        "D" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "D" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "D" erhält eine Einladung in Raum "TIM Testraum 1" von "B"
+    Und        "D" bestätigt eine Einladung in Raum "TIM Testraum 1" von "B"
     Wenn       "B" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Dann       "D" empfängt eine Nachricht "Testnachricht 1" von "B" im Raum "TIM Testraum 1"
 
@@ -310,7 +310,7 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Beispiele:
       | ApiName1A | ApiName1B | ApiName2 |
 
-  @BP:O2P @Ctl:OrgAdmin @Ctl:Raum @Ctl:Forbidden
+  @BP:O2P @Ctl:OrgAdmin @Ctl:Raum @Ctl:Forbidden @Ctl:BasicTest
     @TCID:TIM_11_AF_1009 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 10.09 Events außerhalb einer Organisation - Raum - Organisations-User sendet HBA-User eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
@@ -341,7 +341,7 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Beispiele:
       | ApiName1A | ApiName1B | ApiName2 |
 
-  @BP:P2P @Ctl:Chat @Ctl:MsgForward @Ctl:MsgDelete
+  @BP:P2P @Ctl:Chat @Ctl:MsgForward @Ctl:MsgDelete @Ctl:BasicTest
     @TCID:TIM_11_AF_1010 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.10 Events außerhalb einer Organisation - Chat - HBA-User "B" löscht eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
@@ -412,7 +412,7 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Beispiele:
       | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
 
-  @BP:P2P @Ctl:Raum @Ctl:MsgForward @Ctl:MsgDelete
+  @BP:P2P @Ctl:Raum @Ctl:MsgForward @Ctl:MsgDelete @Ctl:BasicTest
     @TCID:TIM_11_AF_1012 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.12 Events außerhalb einer Organisation - Raum - HBA-User "A" löscht eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
@@ -422,8 +422,8 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B" in FHIR
     Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
-    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Und        "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Und        "B" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
     Wenn       "A" löscht seine Nachricht "Testnachricht 1" im Raum "TIM Testraum 1"
@@ -457,8 +457,8 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Und        "B" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "D"
     Und        "C" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "C" lädt "D" über den HealthcareService "HealthcareServiceName1" in den Chat-Raum "TIM Testraum 1" ein
-    Und        "D" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "D" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "D" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "D" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
     Und        "C" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Und        "D" empfängt eine Nachricht "Testnachricht 1" von "C" im Raum "TIM Testraum 1"
     Wenn       "C" löscht seine Nachricht "Testnachricht 1" im Raum "TIM Testraum 1"
@@ -483,7 +483,7 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Beispiele:
       | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
 
-  @BP:P2P @Ctl:Raum @Ctl:MsgForward @Ctl:MsgLogout
+  @BP:P2P @Ctl:Raum @Ctl:MsgForward @Ctl:MsgLogout @Ctl:BasicTest
     @TCID:TIM_11_AF_1014 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.14 Events außerhalb einer Organisation - Raum - HBA-User "A" sendet eine Nachricht an ausgeloggten "B"
     Angenommen Es werden folgende Clients reserviert:
@@ -496,8 +496,8 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
     Und        "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Wenn       "B" loggt sich im TI-Messenger ein
-    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Und        "B" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
 
   #@Shuffle(true)
@@ -530,8 +530,8 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Und        "C" lädt "D" über den HealthcareService "HealthcareServiceName1" in den Chat-Raum "TIM Testraum 1" ein
     Und        "C" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Wenn       "D" loggt sich im TI-Messenger ein
-    Dann       "D" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "D" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Dann       "D" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "D" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
     Und        "D" empfängt eine Nachricht "Testnachricht 1" von "C" im Raum "TIM Testraum 1"
 
   #@Shuffle(true)
@@ -552,7 +552,7 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Beispiele:
       | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
 
-  @BP:P2P @Ctl:Raum @Ctl:MsgBackward @Ctl:Attachment
+  @BP:P2P @Ctl:Raum @Ctl:MsgBackward @Ctl:Attachment @Ctl:BasicTest
     @TCID:TIM_11_AF_1016 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.16 Events außerhalb einer Organisation - Raum - HBA-User "B" sendet ein Attachment
     Angenommen Es werden folgende Clients reserviert:
@@ -562,8 +562,8 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B" in FHIR
     Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
-    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Wenn       "B" sendet ein Attachment "datei.txt" an den Raum "TIM Testraum 1"
     Dann       "A" empfängt das Attachment "datei.txt" von "B" im Raum "TIM Testraum 1"
 
@@ -594,8 +594,8 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Und        "B" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "D"
     Und        "C" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "C" lädt "D" über den HealthcareService "HealthcareServiceName1" in den Chat-Raum "TIM Testraum 1" ein
-    Und        "D" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "D" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "D" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "D" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
     Wenn       "D" sendet ein Attachment "datei.txt" an den Raum "TIM Testraum 1"
     Dann       "C" empfängt das Attachment "datei.txt" von "D" im Raum "TIM Testraum 1"
 
@@ -627,8 +627,8 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B" in FHIR
     Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
-    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Wenn       "A" sendet ein Attachment "bild.jpg" an den Raum "TIM Testraum 1"
     Dann       "B" empfängt das Attachment "bild.jpg" von "A" im Raum "TIM Testraum 1"
 
@@ -647,7 +647,7 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Beispiele:
       | ApiName1 | ApiName2 |
 
-  @BP:O2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgForward @Ctl:Attachment
+  @BP:O2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgForward @Ctl:Attachment @Ctl:BasicTest
     @TCID:TIM_11_AF_1019 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.19 Events außerhalb einer Organisation - Raum - Organisations-User "A" sendet ein Attachment
     Angenommen Es werden folgende Clients reserviert:
@@ -659,8 +659,8 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Und        "B" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "D"
     Und        "C" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "C" lädt "D" über den HealthcareService "HealthcareServiceName1" in den Chat-Raum "TIM Testraum 1" ein
-    Und        "D" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "D" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "D" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "D" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
     Wenn       "C" sendet ein Attachment "bild.jpg" an den Raum "TIM Testraum 1"
     Dann       "D" empfängt das Attachment "bild.jpg" von "C" im Raum "TIM Testraum 1"
 
@@ -683,7 +683,7 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
       | ApiName1A | ApiName2A | ApiName1B | ApiName2B |
 
   @BP:P2P @Ctl:Chat @Ctl:MsgForward
-    @TCID:TIM_11_AF_1020 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+    @TCID:TIM_11_AF_1020 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.20 Events außerhalb einer Organisation - Chat - User verlässt den Chat
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1> |
@@ -713,7 +713,7 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
       | ApiName1 | ApiName2 |
 
   @BP:P2P @Ctl:Raum @Ctl:MsgForward
-    @TCID:TIM_11_AF_1021 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+    @TCID:TIM_11_AF_1021 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10.21 Events außerhalb einer Organisation - Raum - User verlässt den Raum
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1> |
@@ -722,8 +722,8 @@ Funktionalität: 10. Austausch von Events zwischen Akteuren außerhalb einer Org
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B" in FHIR
     Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
-    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Wenn       "B" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Dann       "A" empfängt eine Nachricht "Testnachricht 1" von "B" im Raum "TIM Testraum 1"
     Wenn       "B" verlässt Raum "TIM Testraum 1"

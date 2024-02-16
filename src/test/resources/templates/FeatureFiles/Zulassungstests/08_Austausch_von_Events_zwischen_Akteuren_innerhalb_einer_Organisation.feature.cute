@@ -15,34 +15,34 @@
 Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Organisation
 
   AF_10063 - Austausch von Events zwischen Akteuren innerhalb einer Organisation
-    ML-123670 - Chatnachricht wird verarbeitet
-    ML-123669 - Auslösen einer Benachrichtigung
-    ML-132591 - TI-M Rohdatenerfassung und -lieferung
+  ML-123670 - Chatnachricht wird verarbeitet
+  ML-123669 - Auslösen einer Benachrichtigung
+  ML-132591 - TI-M Rohdatenerfassung und -lieferung
 
   Zusätzlich werden in diesem Feature File folgende Anforderungen aus anderen Feature Files betrachtet,
   da sie Preconditions für den AF_10063 darstellen:
 
   AF_10104 - Einladung von Akteuren innerhalb einer Organisation
-    ML-123896 - Matrix-Homeserver nach Akteuren durchsuchen
-    ML-129415 - Messenger-Proxy prüft TI-Föderationszugehörigkeit
-    ML-129414 - Akteure sind dem Chatraum beigetreten
-    ML-132590 - TI-M Rohdatenerfassung und -lieferung
+  ML-123896 - Matrix-Homeserver nach Akteuren durchsuchen
+  ML-129415 - Messenger-Proxy prüft TI-Föderationszugehörigkeit
+  ML-129414 - Akteure sind dem Chatraum beigetreten
+  ML-132590 - TI-M Rohdatenerfassung und -lieferung
 
   AF_10064 - Föderationszugehörigkeit eines Messenger-Service prüfen
-    ML-123672 - Föderationsliste vom VZD-FHIR-Directory abrufen
-    ML-123891 - Matrix-Domain Teil der Föderationsliste & Aktualitätscheck
-    ML-132589 - TI-M Rohdatenerfassung und -lieferung
-    ML-137902 - Aktualität - Föderationsliste Messenger-Proxy
+  ML-123672 - Föderationsliste vom VZD-FHIR-Directory abrufen
+  ML-123891 - Matrix-Domain Teil der Föderationsliste & Aktualitätscheck
+  ML-132589 - TI-M Rohdatenerfassung und -lieferung
+  ML-137902 - Aktualität - Föderationsliste Messenger-Proxy
 
   AF_10058 Akteur (User-HBA) im Verzeichnisdienst hinzufügen
-    ML-123612 - Akteur als Practitioner hinzufügen
-    ML-132588 - TI-M Rohdatenerfassung und -lieferung
+  ML-123612 - Akteur als Practitioner hinzufügen
+  ML-132588 - TI-M Rohdatenerfassung und -lieferung
 
   AF_10059 - Organisationsressourcen im Verzeichnisdienst hinzufügen
-    ML-123627 - Organisationsressourcen im VZD-FHIR-Directory hinzufügen
-    ML-132586 - TI-M Rohdatenerfassung und -lieferung
+  ML-123627 - Organisationsressourcen im VZD-FHIR-Directory hinzufügen
+  ML-132586 - TI-M Rohdatenerfassung und -lieferung
 
-    ML-123654 - Suche im VZD-FHIR-Directory
+  ML-123654 - Suche im VZD-FHIR-Directory
 
   In diesem Anwendungsfall erfolgt gleichzeitig eine Prüfung des Berechtigungskonzept.
   Zusätzlich werden in diesem Feature File Anforderungen aus Feature File 7 (AF_10104) betrachtet,
@@ -59,7 +59,7 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
   TF 20 & 21 Eventaustausch auf dem HomeServer Chat/Raum
 
   @BP:P2P @Ctl:Chat @Ctl:MsgForward
-  @TCID:TIM_11_AF_801 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_801 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.01 Events innerhalb einer Organisation - Chat - Test-Client "A" sendet und empfängt eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1A> |
@@ -73,21 +73,21 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Wenn       "B" schreibt "A" direkt "Testnachricht 2"
     Dann       "A" empfängt eine Nachricht "Testnachricht 2" von "B"
 
-  @Shuffle(true) #
-  @DistinctColumn(ApiName1A) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("client"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1A.hasTag("practitioner"))
-  @Filter(ApiName1B.hasTag("practitioner"))
+    @Shuffle(true) #
+    @DistinctColumn(ApiName1A) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("client"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1A.hasTag("practitioner"))
+    @Filter(ApiName1B.hasTag("practitioner"))
 
     Beispiele:
-    | ApiName1A | ApiName1B |
+      | ApiName1A | ApiName1B |
 
   @BP:P2P @Ctl:Raum @Ctl:MsgForward
-  @TCID:TIM_11_AF_802 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_802 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.02 Events innerhalb einer Organisation - Raum - Test-Client "A" sendet eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1A> |
@@ -96,26 +96,26 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B" in FHIR
     Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
-    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Wenn       "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Dann       "B" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
 
-  @Shuffle(true) #
-  @DistinctColumn(ApiName1A) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("client"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1A.hasTag("practitioner"))
-  @Filter(ApiName1B.hasTag("practitioner"))
+    @Shuffle(true) #
+    @DistinctColumn(ApiName1A) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("client"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1A.hasTag("practitioner"))
+    @Filter(ApiName1B.hasTag("practitioner"))
 
     Beispiele:
-    | ApiName1A | ApiName1B |
+      | ApiName1A | ApiName1B |
 
   @BP:P2P @Ctl:Raum @Ctl:MsgBackward
-  @TCID:TIM_11_AF_803 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_803 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.03 Events innerhalb einer Organisation - Raum - Test-Client "B" sendet eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1A> |
@@ -124,26 +124,26 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B" in FHIR
     Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
-    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Wenn       "B" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Dann       "A" empfängt eine Nachricht "Testnachricht 1" von "B" im Raum "TIM Testraum 1"
 
-  @Shuffle(true) #
-  @MaxSameColumnProperty(ApiName1A,homeserver,1) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("client"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1A.hasTag("practitioner"))
-  @Filter(ApiName1B.hasTag("practitioner"))
+    @Shuffle(true) #
+    @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("client"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1A.hasTag("practitioner"))
+    @Filter(ApiName1B.hasTag("practitioner"))
 
     Beispiele:
-    | ApiName1A | ApiName1B |
+      | ApiName1A | ApiName1B |
 
   @BP:P2O @Ctl:OrgAdmin @Ctl:Chat @Ctl:MsgForward
-  @TCID:TIM_11_AF_804 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_804 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.04 Events innerhalb einer Organisation - Chat - HBA-User sendet Organisations-User eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN    | <ApiName1A> |
@@ -158,21 +158,21 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Wenn       "B" schreibt "C" direkt "Testnachricht 2"
     Dann       "C" empfängt eine Nachricht "Testnachricht 2" von "B"
 
-  @Shuffle(true) #
-  @DistinctColumn(ApiName1C) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1C.hasTag("client"))
-  @Filter(ApiName1C.hasTag("practitioner"))
+    @Shuffle(true) #
+    @DistinctColumn(ApiName1C) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1C.hasTag("client"))
+    @Filter(ApiName1C.hasTag("practitioner"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName1C |
+      | ApiName1A | ApiName1B | ApiName1C |
 
   @BP:P2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgForward
-  @TCID:TIM_11_AF_805 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_805 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.05 Events innerhalb einer Organisation - Raum - HBA-User sendet Organisations-User eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN    | <ApiName1A> |
@@ -182,26 +182,26 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Und        "C" hinterlegen ihre MXIDs im Verzeichnis Dienst
     Und        "C" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "C" lädt "B" über den HealthcareService "HealthcareServiceName1" in den Chat-Raum "TIM Testraum 1" ein
-    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
     Wenn       "C" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Dann       "B" empfängt eine Nachricht "Testnachricht 1" von "C" im Raum "TIM Testraum 1"
 
-  @Shuffle(true) #
-  @MaxSameColumnProperty(ApiName1C,homeserver,1) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1C.hasTag("client"))
-  @Filter(ApiName1C.hasTag("practitioner"))
+    @Shuffle(true) #
+    @MaxSameColumnProperty(ApiName1C,homeserver,1) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1C.hasTag("client"))
+    @Filter(ApiName1C.hasTag("practitioner"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName1C |
+      | ApiName1A | ApiName1B | ApiName1C |
 
   @BP:O2O @Ctl:OrgAdmin @Ctl:Chat @Ctl:MsgForward
-  @TCID:TIM_11_AF_806 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_806 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.06 Events innerhalb einer Organisation - Chat - Organisations-User sendet Organisations-User eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN | <ApiName1A> |
@@ -217,20 +217,20 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Dann       "C" empfängt eine Nachricht "Testnachricht 2" von "B"
 
 
-  @Shuffle(true) #
-  @DistinctColumn(ApiName1C) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1C.hasTag("client"))
+    @Shuffle(true) #
+    @DistinctColumn(ApiName1C) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1C.hasTag("client"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName1C |
+      | ApiName1A | ApiName1B | ApiName1C |
 
   @BP:O2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgForward
-  @TCID:TIM_11_AF_807 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_807 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.07 Events innerhalb einer Organisation - Raum - Organisations-User sendet Organisations-User eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN | <ApiName1A> |
@@ -240,25 +240,25 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
     Und        "C" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "C" lädt "B" über den HealthcareService "HealthcareServiceName1" in den Chat-Raum "TIM Testraum 1" ein
-    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
     Wenn       "C" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Dann       "B" empfängt eine Nachricht "Testnachricht 1" von "C" im Raum "TIM Testraum 1"
 
-  @Shuffle(true) #
-  @DistinctColumn(ApiName1C) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1C.hasTag("client"))
+    @Shuffle(true) #
+    @DistinctColumn(ApiName1C) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1C.hasTag("client"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName1C |
+      | ApiName1A | ApiName1B | ApiName1C |
 
   @BP:O2P_intern @Ctl:OrgAdmin @Ctl:Chat @Ctl:MsgForward
-  @TCID:TIM_11_AF_808 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_808 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.08 Events innerhalb einer Organisation - Chat - Organisations-User sendet HBA-User eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN    | <ApiName1A> |
@@ -272,21 +272,21 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Und        "C" bestätigt eine Einladung von "B"
     Dann       "C" empfängt eine Nachricht "Testnachricht 1" von "B"
 
-  @Shuffle(true) #
-  @MaxSameColumnProperty(ApiName1B,homeserver,1) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1C.hasTag("client"))
-  @Filter(ApiName1C.hasTag("practitioner"))
+    @Shuffle(true) #
+    @MaxSameColumnProperty(ApiName1B,homeserver,1) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1C.hasTag("client"))
+    @Filter(ApiName1C.hasTag("practitioner"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName1C |
+      | ApiName1A | ApiName1B | ApiName1C |
 
-  @BP:O2P_intern @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgForward
-  @TCID:TIM_11_AF_809 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  @BP:O2P_intern @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgForward @Ctl:BasicTest
+    @TCID:TIM_11_AF_809 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.09 Events innerhalb einer Organisation - Raum - Organisations-User sendet HBA-User eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN    | <ApiName1A> |
@@ -297,26 +297,26 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "B" findet "C" in FHIR
     Und        "B" lädt "C" in Chat-Raum "TIM Testraum 1" ein
-    Und        "C" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "C" erhält eine Einladung in Raum "TIM Testraum 1" von "B"
+    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "B"
     Wenn       "B" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Dann       "C" empfängt eine Nachricht "Testnachricht 1" von "B" im Raum "TIM Testraum 1"
 
-  @Shuffle(true)
-  @DistinctColumn(ApiName1B)
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1C.hasTag("client"))
-  @Filter(ApiName1C.hasTag("practitioner"))
+    @Shuffle(true)
+    @DistinctColumn(ApiName1B)
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1C.hasTag("client"))
+    @Filter(ApiName1C.hasTag("practitioner"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName1C |
+      | ApiName1A | ApiName1B | ApiName1C |
 
-  @BP:P2P @Ctl:Chat @Ctl:MsgForward @Ctl:MsgDelete
-  @TCID:TIM_11_AF_810 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  @BP:P2P @Ctl:Chat @Ctl:MsgForward @Ctl:MsgDelete @Ctl:BasicTest
+    @TCID:TIM_11_AF_810 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.10 Events innerhalb einer Organisation - Chat - HBA-User "B" löscht eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1A> |
@@ -333,21 +333,21 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Dann       "A" kann die Nachricht "Testnachricht 2" von "B" im Chat mit "B" nicht mehr sehen [Retry 10 - 3]
     Und        "B" kann die Nachricht "Testnachricht 2" von "B" im Chat mit "A" nicht mehr sehen [Retry 5 - 2]
 
-  @Shuffle(true) #
-  @DistinctColumn(ApiName1B) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("client"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1A.hasTag("practitioner"))
-  @Filter(ApiName1B.hasTag("practitioner"))
+    @Shuffle(true) #
+    @DistinctColumn(ApiName1B) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("client"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1A.hasTag("practitioner"))
+    @Filter(ApiName1B.hasTag("practitioner"))
 
     Beispiele:
-    | ApiName1A | ApiName1B |
+      | ApiName1A | ApiName1B |
 
   @BP:O2O @Ctl:OrgAdmin @Ctl:Chat @Ctl:MsgForward @Ctl:MsgDelete
-  @TCID:TIM_11_AF_811 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_811 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.11 Events innerhalb einer Organisation - Chat - Organisations-User "B" löscht eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN | <ApiName1A> |
@@ -365,20 +365,20 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Dann       "B" kann die Nachricht "Testnachricht 2" von "C" im Chat mit "C" nicht mehr sehen [Retry 10 - 3]
     Und        "C" kann die Nachricht "Testnachricht 2" von "C" im Chat mit "B" nicht mehr sehen [Retry 5 - 2]
 
-  @Shuffle(true) #
-  @MaxSameColumnProperty(ApiName1C,homeserver,1) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1C.hasTag("client"))
+    @Shuffle(true) #
+    @MaxSameColumnProperty(ApiName1C,homeserver,1) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1C.hasTag("client"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName1C |
+      | ApiName1A | ApiName1B | ApiName1C |
 
-  @BP:P2P @Ctl:Raum @Ctl:MsgForward @Ctl:MsgDelete
-  @TCID:TIM_11_AF_812 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  @BP:P2P @Ctl:Raum @Ctl:MsgForward @Ctl:MsgDelete @Ctl:BasicTest
+    @TCID:TIM_11_AF_812 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.12 Events innerhalb einer Organisation - Raum - HBA-User "A" löscht eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1A> |
@@ -387,7 +387,7 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B" in FHIR
     Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
-    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
     Und        "B" bestätigt eine Einladung von "A"
     Und        "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Und        "B" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
@@ -395,21 +395,21 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Dann       "B" kann die Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 10 - 3]
     Und        "A" kann die Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 5 - 2]
 
-  @Shuffle(true) #
-  @MaxSameColumnProperty(ApiName1A,homeserver,1) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("client"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1A.hasTag("practitioner"))
-  @Filter(ApiName1B.hasTag("practitioner"))
+    @Shuffle(true) #
+    @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("client"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1A.hasTag("practitioner"))
+    @Filter(ApiName1B.hasTag("practitioner"))
 
     Beispiele:
-    | ApiName1A | ApiName1B |
+      | ApiName1A | ApiName1B |
 
   @BP:O2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgForward @Ctl:MsgDelete
-  @TCID:TIM_11_AF_813 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_813 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.13 Events innerhalb einer Organisation - Raum - Organisations-User "A" löscht eine Nachricht
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN | <ApiName1A> |
@@ -419,7 +419,7 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
     Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "B" lädt "C" über den HealthcareService "HealthcareServiceName1" in den Chat-Raum "TIM Testraum 1" ein
-    Und        "C" erhält eine Einladung in Raum "TIM Testraum 1"
+    Und        "C" erhält eine Einladung in Raum "TIM Testraum 1" von "B"
     Und        "C" bestätigt eine Einladung von "B"
     Und        "B" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Und        "C" empfängt eine Nachricht "Testnachricht 1" von "B" im Raum "TIM Testraum 1"
@@ -427,20 +427,20 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Dann       "C" kann die Nachricht "Testnachricht 1" von "B" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 10 - 3]
     Und        "B" kann die Nachricht "Testnachricht 1" von "B" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 5 - 2]
 
-  @Shuffle(true) #
-  @DistinctColumn(ApiName1B) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1C.hasTag("client"))
+    @Shuffle(true) #
+    @DistinctColumn(ApiName1B) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1C.hasTag("client"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName1C |
+      | ApiName1A | ApiName1B | ApiName1C |
 
   @BP:P2P @Ctl:Raum @Ctl:MsgForward @Ctl:MsgLogout
-  @TCID:TIM_11_AF_814 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_814 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.14 Events innerhalb einer Organisation - Raum - HBA-User "A" sendet eine Nachricht an ausgeloggten Test-Client "B"
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1A> |
@@ -452,25 +452,25 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
     Und        "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Wenn       "B" loggt sich im TI-Messenger ein
-    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Und        "B" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
 
-  @Shuffle(true) #
-  @MaxSameColumnProperty(ApiName1B,homeserver,2) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("client"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1A.hasTag("practitioner"))
-  @Filter(ApiName1B.hasTag("practitioner"))
+    @Shuffle(true) #
+    @MaxSameColumnProperty(ApiName1B,homeserver,2) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("client"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1A.hasTag("practitioner"))
+    @Filter(ApiName1B.hasTag("practitioner"))
 
     Beispiele:
-    | ApiName1A | ApiName1B |
+      | ApiName1A | ApiName1B |
 
   @BP:O2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgForward @Ctl:MsgLogout
-  @TCID:TIM_11_AF_815 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_815 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.15 Events innerhalb einer Organisation - Raum - Organisations-User "A" sendet eine Nachricht an ausgeloggten Test-Client "B"
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN | <ApiName1A> |
@@ -483,25 +483,25 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Und        "B" lädt "C" über den HealthcareService "HealthcareServiceName1" in den Chat-Raum "TIM Testraum 1" ein
     Und        "B" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Wenn       "C" loggt sich im TI-Messenger ein
-    Dann       "C" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Dann       "C" erhält eine Einladung in Raum "TIM Testraum 1" von "B"
+    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "B"
     Und        "C" empfängt eine Nachricht "Testnachricht 1" von "B" im Raum "TIM Testraum 1"
 
-  @Shuffle(true) #
-  @MaxSameColumnProperty(ApiName1C,homeserver,2) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @DistinctColumn(ApiName1C)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1C.hasTag("client"))
+    @Shuffle(true) #
+    @MaxSameColumnProperty(ApiName1C,homeserver,2) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @DistinctColumn(ApiName1C)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1C.hasTag("client"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName1C |
+      | ApiName1A | ApiName1B | ApiName1C |
 
-  @BP:P2P @Ctl:Raum @Ctl:MsgForward @Ctl:Attachment
-  @TCID:TIM_11_AF_816 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  @BP:P2P @Ctl:Raum @Ctl:MsgForward @Ctl:Attachment @Ctl:BasicTest
+    @TCID:TIM_11_AF_816 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.16 Events innerhalb einer Organisation - Raum - HBA-User "A" sendet ein Attachment
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1A> |
@@ -510,26 +510,26 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B" in FHIR
     Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
-    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Wenn       "A" sendet ein Attachment "datei.txt" an den Raum "TIM Testraum 1"
     Dann       "B" empfängt das Attachment "datei.txt" von "A" im Raum "TIM Testraum 1"
 
-  @Shuffle(true)
-  @DistinctColumn(ApiName1A)
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("client"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1A.hasTag("practitioner"))
-  @Filter(ApiName1B.hasTag("practitioner"))
+    @Shuffle(true)
+    @DistinctColumn(ApiName1A)
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("client"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1A.hasTag("practitioner"))
+    @Filter(ApiName1B.hasTag("practitioner"))
 
     Beispiele:
-    | ApiName1A | ApiName1B |
+      | ApiName1A | ApiName1B |
 
   @BP:O2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgForward @Ctl:Attachment
-  @TCID:TIM_11_AF_817 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_817 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.17 Events innerhalb einer Organisation - Raum - Organisations-User "A" sendet ein Attachment
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN | <ApiName1A> |
@@ -539,25 +539,25 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
     Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "B" lädt "C" über den HealthcareService "HealthcareServiceName1" in den Chat-Raum "TIM Testraum 1" ein
-    Und        "C" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "C" erhält eine Einladung in Raum "TIM Testraum 1" von "B"
+    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "B"
     Wenn       "B" sendet ein Attachment "datei.txt" an den Raum "TIM Testraum 1"
     Dann       "C" empfängt das Attachment "datei.txt" von "B" im Raum "TIM Testraum 1"
 
-  @Shuffle(true) #
-  @MaxSameColumnProperty(ApiName1B,homeserver,1) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1C.hasTag("client"))
+    @Shuffle(true) #
+    @MaxSameColumnProperty(ApiName1B,homeserver,1) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1C.hasTag("client"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName1C |
+      | ApiName1A | ApiName1B | ApiName1C |
 
   @BP:P2P @Ctl:Raum @Ctl:MsgBackward @Ctl:Attachment
-  @TCID:TIM_11_AF_818 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_818 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.18 Events innerhalb einer Organisation - Raum - HBA-User "B" sendet ein Attachment
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1A> |
@@ -566,26 +566,26 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B" in FHIR
     Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
-    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Wenn       "B" sendet ein Attachment "bild.jpg" an den Raum "TIM Testraum 1"
     Dann       "A" empfängt das Attachment "bild.jpg" von "B" im Raum "TIM Testraum 1"
 
-  @Shuffle(true) #
-  @MaxSameColumnProperty(ApiName1B,homeserver,1) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("client"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1A.hasTag("practitioner"))
-  @Filter(ApiName1B.hasTag("practitioner"))
+    @Shuffle(true) #
+    @MaxSameColumnProperty(ApiName1B,homeserver,1) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("client"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1A.hasTag("practitioner"))
+    @Filter(ApiName1B.hasTag("practitioner"))
 
     Beispiele:
-    | ApiName1A | ApiName1B |
+      | ApiName1A | ApiName1B |
 
-  @BP:O2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgBackward @Ctl:Attachment
-  @TCID:TIM_11_AF_819 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  @BP:O2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:MsgBackward @Ctl:Attachment @Ctl:BasicTest
+    @TCID:TIM_11_AF_819 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.19 Events innerhalb einer Organisation - Raum - Organisations-User "B" sendet ein Attachment
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN | <ApiName1A> |
@@ -595,25 +595,25 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
     Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "B" lädt "C" über den HealthcareService "HealthcareServiceName1" in den Chat-Raum "TIM Testraum 1" ein
-    Und        "C" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "C" erhält eine Einladung in Raum "TIM Testraum 1" von "B"
+    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "B"
     Wenn       "C" sendet ein Attachment "bild.jpg" an den Raum "TIM Testraum 1"
     Dann       "B" empfängt das Attachment "bild.jpg" von "C" im Raum "TIM Testraum 1"
 
-  @Shuffle(true)
-  @DistinctColumn(ApiName1C)
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1C.hasTag("client"))
+    @Shuffle(true)
+    @DistinctColumn(ApiName1C)
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1C.hasTag("client"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName1C |
+      | ApiName1A | ApiName1B | ApiName1C |
 
-  @BP:N2N @Ctl:Chat @Ctl:MsgForward @@Ctl:NOVZD
-  @TCID:TIM_11_AF_820 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  @BP:N2N @Ctl:Chat @Ctl:MsgForward @@Ctl:NOVZD @Ctl:BasicTest
+    @TCID:TIM_11_AF_820 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.20 Events innerhalb einer Organisation - Chat - Eventaustausch auf dem HomeServer
     Angenommen Es werden folgende Clients reserviert:
       | A | CLIENT | <ApiName1A> |
@@ -626,19 +626,19 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Wenn       "B" schreibt "A" direkt "Testnachricht 2"
     Dann       "A" empfängt eine Nachricht "Testnachricht 2" von "B"
 
-  @Shuffle(true)
-  @DistinctColumn(ApiName1A)
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("client"))
-  @Filter(ApiName1B.hasTag("client"))
+    @Shuffle(true)
+    @DistinctColumn(ApiName1A)
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("client"))
+    @Filter(ApiName1B.hasTag("client"))
 
     Beispiele:
-    | ApiName1A | ApiName1B |
+      | ApiName1A | ApiName1B |
 
   @BP:N2N @Ctl:Raum @Ctl:MsgForward @@Ctl:NOVZD
-  @TCID:TIM_11_AF_821 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_821 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 08.21 Events innerhalb einer Organisation - Raum - Eventaustausch auf dem HomeServer
     Angenommen Es werden folgende Clients reserviert:
       | A | CLIENT | <ApiName1A> |
@@ -646,20 +646,20 @@ Funktionalität: 08. Austausch von Events zwischen Akteuren innerhalb einer Orga
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet TI-Messenger-Nutzer "B" bei der Suche im HomeServer
     Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
-    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Wenn       "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Dann       "B" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
     Wenn       "B" sendet die Nachricht "Testnachricht 2" an den Raum "TIM Testraum 1"
     Dann       "A" empfängt eine Nachricht "Testnachricht 2" von "B" im Raum "TIM Testraum 1"
 
-  @Shuffle(true)
-  @DistinctColumn(ApiName1A)
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("client"))
-  @Filter(ApiName1B.hasTag("client"))
+    @Shuffle(true)
+    @DistinctColumn(ApiName1A)
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("client"))
+    @Filter(ApiName1B.hasTag("client"))
 
     Beispiele:
-    | ApiName1A | ApiName1B |
+      | ApiName1A | ApiName1B |

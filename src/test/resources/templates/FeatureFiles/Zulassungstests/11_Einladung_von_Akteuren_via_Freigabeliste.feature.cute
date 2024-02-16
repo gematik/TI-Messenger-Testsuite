@@ -34,8 +34,8 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
 
   # TODO Bei mehreren Anbietern MaxSameColumnProperty & Shuffle anschalten
 
-  @BP:FL @@Ctl:NOVZD
-    @TCID:TIM_11_AF_1101 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  @BP:FL @@Ctl:NOVZD @Ctl:BasicTest
+  @TCID:TIM_11_AF_1101 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 11.01 Einladung via Freigabeliste außerhalb einer Organisation - Raum - Beide User jeweils in Freigabeliste (HBA-User an HBA-User)
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1> |
@@ -55,21 +55,21 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1,homeserver,2)
-    @DistinctProperty(homeserver)
-    @AllowSelfCombine(true)
-    @AllowDoubleLineup(true)
-    @Filter(ApiName1.hasTag("client"))
-    @Filter(ApiName2.hasTag("client"))
-    @Filter(ApiName1.hasTag("practitioner"))
-    @Filter(ApiName2.hasTag("practitioner"))
-    @SoftFilter(ApiName1.hasTag("prefIOP"))
-    @SoftFilter(ApiName2.hasTag("prefIOP"))
+  @DistinctProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @SoftFilter(ApiName1.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
-      | ApiName1 | ApiName2 |
+    | ApiName1 | ApiName2 |
 
   @BP:FL @@Ctl:NOVZD
-    @TCID:TIM_11_AF_1102 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  @TCID:TIM_11_AF_1102 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 11.02 Einladung via Freigabeliste außerhalb einer Organisation - Chat - Beide User jeweils in Freigabeliste (HBA-User an HBA-User)
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1> |
@@ -87,21 +87,21 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName1,homeserver,2)
-    @DistinctProperty(homeserver)
-    @AllowSelfCombine(true)
-    @AllowDoubleLineup(true)
-    @Filter(ApiName1.hasTag("client"))
-    @Filter(ApiName2.hasTag("client"))
-    @Filter(ApiName1.hasTag("practitioner"))
-    @Filter(ApiName2.hasTag("practitioner"))
-    @SoftFilter(ApiName1.hasTag("prefIOP"))
-    @SoftFilter(ApiName2.hasTag("prefIOP"))
+  @DistinctProperty(homeserver)
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @SoftFilter(ApiName1.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
-      | ApiName1 | ApiName2 |
+    | ApiName1 | ApiName2 |
 
-  @BP:FL @Ctl:OrgAdmin @@Ctl:NOVZD
-    @TCID:TIM_11_AF_1103 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  @BP:FL @Ctl:OrgAdmin @@Ctl:NOVZD @Ctl:BasicTest
+  @TCID:TIM_11_AF_1103 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 11.03 Einladung via Freigabeliste außerhalb einer Organisation - Chat - Beide User jeweils in Freigabeliste (Organisations-User an HBA-User)
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN    | <ApiName1A> |
@@ -122,22 +122,22 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
   #@Shuffle(true)
   #@DistinctColumn(ApiName1B)
   #@MaxSameColumnProperty(ApiName1B,homeserver,2)
-    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-    @Filter(!ApiName2.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-    @AllowSelfCombine(true)
-    @AllowDoubleLineup(true)
-    @Filter(ApiName1A.hasTag("orgAdmin"))
-    @Filter(ApiName1B.hasTag("client"))
-    @Filter(ApiName2.hasTag("client"))
-    @Filter(ApiName2.hasTag("practitioner"))
-    @SoftFilter(ApiName1B.hasTag("prefIOP"))
-    @SoftFilter(ApiName2.hasTag("prefIOP"))
+  @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+  @Filter(!ApiName2.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+  @AllowSelfCombine(true)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1A.hasTag("orgAdmin"))
+  @Filter(ApiName1B.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @SoftFilter(ApiName1B.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
-      | ApiName1A | ApiName1B | ApiName2 |
+    | ApiName1A | ApiName1B | ApiName2 |
 
-  @BP:FL @@Ctl:NOVZD
-    @TCID:TIM_11_AF_1104 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  @BP:FL @@Ctl:NOVZD @Ctl:BasicTest
+  @TCID:TIM_11_AF_1104 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 11.04 Einladung via Freigabeliste außerhalb einer Organisation - Raum - Nur ein User in Freigabeliste (HBA-User an HBA-User)
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1> |
@@ -151,20 +151,20 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName2,homeserver,2)
-    @DistinctProperty(homeserver)
-    @AllowDoubleLineup(true)
-    @Filter(ApiName1.hasTag("client"))
-    @Filter(ApiName2.hasTag("client"))
-    @Filter(ApiName1.hasTag("practitioner"))
-    @Filter(ApiName2.hasTag("practitioner"))
-    @SoftFilter(ApiName1.hasTag("prefIOP"))
-    @SoftFilter(ApiName2.hasTag("prefIOP"))
+  @DistinctProperty(homeserver)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @SoftFilter(ApiName1.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
-      | ApiName1 | ApiName2 |
+    | ApiName1 | ApiName2 |
 
   @BP:FL @@Ctl:NOVZD
-    @TCID:TIM_11_AF_1105 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  @TCID:TIM_11_AF_1105 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 11.05 Einladung via Freigabeliste außerhalb einer Organisation - Chat - Nur User in eigener Freigabeliste (HBA-User an HBA-User)
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1> |
@@ -177,14 +177,14 @@ Funktionalität: 11. Einladung von Akteuren via Freigabeliste
 
   #@Shuffle(true)
   #@MaxSameColumnProperty(ApiName2,homeserver,2)
-    @DistinctProperty(homeserver)
-    @AllowDoubleLineup(true)
-    @Filter(ApiName1.hasTag("client"))
-    @Filter(ApiName2.hasTag("client"))
-    @Filter(ApiName1.hasTag("practitioner"))
-    @Filter(ApiName2.hasTag("practitioner"))
-    @SoftFilter(ApiName1.hasTag("prefIOP"))
-    @SoftFilter(ApiName2.hasTag("prefIOP"))
+  @DistinctProperty(homeserver)
+  @AllowDoubleLineup(true)
+  @Filter(ApiName1.hasTag("client"))
+  @Filter(ApiName2.hasTag("client"))
+  @Filter(ApiName1.hasTag("practitioner"))
+  @Filter(ApiName2.hasTag("practitioner"))
+  @SoftFilter(ApiName1.hasTag("prefIOP"))
+  @SoftFilter(ApiName2.hasTag("prefIOP"))
 
     Beispiele:
-      | ApiName1 | ApiName2 |
+    | ApiName1 | ApiName2 |

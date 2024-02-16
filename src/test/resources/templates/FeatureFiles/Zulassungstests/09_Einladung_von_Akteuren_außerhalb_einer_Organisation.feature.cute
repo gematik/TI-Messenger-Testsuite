@@ -47,7 +47,7 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
 
   # TODO Bei mehreren Anbietern MaxSameColumnProperty & Shuffle anschalten
 
-  @BP:P2P @Ctl:Chat @Ctl:SeachPart
+  @BP:P2P @Ctl:Chat @Ctl:SeachPart @Ctl:BasicTest
     @TCID:TIM_11_AF_901 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 09.01 Einladung außerhalb einer Organisation - Einladung in Chat - Teilqualifizierte Suche (HBA-User an HBA-User)
     Angenommen Es werden folgende Clients reserviert:
@@ -86,7 +86,7 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Und        "A" findet TI-Messenger-Nutzer "B" bei Suche nach Namen minus 0-1 (Anzahl vorne-hinten) Char(s) abgeschnitten
     Wenn       "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
     Dann       "B" erhält eine Einladung von "A"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
 
   #@Shuffle(true)
@@ -104,7 +104,7 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Beispiele:
       | ApiName1 | ApiName2 |
 
-  @BP:O2P_extern @Ctl:OrgAdmin @Ctl:Chat
+  @BP:O2P_extern @Ctl:OrgAdmin @Ctl:Chat @Ctl:BasicTest
     @TCID:TIM_11_AF_903 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 09.03 Einladung außerhalb einer Organisation - Einladung in Chat - Organisations-User lädt HBA-User ein
     Angenommen Es werden folgende Clients reserviert:
@@ -133,7 +133,7 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Beispiele:
       | ApiName1A | ApiName1B | ApiName2 |
 
-  @BP:P2P @Ctl:Chat @Ctl:InvitReject
+  @BP:P2P @Ctl:Chat @Ctl:InvitReject @Ctl:BasicTest
     @TCID:TIM_11_AF_904 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 09.04 Einladung außerhalb einer Organisation - Einladung in Chat - Ablehnung der Einladung (HBA-User an HBA-User)
     Angenommen Es werden folgende Clients reserviert:
@@ -161,7 +161,7 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Beispiele:
       | ApiName1 | ApiName2 |
 
-  @BP:P2P @Ctl:Raum @Ctl:InvitReject
+  @BP:P2P @Ctl:Raum @Ctl:InvitReject @Ctl:BasicTest
     @TCID:TIM_11_AF_905 @PRIO:2 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 09.05 Einladung außerhalb einer Organisation - Einladung in Raum - Ablehnung der Einladung (HBA-User an HBA-User)
     Angenommen Es werden folgende Clients reserviert:
@@ -171,8 +171,8 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B" in FHIR
     Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
-    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
-    Wenn       "B" lehnt eine Einladung für Raum "TIM Testraum 1" ab
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Wenn       "B" lehnt eine Einladung von "A" für Raum "TIM Testraum 1" ab
     Dann       "B" ist dem Raum "TIM Testraum 1" nicht beigetreten [Retry 10 - 3]
 
   #@Shuffle(true)
@@ -234,8 +234,8 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Und        "B" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "D"
     Und        "C" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "C" lädt "D" über den HealthcareService "HealthcareServiceName2" in den Chat-Raum "TIM Testraum 1" ein
-    Und        "D" erhält eine Einladung in Raum "TIM Testraum 1"
-    Wenn       "D" lehnt eine Einladung für Raum "TIM Testraum 1" ab
+    Und        "D" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Wenn       "D" lehnt eine Einladung von "C" für Raum "TIM Testraum 1" ab
     Dann       "D" ist dem Raum "TIM Testraum 1" nicht beigetreten [Retry 10 - 3]
 
   #@Shuffle(true)
@@ -255,7 +255,7 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Beispiele:
       | ApiName1A | ApiName1B | ApiName2A | ApiName2B |
 
-  @BP:P2P @Ctl:Chat @Ctl:RejectThird
+  @BP:P2P @Ctl:Chat @Ctl:RejectThird @Ctl:BasicTest
     @TCID:TIM_11_AF_908 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 09.08 Einladung außerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (HBA)
     Angenommen Es werden folgende Clients reserviert:
@@ -355,7 +355,7 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Beispiele:
       | ApiName1 | ApiName2 |
 
-  @BP:O2N_extern @Ctl:OrgAdmin
+  @BP:O2N_extern @Ctl:OrgAdmin @Ctl:BasicTest
     @TCID:TIM_11_AF_911 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 09.11 Einladung außerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch Organisations-User
     Angenommen Es werden folgende Clients reserviert:
@@ -474,7 +474,7 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Und        "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
     Wenn       "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
     Dann       "B" erhält eine Einladung von "C"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
     Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
 
     @Shuffle(true)
@@ -530,7 +530,7 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Und        "C" erstellt einen Chat-Raum "TIM Testraum 1"
     Wenn       "C" lädt "B" über den HealthcareService "HealthcareServiceName" in den Chat-Raum "TIM Testraum 1" ein
     Dann       "B" erhält eine Einladung von "C"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
     Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
 
   #@Shuffle(true)
@@ -549,7 +549,7 @@ Funktionalität:  09. Einladung von Akteuren außerhalb einer Organisation
     Beispiele:
       | ApiName1A | ApiName1B | ApiName2 |
 
-  @BP:N2N_intern @@Ctl:NOVZD
+  @BP:N2N_intern @@Ctl:NOVZD @Ctl:BasicTest
     @TCID:TIM_11_AF_918 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 09.18 Einladung außerhalb einer Organisation - Negativ Suche - Qualifizierte Suche auf dem Homeserver
     Angenommen Es werden folgende Clients reserviert:

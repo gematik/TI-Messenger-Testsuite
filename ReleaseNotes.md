@@ -6,6 +6,23 @@
 
 - - -
 
+## Release 0.10.1
+
+## Features
+
+- New Tag @Ctl:BasicTest - Verification of all functions of the Testsuite/ -steps
+- Testcase 00.05 request /.well-known/matrix/server endpoint to get homeserver and request /_matrix/client/versions on that. If not found, version request still goes to the home-server url from test-driver info 
+
+### Changes
+
+- Changed naming of new Testcase 00.07 into 00.05
+
+### Bugs
+
+- It's no longer expected for an invited member, to get a full member list in the getRooms request for rooms they are
+  invited to. Instead, it is sufficient when only the invited member themself is returned as member of the room they are
+  invited to.
+
 ## Release 0.10.0
 
 ## Features
@@ -19,7 +36,8 @@
 - The mxid to be stored in the FHIR VZD is only accepted and expected in its url form (i.e. "matrix:u/name:homeserver"),
   support for the matrix format was removed.
 - Removed TFs 00.2, 00.5 & 04.2 - before all in status WIP
-- New Testcase 00.07 Abfrage der Matrix-Server-Version. Request Matrix-Homeserver-Api directly at `/_matrix/client/versions`
+- New Testcase 00.07 Abfrage der Matrix-Server-Version. Request Matrix-Homeserver-Api directly
+  at `/_matrix/client/versions`
 
 ### Changes
 

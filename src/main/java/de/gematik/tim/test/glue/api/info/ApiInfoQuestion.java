@@ -48,7 +48,11 @@ public class ApiInfoQuestion extends ParallelQuestionRunner<InfoObjectDTO> {
   public InfoObjectDTO searchParallel() {
     UnirestInstance client = getClient();
     InfoObjectDTO info = fromJson(client.get(GET_INFO.getResolvedPath(actor)).asString().getBody(), InfoObjectDTO.class);
-    actor.remember(HOME_SERVER, info.getHomeserver());
+    String homeserver = info.getHomeserver();
+    if (!homeserver.startsWith("http://") && !homeserver.startsWith("https://")) {
+      homeserver = "https://" + homeserver;
+    }
+    actor.remember(HOME_SERVER, homeserver);
     return info;
   }
 }

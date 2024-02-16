@@ -134,7 +134,7 @@ public class GlueUtils {
 
   public static void checkRoomMembershipState(RoomDTO room) {
     checkIfAllMembersAreCorrect(room);
-    //    checkIfAllActorsRelatedToRoomHaveCorrectMembershipState(room);
+    checkIfAllActorsRelatedToRoomHaveCorrectMembershipState(room);
   }
 
   public static RoomDTO filterForRoomWithSpecificMembers(List<RoomDTO> rooms,
@@ -275,7 +275,7 @@ public class GlueUtils {
         hs.getLocation().stream().map(e -> e.getReference().split("/")[1]).toList() : List.of();
   }
 
-  public static String mxidToUrl(String mxid) {
+  public static String mxidToUri(String mxid) {
     return mxid.replace(MXID_PREFIX, MXID_URL_PREFIX);
   }
 
@@ -283,7 +283,7 @@ public class GlueUtils {
     List<String> mxidsInEndpoints = endpoint.stream().map(FhirEndpointDTO::getAddress).toList();
     assertThat(mxidsInEndpoints).hasSize(mxids.size());
     for (String mxid : mxids) {
-      assertThat(mxidsInEndpoints).contains(mxidToUrl(mxid));
+      assertThat(mxidsInEndpoints).contains(mxidToUri(mxid));
     }
   }
 
@@ -297,7 +297,7 @@ public class GlueUtils {
         .isNotEmpty();
 
     List<String> mxids = endpoints.stream().map(FhirEndpointDTO::getAddress).toList();
-    assertThat(mxids).contains(mxidToUrl(searchedActor.recall(MX_ID)));
+    assertThat(mxids).contains(mxidToUri(searchedActor.recall(MX_ID)));
   }
 
   public static String prepareApiNameForHttp(String apiName) {
@@ -313,12 +313,12 @@ public class GlueUtils {
   private static void checkIfAllActorsRelatedToRoomHaveCorrectMembershipState(RoomDTO room) {
     getAllActiveActors()
         .stream()
-        .filter(a -> nonNull(a.recall(room.getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX)))
-        .forEach(a -> {
-          RoomMembershipStateDTO status = a.recall(room.getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX);
-          String mxid = a.recall(MX_ID);
+        .filter(actor -> nonNull(actor.recall(room.getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX)))
+        .forEach(actor -> {
+          RoomMembershipStateDTO status = actor.recall(room.getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX);
+          String mxid = actor.recall(MX_ID);
           if (!requireNonNull(room.getMembers()).stream().map(RoomMemberDTO::getMxid).toList().contains(mxid)) {
-            handleRoomStateInconsistency(format("%s expected to be in room <%s>", a.getName(), room.getName()));
+            handleRoomStateInconsistency(format("%s expected to be in room <%s>", actor.getName(), room.getName()));
           }
           boolean membershipStatusCorrect = room.getMembers()
               .stream()
@@ -328,7 +328,7 @@ public class GlueUtils {
               .orElseThrow()
               .equals(status);
           if (!membershipStatusCorrect) {
-            handleRoomStateInconsistency(format("%s should have membership-status <%s> in room <%s>", a.getName(), status, room.getName()));
+            handleRoomStateInconsistency(format("%s should have membership-status <%s> in room <%s>", actor.getName(), status, room.getName()));
           }
         });
   }

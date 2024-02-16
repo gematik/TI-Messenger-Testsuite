@@ -19,7 +19,7 @@ package de.gematik.tim.test.glue.api.fhir.practitioner;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEARCH_PRACTITIONER;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.mxidToUrl;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.mxidToUri;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
 import static java.util.Objects.nonNull;
@@ -117,7 +117,7 @@ public class FhirSearchQuestion implements Question<FhirSearchResultDTO> {
     if (nonNull(mxid)) {
       endpoints = endpoints.stream().filter(
               e -> e.getAddress() != null
-                  && e.getAddress().equals(mxidToUrl(mxid)))
+                  && e.getAddress().equals(mxidToUri(mxid)))
           .toList();
     }
     if (nonNull(name)) {
@@ -131,7 +131,7 @@ public class FhirSearchQuestion implements Question<FhirSearchResultDTO> {
 
   private RequestSpecification prepareQuery(RequestSpecification request) {
     if (StringUtils.isNotBlank(mxid)) {
-      request.queryParam("mxid", mxidToUrl(mxid));
+      request.queryParam("mxid", mxidToUri(mxid));
     }
     if (StringUtils.isNotBlank(name)) {
       request.queryParam("name", name);

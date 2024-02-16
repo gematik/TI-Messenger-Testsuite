@@ -13,26 +13,26 @@
 Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
 
   AF_10104 - Einladung von Akteuren innerhalb einer Organisation
-    ML-123896 - Matrix-Homeserver nach Akteuren durchsuchen
-    ML-129415 - Messenger-Proxy prüft TI-Föderationszugehörigkeit
-    ML-129414 - Akteure sind dem Chatraum beigetreten
-    ML-132590 - TI-M Rohdatenerfassung und -lieferung
+  ML-123896 - Matrix-Homeserver nach Akteuren durchsuchen
+  ML-129415 - Messenger-Proxy prüft TI-Föderationszugehörigkeit
+  ML-129414 - Akteure sind dem Chatraum beigetreten
+  ML-132590 - TI-M Rohdatenerfassung und -lieferung
 
   AF_10064 - Föderationszugehörigkeit eines Messenger-Service prüfen
-    ML-123672 - Föderationsliste vom VZD-FHIR-Directory abrufen
-    ML-123891 - Matrix-Domain Teil der Föderationsliste & Aktualitätscheck
-    ML-132589 - TI-M Rohdatenerfassung und -lieferung
-    ML-137902 - Aktualität - Föderationsliste Messenger-Proxy
+  ML-123672 - Föderationsliste vom VZD-FHIR-Directory abrufen
+  ML-123891 - Matrix-Domain Teil der Föderationsliste & Aktualitätscheck
+  ML-132589 - TI-M Rohdatenerfassung und -lieferung
+  ML-137902 - Aktualität - Föderationsliste Messenger-Proxy
 
   AF_10058 Akteur (User-HBA) im Verzeichnisdienst hinzufügen
-    ML-123612 - Akteur als Practitioner hinzufügen
-    ML-132588 - TI-M Rohdatenerfassung und -lieferung
+  ML-123612 - Akteur als Practitioner hinzufügen
+  ML-132588 - TI-M Rohdatenerfassung und -lieferung
 
   AF_10059 - Organisationsressourcen im Verzeichnisdienst hinzufügen
-    ML-123627 - Organisationsressourcen im VZD-FHIR-Directory hinzufügen
-    ML-132586 - TI-M Rohdatenerfassung und -lieferung
+  ML-123627 - Organisationsressourcen im VZD-FHIR-Directory hinzufügen
+  ML-132586 - TI-M Rohdatenerfassung und -lieferung
 
-    ML-123654 - Suche im VZD-FHIR-Directory
+  ML-123654 - Suche im VZD-FHIR-Directory
 
   In diesem Anwendungsfall erfolgt gleichzeitig eine Prüfung des Berechtigungskonzept.
 
@@ -47,8 +47,8 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
   TF 15 & 16 Einladung durch nicht im Verzeichnisdienst registrierte User in Chat/Raum (OrgUser und OrgUser)
   TF 17 & 18 Einladung in Chat/Raum mit dem Suche auf der eigenen Homeserver
 
-  @BP:P2P @Ctl:Chat @Ctl:SeachPart
-  @TCID:TIM_11_AF_701 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  @BP:P2P @Ctl:Chat @Ctl:SeachPart @Ctl:BasicTest
+    @TCID:TIM_11_AF_701 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.01 Einladung innerhalb einer Organisation - Einladung in Chat - Teilqualifizierte Suche (HBA-User an HBA-User)
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1A> |
@@ -60,21 +60,21 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "B" bestätigt eine Einladung von "A"
     Und        "B" empfängt eine Nachricht "Testnachricht 1" von "A"
 
-  @Shuffle(true) #
-  @MaxSameColumnProperty(ApiName1A,homeserver,1) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(false)
-  @Filter(ApiName1A.hasTag("client"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1A.hasTag("practitioner"))
-  @Filter(ApiName1B.hasTag("practitioner"))
+    @Shuffle(true) #
+    @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1A.hasTag("client"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1A.hasTag("practitioner"))
+    @Filter(ApiName1B.hasTag("practitioner"))
 
     Beispiele:
-    | ApiName1A | ApiName1B |
+      | ApiName1A | ApiName1B |
 
   @BP:P2P @Ctl:Raum @Ctl:SeachPart
-  @TCID:TIM_11_AF_702 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_702 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.02 Einladung innerhalb einer Organisation - Einladung in Raum - Teilqualifizierte Suche (HBA-User an HBA-User)
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1A> |
@@ -83,25 +83,25 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet TI-Messenger-Nutzer "B" bei Suche nach Namen minus 0-1 (Anzahl vorne-hinten) Char(s) abgeschnitten
     Wenn       "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
-    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
 
-  @Shuffle(true) #
-  @MaxSameColumnProperty(ApiName1A,homeserver,1) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(false)
-  @Filter(ApiName1A.hasTag("client"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1A.hasTag("practitioner"))
-  @Filter(ApiName1B.hasTag("practitioner"))
+    @Shuffle(true) #
+    @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1A.hasTag("client"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1A.hasTag("practitioner"))
+    @Filter(ApiName1B.hasTag("practitioner"))
 
     Beispiele:
       | ApiName1A | ApiName1B |
 
-  @BP:P2P @Ctl:Chat @Ctl:InvitReject
-  @TCID:TIM_11_AF_703 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  @BP:P2P @Ctl:Chat @Ctl:InvitReject @Ctl:BasicTest
+    @TCID:TIM_11_AF_703 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.03 Einladung innerhalb einer Organisation - Einladung in Chat - Ablehnung der Einladung (HBA-User an HBA-User)
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1A> |
@@ -113,21 +113,21 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Wenn       "B" lehnt eine Einladung zum Chat mit "A" ab
     Dann       "B" ist dem Chat mit "A" nicht beigetreten [Retry 10 - 2]
 
-  @Shuffle(true) #
-  @DistinctColumn(ApiName1B) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("client"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1A.hasTag("practitioner"))
-  @Filter(ApiName1B.hasTag("practitioner"))
+    @Shuffle(true) #
+    @DistinctColumn(ApiName1B) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("client"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1A.hasTag("practitioner"))
+    @Filter(ApiName1B.hasTag("practitioner"))
 
     Beispiele:
-    | ApiName1A | ApiName1B |
+      | ApiName1A | ApiName1B |
 
-  @BP:P2P @Ctl:Raum @Ctl:InvitReject
-  @TCID:TIM_11_AF_704 @PRIO:2 @TESTFALL:Positiv @STATUS:Implementiert
+  @BP:P2P @Ctl:Raum @Ctl:InvitReject @Ctl:BasicTest
+    @TCID:TIM_11_AF_704 @PRIO:2 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.04 Einladung innerhalb einer Organisation - Einladung in Raum - Ablehnung der Einladung (HBA-User an HBA-User)
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1A> |
@@ -136,25 +136,25 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" findet "B" in FHIR
     Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
-    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1"
-    Wenn       "B" lehnt eine Einladung für Raum "TIM Testraum 1" ab
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Wenn       "B" lehnt eine Einladung von "A" für Raum "TIM Testraum 1" ab
     Dann       "B" ist dem Raum "TIM Testraum 1" nicht beigetreten [Retry 10 - 2]
 
-  @Shuffle(true) #
-  @DistinctColumn(ApiName1B) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("client"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1A.hasTag("practitioner"))
-  @Filter(ApiName1B.hasTag("practitioner"))
+    @Shuffle(true) #
+    @DistinctColumn(ApiName1B) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("client"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1A.hasTag("practitioner"))
+    @Filter(ApiName1B.hasTag("practitioner"))
 
     Beispiele:
-    | ApiName1A | ApiName1B |
+      | ApiName1A | ApiName1B |
 
   @BP:O2O @Ctl:OrgAdmin @Ctl:Chat @Ctl:InvitReject
-  @TCID:TIM_11_AF_705 @PRIO:2 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_705 @PRIO:2 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.05 Einladung innerhalb einer Organisation - Einladung in Chat - Ablehnung der Einladung (Organisations-User an Organisations-User)
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN | <ApiName1A> |
@@ -167,20 +167,20 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Wenn       "C" lehnt eine Einladung zum Chat mit "B" ab
     Dann       "C" ist dem Chat mit "B" nicht beigetreten [Retry 10 - 2]
 
-  @Shuffle(true) #
-  @DistinctColumn(ApiName1C) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1C.hasTag("client"))
+    @Shuffle(true) #
+    @DistinctColumn(ApiName1C) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1C.hasTag("client"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName1C |
+      | ApiName1A | ApiName1B | ApiName1C |
 
   @BP:O2O @Ctl:OrgAdmin @Ctl:Raum @Ctl:InvitReject
-  @TCID:TIM_11_AF_706 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_706 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.06 Einladung innerhalb einer Organisation - Einladung in Raum - Ablehnung der Einladung (Organisations-User an Organisations-User)
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN | <ApiName1A> |
@@ -190,24 +190,24 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
     Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "B" lädt "C" über den HealthcareService "HealthcareServiceName2" in den Chat-Raum "TIM Testraum 1" ein
-    Und        "C" erhält eine Einladung in Raum "TIM Testraum 1"
-    Wenn       "C" lehnt eine Einladung für Raum "TIM Testraum 1" ab
+    Und        "C" erhält eine Einladung in Raum "TIM Testraum 1" von "B"
+    Wenn       "C" lehnt eine Einladung von "B" für Raum "TIM Testraum 1" ab
     Dann       "C" ist dem Raum "TIM Testraum 1" nicht beigetreten [Retry 10 - 2]
 
-  @Shuffle(true) #
-  @DistinctColumn(ApiName1C) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1C.hasTag("client"))
+    @Shuffle(true) #
+    @DistinctColumn(ApiName1C) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1C.hasTag("client"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName1C |
+      | ApiName1A | ApiName1B | ApiName1C |
 
-  @BP:P2P @Ctl:Chat @Ctl:RejectThird
-  @TCID:TIM_11_AF_707 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  @BP:P2P @Ctl:Chat @Ctl:RejectThird @Ctl:BasicTest
+    @TCID:TIM_11_AF_707 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 07.07 Einladung innerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (HBA)
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1A> |
@@ -223,23 +223,23 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Wenn       "A" versucht "C" in Chat mit "B" einzuladen
     Dann       erhält "A" einen Responsecode 401
 
-  @Shuffle(true) #
-  @DistinctColumn(ApiName1A) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("client"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1C.hasTag("client"))
-  @Filter(ApiName1A.hasTag("practitioner"))
-  @Filter(ApiName1B.hasTag("practitioner"))
-  @Filter(ApiName1C.hasTag("practitioner"))
+    @Shuffle(true) #
+    @DistinctColumn(ApiName1A) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("client"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1C.hasTag("client"))
+    @Filter(ApiName1A.hasTag("practitioner"))
+    @Filter(ApiName1B.hasTag("practitioner"))
+    @Filter(ApiName1C.hasTag("practitioner"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName1C |
+      | ApiName1A | ApiName1B | ApiName1C |
 
   @BP:O2O @Ctl:OrgAdmin @Ctl:Chat @Ctl:RejectThird
-  @TCID:TIM_11_AF_708 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+    @TCID:TIM_11_AF_708 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 07.08 Einladung innerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (OrgUser)
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN | <ApiName1A> |
@@ -257,21 +257,21 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Wenn       "B" versucht "D" in Chat mit "C" einzuladen
     Dann       erhält "B" einen Responsecode 401
 
-  @Shuffle(true) #
-  @MaxSameColumnProperty(ApiName1B,homeserver,1) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1C.hasTag("client"))
-  @Filter(ApiName1D.hasTag("client"))
+    @Shuffle(true) #
+    @MaxSameColumnProperty(ApiName1B,homeserver,1) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1C.hasTag("client"))
+    @Filter(ApiName1D.hasTag("client"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName1C | ApiName1D |
+      | ApiName1A | ApiName1B | ApiName1C | ApiName1D |
 
-  @BP:P2N_intern
-  @TCID:TIM_11_AF_709 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  @BP:P2N_intern @Ctl:BasicTest
+    @TCID:TIM_11_AF_709 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 07.09 Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch HBA-User
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1A> |
@@ -279,21 +279,21 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "A" hinterlegt seine MXID im Verzeichnis Dienst
     Dann       "A" findet TI-Messenger-Nutzer "B" bei Suche im VZD NICHT [Retry 10 - 4]
 
-  @Shuffle(true) #
-  @MaxSameColumnProperty(ApiName1B,homeserver,1) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(false)
-  @Filter(ApiName1A.hasTag("client"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1A.hasTag("practitioner"))
-  @Filter(ApiName1B.hasTag("practitioner"))
+    @Shuffle(true) #
+    @MaxSameColumnProperty(ApiName1B,homeserver,1) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1A.hasTag("client"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1A.hasTag("practitioner"))
+    @Filter(ApiName1B.hasTag("practitioner"))
 
     Beispiele:
-    | ApiName1A | ApiName1B |
+      | ApiName1A | ApiName1B |
 
   @BP:O2N_intern @Ctl:OrgAdmin
-  @TCID:TIM_11_AF_710 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+    @TCID:TIM_11_AF_710 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 07.10 Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch Organisations-User
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN | <ApiName1A> |
@@ -302,20 +302,20 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
     Dann       "B" findet TI-Messenger-Nutzer "C" bei Suche im VZD NICHT [Retry 10 - 4]
 
-  @Shuffle(true) #
-  @MaxSameColumnProperty(ApiName1B,homeserver,1) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(false)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1C.hasTag("client"))
+    @Shuffle(true) #
+    @MaxSameColumnProperty(ApiName1B,homeserver,1) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1C.hasTag("client"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName1C |
+      | ApiName1A | ApiName1B | ApiName1C |
 
   @BP:P2N_intern @Ctl:Chat
-  @TCID:TIM_11_AF_711 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_711 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.11 Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch HBA-User
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1A> |
@@ -326,21 +326,21 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "B" bestätigt eine Einladung von "A"
     Und        "B" empfängt eine Nachricht "Testnachricht 1" von "A"
 
-  @Shuffle(true)
-  @DistinctColumn(ApiName1A)
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("client"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1A.hasTag("practitioner"))
-  @Filter(ApiName1B.hasTag("practitioner"))
+    @Shuffle(true)
+    @DistinctColumn(ApiName1A)
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("client"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1A.hasTag("practitioner"))
+    @Filter(ApiName1B.hasTag("practitioner"))
 
     Beispiele:
-    | ApiName1A | ApiName1B |
+      | ApiName1A | ApiName1B |
 
   @BP:O2N_intern @Ctl:OrgAdmin @Ctl:Chat
-  @TCID:TIM_11_AF_712 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_712 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.12 Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch Organisations-User
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN | <ApiName1A> |
@@ -352,20 +352,20 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "C" bestätigt eine Einladung von "B"
     Und        "C" empfängt eine Nachricht "Testnachricht 1" von "B"
 
-  @Shuffle(true) #
-  @MaxSameColumnProperty(ApiName1B,homeserver,1) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1C.hasTag("client"))
+    @Shuffle(true) #
+    @MaxSameColumnProperty(ApiName1B,homeserver,1) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1C.hasTag("client"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName1C |
+      | ApiName1A | ApiName1B | ApiName1C |
 
   @BP:N2P_intern @Ctl:Chat
-  @TCID:TIM_11_AF_713 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_713 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.13 Einladung innerhalb einer Organisation - Einladung in Chat - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1A> |
@@ -376,21 +376,21 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "A" bestätigt eine Einladung von "B"
     Und        "A" empfängt eine Nachricht "Testnachricht 1" von "B"
 
-  @Shuffle(true) #
-  @DistinctColumn(ApiName1B) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(false)
-  @Filter(ApiName1A.hasTag("client"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1A.hasTag("practitioner"))
-  @Filter(ApiName1B.hasTag("practitioner"))
+    @Shuffle(true) #
+    @DistinctColumn(ApiName1B) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1A.hasTag("client"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1A.hasTag("practitioner"))
+    @Filter(ApiName1B.hasTag("practitioner"))
 
     Beispiele:
-    | ApiName1A | ApiName1B |
+      | ApiName1A | ApiName1B |
 
   @BP:N2P_intern @Ctl:OrgAdmin @Ctl:Raum
-  @TCID:TIM_11_AF_714 @PRIO:2 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_714 @PRIO:2 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.14 Einladung innerhalb einer Organisation - Einladung in Raum - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
     Angenommen Es werden folgende Clients reserviert:
       | A | PRACTITIONER | <ApiName1A> |
@@ -400,24 +400,24 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "B" findet "A" in FHIR
     Wenn       "B" lädt "A" in Chat-Raum "TIM Testraum 1" ein
     Dann       "A" erhält eine Einladung von "B"
-    Und        "A" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "A" bestätigt eine Einladung in Raum "TIM Testraum 1" von "B"
     Und        "A" ist dem Raum "TIM Testraum 1" beigetreten
 
-  @Shuffle(true) #
-  @MaxSameColumnProperty(ApiName1B,homeserver,1) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(false)
-  @Filter(ApiName1A.hasTag("client"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1A.hasTag("practitioner"))
-  @Filter(ApiName1B.hasTag("practitioner"))
+    @Shuffle(true) #
+    @MaxSameColumnProperty(ApiName1B,homeserver,1) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1A.hasTag("client"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1A.hasTag("practitioner"))
+    @Filter(ApiName1B.hasTag("practitioner"))
 
     Beispiele:
-    | ApiName1A | ApiName1B |
+      | ApiName1A | ApiName1B |
 
   @BP:N2O @Ctl:OrgAdmin @Ctl:Chat
-  @TCID:TIM_11_AF_715 @PRIO:2 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_715 @PRIO:2 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.15 Einladung innerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN | <ApiName1A> |
@@ -429,20 +429,20 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "B" bestätigt eine Einladung von "C"
     Und        "B" empfängt eine Nachricht "Testnachricht 1" von "C"
 
-  @Shuffle(true) #
-  @DistinctColumn(ApiName1C) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1C.hasTag("client"))
+    @Shuffle(true) #
+    @DistinctColumn(ApiName1C) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1C.hasTag("client"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName1C |
+      | ApiName1A | ApiName1B | ApiName1C |
 
   @BP:N2O @Ctl:OrgAdmin @Ctl:Raum
-  @TCID:TIM_11_AF_716 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_716 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.16 Einladung innerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN | <ApiName1A> |
@@ -452,23 +452,23 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
     Wenn       "B" lädt "C" über den HealthcareService "HealthcareServiceName1" in den Chat-Raum "TIM Testraum 1" ein
     Dann       "C" erhält eine Einladung von "B"
-    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "B"
     Und        "C" ist dem Raum "TIM Testraum 1" beigetreten
 
-  @Shuffle(true) #
-  @MaxSameColumnProperty(ApiName1B,homeserver,1) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(false)
-  @Filter(ApiName1A.hasTag("orgAdmin"))
-  @Filter(ApiName1B.hasTag("client"))
-  @Filter(ApiName1C.hasTag("client"))
+    @Shuffle(true) #
+    @MaxSameColumnProperty(ApiName1B,homeserver,1) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1C.hasTag("client"))
 
     Beispiele:
-    | ApiName1A | ApiName1B | ApiName1C |
+      | ApiName1A | ApiName1B | ApiName1C |
 
   @BP:N2N_intern @Ctl:Chat @@Ctl:NOVZD
-  @TCID:TIM_11_AF_717 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    @TCID:TIM_11_AF_717 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.17 Einladung innerhalb einer Organisation - Einladung in Chat - Teilqualifizierte Suche auf dem Homeserver
     Angenommen Es werden folgende Clients reserviert:
       | A | CLIENT | <ApiName1A> |
@@ -479,19 +479,19 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "B" bestätigt eine Einladung von "A"
     Und        "B" empfängt eine Nachricht "Testnachricht 1" von "A"
 
-  @Shuffle(true) #
-  @MaxSameColumnProperty(ApiName1A,homeserver,1) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("client"))
-  @Filter(ApiName1B.hasTag("client"))
+    @Shuffle(true) #
+    @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("client"))
+    @Filter(ApiName1B.hasTag("client"))
 
     Beispiele:
-    | ApiName1A | ApiName1B |
+      | ApiName1A | ApiName1B |
 
-  @BP:N2N_intern @Ctl:Raum @@Ctl:NOVZD
-  @TCID:TIM_11_AF_718 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  @BP:N2N_intern @Ctl:Raum @@Ctl:NOVZD @Ctl:BasicTest
+    @TCID:TIM_11_AF_718 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 07.18 Einladung innerhalb einer Organisation - Einladung in Raum - Teilqualifizierte Suche Suche auf dem Homeserver
     Angenommen Es werden folgende Clients reserviert:
       | A | CLIENT | <ApiName1A> |
@@ -499,17 +499,17 @@ Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Wenn       "A" findet TI-Messenger-Nutzer "B" bei der Suche im HomeServer nach Namen minus 0-1 (Anzahl vorne-hinten) Char(s) abgeschnitten
     Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
-    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1"
+    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
 
-  @Shuffle(true) #
-  @MaxSameColumnProperty(ApiName1A,homeserver,1) #
-  @EqualProperty(homeserver)
-  @AllowSelfCombine(true)
-  @AllowDoubleLineup(true)
-  @Filter(ApiName1A.hasTag("client"))
-  @Filter(ApiName1B.hasTag("client"))
+    @Shuffle(true) #
+    @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("client"))
+    @Filter(ApiName1B.hasTag("client"))
 
     Beispiele:
-    | ApiName1A | ApiName1B |
+      | ApiName1A | ApiName1B |
