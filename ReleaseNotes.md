@@ -6,12 +6,19 @@
 
 - - -
 
+## Release 0.10.2
+
+### Bugs
+
+- Fixed two instances, where the mxid was not yet written in its uri scheme to the FHIR directory.
+
 ## Release 0.10.1
 
 ## Features
 
 - New Tag @Ctl:BasicTest - Verification of all functions of the Testsuite/ -steps
-- Testcase 00.05 request /.well-known/matrix/server endpoint to get homeserver and request /_matrix/client/versions on that. If not found, version request still goes to the home-server url from test-driver info 
+- Testcase 00.05 request /.well-known/matrix/server endpoint to get homeserver and request /_matrix/client/versions on
+  that. If not found, version request still goes to the home-server url from test-driver info
 
 ### Changes
 

@@ -83,7 +83,6 @@ public class FhirOrgAdminGlue {
 
   public static final String INVALID_HS_NAME = "INVALID";
 
-  //<editor-fold desc="Search">
   @Given("{string} finds {string} in the healthcare service {string}")
   @Angenommen("{string} findet {string} im Healthcare-Service {string}")
   public static void findsAddressInHealthcareService(String actorName, String userName,
@@ -95,9 +94,7 @@ public class FhirOrgAdminGlue {
     List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
     assertCorrectEndpointNameAndMxid(endpoints, theActorCalled(userName));
   }
-  //</editor-fold>
 
-  //<editor-fold desc="Create & Add">
   @And("{string} creates a healthcare service {string}")
   @Und("{string} erstellt einen Healthcare-Service {string}")
   public void createHealthcareServiceWithName(String orgAdmin, String hsName) {
@@ -133,9 +130,7 @@ public class FhirOrgAdminGlue {
     admin.attemptsTo(createHealthcareService(INVALID_HS_NAME).withStringFromFile(file));
     checkResponseCode(orgAdmin, BAD_REQUEST.value());
   }
-  //</editor-fold>
 
-  //<editor-fold desc="Location">
   @When("{string} adds a location {string} to the healthcare service {string} with JSON {string}")
   @Wenn("{string} fügt eine Location {string} zum Healthcare-Service {string} hinzu mit JSON {string}")
   public void addLocationToHealthcareServiceWithJson(String orgAdmin, String locationName,
@@ -165,9 +160,7 @@ public class FhirOrgAdminGlue {
     admin.attemptsTo(deleteLocation().withName(locationName).forHealthcareService(hsName));
     checkResponseCode(orgAdmin, NO_CONTENT.value());
   }
-  //</editor-fold>
 
-  //<editor-fold desc="Endpoint">
   @When("{string} can see, that {listOfStrings} have exactly one endpoint in the healthcare service {string}")
   @Wenn("{string} sieht, dass {listOfStrings} genau einen Endpunkt im Healthcare-Service {string} hat")
   @Wenn("{string} sieht, dass {listOfStrings} je einen Endpunkt im Healthcare-Service {string} haben")
@@ -192,8 +185,8 @@ public class FhirOrgAdminGlue {
         .findFirst().orElseThrow();
     removeInternalEndpointWithName(endpoint.getName());
     Actor endpointActor = theActorCalled(userName);
-    endpoint.setAddress(endpointActor.recall(MX_ID));
-    admin.attemptsTo(updateEndpoint(endpoint).withAddress(endpointActor.recall(MX_ID)));
+    endpoint.setAddress(endpointActor.recall(mxidToUri(MX_ID)));
+    admin.attemptsTo(updateEndpoint(endpoint).withAddress(mxidToUri(endpointActor.recall(MX_ID))));
     addEndpoint(endpointActor.recall(DISPLAY_NAME), endpoint);
     checkResponseCode(orgAdmin, OK.value());
   }
@@ -234,9 +227,7 @@ public class FhirOrgAdminGlue {
     admin.attemptsTo(deleteEndPoint().withName(endpointName).forHealthcareService(hsName));
     checkResponseCode(orgAdmin, NO_CONTENT.value());
   }
-  //</editor-fold>
 
-  //<editor-fold desc="HealthcareService">
   @When("{string} changes the from {string} created healthcare service {string} with JSON {string}")
   @Wenn("{string} ändert die Daten des von {string} angelegten Healthcare-Service {string} mit JSON {string}")
   public void changeDataFromHealthcareServiceWithJson(String orgAdmin, String hsCreator,
@@ -266,9 +257,7 @@ public class FhirOrgAdminGlue {
     admin.attemptsTo(deleteHealthcareService().withName(hsName));
     checkResponseCode(orgAdmin, NO_CONTENT.value());
   }
-  //</editor-fold>
 
-  //<editor-fold desc="Checks">
   @Then("the location {string} to the healthcare service {string} complies with the JSON {string}")
   @Dann("entspricht die Location {string} zum Healthcare-Service {string} dem JSON {string}")
   public void checkHealthcareServiceLocationMatchesJson(String locationName, String hsName,
