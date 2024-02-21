@@ -57,8 +57,11 @@ public class RequestResponseUtils {
     return repeatedRequest(request, resourceType, TIMEOUT * factor, pollInterval);
   }
 
-  public static <T> T repeatedRequest(Supplier<Optional<T>> request, String resourceType,
-      Long customTimeout, Long customPollInterval) {
+  public static <T> T repeatedRequest(
+      Supplier<Optional<T>> request,
+      String resourceType,
+      Long customTimeout,
+      Long customPollInterval) {
     if (customTimeout == null || customPollInterval == null) {
       customTimeout = TIMEOUT;
       customPollInterval = pollInterval;

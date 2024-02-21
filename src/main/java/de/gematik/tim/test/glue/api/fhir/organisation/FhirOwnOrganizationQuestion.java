@@ -20,11 +20,15 @@ import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_OWN_ORG;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
 
+import de.gematik.tim.test.glue.api.exceptions.RequestedRessourceNotAvailable;
 import de.gematik.tim.test.models.FhirOrganizationDTO;
-import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 
+import java.util.Optional;
+
+@Slf4j
 public class FhirOwnOrganizationQuestion implements Question<FhirOrganizationDTO> {
 
   public static FhirOwnOrganizationQuestion ownOrgId() {
@@ -39,8 +43,9 @@ public class FhirOwnOrganizationQuestion implements Question<FhirOrganizationDTO
   private Optional<FhirOrganizationDTO> getOrg(Actor actor) {
     actor.attemptsTo(GET_OWN_ORG.request());
     try {
-      return Optional.of(parseResponse(FhirOrganizationDTO.class));
-    } catch (Exception ex) {
+      return Optional.of(parseResponse(FhirOrganizationDTO.class, true));
+    } catch (RequestedRessourceNotAvailable ex) {
+      log.error("Could not parse response, {}", ex.getMessage());
       return Optional.empty();
     }
   }

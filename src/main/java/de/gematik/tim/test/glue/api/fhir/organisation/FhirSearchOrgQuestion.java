@@ -72,7 +72,8 @@ public class FhirSearchOrgQuestion implements Question<FhirSearchResultDTO> {
 
   @Override
   public FhirSearchResultDTO answeredBy(Actor actor) {
-    return repeatedRequest(() -> searchForOrganization(actor), "organization", customTimeout, customPollInterval);
+    return repeatedRequest(
+        () -> searchForOrganization(actor), "organization", customTimeout, customPollInterval);
   }
 
   private Optional<FhirSearchResultDTO> searchForOrganization(Actor actor) {
