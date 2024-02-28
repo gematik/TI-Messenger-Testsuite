@@ -42,7 +42,7 @@ public class FhirSetMxidTask implements Task {
     Response res = lastResponse();
     if (res.statusCode() == CREATED.value()) {
       actor.can(deleteOwnMxid());
-      FhirEndpointDTO endpoint = parseResponse(FhirEndpointDTO.class, true);
+      FhirEndpointDTO endpoint = parseResponse(FhirEndpointDTO.class);
       actor.remember(OWN_ENDPOINT_ID, endpoint.getId());
       addEndpoint(actor.recall(DISPLAY_NAME), endpoint);
     }

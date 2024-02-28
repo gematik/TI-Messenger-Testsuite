@@ -38,7 +38,6 @@ public class SendDirectMessageToMxIdTask implements Task {
 
   @Override
   public <T extends Actor> void performAs(T actor) {
-
     DirectMessageDTO directMessage = new DirectMessageDTO()
         .body(this.message)
         .msgtype("m.text")
@@ -56,5 +55,4 @@ public class SendDirectMessageToMxIdTask implements Task {
       RawDataStatistics.exchangeMessageMultiHomeserver();
     }
   }
-
 }

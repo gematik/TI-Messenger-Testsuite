@@ -34,6 +34,6 @@ public class FhirGetLocationQuestion extends LocationSpecificTask implements
   public FhirLocationDTO answeredBy(Actor actor) {
     super.performAs(actor);
     actor.attemptsTo(GET_LOCATION.request());
-    return parseResponse(FhirLocationDTO.class, true);
+    return parseResponse(FhirLocationDTO.class);
   }
 }

@@ -16,6 +16,7 @@
 
 package de.gematik.tim.test.glue.api.utils;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DIRECT_CHAT_NAME;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DISPLAY_NAME;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX;
@@ -26,6 +27,7 @@ import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseRespo
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getAllActiveActors;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getEndpointFromInternalName;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getInternalRoomNameByDisplayNames;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getRoomByInternalName;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.CHECK_ROOM_STATE_FAIL;
 import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
 import static java.lang.String.format;
@@ -103,38 +105,29 @@ public class GlueUtils {
     }
   }
 
-  public static void checkRoomVersion(String actorName, String userName) {
-    Actor actor = theActorCalled(actorName);
-    Actor user = theActorCalled(userName);
-    checkRoomVersion(
-        actor.asksFor(
-            ownRoom().withName(getInternalRoomNameByDisplayNames(actor.recall(DISPLAY_NAME), user.recall(DISPLAY_NAME)))));
-  }
-
   private static boolean versionNotSupported(String roomVersion) {
     List<String> supportedVersions = List.of("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
     return !supportedVersions.contains(roomVersion);
   }
 
-  public static void checkRoomMembershipStateInDirectChatOf(String actorName, String userName) {
+  public static RoomDTO checkRoomMembershipStateInDirectChatOf(String actorName) {
     Actor actor1 = theActorCalled(actorName);
-    Actor actor2 = theActorCalled(userName);
-    checkRoomMembershipState(
-        actor1.asksFor(
-            ownRoom().withName(getInternalRoomNameByDisplayNames(actor1.recall(DISPLAY_NAME), actor2.recall(DISPLAY_NAME)))));
+    String roomId = getRoomByInternalName(DIRECT_CHAT_NAME + actor1.recall(MX_ID)).getRoomId();
+    return checkRoomMembershipState(actor1.asksFor(ownRoom().withRoomId(roomId)));
   }
 
-  public static void checkRoomMembershipState() {
-    checkRoomMembershipState(parseResponse(RoomDTO.class));
+  public static RoomDTO checkRoomMembershipState() {
+    return checkRoomMembershipState(parseResponse(RoomDTO.class));
   }
 
-  public static void checkRoomMembershipState(Actor actor, String internalRoomName) {
-    checkRoomMembershipState(actor.asksFor(ownRoom().withName(internalRoomName)));
+  public static RoomDTO checkRoomMembershipState(Actor actor, String internalRoomName) {
+    return checkRoomMembershipState(actor.asksFor(ownRoom().withRoomId(getRoomByInternalName(internalRoomName).getRoomId())));
   }
 
-  public static void checkRoomMembershipState(RoomDTO room) {
+  public static RoomDTO checkRoomMembershipState(RoomDTO room) {
     checkIfAllMembersAreCorrect(room);
     checkIfAllActorsRelatedToRoomHaveCorrectMembershipState(room);
+    return room;
   }
 
   public static RoomDTO filterForRoomWithSpecificMembers(List<RoomDTO> rooms,

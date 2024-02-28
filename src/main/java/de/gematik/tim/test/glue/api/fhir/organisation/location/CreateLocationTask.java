@@ -54,7 +54,7 @@ public class CreateLocationTask extends HealthcareSpecificTask implements Task {
 
     Response response = lastResponse();
     if (response.statusCode() == CREATED.value()) {
-      FhirLocationDTO location = parseResponse(FhirLocationDTO.class,true);
+      FhirLocationDTO location = parseResponse(FhirLocationDTO.class);
       addLocationToActorForHS(locationName, location.getId(), actor, hsName);
     }
   }

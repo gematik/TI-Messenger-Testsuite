@@ -80,7 +80,7 @@ public class FhirSearchOrgQuestion implements Question<FhirSearchResultDTO> {
     actor.attemptsTo(
         SEARCH_ORG.request().with(this::prepareQuery));
 
-    FhirSearchResultDTO resp = parseResponse(FhirSearchResultDTO.class, true);
+    FhirSearchResultDTO resp = parseResponse(FhirSearchResultDTO.class);
     actor.remember(LAST_RESPONSE, lastResponse());
 
     return checkConditions(resp);

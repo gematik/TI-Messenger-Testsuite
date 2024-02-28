@@ -27,10 +27,8 @@ import de.gematik.tim.test.glue.api.login.IsLoggedInAbility;
 import io.restassured.specification.RequestSpecification;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
 
-@Slf4j
 @Getter
 @RequiredArgsConstructor
 public class UseDeviceAbility extends TeardownAbility implements TestdriverApiAbility {

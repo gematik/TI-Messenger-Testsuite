@@ -32,15 +32,16 @@ import de.gematik.tim.test.glue.api.MultiTargetAbility;
 import de.gematik.tim.test.glue.api.TestdriverApiAbility;
 import de.gematik.tim.test.models.RoomDTO;
 import io.restassured.specification.RequestSpecification;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Optional;
 import lombok.NoArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.HasTeardown;
 import net.serenitybdd.screenplay.RefersToActor;
 import net.serenitybdd.screenplay.Task;
 import org.springframework.http.HttpStatus;
+
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Optional;
 
 @NoArgsConstructor(access = PRIVATE)
 public class UseRoomAbility extends MultiTargetAbility<String, RoomDTO> implements
@@ -128,5 +129,4 @@ public class UseRoomAbility extends MultiTargetAbility<String, RoomDTO> implemen
       }
     };
   }
-
 }

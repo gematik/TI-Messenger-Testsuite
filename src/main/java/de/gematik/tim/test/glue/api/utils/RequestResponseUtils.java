@@ -28,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
 import de.gematik.tim.test.glue.api.exceptions.RequestedRessourceNotAvailable;
+import de.gematik.tim.test.models.FhirBaseResourceDTO;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
 import org.awaitility.core.ConditionTimeoutException;
@@ -97,12 +98,11 @@ public class RequestResponseUtils {
   }
 
   public static <T> T parseResponse(Class<T> clazz) {
-    return parseResponse(clazz, false);
-  }
-
-  public static <T> T parseResponse(Class<T> clazz, boolean useCustomMapper) {
     try {
-      return useCustomMapper ? lastResponse().as(clazz, getMapper()) : lastResponse().as(clazz);
+      if (clazz.isInstance(new FhirBaseResourceDTO())) {
+        return lastResponse().as(clazz, getMapper());
+      }
+      return lastResponse().as(clazz);
     } catch (Exception e) {
       log.error(e.getMessage());
       assertThat(false)
@@ -111,5 +111,4 @@ public class RequestResponseUtils {
     }
     throw new RequestedRessourceNotAvailable("This code should not be reached!");
   }
-
 }

@@ -24,7 +24,6 @@ public final class ActorMemoryKeys {
   public static final String CLAIMER_NAME = "claimerName";
   public static final String DEVICE_ID = "deviceId";
   public static final String MX_ID = "mxid";
-  public static final String ROOM_ID = "roomId";
   public static final String SESSION_KEY = "sessionKey";
   public static final String ACCOUNT_PASSWORD = "accountPassword";
   public static final String DISPLAY_NAME = "displayName";

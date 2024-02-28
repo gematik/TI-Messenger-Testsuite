@@ -6,7 +6,7 @@
 
   <groupId>de.gematik.tim.test</groupId>
   <artifactId>TI-Messenger-Testsuite</artifactId>
-  <version>0.10.2</version>
+  <version>0.10.3</version>
   <packaging>jar</packaging>
   <name>TI-Messenger-Testsuite</name>
   <description>Testsuite to check functionality of TI-Messenger-Clients</description>
@@ -203,9 +203,9 @@
             </goals>
             <configuration>
               <url>
-                https://raw.githubusercontent.com/gematik/api-ti-messenger/Release-1.1.1-4/src/openapi/TiMessengerTestTreiber.yaml
+                https://raw.githubusercontent.com/gematik/api-ti-messenger/Release-1.1.1-6/src/openapi/TiMessengerTestTreiber.yaml
               </url>
-              <sha256>3d7566f3fb18a4a8d83cbaabc04d502d3137f542a2bc6256be0492f9b4b2d937</sha256>
+              <sha256>36ab0b996462f3dd156f38b70398cd480eba7afc41893224a238845743b862a9</sha256>
               <outputFileName>TiMessengerTestTreiber.yaml</outputFileName>
               <outputDirectory>${project.build.directory}</outputDirectory>
             </configuration>
@@ -746,11 +746,12 @@
         </plugins>
       </build>
       <properties>
-        <combine.items.file>${project.build.directory}/profile-resources/combine_items_prod.json
+        <combine.items.file>
+          ${project.build.directory}/profile-resources/combine_items_prod.json
         </combine.items.file>
         <tiger.config.file>${project.build.directory}/profile-resources/tiger-prod.yml</tiger.config.file>
-
-        <tim.truststore>${project.build.directory}/profile-resources/gemRoot/cert/gem/gemTruststore.p12
+        <tim.truststore>
+          ${project.build.directory}/profile-resources/gemRoot/cert/gem/gemTruststore.p12
         </tim.truststore>
         <tim.truststore.pw>changeit</tim.truststore.pw>
         <tim.keystore>${project.build.directory}/profile-resources/gemRoot/cert/gem/gemKeystore.p12</tim.keystore>
@@ -959,6 +960,18 @@
           </plugin>
         </plugins>
       </build>
+    </profile>
+    <profile>
+      <id>skipTests equal skip.saving.reports</id>
+      <activation>
+        <property>
+          <name>skipTests</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <skip.saving.reports>true</skip.saving.reports>
+      </properties>
     </profile>
   </profiles>
 

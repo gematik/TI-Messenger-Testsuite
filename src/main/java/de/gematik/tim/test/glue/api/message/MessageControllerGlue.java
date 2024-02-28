@@ -82,8 +82,8 @@ public class MessageControllerGlue {
     Actor actor2 = theActorCalled(userName);
     actor1.attemptsTo(sendDirectMessageTo(actor2, message));
     checkResponseCode(actorName, OK.value());
-    checkRoomMembershipStateInDirectChatOf(actorName, userName);
-    checkRoomVersion(actorName, userName);
+    RoomDTO room = checkRoomMembershipStateInDirectChatOf(actorName);
+    checkRoomVersion(room);
   }
 
   @When("{string} writes {string} via healthcare service {string} directly {string}")
@@ -92,7 +92,7 @@ public class MessageControllerGlue {
       String message) {
     findsAddressInHealthcareService(actorName, userName, hsName);
     sendDirectMessage(actorName, userName, message);
-    checkRoomMembershipStateInDirectChatOf(actorName, userName);
+    checkRoomMembershipStateInDirectChatOf(actorName);
   }
 
   @When("{string} tries to write {string} directly {string}")
