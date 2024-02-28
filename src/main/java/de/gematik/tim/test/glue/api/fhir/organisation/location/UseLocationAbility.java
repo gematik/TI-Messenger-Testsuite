@@ -68,4 +68,3 @@ public class UseLocationAbility extends MultiTargetAbility<String, LocationInfo>
 
   }
 }
-

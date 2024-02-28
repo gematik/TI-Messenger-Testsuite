@@ -44,6 +44,6 @@ public class FhirGetHealthcareServiceQuestion extends HealthcareSpecificTask imp
       RawDataStatistics.getRegTokenForVZDEvent();
       actor.remember(HAS_REG_SERVICE_TOKEN, true);
     }
-    return parseResponse(FhirHealthcareServiceDTO.class, true);
+    return parseResponse(FhirHealthcareServiceDTO.class);
   }
 }

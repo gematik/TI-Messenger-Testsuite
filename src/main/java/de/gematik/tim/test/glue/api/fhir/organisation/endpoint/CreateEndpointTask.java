@@ -66,7 +66,7 @@ public class CreateEndpointTask extends HealthcareSpecificTask {
 
     Response response = lastResponse();
     if (response.statusCode() == CREATED.value()) {
-      FhirEndpointDTO endpoint = parseResponse(FhirEndpointDTO.class, true);
+      FhirEndpointDTO endpoint = parseResponse(FhirEndpointDTO.class);
       assertThat(endpoint.getId()).as("Endpoint %s id is empty".formatted(endpoint.getName())).isNotBlank();
       addEndpointToActorForHS(actor, name, endpoint.getId(), hsName);
       addEndpoint(name, endpoint);

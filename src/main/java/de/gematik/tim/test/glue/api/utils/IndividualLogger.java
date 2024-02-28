@@ -47,17 +47,17 @@ public class IndividualLogger {
   }
 
   public static synchronized void individualLog(String msg) {
-    individualLog(msg, null, null);
+    individualLog(msg, "messageLog", "null");
   }
 
   public static synchronized void individualLog(String msg, String key, Object customObject) {
-    Scenario s = TestcasePropertiesManager.getCurrentScenario();
+    Scenario scenario = TestcasePropertiesManager.getCurrentScenario();
     String tcid = TestcasePropertiesManager.getTestcaseId();
-    IndividualLogEntry newEntry = new IndividualLogEntry(s.getName(), TestcasePropertiesManager.getTestcaseId(),
-        new HashMap<>(Map.of(msg, Pair.of(getTimestamp(), 1))), Map.of(key, customObject));
+    IndividualLogEntry newEntry = new IndividualLogEntry(scenario.getName(), TestcasePropertiesManager.getTestcaseId(),
+        new HashMap<>(Map.of(msg, Pair.of(getTimestamp(), 1))), new HashMap<>(Map.of(key, customObject)));
     if (logs.contains(newEntry)) {
       logs.stream()
-          .filter(l -> l.testcaseName.equals(s.getName()) && l.testcaseId.equals(tcid))
+          .filter(l -> l.testcaseName.equals(scenario.getName()) && l.testcaseId.equals(tcid))
           .findFirst()
           .orElseThrow()
           .addCountingMessage(msg)

@@ -50,7 +50,7 @@ public class OwnFhirResourceQuestion implements Question<FhirSearchResultDTO> {
 
   private Optional<FhirSearchResultDTO> searchOwnEntry(Actor actor) {
     actor.attemptsTo(READ_MXID_PRACTITIONER.request());
-    FhirSearchResultDTO result = parseResponse(FhirSearchResultDTO.class, true);
+    FhirSearchResultDTO result = parseResponse(FhirSearchResultDTO.class);
 
     List<FhirBaseResourceDTO> ownInfos = orderByResourceType(result).get(ENDPOINT);
     if (ownInfos.size() >= amount) {

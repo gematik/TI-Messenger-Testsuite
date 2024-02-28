@@ -78,7 +78,7 @@ public class FhirEndpointSearchQuestion implements Question<FhirSearchResultDTO>
   @NotNull
   private Optional<FhirSearchResultDTO> filterEndpoint(Actor actor) {
     actor.attemptsTo(SEARCH_ENDPOINT.request().with(this::prepareQuery));
-    FhirSearchResultDTO res = parseResponse(FhirSearchResultDTO.class, true);
+    FhirSearchResultDTO res = parseResponse(FhirSearchResultDTO.class);
     if (requireNonNull(res.getTotal()) < 1) {
       return Optional.empty();
     }

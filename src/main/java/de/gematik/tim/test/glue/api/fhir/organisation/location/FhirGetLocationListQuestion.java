@@ -53,7 +53,7 @@ public class FhirGetLocationListQuestion extends HealthcareSpecificTask implemen
 
     actor.attemptsTo(GET_LOCATIONS.request());
 
-    FhirSearchResultDTO result = requireNonNull(parseResponse(FhirSearchResultDTO.class, true));
+    FhirSearchResultDTO result = requireNonNull(parseResponse(FhirSearchResultDTO.class));
 
     List<FhirLocationDTO> fhirLocationDTOs = getResourcesFromSearchResult(result, LOCATION, FhirLocationDTO.class);
 

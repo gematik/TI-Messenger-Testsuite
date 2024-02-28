@@ -43,7 +43,7 @@ public class FhirOwnOrganizationQuestion implements Question<FhirOrganizationDTO
   private Optional<FhirOrganizationDTO> getOrg(Actor actor) {
     actor.attemptsTo(GET_OWN_ORG.request());
     try {
-      return Optional.of(parseResponse(FhirOrganizationDTO.class, true));
+      return Optional.of(parseResponse(FhirOrganizationDTO.class));
     } catch (RequestedRessourceNotAvailable ex) {
       log.error("Could not parse response, {}", ex.getMessage());
       return Optional.empty();

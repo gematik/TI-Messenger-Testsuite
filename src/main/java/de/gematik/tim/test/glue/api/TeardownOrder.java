@@ -16,6 +16,7 @@
 
 package de.gematik.tim.test.glue.api;
 
+import de.gematik.tim.test.glue.api.contact.HasContactAbility;
 import de.gematik.tim.test.glue.api.devices.UseDeviceAbility;
 import de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UseEndpointAbility;
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility;
@@ -23,11 +24,11 @@ import de.gematik.tim.test.glue.api.fhir.organisation.location.UseLocationAbilit
 import de.gematik.tim.test.glue.api.fhir.practitioner.CanDeleteOwnMxidAbility;
 import de.gematik.tim.test.glue.api.login.IsLoggedInAbility;
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
+import lombok.RequiredArgsConstructor;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum TeardownOrder {
@@ -36,6 +37,7 @@ public enum TeardownOrder {
   USE_HS(3, UseHealthcareServiceAbility.class),
   USE_ROOM(3, UseRoomAbility.class),
   CAN_DELETE_MXID(3, CanDeleteOwnMxidAbility.class),
+  HAS_CONTACT(3, HasContactAbility.class),
   USE_ENDPOINT(4, UseEndpointAbility.class),
   USE_LOCATION(4, UseLocationAbility.class);
 
@@ -59,6 +61,4 @@ public enum TeardownOrder {
     throw new UnsupportedOperationException(
         "this ability is not able to perform a teardown: " + ability);
   }
-
-
 }

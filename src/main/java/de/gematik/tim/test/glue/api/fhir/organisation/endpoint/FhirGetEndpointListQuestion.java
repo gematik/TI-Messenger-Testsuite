@@ -54,7 +54,7 @@ public class FhirGetEndpointListQuestion extends HealthcareSpecificTask implemen
     super.performAs(actor);
     actor.attemptsTo(GET_ENDPOINTS.request());
 
-    FhirSearchResultDTO res = parseResponse(FhirSearchResultDTO.class, true);
+    FhirSearchResultDTO res = parseResponse(FhirSearchResultDTO.class);
     List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(res, ENDPOINT, FhirEndpointDTO.class);
     if (nonNull(endpointName)) {
       endpoints = endpoints.stream().filter(e -> e.getName().equals(endpointName)).toList();

@@ -6,6 +6,17 @@
 
 - - -
 
+## Release 0.10.3
+
+### Bugs
+
+- Membership-state-check search for roomId and not for roomName. This caused problems because the roomName in direct
+  chats differ and are not deterministic.
+
+### Features
+
+- Adds a teardown mechanism for contacts, deletes all registered contacts after the tests.
+
 ## Release 0.10.2
 
 ### Bugs

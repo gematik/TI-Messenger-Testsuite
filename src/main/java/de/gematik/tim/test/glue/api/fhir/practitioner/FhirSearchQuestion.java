@@ -98,7 +98,7 @@ public class FhirSearchQuestion implements Question<FhirSearchResultDTO> {
   }
 
   private Optional<FhirSearchResultDTO> findPractitioner() {
-    FhirSearchResultDTO response = parseResponse(FhirSearchResultDTO.class, true);
+    FhirSearchResultDTO response = parseResponse(FhirSearchResultDTO.class);
     List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(response, FhirResourceTypeDTO.ENDPOINT,
         FhirEndpointDTO.class);
     endpoints = filterForEndpoint(endpoints);
@@ -106,7 +106,7 @@ public class FhirSearchQuestion implements Question<FhirSearchResultDTO> {
   }
 
   private Optional<FhirSearchResultDTO> dontFindPractitioner() {
-    FhirSearchResultDTO response = parseResponse(FhirSearchResultDTO.class, true);
+    FhirSearchResultDTO response = parseResponse(FhirSearchResultDTO.class);
     List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(response, FhirResourceTypeDTO.ENDPOINT,
         FhirEndpointDTO.class);
     endpoints = filterForEndpoint(endpoints);

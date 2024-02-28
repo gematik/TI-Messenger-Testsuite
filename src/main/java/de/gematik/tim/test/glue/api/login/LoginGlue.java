@@ -39,7 +39,7 @@ import net.serenitybdd.screenplay.Actor;
 
 import java.util.List;
 
-public class LogInGlue {
+public class LoginGlue {
 
   @When("{string} logs in")
   @Wenn("{string} loggt sich im TI-Messenger ein")

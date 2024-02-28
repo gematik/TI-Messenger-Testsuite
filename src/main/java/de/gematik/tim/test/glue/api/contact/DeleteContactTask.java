@@ -18,8 +18,8 @@ package de.gematik.tim.test.glue.api.contact;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.DELETE_CONTACT;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.MXID_VARIABLE;
+import static de.gematik.tim.test.glue.api.contact.HasContactAbility.removeContactFromActor;
 
-import de.gematik.tim.test.models.ContactDTO;
 import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
@@ -33,9 +33,9 @@ public class DeleteContactTask implements Task {
     return new DeleteContactTask(contactId);
   }
 
-
   @Override
   public <T extends Actor> void performAs(T actor) {
     actor.attemptsTo(DELETE_CONTACT.request().with(req -> req.pathParam(MXID_VARIABLE, contactId)));
+    removeContactFromActor(contactId, actor);
   }
 }
