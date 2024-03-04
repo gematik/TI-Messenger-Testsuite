@@ -20,6 +20,7 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HOME_SERVER;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_INFO;
 import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.TEST_CASE_ID_HEADER;
 import static de.gematik.tim.test.glue.api.threading.ClientFactory.getClient;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.prepareApiNameForHttp;
 import static de.gematik.tim.test.glue.api.utils.ParallelUtils.fromJson;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTestcaseId;
@@ -28,6 +29,7 @@ import de.gematik.tim.test.glue.api.threading.ParallelQuestionRunner;
 import de.gematik.tim.test.models.InfoObjectDTO;
 import kong.unirest.UnirestInstance;
 import net.serenitybdd.screenplay.Actor;
+import org.jetbrains.annotations.NotNull;
 
 public class ApiInfoQuestion extends ParallelQuestionRunner<InfoObjectDTO> {
 
@@ -40,7 +42,9 @@ public class ApiInfoQuestion extends ParallelQuestionRunner<InfoObjectDTO> {
     actor.attemptsTo(
         GET_INFO.request().with(res -> res.header(TEST_CASE_ID_HEADER, getTestcaseId())));
     InfoObjectDTO info = parseResponse(InfoObjectDTO.class);
-    actor.remember(HOME_SERVER, info.getHomeserver());
+    String homeserver = info.getHomeserver();
+    homeserver = addHttpsIfNotSet(homeserver);
+    actor.remember(HOME_SERVER, homeserver);
     return info;
   }
 
@@ -49,10 +53,16 @@ public class ApiInfoQuestion extends ParallelQuestionRunner<InfoObjectDTO> {
     UnirestInstance client = getClient();
     InfoObjectDTO info = fromJson(client.get(GET_INFO.getResolvedPath(actor)).asString().getBody(), InfoObjectDTO.class);
     String homeserver = info.getHomeserver();
+    homeserver = addHttpsIfNotSet(homeserver);
+    actor.remember(HOME_SERVER, homeserver);
+    return info;
+  }
+
+  @NotNull
+  private static String addHttpsIfNotSet(String homeserver) {
     if (!homeserver.startsWith("http://") && !homeserver.startsWith("https://")) {
       homeserver = "https://" + homeserver;
     }
-    actor.remember(HOME_SERVER, homeserver);
-    return info;
+    return homeserver;
   }
 }

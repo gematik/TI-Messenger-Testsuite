@@ -29,6 +29,7 @@ import static org.awaitility.Awaitility.await;
 
 import de.gematik.tim.test.glue.api.exceptions.RequestedRessourceNotAvailable;
 import de.gematik.tim.test.models.FhirBaseResourceDTO;
+import de.gematik.tim.test.models.FhirSearchResultDTO;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
 import org.awaitility.core.ConditionTimeoutException;
@@ -99,7 +100,7 @@ public class RequestResponseUtils {
 
   public static <T> T parseResponse(Class<T> clazz) {
     try {
-      if (clazz.isInstance(new FhirBaseResourceDTO())) {
+      if (clazz.isInstance(new FhirBaseResourceDTO()) || clazz.isInstance(new FhirSearchResultDTO())) {
         return lastResponse().as(clazz, getMapper());
       }
       return lastResponse().as(clazz);

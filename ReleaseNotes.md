@@ -6,6 +6,14 @@
 
 - - -
 
+## Release 0.10.4
+
+### Bugs
+
+- Added https:// for homeserver url in the request to get the server version, if neither http nor https is given in the
+  test-driver info.
+- Error for parsing FhirSearchResultDTO fixed. Now the custom mapper is used and therefor don't break if the send data contains unexpected fields.
+
 ## Release 0.10.3
 
 ### Bugs
