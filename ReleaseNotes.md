@@ -6,13 +6,22 @@
 
 - - -
 
+## Release 0.10.5
+
+### Bugs
+
+- Adjusted the AllowDoubleLineup Filter (set to ture) in Feature File 14 for TCs 14.02, 14.03, 14.04
+- Regression for parsing FhirResources fixed. The custom mapper is used and therefor won't break if the send data
+  contains more fields than defined in the TestDriverApi.
+
 ## Release 0.10.4
 
 ### Bugs
 
 - Added https:// for homeserver url in the request to get the server version, if neither http nor https is given in the
   test-driver info.
-- Error for parsing FhirSearchResultDTO fixed. Now the custom mapper is used and therefor don't break if the send data contains unexpected fields.
+- Error for parsing FhirSearchResultDTO fixed. Now the custom mapper is used and therefor don't break if the send data
+  contains unexpected fields.
 
 ## Release 0.10.3
 
