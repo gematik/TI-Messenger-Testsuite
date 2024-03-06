@@ -100,7 +100,8 @@ public class RequestResponseUtils {
 
   public static <T> T parseResponse(Class<T> clazz) {
     try {
-      if (clazz.isInstance(new FhirBaseResourceDTO()) || clazz.isInstance(new FhirSearchResultDTO())) {
+      if (FhirBaseResourceDTO.class.isAssignableFrom(clazz)
+          || clazz.isInstance(new FhirSearchResultDTO())) {
         return lastResponse().as(clazz, getMapper());
       }
       return lastResponse().as(clazz);
