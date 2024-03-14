@@ -6,6 +6,20 @@
 
 - - -
 
+## Release 0.10.6
+
+### Bugs
+
+- Get status message 403 instead of 401 when a person may not be invited to a room
+- Check practitioner name instead of endpoint name, when searching by name in VZD
+
+### Features
+
+- Rename @NoParallel to @Ctl:NoParallel
+- Change step @Und("{string} reserviert ein Client und meldet sich mit den Daten von {string} an der Schnittstelle
+  {word} an")
+- New directory for saved mvn properties
+
 ## Release 0.10.5
 
 ### Bugs

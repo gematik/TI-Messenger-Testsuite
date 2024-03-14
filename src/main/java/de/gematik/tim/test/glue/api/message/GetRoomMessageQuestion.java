@@ -23,13 +23,16 @@ import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getCr
 import static java.util.Objects.requireNonNull;
 
 import de.gematik.tim.test.models.MessageDTO;
-import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 import org.awaitility.core.ConditionTimeoutException;
 
+import java.util.List;
+import java.util.Optional;
+
+@Slf4j
 @RequiredArgsConstructor
 public class GetRoomMessageQuestion implements Question<Optional<MessageDTO>> {
 
@@ -60,6 +63,7 @@ public class GetRoomMessageQuestion implements Question<Optional<MessageDTO>> {
       return repeatedRequest(() -> getMessage(actor), "message", customTimeout,
           customPollInterval);
     } catch (ConditionTimeoutException ex) {
+      log.error("Search for message from mxid {} with test '{}' did not return expected result", mxIdSender, msg);
       return Optional.empty();
     }
   }

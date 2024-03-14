@@ -71,8 +71,7 @@ public class FhirEndpointSearchQuestion implements Question<FhirSearchResultDTO>
           "Endpoint could not be found with requested parameters. MxId: {} endpointName: {}",
           this.mxId, this.endpointName);
     }
-    return lastResponse().body()
-        .as(FhirSearchResultDTO.class);
+    return lastResponse().body().as(FhirSearchResultDTO.class);
   }
 
   @NotNull

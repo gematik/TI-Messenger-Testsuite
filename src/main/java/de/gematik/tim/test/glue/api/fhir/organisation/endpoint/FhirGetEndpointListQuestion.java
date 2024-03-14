@@ -37,7 +37,6 @@ import java.util.List;
 public class FhirGetEndpointListQuestion extends HealthcareSpecificTask implements
     Question<List<FhirEndpointDTO>> {
 
-  private String endpointName;
   private String hsId;
 
   public static FhirGetEndpointListQuestion getEndpointList() {
@@ -56,9 +55,6 @@ public class FhirGetEndpointListQuestion extends HealthcareSpecificTask implemen
 
     FhirSearchResultDTO res = parseResponse(FhirSearchResultDTO.class);
     List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(res, ENDPOINT, FhirEndpointDTO.class);
-    if (nonNull(endpointName)) {
-      endpoints = endpoints.stream().filter(e -> e.getName().equals(endpointName)).toList();
-    }
     if (nonNull(hsId)) {
       FhirHealthcareServiceDTO hs = getResourcesFromSearchResult(res, ENDPOINT, FhirEndpointDTO.class).stream()
           .filter(e -> requireNonNull(e.getId()).equals(hsId)).map(FhirHealthcareServiceDTO.class::cast).findAny()

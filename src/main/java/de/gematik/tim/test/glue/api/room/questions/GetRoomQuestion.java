@@ -88,8 +88,8 @@ public class GetRoomQuestion implements Question<RoomDTO> {
   @Override
   public RoomDTO answeredBy(Actor actor) {
     try {
-      RoomDTO room = repeatedRequest(() -> filterForResults(actor), "room", customTimeout,
-          customPollInterval);
+      RoomDTO room =
+          repeatedRequest(() -> filterForResults(actor), "room", customTimeout, customPollInterval);
       actor.abilityTo(UseRoomAbility.class).addAndSetActive(room);
       return room;
     } catch (ConditionTimeoutException ex) {

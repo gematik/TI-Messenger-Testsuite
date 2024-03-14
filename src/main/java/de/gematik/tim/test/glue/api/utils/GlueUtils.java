@@ -26,7 +26,6 @@ import static de.gematik.tim.test.glue.api.utils.IndividualLogger.individualLog;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getAllActiveActors;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getEndpointFromInternalName;
-import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getInternalRoomNameByDisplayNames;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getRoomByInternalName;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.CHECK_ROOM_STATE_FAIL;
 import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
@@ -58,7 +57,6 @@ import de.gematik.tim.test.models.RoomMembershipStateDTO;
 import io.cucumber.java.ParameterType;
 import jxl.common.AssertionFailed;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -75,7 +73,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 
-@Slf4j
 public class GlueUtils {
 
   public static final String TEST_RESOURCES_JSON_PATH = "src/test/resources/json/";

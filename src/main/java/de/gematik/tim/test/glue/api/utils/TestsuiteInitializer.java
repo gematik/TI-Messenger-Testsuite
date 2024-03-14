@@ -101,7 +101,7 @@ public class TestsuiteInitializer {
   public static final String TRUST_STORE_PW_ENV_VAR = "TIM_TRUSTSTORE_PW";
   public static final String RUN_WITHOUT_CERT = "no configured cert found";
   public static final String MAX_RETRY_CLAIM_REQUEST_NAME = "maxRetryClaimRequest";
-  public static final String NO_PARALLEL_TAG = "@NoParallel";
+  public static final String NO_PARALLEL_TAG = "@Ctl:NoParallel";
   public static final Long TIMEOUT_DEFAULT = 10L;
   public static final Long POLL_INTERVAL_DEFAULT = 1L;
   public static final Integer HTTP_TIMEOUT;

@@ -45,7 +45,6 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.glue.api.room.questions.RoomStates;
@@ -67,7 +66,6 @@ import java.util.stream.Collectors;
 
 public class RoomControllerGlue {
 
-  //<editor-fold desc="Create room">
   @When("{string} creates a room with name {string}")
   @Wenn("{string} erstellt einen Chat-Raum {string}")
   public void createRoomWithName(String actorName, String roomName) {
@@ -77,9 +75,7 @@ public class RoomControllerGlue {
     checkRoomMembershipState();
     checkRoomVersion();
   }
-  //</editor-fold>
 
-  //<editor-fold desc="Invite to room">
   @And("{string} invites {listOfStrings} into room {string}")
   @Und("{string} lädt {listOfStrings} in Chat-Raum {string} ein")
   public void inviteUserToChatRoomSuccessfully(String actorName, List<String> inviteActors, String roomName) {
@@ -117,7 +113,7 @@ public class RoomControllerGlue {
   @Und("{string} versucht {string} in Chat mit {string} einzuladen")
   public void triesToInviteUserToChatWith(String invitingActorName, String invitedActorName, String thirdActorName) {
     inviteUserToChatWith(invitingActorName, invitedActorName, thirdActorName);
-    checkResponseCode(invitingActorName, UNAUTHORIZED.value());
+    checkResponseCode(invitingActorName, FORBIDDEN.value());
   }
 
   private void inviteUserToChatWith(String invitingActorName, String invitedActorName, String thirdActorName) {
@@ -147,9 +143,7 @@ public class RoomControllerGlue {
     actor.attemptsTo(invite(mxids).toRoom(roomId).actorCouldBeFound(false));
     checkResponseCode(actorName, FORBIDDEN.value());
   }
-  //</editor-fold>
 
-  //<editor-fold desc="Join room">
   @When("{listOfStrings} receive invitation from {string}")
   @Wenn("{listOfStrings} erhält eine Einladung von {string}")
   @Wenn("{listOfStrings} erhalten eine Einladung von {string}")
@@ -206,9 +200,7 @@ public class RoomControllerGlue {
       checkRoomMembershipState();
     }
   }
-  //</editor-fold>
 
-  //<editor-fold desc="Leave & Delete room">
   @When("{string} denies invitation from {string} to room {string}")
   @Wenn("{string} lehnt eine Einladung von {string} für Raum {string} ab")
   public void denyRoomInvitationTo(String actorName, String invitingActorName, String roomName) {
@@ -249,9 +241,7 @@ public class RoomControllerGlue {
     List<RoomDTO> rooms = actor.asksFor(ownRooms());
     assertThat(rooms).extracting(RoomDTO::getName).doesNotContain(roomName);
   }
-  //</editor-fold>
 
-  //<editor-fold desc="Delete room">
   @When("{string} leaves room with name {string}")
   @Wenn("{string} verlässt Raum {string}")
   public void exitRoom(String actorName, String roomName) {
@@ -302,9 +292,7 @@ public class RoomControllerGlue {
       checkRoomMembershipState(updatedRoom);
     }
   }
-  //</editor-fold>
 
-  //<editor-fold desc="RoomState">
   @Then("{string} checks the room state in the chat with {string} to be {listOfStrings}")
   @Dann("{string} prüft den Room State im Chat mit {string} auf {listOfStrings}")
   public void checkRoomStatesOfChat(String actorName, String userName, List<String> roomStates) {
@@ -337,9 +325,7 @@ public class RoomControllerGlue {
     }
     return !roomStates.isEmpty();
   }
-  //</editor-fold>
 
-  //<editor-fold desc="Conditions">
   @Then("{string} has joined the room {string}")
   @Dann("{string} ist dem Raum {string} beigetreten")
   public void userInRoom(String actorName, String roomName) {
@@ -426,5 +412,4 @@ public class RoomControllerGlue {
             .withCustomInterval(timeout, pollInterval));
     assertThat(room).isNull();
   }
-  //</editor-fold>
 }
