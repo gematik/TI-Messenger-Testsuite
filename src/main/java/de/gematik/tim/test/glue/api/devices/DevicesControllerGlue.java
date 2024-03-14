@@ -150,8 +150,8 @@ public class DevicesControllerGlue {
     loginSuccess(actor);
   }
 
-  @And("{string} uses the data of {string} to log into api {word}")
-  @Und("{string} meldet sich mit den Daten von {string} an der Schnittstelle {word} an")
+  @And("{string} claims a client and uses the data of {string} to log into api {word}")
+  @Und("{string} reserviert ein Client und meldet sich mit den Daten von {string} an der Schnittstelle {word} an")
   public void reserveClientOnApiAndLoginWithData(String actorName, String userName,
       String apiName) {
     Actor actor = reserveClientOnApi(actorName, apiName);

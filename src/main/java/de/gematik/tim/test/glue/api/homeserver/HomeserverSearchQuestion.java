@@ -27,16 +27,18 @@ import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.HomeserverSearchResultListDTO;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 import org.awaitility.core.ConditionTimeoutException;
 
+import java.util.Optional;
+
+@Slf4j
 public class HomeserverSearchQuestion implements Question<HomeserverSearchResultListDTO> {
 
   private String displayName;
   private String mxid;
-  private Integer minExpected = 1;
   private Long timeout;
   private Long pollIntervall;
 
@@ -54,11 +56,6 @@ public class HomeserverSearchQuestion implements Question<HomeserverSearchResult
     return this;
   }
 
-  public HomeserverSearchQuestion withAtLeastExpectedResults(Integer i) {
-    this.minExpected = i;
-    return this;
-  }
-
   public HomeserverSearchQuestion withCustomPollIntervall(Long timeout, Long pollIntervall) {
     this.timeout = timeout;
     this.pollIntervall = pollIntervall;
@@ -72,6 +69,7 @@ public class HomeserverSearchQuestion implements Question<HomeserverSearchResult
       return repeatedRequest(
           () -> requestSearchOnHomeserver(actor), "homeserverSearch", timeout, pollIntervall);
     } catch (ConditionTimeoutException ignored) {
+      log.error("Could not find homeserver");
       return ((Response) actor.recall(LAST_RESPONSE)).body()
           .as(HomeserverSearchResultListDTO.class);
     }
@@ -82,9 +80,8 @@ public class HomeserverSearchQuestion implements Question<HomeserverSearchResult
     RawDataStatistics.search();
     actor.remember(LAST_RESPONSE, lastResponse());
 
-    HomeserverSearchResultListDTO res = lastResponse().body()
-        .as(HomeserverSearchResultListDTO.class);
-    return requireNonNull(res.getTotalSearchResults()) < minExpected ? Optional.empty()
+    HomeserverSearchResultListDTO res = lastResponse().body().as(HomeserverSearchResultListDTO.class);
+    return requireNonNull(res.getTotalSearchResults()) < 1 ? Optional.empty()
         : Optional.of(res);
   }
 
