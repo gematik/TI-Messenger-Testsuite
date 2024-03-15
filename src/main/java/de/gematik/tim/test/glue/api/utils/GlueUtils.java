@@ -20,6 +20,7 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DIRECT_CHAT_NAME;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DISPLAY_NAME;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomQuestion.ownRoom;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
 import static de.gematik.tim.test.glue.api.utils.IndividualLogger.individualLog;
@@ -325,10 +326,12 @@ public class GlueUtils {
 
   private static void checkIfAllMembersAreCorrect(RoomDTO room) {
     requireNonNull(room.getMembers()).forEach(m -> {
-      Actor actor = getAllActiveActors().stream()
-          .filter(a -> a.recall(MX_ID).equals(m.getMxid()))
-          .findFirst()
-          .orElseThrow(() -> new AssertionError(format("Mxid %s should not be in room %s", m.getMxid(), room.getName())));
+      List<Actor> allActors = getAllActiveActors();
+      Actor actor = allActors.stream()
+              .filter(a -> a.recall(IS_ORG_ADMIN) == null)
+              .filter(a -> a.recall(MX_ID).equals(m.getMxid()))
+              .findFirst()
+              .orElseThrow(() -> new AssertionError(format("Mxid %s should not be in room %s", m.getMxid(), room.getName())));
       RoomMembershipStateDTO status = actor.recall(room.getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX);
       if (!requireNonNull(m.getMembershipState()).equals(status)) {
         handleRoomStateInconsistency(format("%s should have membership-status <%s> in room <%s>, but <%s> was found", actor.getName(), status, room.getName(), m.getMembershipState()));

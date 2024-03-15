@@ -5,11 +5,14 @@
 ## Link to TI-Messenger-testsuite [`docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
 
 - - -
+## Release 0.10.7
 
+### Bugs
+- Added a check whether a user is an org admin so it does not require a mxid
+  
 ## Release 0.10.6
 
 ### Bugs
-
 - Get status message 403 instead of 401 when a person may not be invited to a room
 - Check practitioner name instead of endpoint name, when searching by name in VZD
 
