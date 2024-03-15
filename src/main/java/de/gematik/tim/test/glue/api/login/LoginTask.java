@@ -104,13 +104,14 @@ public class LoginTask extends ParallelTaskRunner implements Task {
 
   //<editor-fold desc="General">
   private <T extends Actor> void cleanRoomAndSetProperties(T actor, AccountDTO account) {
-    assertThat(account.getMxid())
+    if (actor.recall(IS_ORG_ADMIN) == null) {
+      assertThat(account.getMxid())
         .as("The client mxid (%s) does not match the home server (%s)", account.getMxid(),
             actor.recall(HOME_SERVER))
         .contains(getHomeServerWithoutHttpAndPort(actor));
     actor.remember(MX_ID, account.getMxid());
     actor.remember(ACCOUNT_PASSWORD, account.getPassword());
-    actor.remember(DISPLAY_NAME, account.getDisplayName());
+    actor.remember(DISPLAY_NAME, account.getDisplayName());}
     actor.can(logOut());
     actor.remember(IS_LOGGED_IN, true);
 

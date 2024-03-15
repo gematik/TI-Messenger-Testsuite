@@ -16,8 +16,7 @@
 
 package de.gematik.tim.test.glue.api.utils;
 
-import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DIRECT_CHAT_NAME;
-import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.*;
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
@@ -182,7 +181,8 @@ public class TestcasePropertiesManager {
   }
 
   public static List<Actor> getAllActiveActorsByMxIds(List<String> mxids, boolean shouldFindAllMxidsAsActiveActor) {
-    List<Actor> actors = activeActors.stream().filter(a -> mxids.contains(a.recall(MX_ID))).toList();
+    List<Actor> actors = activeActors.stream()
+            .filter(a -> a.recall(IS_ORG_ADMIN) == null && mxids.contains(a.recall(MX_ID))).toList();
     if (shouldFindAllMxidsAsActiveActor && mxids.size() != actors.size()) {
       throw new TestRunException(format("Unknown actor/s with mxid/s <%s> was requested",
           mxids.stream().filter(m -> !actors.stream().map(a -> a.recall(MX_ID)).toList().contains(m))));
