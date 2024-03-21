@@ -5,14 +5,28 @@
 ## Link to TI-Messenger-testsuite [`docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
 
 - - -
+
+## Release 0.10.8
+
+### Bugs
+
+- Search for endpoint in test case 03.03 is now done on updated healthcareservice
+
 ## Release 0.10.7
 
 ### Bugs
+
 - Added a check whether a user is an org admin so it does not require a mxid
-  
+- sends an error message if test 11.01 fails
+
+### Features
+
+- sends a more helpful error message for the leave room task
+
 ## Release 0.10.6
 
 ### Bugs
+
 - Get status message 403 instead of 401 when a person may not be invited to a room
 - Check practitioner name instead of endpoint name, when searching by name in VZD
 

@@ -19,14 +19,18 @@ package de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HAS_REG_SERVICE_TOKEN;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.UPDATE_HEALTHCARE_SERVICE;
 import static de.gematik.tim.test.glue.api.fhir.organisation.FhirOwnOrganizationQuestion.ownOrgId;
+import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility.addHsToActor;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueHsName;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.readJsonFile;
 import static java.util.Objects.requireNonNull;
+import static net.serenitybdd.rest.SerenityRest.lastResponse;
+import static org.springframework.http.HttpStatus.OK;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.FhirHealthcareServiceDTO;
 import de.gematik.tim.test.models.FhirOrganizationDTO;
 import de.gematik.tim.test.models.FhirReferenceDTO;
+import io.restassured.response.Response;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
@@ -67,13 +71,19 @@ public class UpdateHealthcareServiceTask extends HealthcareSpecificTask {
   public <T extends Actor> void performAs(T actor) {
     if (replaceOrganizationRef) {
       FhirOrganizationDTO organization = actor.asksFor(ownOrgId());
-      healthcareService.providedBy(new FhirReferenceDTO().reference("Organization/" + organization.getId()));
+      healthcareService.providedBy(
+          new FhirReferenceDTO().reference("Organization/" + organization.getId()));
     }
-    actor.attemptsTo(UPDATE_HEALTHCARE_SERVICE.request()
-        .with(req -> req.body(healthcareService)));
+    actor.attemptsTo(UPDATE_HEALTHCARE_SERVICE.request().with(req -> req.body(healthcareService)));
     if (actor.recall(HAS_REG_SERVICE_TOKEN) == null) {
       RawDataStatistics.getRegTokenForVZDEvent();
       actor.remember(HAS_REG_SERVICE_TOKEN, true);
+    }
+
+    Response response = lastResponse();
+    if (response.statusCode() == OK.value()) {
+      FhirHealthcareServiceDTO hsDTO = response.body().as(FhirHealthcareServiceDTO.class);
+      addHsToActor(hsName, new HealthcareServiceInfo(hsDTO.getName(), hsDTO.getId()), actor);
     }
   }
 }

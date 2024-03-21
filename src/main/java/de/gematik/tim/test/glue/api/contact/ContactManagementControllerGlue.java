@@ -48,7 +48,6 @@ public class ContactManagementControllerGlue {
     String userMxid = theActorCalled(userName).recall(MX_ID);
     actor.attemptsTo(deleteContact(userMxid));
     ContactsDTO contacts = actor.asksFor(ownContactList());
-    assertThat(contacts.getContacts()).extracting(ContactDTO::getMxid)
-        .doesNotContainSequence(userMxid);
+    assertThat(contacts.getContacts()).extracting(ContactDTO::getMxid).as("User mit Mxid %s wurde nicht von Freigabeliste gelöscht", userMxid, contacts.getContacts()).doesNotContainSequence(userMxid);
   }
 }
