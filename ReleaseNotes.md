@@ -6,6 +6,12 @@
 
 - - -
 
+## Release 0.10.9
+
+### Bugs
+
+- Corrected TF 8.14, 8.15, 10.14, 10.15
+
 ## Release 0.10.8
 
 ### Bugs
