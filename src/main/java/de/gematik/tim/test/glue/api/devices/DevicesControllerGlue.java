@@ -62,23 +62,20 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.junit.CucumberOptions;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Callable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.Callable;
-
 @Slf4j
 @CucumberOptions(plugin = {"de.gematik.tim.test.glue.api.utils.cleaning.CucumberListener"})
 public class DevicesControllerGlue {
 
-  @Setter
-  @Getter
-  private static boolean allowParallelClaim = true;
+  @Getter @Setter private static boolean allowParallelClaim = true;
 
   @Before
   public void setup(Scenario scenario) {
@@ -102,7 +99,6 @@ public class DevicesControllerGlue {
     setAllowParallelClaim(true);
   }
 
-  // Get devices
   @When("{word} get all devices")
   @Wenn("{word} sich alle devices anschaut")
   public void getDevices(String actor) {
@@ -110,12 +106,11 @@ public class DevicesControllerGlue {
     theActorCalled(actor).remember(LAST_RESPONSE, lastResponse());
   }
 
-  // Claim Device
   @Given("Following clients are claimed:")
   @Angenommen("Es werden folgende Clients reserviert:")
   public void followingClientsWillBeClaimed(DataTable data) {
     List<ClaimInfo> claimInfos = data.asLists().stream().map(this::toClaimInfo).toList();
-    if (TRUE.equals(CLAIM_PARALLEL) && allowParallelClaim) {
+    if (CLAIM_PARALLEL.equals(TRUE) && allowParallelClaim) {
       handleParallel(claimInfos);
       setParallelFlag(false);
     } else {
@@ -124,10 +119,16 @@ public class DevicesControllerGlue {
   }
 
   private void handleParallel(List<ClaimInfo> claimInfos) {
-    List<Callable<Void>> calls = claimInfos.stream().map(claimInfo -> (Callable<Void>) () -> {
-      claimSpecificDevice(claimInfo);
-      return null;
-    }).toList();
+    List<Callable<Void>> calls =
+        claimInfos.stream()
+            .map(
+                claimInfo ->
+                    (Callable<Void>)
+                        () -> {
+                          claimSpecificDevice(claimInfo);
+                          return null;
+                        })
+            .toList();
     ParallelExecutor.run(calls);
   }
 
@@ -141,7 +142,6 @@ public class DevicesControllerGlue {
 
   private void reserveClient(Actor actor, String apiName, ClientKind... neededKinds) {
     reserveClientOnApi(actor, apiName);
-
     checkIs(List.of(neededKinds)).withActor(actor).run();
     if (Arrays.asList(neededKinds).contains(ORG_ADMIN)) {
       actor.remember(IS_ORG_ADMIN, true);
@@ -151,9 +151,10 @@ public class DevicesControllerGlue {
   }
 
   @And("{string} claims a client and uses the data of {string} to log into api {word}")
-  @Und("{string} reserviert ein Client und meldet sich mit den Daten von {string} an der Schnittstelle {word} an")
-  public void reserveClientOnApiAndLoginWithData(String actorName, String userName,
-      String apiName) {
+  @Und(
+      "{string} reserviert ein Client und meldet sich mit den Daten von {string} an der Schnittstelle {word} an")
+  public void reserveClientOnApiAndLoginWithData(
+      String actorName, String userName, String apiName) {
     Actor actor = reserveClientOnApi(actorName, apiName);
 
     String mxId = theActorCalled(userName).recall(MX_ID);
@@ -190,16 +191,15 @@ public class DevicesControllerGlue {
   public void checkIfDeviceIsClaimedGivenActor(String actorName) {
     Actor actor = theActorCalled(actorName);
     String claimerName = actor.recall(CLAIMER_NAME);
-    actor.should(seeThatResponse("Check if a device is claimed",
-        res -> res.statusCode(200)
-            .body("devices.claimerName", hasItem(claimerName))
-    ));
+    actor.should(
+        seeThatResponse(
+            "Check if a device is claimed",
+            res -> res.statusCode(200).body("devices.claimerName", hasItem(claimerName))));
   }
 
   private ClaimInfo toClaimInfo(List<String> data) {
     return new ClaimInfo(theActorCalled(data.get(0)), ClientKind.valueOf(data.get(1)), data.get(2));
   }
 
-  private record ClaimInfo(Actor actor, ClientKind kind, String api) {
-  }
+  private record ClaimInfo(Actor actor, ClientKind kind, String api) {}
 }

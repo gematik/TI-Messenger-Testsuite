@@ -16,14 +16,12 @@
 
 package de.gematik.tim.test.glue.api.room.tasks;
 
-import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
 import de.gematik.tim.test.glue.api.threading.ParallelTaskRunner;
 import lombok.Getter;
 import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.Task;
 
 @Getter
 public abstract class RoomSpecificTask extends ParallelTaskRunner {
@@ -47,7 +45,6 @@ public abstract class RoomSpecificTask extends ParallelTaskRunner {
     if (isNotBlank(getRoomName())) {
       useRoomAbility.setActive(getRoomName());
     }
-    requireNonNull(useRoomAbility.getActive(), "An active Room has to be set");
     roomName = useRoomAbility.getActiveKey();
   }
 }

@@ -20,6 +20,7 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.OWN_ENDPOINT_ID;
 import static de.gematik.tim.test.glue.api.account.AccountQuestion.ownAccountInfos;
 import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirSearchQuestion.practitionerInFhirDirectory;
+import static de.gematik.tim.test.glue.api.fhir.practitioner.NoFhirSearchQuestion.noPractitionerInFhirDirectory;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.assertCorrectEndpointNameAndMxid;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
 import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
@@ -33,34 +34,31 @@ import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Wenn;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import net.serenitybdd.core.Serenity;
-import net.serenitybdd.screenplay.Actor;
-
 import java.util.List;
 import java.util.NoSuchElementException;
+import net.serenitybdd.core.Serenity;
+import net.serenitybdd.screenplay.Actor;
 
 public class FhirPractitionerSearchGlue {
 
   @When("{string} can not find {string} in FHIR [Retry {long} - {long}]")
   @Wenn("{string} kann {string} nicht finden in FHIR [Retry {long} - {long}]")
-  @Dann("{string} findet TI-Messenger-Nutzer {string} bei Suche im Practitioner-Verzeichnis im VZD NICHT [Retry {long} - {long}]")
-  public static void dontFindPractitionerInFhir(String actorName, String userName, Long timeout,
-      Long pollInterval) {
-    dontFindPractitionerInFhir(actorName, userName, timeout, pollInterval, false);
+  @Dann(
+      "{string} findet TI-Messenger-Nutzer {string} bei Suche im Practitioner-Verzeichnis im VZD NICHT [Retry {long} - {long}]")
+  public static void dontFindPractitionerInFhir(
+      String actorName, String userName, Long timeout, Long pollInterval) {
+    dontFindPractitioner(actorName, userName, timeout, pollInterval);
   }
 
-  private static void dontFindPractitionerInFhir(String actorName, String userName, Long timeout,
-      Long pollInterval, boolean shouldWaitTillDeleted) {
+  private static void dontFindPractitioner(
+      String actorName, String userName, Long timeout, Long pollInterval) {
     Actor actor = theActorCalled(actorName);
     Actor user = theActorCalled(userName);
     Serenity.recordReportData();
-
-    FhirSearchResultDTO result = actor.asksFor(practitionerInFhirDirectory()
-        .withMxid(user.recall(MX_ID))
-        .withCustomInterval(timeout, pollInterval)
-        .shouldWaitTillDeleted(shouldWaitTillDeleted));
-    List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
-    assertThat(endpoints).isEmpty();
+    actor.asksFor(
+        noPractitionerInFhirDirectory()
+            .withMxId(user.recall(MX_ID))
+            .withCustomInterval(timeout, pollInterval));
   }
 
   @Then("{string} can not find {string} in FHIR anymore")
@@ -71,43 +69,55 @@ public class FhirPractitionerSearchGlue {
 
   @Then("{string} can not find {string} in FHIR anymore [Retry {long} - {long}]")
   @Dann("{string} kann {string} nicht mehr finden in FHIR [Retry {long} - {long}]")
-  public void cantFindPractitionerInFhirAnymore(String actorName, String userName, Long timeout,
-      Long pollInterval) {
-    dontFindPractitionerInFhir(actorName, userName, timeout, pollInterval, true);
+  public void cantFindPractitionerInFhirAnymore(
+      String actorName, String userName, Long timeout, Long pollInterval) {
+    dontFindPractitioner(actorName, userName, timeout, pollInterval);
   }
 
   @When("{string} can find {listOfStrings} in FHIR")
   @Wenn("{string} findet {listOfStrings} in FHIR")
   public void findUser(String searchingActorName, List<String> searchedActorNames) {
     Actor actor = theActorCalled(searchingActorName);
-    searchedActorNames.forEach(searchedActorName -> {
-      Actor searchedActor = theActorCalled(searchedActorName);
-      FhirSearchResultDTO result = actor.asksFor(
-          practitionerInFhirDirectory().withMxid(searchedActor.recall(MX_ID)));
-      List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
-      assertThat(endpoints).hasSize(1);
-      assertCorrectEndpointNameAndMxid(endpoints, searchedActor);
-    });
+    searchedActorNames.forEach(
+        searchedActorName -> {
+          Actor searchedActor = theActorCalled(searchedActorName);
+          FhirSearchResultDTO result =
+              actor.asksFor(practitionerInFhirDirectory().withMxId(searchedActor.recall(MX_ID)));
+          List<FhirEndpointDTO> endpoints =
+              getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
+          assertThat(endpoints).hasSize(1);
+          assertCorrectEndpointNameAndMxid(endpoints, searchedActor);
+        });
   }
 
-  @When("{string} can find {string} by searching by name with cut {int}-{int} \\(amount front-back) char\\(s)")
-  @Wenn("{string} findet TI-Messenger-Nutzer {string} bei Suche nach Namen minus {int}-{int} \\(Anzahl vorne-hinten) Char\\(s) abgeschnitten")
-  public void findUserWithSearchParam(String actorName, String searchedActorName, int begin, int end) {
+  @When(
+      "{string} can find {string} by searching by name with cut {int}-{int} \\(amount front-back) char\\(s)")
+  @Wenn(
+      "{string} findet TI-Messenger-Nutzer {string} bei Suche nach Namen minus {int}-{int} \\(Anzahl vorne-hinten) Char\\(s) abgeschnitten")
+  public void findUserWithSearchParam(
+      String actorName, String searchedActorName, int begin, int end) {
     Actor actor = theActorCalled(actorName);
     Actor searchedActor = theActorCalled(searchedActorName);
     String displayName = requireNonNull(searchedActor.asksFor(ownAccountInfos()).getDisplayName());
 
-    assertThat(begin + end).as("You cut to much of the displayname: " + displayName)
+    assertThat(begin + end)
+        .as("You cut to much of the displayname: " + displayName)
         .isLessThan(displayName.length());
     String cutName = displayName.substring(begin, displayName.length() - end);
 
     FhirSearchResultDTO result = actor.asksFor(practitionerInFhirDirectory().withName(cutName));
-    List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
+    List<FhirEndpointDTO> endpoints =
+        getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
     String searchedEndpointId = searchedActor.recall(OWN_ENDPOINT_ID);
-    FhirEndpointDTO searchedEndpoint = endpoints.stream()
-        .filter(endpoint -> requireNonNull(endpoint.getId()).equals(searchedEndpointId))
-        .findFirst().orElseThrow(() -> new NoSuchElementException(
-            "Delivered search set does not provide the search endpoint with id -> " + searchedEndpointId));
+    FhirEndpointDTO searchedEndpoint =
+        endpoints.stream()
+            .filter(endpoint -> endpoint.getId().equals(searchedEndpointId))
+            .findFirst()
+            .orElseThrow(
+                () ->
+                    new NoSuchElementException(
+                        "Delivered search set does not provide the search endpoint with id -> "
+                            + searchedEndpointId));
     assertCorrectEndpointNameAndMxid(List.of(searchedEndpoint), searchedActor);
   }
 }

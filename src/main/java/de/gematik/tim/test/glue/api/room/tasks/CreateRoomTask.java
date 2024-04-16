@@ -23,7 +23,6 @@ import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueRoomName;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.models.CreateRoomRequestDTO.RoomAccessEnum.PRIVATE;
 import static de.gematik.tim.test.models.RoomMembershipStateDTO.JOIN;
-import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import de.gematik.tim.test.models.CreateRoomRequestDTO;
@@ -46,17 +45,14 @@ public class CreateRoomTask implements Task {
 
   @Override
   public <T extends Actor> void performAs(T actor) {
-    requireNonNull(roomName);
     String uniqueName = createUniqueRoomName();
-    CreateRoomRequestDTO requestDTO = new CreateRoomRequestDTO()
-        .roomAccess(PRIVATE)
-        .name(uniqueName);
+    CreateRoomRequestDTO requestDTO =
+        new CreateRoomRequestDTO().roomAccess(PRIVATE).name(uniqueName);
 
-    actor.attemptsTo(CREATE_ROOM.request()
-        .with(req -> req.body(requestDTO)));
+    actor.attemptsTo(CREATE_ROOM.request().with(req -> req.body(requestDTO)));
     RoomDTO room = parseResponse(RoomDTO.class);
     assertThat(room.getName()).isEqualTo(uniqueName);
-    assertThat(requireNonNull(room.getRoomAccess()).getValue()).isEqualTo(PRIVATE.getValue());
+    assertThat(room.getRoomAccess().getValue()).isEqualTo(PRIVATE.getValue());
     addRoomToActor(roomName, room, actor);
     actor.remember(room.getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX, JOIN);
   }

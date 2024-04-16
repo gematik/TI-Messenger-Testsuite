@@ -72,36 +72,35 @@ public class SendMessageTask implements Task {
   public <T extends Actor> void performAs(T actor) {
     MessageContentDTO message = buildMessage();
 
-    actor.attemptsTo(SEND_MESSAGE.request()
-        .with(req -> req.body(message)));
+    actor.attemptsTo(SEND_MESSAGE.request().with(req -> req.body(message)));
 
     if (HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful()) {
       addMessage(body, lastResponse().as(MessageDTO.class));
     }
     String actorId = actor.recall(MX_ID);
-    requireNonNull(actor.asksFor(currentRoom()).getMembers()).forEach(m -> {
-      String memberId = requireNonNull(m.getMxid());
-      if (actorId.equals(memberId)) {
-        return;
-      }
-      if (isSameHomeserver(actorId, memberId)) {
-        RawDataStatistics.exchangeMessageSameHomeserver();
-      } else {
-        RawDataStatistics.exchangeMessageMultiHomeserver();
-      }
-    });
-
+    actor
+        .asksFor(currentRoom())
+        .getMembers()
+        .forEach(
+            member -> {
+              String memberId = member.getMxid();
+              if (actorId.equals(memberId)) {
+                return;
+              }
+              if (isSameHomeserver(actorId, memberId)) {
+                RawDataStatistics.exchangeMessageSameHomeserver();
+              } else {
+                RawDataStatistics.exchangeMessageMultiHomeserver();
+              }
+            });
   }
 
   private MessageContentDTO buildMessage() {
-    MessageContentDTO message = new MessageContentDTO()
-        .body(createUniqueMessageText())
-        .msgtype(msgType);
+    MessageContentDTO message =
+        new MessageContentDTO().body(createUniqueMessageText()).msgtype(msgType);
     if (fileId != null) {
       message.fileId(fileId);
-      message.info(new MessageContentInfoDTO()
-          .mimetype(mimetype)
-          .size(size));
+      message.info(new MessageContentInfoDTO().mimetype(mimetype).size(size));
     }
     return message;
   }

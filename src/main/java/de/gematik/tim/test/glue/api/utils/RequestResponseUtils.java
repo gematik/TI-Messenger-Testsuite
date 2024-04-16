@@ -30,14 +30,14 @@ import static org.awaitility.Awaitility.await;
 import de.gematik.tim.test.glue.api.exceptions.RequestedRessourceNotAvailable;
 import de.gematik.tim.test.models.FhirBaseResourceDTO;
 import de.gematik.tim.test.models.FhirSearchResultDTO;
-import lombok.extern.slf4j.Slf4j;
-import net.serenitybdd.screenplay.Actor;
-import org.awaitility.core.ConditionTimeoutException;
-
 import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
+import lombok.extern.slf4j.Slf4j;
+import net.serenitybdd.screenplay.Actor;
+import org.awaitility.core.ConditionTimeoutException;
 
 @Slf4j
 public class RequestResponseUtils {
@@ -54,8 +54,8 @@ public class RequestResponseUtils {
     return repeatedRequest(request, resourceType, TIMEOUT, pollInterval);
   }
 
-  public static <T> T repeatedRequestWithLongerTimeout(Supplier<Optional<T>> request,
-      String resourceType, int factor) {
+  public static <T> T repeatedRequestWithLongerTimeout(
+      Supplier<Optional<T>> request, String resourceType, int factor) {
     return repeatedRequest(request, resourceType, TIMEOUT * factor, pollInterval);
   }
 
@@ -69,25 +69,64 @@ public class RequestResponseUtils {
       customPollInterval = pollInterval;
     }
     if (customTimeout <= 1 || RUN_WITHOUT_RETRY) {
-      return request.get().orElseThrow(() -> new ConditionTimeoutException(
-          format("Asked for %s, but could not be found", resourceType)));
+      return request
+          .get()
+          .orElseThrow(
+              () ->
+                  new ConditionTimeoutException(
+                      format("Asked for %s, but could not be found", resourceType)));
     }
-    return await().atMost(Duration.of(customTimeout, SECONDS)).pollDelay(0L, TimeUnit.SECONDS)
-        .pollInSameThread().pollInterval(Duration.of(customPollInterval, SECONDS))
-        .until(request::get, Optional::isPresent).orElseThrow(
-            () -> new RequestedRessourceNotAvailable(
-                format("Asked for %s, but could not be found", resourceType)));
+    return await()
+        .atMost(Duration.of(customTimeout, SECONDS))
+        .pollDelay(0L, TimeUnit.SECONDS)
+        .pollInSameThread()
+        .pollInterval(Duration.of(customPollInterval, SECONDS))
+        .until(request::get, Optional::isPresent)
+        .orElseThrow(
+            () ->
+                new RequestedRessourceNotAvailable(
+                    format("Asked for %s, but could not be found", resourceType)));
   }
 
-  @SuppressWarnings("java:S2201") // Run without retry only used for internal CI, therefor we do not need result
+  public static void repeatedRequestForEmptyResult(
+      BooleanSupplier request, Long customTimeout, Long customPollInterval) {
+    if (customTimeout == null || customPollInterval == null) {
+      customTimeout = TIMEOUT;
+      customPollInterval = pollInterval;
+    }
+    if (customTimeout <= 1 || RUN_WITHOUT_RETRY) {
+      if (!request.getAsBoolean()) {
+        throw new ConditionTimeoutException("Expected no result, but a result was found");
+      }
+    } else {
+      await()
+          .atMost(Duration.of(customTimeout, SECONDS))
+          .pollDelay(0L, TimeUnit.SECONDS)
+          .pollInSameThread()
+          .pollInterval(Duration.of(customPollInterval, SECONDS))
+          .until(request::getAsBoolean);
+    }
+  }
+
+  @SuppressWarnings(
+      "java:S2201") // Run without retry only used for internal CI, therefor we do not need result
   public static void repeatedRequestForTeardown(Supplier<Optional<Boolean>> request, Actor actor) {
     if (TIMEOUT <= 1 || RUN_WITHOUT_RETRY) {
-      request.get().orElseThrow(() -> new ConditionTimeoutException(
-          "Teardown failed for actor " + actor.getName() + "! Looks like you have tried to delete a resource that should not be available"));
+      request
+          .get()
+          .orElseThrow(
+              () ->
+                  new ConditionTimeoutException(
+                      "Teardown failed for actor "
+                          + actor.getName()
+                          + "! Looks like you have tried to delete a resource "
+                          + request.get().toString()
+                          + " that should not be available"));
       return;
     }
     try {
-      await().atMost(Duration.of(20, SECONDS))
+      await()
+          .atMost(Duration.of(20, SECONDS))
           .pollDelay(0L, TimeUnit.SECONDS)
           .pollInSameThread()
           .pollInterval(Duration.of(5, SECONDS))
@@ -108,7 +147,13 @@ public class RequestResponseUtils {
     } catch (Exception e) {
       log.error(e.getMessage());
       assertThat(false)
-          .as("Expected " + clazz.getSimpleName() + " but got:\n" + lastResponse().body().prettyPrint() + " with status code " + lastResponse().statusCode())
+          .as(
+              "Expected "
+                  + clazz.getSimpleName()
+                  + " but got:\n"
+                  + lastResponse().body().prettyPrint()
+                  + " with status code "
+                  + lastResponse().statusCode())
           .isTrue();
     }
     throw new RequestedRessourceNotAvailable("This code should not be reached!");

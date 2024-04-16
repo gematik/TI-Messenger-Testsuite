@@ -18,15 +18,12 @@ package de.gematik.tim.test.glue.api.homeserver;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEARCH_ON_HOMESERVER;
-import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequestForEmptyResult;
 import static java.lang.String.format;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.HomeserverSearchResultListDTO;
-import io.restassured.specification.RequestSpecification;
-import java.util.Optional;
 import jxl.common.AssertionFailed;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
@@ -34,55 +31,46 @@ import net.serenitybdd.screenplay.Question;
 import org.awaitility.core.ConditionTimeoutException;
 
 @Slf4j
-public class HomeserverSearchQuestion implements Question<HomeserverSearchResultListDTO> {
+public class NotOnHomeserverSearchQuestion implements Question<Boolean> {
 
-  private String displayName;
   private String mxid;
   private Long timeout;
   private Long pollIntervall;
 
-  public static HomeserverSearchQuestion userOnHomeserver() {
-    return new HomeserverSearchQuestion();
+  public static NotOnHomeserverSearchQuestion userNotOnHomeserver() {
+    return new NotOnHomeserverSearchQuestion();
   }
 
-  public HomeserverSearchQuestion withDisplayName(String name) {
-    this.displayName = name;
-    return this;
-  }
-
-  public HomeserverSearchQuestion withMxid(String mxid) {
+  public NotOnHomeserverSearchQuestion withMxid(String mxid) {
     this.mxid = mxid;
     return this;
   }
 
-  @Override
-  public HomeserverSearchResultListDTO answeredBy(Actor actor) {
-    try {
-      return repeatedRequest(
-          () -> requestSearchOnHomeserver(actor), "homeserverSearch", timeout, pollIntervall);
-    } catch (ConditionTimeoutException e) {
-      log.error("Could not find homeserver", e);
-      throw new AssertionFailed(format("HomeserverSearch found zero results, expects one though. Expected: displayName: %s or mxid: %s", displayName, mxid));
-    }
+  public NotOnHomeserverSearchQuestion withCustomPollIntervall(Long timeout, Long pollIntervall) {
+    this.timeout = timeout;
+    this.pollIntervall = pollIntervall;
+    return this;
   }
 
-  private Optional<HomeserverSearchResultListDTO> requestSearchOnHomeserver(Actor actor) {
-    actor.attemptsTo(SEARCH_ON_HOMESERVER.request().with(this::prepareQuery));
+  @Override
+  public Boolean answeredBy(Actor actor) {
+    try {
+      repeatedRequestForEmptyResult(() -> dontFindOnHomeserver(actor), timeout, pollIntervall);
+    } catch (ConditionTimeoutException e) {
+      log.error("Unexpectedly found on homeserver", e);
+      throw new AssertionFailed(format("Should not be found on homeserver with mxId %s", mxid));
+    }
+    return true;
+  }
+
+  private Boolean dontFindOnHomeserver(Actor actor) {
+    actor.attemptsTo(
+        SEARCH_ON_HOMESERVER.request().with(request -> request.queryParam("mxId", mxid)));
     RawDataStatistics.search();
     actor.remember(LAST_RESPONSE, lastResponse());
 
     HomeserverSearchResultListDTO res =
         lastResponse().body().as(HomeserverSearchResultListDTO.class);
-    return res.getTotalSearchResults() < 1 ? Optional.empty() : Optional.of(res);
-  }
-
-  private RequestSpecification prepareQuery(RequestSpecification request) {
-    if (isNotBlank(displayName)) {
-      request.queryParam("displayName", displayName);
-    }
-    if (isNotBlank(mxid)) {
-      request.queryParam("mxId", mxid);
-    }
-    return request;
+    return res.getTotalSearchResults() == 0;
   }
 }

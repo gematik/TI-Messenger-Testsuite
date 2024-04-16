@@ -24,7 +24,6 @@ import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRe
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getInternalRoomNameForActor;
 import static java.lang.Boolean.TRUE;
 import static java.util.Objects.isNull;
-import static java.util.Objects.requireNonNull;
 import static lombok.AccessLevel.PRIVATE;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
@@ -32,6 +31,9 @@ import de.gematik.tim.test.glue.api.MultiTargetAbility;
 import de.gematik.tim.test.glue.api.TestdriverApiAbility;
 import de.gematik.tim.test.models.RoomDTO;
 import io.restassured.specification.RequestSpecification;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Optional;
 import lombok.NoArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.HasTeardown;
@@ -39,13 +41,9 @@ import net.serenitybdd.screenplay.RefersToActor;
 import net.serenitybdd.screenplay.Task;
 import org.springframework.http.HttpStatus;
 
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Optional;
-
 @NoArgsConstructor(access = PRIVATE)
-public class UseRoomAbility extends MultiTargetAbility<String, RoomDTO> implements
-    TestdriverApiAbility, HasTeardown, RefersToActor {
+public class UseRoomAbility extends MultiTargetAbility<String, RoomDTO>
+    implements TestdriverApiAbility, HasTeardown, RefersToActor {
 
   private UseRoomAbility(String roomName, RoomDTO room) {
     addAndSetActive(roomName, room);
@@ -77,7 +75,6 @@ public class UseRoomAbility extends MultiTargetAbility<String, RoomDTO> implemen
   @Override
   public RequestSpecification apply(RequestSpecification requestSpecification) {
     String roomId = getActive().getRoomId();
-    requireNonNull(roomId);
     return requestSpecification.pathParam(ROOM_ID_VARIABLE, roomId);
   }
 
@@ -116,16 +113,22 @@ public class UseRoomAbility extends MultiTargetAbility<String, RoomDTO> implemen
     return new Task() {
       @Override
       public <T extends Actor> void performAs(T actor) {
-        repeatedRequestForTeardown(() -> {
-          actor.attemptsTo(leaveRoom());
-          return HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful() ? Optional.of(TRUE)
-              : Optional.empty();
-        }, actor);
-        repeatedRequestForTeardown(() -> {
-          actor.attemptsTo(forgetRoom());
-          return HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful() ? Optional.of(TRUE)
-              : Optional.empty();
-        }, actor);
+        repeatedRequestForTeardown(
+            () -> {
+              actor.attemptsTo(leaveRoom());
+              return HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful()
+                  ? Optional.of(TRUE)
+                  : Optional.empty();
+            },
+            actor);
+        repeatedRequestForTeardown(
+            () -> {
+              actor.attemptsTo(forgetRoom());
+              return HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful()
+                  ? Optional.of(TRUE)
+                  : Optional.empty();
+            },
+            actor);
       }
     };
   }

@@ -17,53 +17,48 @@
 package de.gematik.tim.test.glue.api.fhir.organisation;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
-import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.FhirEndpointSearchQuestion.endpoint;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
+import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.NoFhirEndpointSearchQuestion.noEndpoint;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.mxidToUri;
-import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
 import static lombok.AccessLevel.PRIVATE;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
-import static org.assertj.core.api.Assertions.assertThat;
 
-import de.gematik.tim.test.models.FhirEndpointDTO;
-import de.gematik.tim.test.models.FhirSearchResultDTO;
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.en.Then;
 import lombok.AllArgsConstructor;
 import net.serenitybdd.core.Serenity;
 import net.serenitybdd.screenplay.Actor;
 
-import java.util.List;
-
 @AllArgsConstructor(access = PRIVATE)
 public class FhirOrganizationSearchGlue {
 
-  @Then("{string} does NOT find TI-Messenger user {string} in the Organisations-Verzeichnis of the VZD")
-  @Dann("{string} findet TI-Messenger-Nutzer {string} bei Suche im Organisations-Verzeichnis im VZD NICHT")
+  @Then(
+      "{string} does NOT find TI-Messenger user {string} in the Organisations-Verzeichnis of the VZD")
+  @Dann(
+      "{string} findet TI-Messenger-Nutzer {string} bei Suche im Organisations-Verzeichnis im VZD NICHT")
   public static void dontFindUserWithNameInOrgVzd(String actorName, String userName) {
     Actor actor = theActorCalled(actorName);
     Actor user = theActorCalled(userName);
     dontFindUserWithNameInOrgVzd(actor, user, null, null);
   }
 
-  @Then("{string} does NOT find TI-Messenger user {string} in the Organisations-Verzeichnis of the VZD [Retry {long} - {long}]")
-  @Dann("{string} findet TI-Messenger-Nutzer {string} bei Suche im Organisations-Verzeichnis im VZD NICHT [Retry {long} - {long}]")
-  public static void dontFindUserWithNameInOrgVzd(String actorName, String userName,
-      Long customTimeout, Long customPollInterval) {
+  @Then(
+      "{string} does NOT find TI-Messenger user {string} in the Organisations-Verzeichnis of the VZD [Retry {long} - {long}]")
+  @Dann(
+      "{string} findet TI-Messenger-Nutzer {string} bei Suche im Organisations-Verzeichnis im VZD NICHT [Retry {long} - {long}]")
+  public static void dontFindUserWithNameInOrgVzd(
+      String actorName, String userName, Long customTimeout, Long customPollInterval) {
     Actor actor = theActorCalled(actorName);
     Actor user = theActorCalled(userName);
     dontFindUserWithNameInOrgVzd(actor, user, customTimeout, customPollInterval);
   }
 
-  private static void dontFindUserWithNameInOrgVzd(Actor actor, Actor user,
-      Long customTimeout, Long customPollInterval) {
+  private static void dontFindUserWithNameInOrgVzd(
+      Actor actor, Actor user, Long customTimeout, Long customPollInterval) {
     Serenity.recordReportData();
-
     String mxIdOfUserToFind = user.recall(MX_ID);
-    FhirSearchResultDTO result = actor.asksFor(endpoint()
-        .withMxIdAsUri(mxidToUri(mxIdOfUserToFind))
-        .withCustomInterval(customTimeout, customPollInterval));
-    List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
-    assertThat(endpoints).isEmpty();
+    actor.asksFor(
+        noEndpoint()
+            .withMxIdAsUri(mxidToUri(mxIdOfUserToFind))
+            .withCustomInterval(customTimeout, customPollInterval));
   }
 }

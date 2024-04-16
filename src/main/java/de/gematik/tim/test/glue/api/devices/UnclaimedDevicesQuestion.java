@@ -43,24 +43,19 @@ public class UnclaimedDevicesQuestion extends ParallelQuestionRunner<List<Long>>
     return new UnclaimedDevicesQuestion();
   }
 
-  //<editor-fold desc="Parallel">
   public List<Long> searchParallel() {
     UnirestInstance client = ParallelExecutor.getParallelClient().get();
     String jsonString = client.get(GET_DEVICES.getResolvedPath(actor)).asJson().getBody().toString();
     return getUnclaimedDevices(fromJson(jsonString, DevicesDTO.class));
   }
-  //</editor-fold>
 
-  //<editor-fold desc="Sync">
   @Override
   public List<Long> answeredBy(Actor actor) {
     actor.attemptsTo(GET_DEVICES.request());
     DevicesDTO res = parseResponse(DevicesDTO.class);
     return getUnclaimedDevices(res);
   }
-  //</editor-fold>
 
-  //<editor-fold desc="General">
   private List<Long> getUnclaimedDevices(DevicesDTO res) {
     List<Long> freeDeviceIds = getResult(res.getDevices());
     if (freeDeviceIds.isEmpty()) {
@@ -76,5 +71,4 @@ public class UnclaimedDevicesQuestion extends ParallelQuestionRunner<List<Long>>
     }
     return devices.stream().filter(device -> !CLAIMED.equals(device.getDeviceStatus())).map(DeviceInfoDTO::getDeviceId).toList();
   }
-  //</editor-fold>
 }
