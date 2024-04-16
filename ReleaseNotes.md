@@ -6,11 +6,26 @@
 
 - - -
 
+## Release 1.0.1
+
+### Changes
+
+- Removes null checks for required properties received from test driver
+- Updated Polarion integration
+- Updated TestDriverApi to Release-1.1.1-8
+
+## Release 0.10.10
+
+### Changes
+
+- Introduced negative questions and fails early for unexpected results
+
 ## Release 0.10.9
 
 ### Bugs
 
 - Corrected TF 8.14, 8.15, 10.14, 10.15
+- Polarion upload path corrected
 
 ## Release 0.10.8
 

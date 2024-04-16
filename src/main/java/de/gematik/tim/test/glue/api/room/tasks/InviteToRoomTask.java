@@ -22,15 +22,13 @@ import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.INVITE_TO_ROOM;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.homeserverFromMxId;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getAllActiveActorsByMxIds;
 import static de.gematik.tim.test.models.RoomMembershipStateDTO.INVITE;
-import static java.util.Objects.requireNonNull;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.MxIdDTO;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 public class InviteToRoomTask implements Task {
@@ -40,9 +38,7 @@ public class InviteToRoomTask implements Task {
   private boolean shouldFindMxid = true;
 
   public static InviteToRoomTask invite(List<String> mxIds) {
-    List<MxIdDTO> mxIdDTOS = mxIds.stream()
-        .map(mxId -> new MxIdDTO().mxid(mxId))
-        .toList();
+    List<MxIdDTO> mxIdDTOS = mxIds.stream().map(mxId -> new MxIdDTO().mxid(mxId)).toList();
     return new InviteToRoomTask(mxIdDTOS);
   }
 
@@ -58,8 +54,6 @@ public class InviteToRoomTask implements Task {
 
   @Override
   public <T extends Actor> void performAs(T actor) {
-    requireNonNull(roomId, "roomId of InviteToRoomTask has to be set with #toRoom(roomId)");
-
     actor.attemptsTo(INVITE_TO_ROOM.request().with(req -> req.body(invitees)));
 
     getAllActiveActorsByMxIds(invitees.stream().map(MxIdDTO::getMxid).toList(), shouldFindMxid)
@@ -74,12 +68,13 @@ public class InviteToRoomTask implements Task {
     invitees.stream()
         .map(mxid -> homeserverFromMxId(mxid.getMxid()))
         .map(actorHomeserver::equals)
-        .forEach(sameHomeserver -> {
-          if (sameHomeserver) {
-            RawDataStatistics.inviteToRoomSameHomeserver();
-          } else {
-            RawDataStatistics.inviteToRoomMultiHomeserver();
-          }
-        });
+        .forEach(
+            sameHomeserver -> {
+              if (sameHomeserver) {
+                RawDataStatistics.inviteToRoomSameHomeserver();
+              } else {
+                RawDataStatistics.inviteToRoomMultiHomeserver();
+              }
+            });
   }
 }

@@ -6,7 +6,7 @@
 
   <groupId>de.gematik.tim.test</groupId>
   <artifactId>TI-Messenger-Testsuite</artifactId>
-  <version>0.10.9</version>
+  <version>1.0.1</version>
   <packaging>jar</packaging>
   <name>TI-Messenger-Testsuite</name>
   <description>Testsuite to check functionality of TI-Messenger-Clients</description>
@@ -19,12 +19,14 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <jacoco.version>0.8.8</jacoco.version>
-    <cucumber-test-combinations-maven-plugin.version>2.9.19</cucumber-test-combinations-maven-plugin.version>
-    <tiger.version>2.3.2</tiger.version>
-    <serenity.core.version>4.0.12</serenity.core.version>
-    <polarion.toolbox.version>2.0.0-133</polarion.toolbox.version>
+    <cucumber-test-combinations-maven-plugin.version>
+      2.9.19
+    </cucumber-test-combinations-maven-plugin.version>
+    <tiger.version>3.0.1</tiger.version>
+    <serenity.core.version>4.1.0</serenity.core.version>
+    <polarion.toolbox.version>3.0.0-185</polarion.toolbox.version>
     <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
-    <maven.javadoc.plugin.version>3.0.1</maven.javadoc.plugin.version>
+    <maven.javadoc.plugin.version>3.6.3</maven.javadoc.plugin.version>
     <junit.engine.version>5.8.2</junit.engine.version>
     <ti.m.mtls.certs.version>1.0.4</ti.m.mtls.certs.version>
     <ti.m.sim.version>4.7.0</ti.m.sim.version>
@@ -38,7 +40,8 @@
     <maven.build.timestamp.format>yyyy-MM-dd_HH_mm_ss</maven.build.timestamp.format>
     <skip.saving.reports>false</skip.saving.reports>
     <tiger.config.file>tiger.yml</tiger.config.file>
-    <combine.items.file>${project.basedir}/src/test/resources/combine_items.json</combine.items.file>
+    <combine.items.file>${project.basedir}/src/test/resources/combine_items.json
+    </combine.items.file>
     <tim.truststore>${env.TIM_TRUSTSTORE}</tim.truststore>
     <tim.truststore.pw>${env.TIM_TRUSTSTORE_PW}</tim.truststore.pw>
     <tim.keystore>${env.TIM_KEYSTORE}</tim.keystore>
@@ -120,9 +123,28 @@
         <version>${serenity.core.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>${junit.engine.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-params</artifactId>
+        <version>${junit.engine.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>${junit.engine.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
         <groupId>org.junit.vintage</groupId>
         <artifactId>junit-vintage-engine</artifactId>
         <version>${junit.engine.version}</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.projectlombok</groupId>
@@ -178,6 +200,26 @@
       <artifactId>nimbus-jose-jwt</artifactId>
       <version>9.37.3</version>
     </dependency>
+    <dependency>
+      <groupId>io.freefair.gradle</groupId>
+      <artifactId>lombok-plugin</artifactId>
+      <version>8.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -203,9 +245,9 @@
             </goals>
             <configuration>
               <url>
-                https://raw.githubusercontent.com/gematik/api-ti-messenger/Release-1.1.1-6/src/openapi/TiMessengerTestTreiber.yaml
+                https://raw.githubusercontent.com/gematik/api-ti-messenger/Release-1.1.1-8/src/openapi/TiMessengerTestTreiber.yaml
               </url>
-              <sha256>36ab0b996462f3dd156f38b70398cd480eba7afc41893224a238845743b862a9</sha256>
+              <sha256>7bae58b9f823e085bf92401ee47f14ad2b2d513d68b14a5328d11a3ec254f645</sha256>
               <outputFileName>TiMessengerTestTreiber.yaml</outputFileName>
               <outputDirectory>${project.build.directory}</outputDirectory>
             </configuration>
@@ -242,7 +284,7 @@
         <version>${maven.javadoc.plugin.version}</version>
         <configuration>
           <doclint>none</doclint>
-          <!--sourcepath>src/main/java</sourcepath--> <!-- falls javadoc via Jenkins nicht erstellt werden kann, die Zeile hinzufügen -->
+          <!-- <sourcepath>src/main/java</sourcepath>--> <!-- falls javadoc via Jenkins nicht erstellt werden kann, die Zeile hinzufügen -->
         </configuration>
         <executions>
           <execution>
@@ -314,7 +356,8 @@
           <!--          Check config-->
           <checkPath>devices</checkPath>
           <defaultCheckExpressions>
-            ITEM.hasTag("orgAdmin") and ITEM.hasTag("client") ? $.devices.size() >= 4 : ITEM.hasTag("orgAdmin") ?
+            ITEM.hasTag("orgAdmin") and ITEM.hasTag("client") ? $.devices.size() >= 4 :
+            ITEM.hasTag("orgAdmin") ?
             $.devices.size() >= 1 : $.devices.size() >= 3
           </defaultCheckExpressions>
           <!--          Combine config-->
@@ -387,7 +430,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.0.0-M6</version>
+        <version>3.2.2</version>
         <configuration>
           <environmentVariables>
             <TIGER_TESTENV_CFGFILE>${tiger.config.file}</TIGER_TESTENV_CFGFILE>
@@ -517,7 +560,8 @@
             </goals>
             <configuration>
               <sourceFile>${basedir}/target/site/serenity/serenity-summary.html</sourceFile>
-              <destinationFile>${basedir}/target/site/serenity/#serenity-summary.html</destinationFile>
+              <destinationFile>${basedir}/target/site/serenity/#serenity-summary.html
+              </destinationFile>
             </configuration>
           </execution>
         </executions>
@@ -750,7 +794,8 @@
                       <version>${ti.m.mtls.certs.version}</version>
                       <type>jar</type>
                       <overWrite>true</overWrite>
-                      <outputDirectory>${project.build.directory}/profile-resources</outputDirectory>
+                      <outputDirectory>${project.build.directory}/profile-resources
+                      </outputDirectory>
                       <includes>**/*.yml,**/*.json,gemRoot/cert/gem/*.p12</includes>
                       <excludes>META-INF/**</excludes>
                     </artifactItem>
@@ -766,12 +811,15 @@
         <combine.items.file>
           ${project.build.directory}/profile-resources/combine_items_prod.json
         </combine.items.file>
-        <tiger.config.file>${project.build.directory}/profile-resources/tiger-prod.yml</tiger.config.file>
+        <tiger.config.file>${project.build.directory}/profile-resources/tiger-prod.yml
+        </tiger.config.file>
         <tim.truststore>
           ${project.build.directory}/profile-resources/gemRoot/cert/gem/gemTruststore.p12
         </tim.truststore>
         <tim.truststore.pw>changeit</tim.truststore.pw>
-        <tim.keystore>${project.build.directory}/profile-resources/gemRoot/cert/gem/gemKeystore.p12</tim.keystore>
+        <tim.keystore>
+          ${project.build.directory}/profile-resources/gemRoot/cert/gem/gemKeystore.p12
+        </tim.keystore>
         <tim.keystore.pw>changeit</tim.keystore.pw>
         <timeout>240</timeout>
         <pollInterval>5</pollInterval>
@@ -929,7 +977,8 @@
                   <password>${env.POLARION_CREDENTIALS_PSW}</password>
                   <project>${polarion.project}</project>
                   <testRun>${testRun}</testRun>
-                  <serenityReportsFolderPath>${basedir}/reports/${build.time}/report</serenityReportsFolderPath>
+                  <serenityReportsFolderPath>${basedir}/reports/${build.time}
+                  </serenityReportsFolderPath>
                 </configuration>
                 <phase>post-integration-test</phase>
                 <goals>

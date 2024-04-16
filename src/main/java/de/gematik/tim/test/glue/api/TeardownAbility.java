@@ -16,7 +16,6 @@
 
 package de.gematik.tim.test.glue.api;
 
-
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_LOGGED_IN;
 import static de.gematik.tim.test.glue.api.login.LoginTask.login;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.isActorFailed;
@@ -26,34 +25,45 @@ import de.gematik.tim.test.glue.api.devices.UseDeviceAbility;
 import de.gematik.tim.test.glue.api.login.IsLoggedInAbility;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Ability;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.HasTeardown;
 import net.serenitybdd.screenplay.RefersToActor;
+import org.opentest4j.AssertionFailedError;
 
+@Slf4j
 public abstract class TeardownAbility implements RefersToActor, Ability, HasTeardown {
 
-  @Getter
-  protected Actor actor;
-  @Setter
-  protected boolean tearedDown = false;
+  @Getter protected Actor actor;
+  @Setter protected boolean tearedDown = false;
 
   @Override
   public void tearDown() {
     if (tearedDown || isActorFailed(actor)) {
       return;
     }
-    if (actor.recall(IS_LOGGED_IN) != null && !(boolean) actor.recall(IS_LOGGED_IN) && !(this instanceof UseDeviceAbility)
+    if (actor.recall(IS_LOGGED_IN) != null
+        && !(boolean) actor.recall(IS_LOGGED_IN)
+        && !(this instanceof UseDeviceAbility)
         && !(this instanceof IsLoggedInAbility)) {
       actor.attemptsTo(login());
     }
     for (Class<? extends TeardownAbility> abilityClass : TeardownOrder.before(this)) {
       TeardownAbility ability = actor.abilityTo(abilityClass);
       if (nonNull(ability) && !ability.tearedDown) {
-        ability.tearDown();
+        try {
+          ability.tearDown();
+        } catch (AssertionFailedError e) {
+          log.error("Ability tearDown was not successful, proceeding", e);
+        }
       }
     }
-    teardownThis();
+    try {
+      teardownThis();
+    } catch (AssertionFailedError e) {
+      log.error("TearDown was not successful, proceeding", e);
+    }
     tearedDown = true;
   }
 

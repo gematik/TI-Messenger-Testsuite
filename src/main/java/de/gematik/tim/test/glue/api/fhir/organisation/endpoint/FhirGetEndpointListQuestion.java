@@ -23,19 +23,17 @@ import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearc
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
 import static java.util.Objects.nonNull;
-import static java.util.Objects.requireNonNull;
 
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.HealthcareSpecificTask;
 import de.gematik.tim.test.models.FhirEndpointDTO;
 import de.gematik.tim.test.models.FhirHealthcareServiceDTO;
 import de.gematik.tim.test.models.FhirSearchResultDTO;
+import java.util.List;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 
-import java.util.List;
-
-public class FhirGetEndpointListQuestion extends HealthcareSpecificTask implements
-    Question<List<FhirEndpointDTO>> {
+public class FhirGetEndpointListQuestion extends HealthcareSpecificTask
+    implements Question<List<FhirEndpointDTO>> {
 
   private String hsId;
 
@@ -53,14 +51,19 @@ public class FhirGetEndpointListQuestion extends HealthcareSpecificTask implemen
     super.performAs(actor);
     actor.attemptsTo(GET_ENDPOINTS.request());
 
-    FhirSearchResultDTO res = parseResponse(FhirSearchResultDTO.class);
-    List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(res, ENDPOINT, FhirEndpointDTO.class);
+    FhirSearchResultDTO searchResult = parseResponse(FhirSearchResultDTO.class);
+    List<FhirEndpointDTO> endpoints =
+        getResourcesFromSearchResult(searchResult, ENDPOINT, FhirEndpointDTO.class);
     if (nonNull(hsId)) {
-      FhirHealthcareServiceDTO hs = getResourcesFromSearchResult(res, ENDPOINT, FhirEndpointDTO.class).stream()
-          .filter(e -> requireNonNull(e.getId()).equals(hsId)).map(FhirHealthcareServiceDTO.class::cast).findAny()
-          .orElseGet(() -> actor.asksFor(getHealthcareService()));
-      List<String> ids = getEndpointIdsOrLocationIdsOfHealthcareService(hs, ENDPOINT);
-      endpoints = endpoints.stream().filter(e -> ids.contains(e.getId())).toList();
+      FhirHealthcareServiceDTO healthcareService =
+          getResourcesFromSearchResult(searchResult, ENDPOINT, FhirEndpointDTO.class).stream()
+              .filter(endpoint -> endpoint.getId().equals(hsId))
+              .map(FhirHealthcareServiceDTO.class::cast)
+              .findAny()
+              .orElseGet(() -> actor.asksFor(getHealthcareService()));
+      List<String> ids =
+          getEndpointIdsOrLocationIdsOfHealthcareService(healthcareService, ENDPOINT);
+      endpoints = endpoints.stream().filter(endpoint -> ids.contains(endpoint.getId())).toList();
     }
     return endpoints;
   }

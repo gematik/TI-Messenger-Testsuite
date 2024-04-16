@@ -17,10 +17,9 @@
 package de.gematik.tim.test.glue.api.room.questions;
 
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
-import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequestForEmptyResult;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getRoomByInternalName;
 
-import de.gematik.tim.test.glue.api.room.UseRoomAbility;
 import de.gematik.tim.test.models.RoomDTO;
 import de.gematik.tim.test.models.RoomMemberDTO;
 import de.gematik.tim.test.models.RoomMembershipStateDTO;
@@ -34,21 +33,20 @@ import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 import org.awaitility.core.ConditionTimeoutException;
-import org.jetbrains.annotations.NotNull;
 
 @Slf4j
-public class GetRoomQuestion implements Question<RoomDTO> {
+public class GetNoRoomQuestion implements Question<Boolean> {
 
   private final List<Predicate<RoomDTO>> filterList = new ArrayList<>();
 
   private Long customTimeout;
   private Long customPollInterval;
 
-  public static GetRoomQuestion ownRoom() {
-    return new GetRoomQuestion();
+  public static GetNoRoomQuestion noRoom() {
+    return new GetNoRoomQuestion();
   }
 
-  public GetRoomQuestion withMembers(List<String> memberList) {
+  public GetNoRoomQuestion withMembers(List<String> memberList) {
     this.filterList.add(
         member ->
             new HashSet<>(member.getMembers().stream().map(RoomMemberDTO::getMxid).toList())
@@ -56,17 +54,17 @@ public class GetRoomQuestion implements Question<RoomDTO> {
     return this;
   }
 
-  public GetRoomQuestion withRoomId(String roomId) {
+  public GetNoRoomQuestion withRoomId(String roomId) {
     this.filterList.add(room -> room.getRoomId().equals(roomId));
     return this;
   }
 
-  public GetRoomQuestion withName(String roomName) {
+  public GetNoRoomQuestion withName(String roomName) {
     this.filterList.add(room -> room.getName().equals(getRoomByInternalName(roomName).getName()));
     return this;
   }
 
-  public GetRoomQuestion withMemberHasStatus(String mxId, RoomMembershipStateDTO status) {
+  public GetNoRoomQuestion withMemberHasStatus(String mxId, RoomMembershipStateDTO status) {
     this.filterList.add(
         room ->
             room.getMembers().stream()
@@ -76,35 +74,29 @@ public class GetRoomQuestion implements Question<RoomDTO> {
     return this;
   }
 
-  public Question<RoomDTO> notHavingMember(String mxId) {
-    this.filterList.add(
-        room -> room.getMembers().stream().noneMatch(member -> member.getMxid().equals(mxId)));
-    return this;
-  }
-
-  public GetRoomQuestion withCustomInterval(Long timeout, Long pollInterval) {
+  public GetNoRoomQuestion withCustomInterval(Long timeout, Long pollInterval) {
     this.customTimeout = timeout;
     this.customPollInterval = pollInterval;
     return this;
   }
 
   @Override
-  public RoomDTO answeredBy(Actor actor) {
+  public Boolean answeredBy(Actor actor) {
     try {
-      RoomDTO room =
-          repeatedRequest(() -> filterForResults(actor), "room", customTimeout, customPollInterval);
-      actor.abilityTo(UseRoomAbility.class).addAndSetActive(room);
-      return room;
+      repeatedRequestForEmptyResult(
+          () -> filterForResults(actor), customTimeout, customPollInterval);
     } catch (ConditionTimeoutException e) {
       log.error("Room could not be found with requested parameters", e);
       throw new AssertionFailed("Room could not be found with requested parameters");
     }
+    return true;
   }
 
-  @NotNull
-  private Optional<RoomDTO> filterForResults(Actor actor) {
-    return actor.asksFor(ownRooms()).stream()
-        .filter(filterList.stream().reduce(Predicate::and).orElseThrow())
-        .findFirst();
+  private Boolean filterForResults(Actor actor) {
+    Optional<RoomDTO> room =
+        actor.asksFor(ownRooms()).stream()
+            .filter(filterList.stream().reduce(Predicate::and).orElseThrow())
+            .findFirst();
+    return room.isEmpty();
   }
 }

@@ -22,6 +22,7 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
 import static de.gematik.tim.test.glue.api.fhir.organisation.FhirOrgAdminGlue.findsAddressInHealthcareService;
 import static de.gematik.tim.test.glue.api.room.UseRoomAbility.addRoomToActor;
+import static de.gematik.tim.test.glue.api.room.questions.GetNoRoomQuestion.noRoom;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomQuestion.ownRoom;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomStatesQuestion.roomStates;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
@@ -38,7 +39,6 @@ import static de.gematik.tim.test.models.RoomMembershipStateDTO.INVITE;
 import static de.gematik.tim.test.models.RoomMembershipStateDTO.JOIN;
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
-import static java.util.Objects.requireNonNull;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -57,12 +57,11 @@ import io.cucumber.java.de.Wenn;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import net.serenitybdd.screenplay.Actor;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import net.serenitybdd.screenplay.Actor;
 
 public class RoomControllerGlue {
 
@@ -78,7 +77,8 @@ public class RoomControllerGlue {
 
   @And("{string} invites {listOfStrings} into room {string}")
   @Und("{string} lädt {listOfStrings} in Chat-Raum {string} ein")
-  public void inviteUserToChatRoomSuccessfully(String actorName, List<String> inviteActors, String roomName) {
+  public void inviteUserToChatRoomSuccessfully(
+      String actorName, List<String> inviteActors, String roomName) {
     inviteUserToChatRoom(actorName, inviteActors, roomName);
     checkResponseCode(actorName, OK.value());
     checkRoomMembershipState();
@@ -86,14 +86,16 @@ public class RoomControllerGlue {
 
   @And("{string} tries to invites {listOfStrings} into room {string}")
   @Und("{string} versucht {listOfStrings} in Chat-Raum {string} einzuladen")
-  public void triesToInviteUserToChatRoom(String actorName, List<String> inviteActors, String roomName) {
+  public void triesToInviteUserToChatRoom(
+      String actorName, List<String> inviteActors, String roomName) {
     inviteUserToChatRoom(actorName, inviteActors, roomName);
     checkResponseCode(actorName, FORBIDDEN.value());
   }
 
   private void inviteUserToChatRoom(String actorName, List<String> inviteActors, String roomName) {
     Actor actor = theActorCalled(actorName);
-    List<String> inviteMxids = inviteActors.stream().map(e -> (String) theActorCalled(e).recall(MX_ID)).toList();
+    List<String> inviteMxids =
+        inviteActors.stream().map(e -> (String) theActorCalled(e).recall(MX_ID)).toList();
 
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
     RoomDTO room = actor.abilityTo(UseRoomAbility.class).getActiveValue();
@@ -104,32 +106,36 @@ public class RoomControllerGlue {
 
   @And("{string} invites {string} into chat with {string}")
   @Und("{string} lädt {string} in Chat mit {string} ein")
-  public void inviteUserToChatSuccessfully(String invitingActorName, String invitedActorName, String thirdActorName) {
+  public void inviteUserToChatSuccessfully(
+      String invitingActorName, String invitedActorName, String thirdActorName) {
     inviteUserToChatWith(invitingActorName, invitedActorName, thirdActorName);
     checkResponseCode(invitingActorName, OK.value());
   }
 
   @And("{string} tries to invite {string} into chat with {string}")
   @Und("{string} versucht {string} in Chat mit {string} einzuladen")
-  public void triesToInviteUserToChatWith(String invitingActorName, String invitedActorName, String thirdActorName) {
+  public void triesToInviteUserToChatWith(
+      String invitingActorName, String invitedActorName, String thirdActorName) {
     inviteUserToChatWith(invitingActorName, invitedActorName, thirdActorName);
     checkResponseCode(invitingActorName, FORBIDDEN.value());
   }
 
-  private void inviteUserToChatWith(String invitingActorName, String invitedActorName, String thirdActorName) {
+  private void inviteUserToChatWith(
+      String invitingActorName, String invitedActorName, String thirdActorName) {
     Actor invitingActor = theActorCalled(invitingActorName);
     String invitedMxid = theActorCalled(invitedActorName).recall(MX_ID);
     String thirdMxid = theActorCalled(thirdActorName).recall(MX_ID);
 
-    String roomId = invitingActor.abilityTo(UseRoomAbility.class).getRoomIdByName(DIRECT_CHAT_NAME + thirdMxid);
+    String roomId =
+        invitingActor.abilityTo(UseRoomAbility.class).getRoomIdByName(DIRECT_CHAT_NAME + thirdMxid);
 
     invitingActor.attemptsTo(invite(List.of(invitedMxid)).toRoom(roomId));
   }
 
   @And("{string} invites {string} over the HealthcareService {string} into the chat with {string}")
   @Und("{string} lädt {string} über den HealthcareService {string} in den Chat-Raum {string} ein")
-  public void invitesUserToRoomViaHealthcareService(String actorName, String username,
-      String hsName, String roomName) {
+  public void invitesUserToRoomViaHealthcareService(
+      String actorName, String username, String hsName, String roomName) {
     findsAddressInHealthcareService(actorName, username, hsName);
     inviteUserToChatRoom(actorName, List.of(username), roomName);
     checkRoomMembershipState();
@@ -150,28 +156,32 @@ public class RoomControllerGlue {
   public void receiveInvitation(List<String> actorNames, String userName) {
     Actor invitingActor = theActorCalled(userName);
     String roomId = invitingActor.abilityTo(UseRoomAbility.class).getActive().getRoomId();
-    actorNames.forEach(actorName -> {
-      Actor invitedActor = theActorCalled(actorName);
-      RoomDTO room = invitingActor.asksFor(ownRoom()
-          .withRoomId(roomId)
-          .withMemberHasStatus(invitedActor.recall(MX_ID), INVITE));
-      checkRoomMembershipState(room);
-      checkRoomVersion(room);
-    });
+    actorNames.forEach(
+        actorName -> {
+          Actor invitedActor = theActorCalled(actorName);
+          RoomDTO room =
+              invitingActor.asksFor(
+                  ownRoom()
+                      .withRoomId(roomId)
+                      .withMemberHasStatus(invitedActor.recall(MX_ID), INVITE));
+          checkRoomMembershipState(room);
+          checkRoomVersion(room);
+        });
   }
 
   @When("{string} accepts the invitation to room {string} from {string}")
   @Wenn("{string} bestätigt eine Einladung in Raum {string} von {string}")
-  public void acceptsTheInvitationToRoom(String actorName, String roomName, String invitingActorName) {
+  public void acceptsTheInvitationToRoom(
+      String actorName, String roomName, String invitingActorName) {
     Actor invitingActor = theActorCalled(invitingActorName);
     Actor invitedActor = theActorCalled(actorName);
-    RoomDTO room = invitingActor.asksFor(ownRoom()
-        .withName(roomName)
-        .withMemberHasStatus(invitedActor.recall(MX_ID), INVITE));
+    RoomDTO room =
+        invitingActor.asksFor(
+            ownRoom().withName(roomName).withMemberHasStatus(invitedActor.recall(MX_ID), INVITE));
     checkRoomMembershipState(room);
 
-    RoomDTO roomWithLimitedMemberView = invitedActor.asksFor(ownRoom()
-        .withMemberHasStatus(invitedActor.recall(MX_ID), INVITE));
+    RoomDTO roomWithLimitedMemberView =
+        invitedActor.asksFor(ownRoom().withMemberHasStatus(invitedActor.recall(MX_ID), INVITE));
     invitedActor.attemptsTo(joinRoom().withRoomId(roomWithLimitedMemberView.getRoomId()));
     checkResponseCode(actorName, OK.value());
     checkRoomMembershipState();
@@ -187,14 +197,16 @@ public class RoomControllerGlue {
     for (String actorName : actorNames) {
       Actor invitedActor = theActorCalled(actorName);
       String invitedMxid = invitedActor.recall(MX_ID);
-      RoomDTO room = invitingActor.asksFor(ownRoom()
-          .withMemberHasStatus(invitedMxid, INVITE)
-          .withMembers(List.of(invitedMxid, invitingMxid)));
+      RoomDTO room =
+          invitingActor.asksFor(
+              ownRoom()
+                  .withMemberHasStatus(invitedMxid, INVITE)
+                  .withMembers(List.of(invitedMxid, invitingMxid)));
       checkRoomMembershipState(room);
 
-      RoomDTO roomWithLimitedMemberView = invitedActor.asksFor(ownRoom()
-          .withMemberHasStatus(invitedMxid, INVITE)
-          .withMembers(List.of(invitedMxid)));
+      RoomDTO roomWithLimitedMemberView =
+          invitedActor.asksFor(
+              ownRoom().withMemberHasStatus(invitedMxid, INVITE).withMembers(List.of(invitedMxid)));
       invitedActor.attemptsTo(joinRoom().withRoomId(roomWithLimitedMemberView.getRoomId()));
       checkResponseCode(actorName, OK.value());
       checkRoomMembershipState();
@@ -206,9 +218,9 @@ public class RoomControllerGlue {
   public void denyRoomInvitationTo(String actorName, String invitingActorName, String roomName) {
     Actor invitingActor = theActorCalled(invitingActorName);
     Actor actor = theActorCalled(actorName);
-    RoomDTO room = invitingActor.asksFor(ownRoom()
-        .withName(roomName)
-        .withMemberHasStatus(actor.recall(MX_ID), INVITE));
+    RoomDTO room =
+        invitingActor.asksFor(
+            ownRoom().withName(roomName).withMemberHasStatus(actor.recall(MX_ID), INVITE));
     checkRoomMembershipState(room);
     addRoomToActor(roomName, room, actor);
     leaveAndForgetRoom(actor, room);
@@ -220,9 +232,9 @@ public class RoomControllerGlue {
     Actor invitingActor = theActorCalled(userName);
     String roomId = invitingActor.abilityTo(UseRoomAbility.class).getActive().getRoomId();
     Actor invitedActor = theActorCalled(actorName);
-    RoomDTO room = invitingActor.asksFor(ownRoom()
-        .withRoomId(roomId)
-        .withMemberHasStatus(invitedActor.recall(MX_ID), INVITE));
+    RoomDTO room =
+        invitingActor.asksFor(
+            ownRoom().withRoomId(roomId).withMemberHasStatus(invitedActor.recall(MX_ID), INVITE));
     checkRoomMembershipState(room);
     addRoomToActor(room, invitedActor);
     leaveAndForgetRoom(invitedActor, room);
@@ -266,8 +278,7 @@ public class RoomControllerGlue {
   public void confirmThatUserLeftRoom(String actorName, String userName, String roomName) {
     Actor actor = theActorCalled(actorName);
     String userId = theActorCalled(userName).recall(MX_ID);
-    RoomDTO room = actor.asksFor(
-        ownRoom().withName(roomName).notHavingMember(userId));
+    RoomDTO room = actor.asksFor(ownRoom().withName(roomName).notHavingMember(userId));
     assertThat(room).as(format("Actor %s has not left room %s", userName, roomName)).isNotNull();
   }
 
@@ -276,19 +287,23 @@ public class RoomControllerGlue {
     checkResponseCode(actor.getName(), OK.value());
     actor.attemptsTo(forgetRoom());
     checkResponseCode(actor.getName(), NO_CONTENT.value());
-    Optional<RoomMemberDTO> otherMemberInRoom = requireNonNull(room.getMembers())
-        .stream()
-        .filter(m -> !requireNonNull(m.getMxid()).equals(actor.recall(MX_ID)))
-        .findFirst();
+    Optional<RoomMemberDTO> otherMemberInRoom =
+        room.getMembers().stream()
+            .filter(member -> !member.getMxid().equals(actor.recall(MX_ID)))
+            .findFirst();
     if (otherMemberInRoom.isPresent()) {
-      List<Actor> otherActorsInRoom = getAllActiveActorsByMxIds(List.of(requireNonNull(otherMemberInRoom.get().getMxid())));
+      List<Actor> otherActorsInRoom =
+          getAllActiveActorsByMxIds(List.of(otherMemberInRoom.get().getMxid()));
       if (otherActorsInRoom.isEmpty()) {
-        throw new TestRunException(format("Mxid <%s> not known in room <%s>", otherMemberInRoom.get().getMxid(), room.getName()));
+        throw new TestRunException(
+            format(
+                "Mxid <%s> not known in room <%s>",
+                otherMemberInRoom.get().getMxid(), room.getName()));
       }
-      RoomDTO updatedRoom = otherActorsInRoom.get(0).asksFor(
-          ownRoom()
-              .withRoomId(room.getRoomId())
-              .notHavingMember(actor.recall(MX_ID)));
+      RoomDTO updatedRoom =
+          otherActorsInRoom
+              .get(0)
+              .asksFor(ownRoom().withRoomId(room.getRoomId()).notHavingMember(actor.recall(MX_ID)));
       checkRoomMembershipState(updatedRoom);
     }
   }
@@ -302,15 +317,16 @@ public class RoomControllerGlue {
 
   @Then("{string} checks the room state in the room {string} to be {listOfStrings}")
   @Dann("{string} prüft den Room State im Raum {string} auf {listOfStrings}")
-  public void checkRoomStatesOfRoom(String actorName, String roomName, List<String> requestedRoomStates) {
+  public void checkRoomStatesOfRoom(
+      String actorName, String roomName, List<String> requestedRoomStates) {
     Actor actor = theActorCalled(actorName);
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
     List<RoomStateDTO> roomStates = actor.asksFor(roomStates());
-    Set<RoomStates> roomsStatesToCheck = requestedRoomStates.stream().map(RoomStates::valueOf)
-        .collect(Collectors.toSet());
+    Set<RoomStates> roomsStatesToCheck =
+        requestedRoomStates.stream().map(RoomStates::valueOf).collect(Collectors.toSet());
     for (RoomStates s : roomsStatesToCheck) {
-      assertThat(isRoomStateInList(s, roomStates)).as(
-          format("Expected roomState %s could not be found in Room %s", s, roomName));
+      assertThat(isRoomStateInList(s, roomStates))
+          .as(format("Expected roomState %s could not be found in Room %s", s, roomName));
     }
     checkRoomMembershipState(actor, roomName);
   }
@@ -318,10 +334,14 @@ public class RoomControllerGlue {
   public boolean isRoomStateInList(RoomStates roomState, List<RoomStateDTO> roomStates) {
     roomStates = roomStates.stream().filter(r -> r.getType().equals(roomState.getType())).toList();
     if (nonNull(roomState.getContent())) {
-      roomStates = roomStates.stream()
-          .filter(
-              r -> parse(r.getContent()).read(roomState.getContent().jsonPath()).equals(roomState.getContent().value()))
-          .toList();
+      roomStates =
+          roomStates.stream()
+              .filter(
+                  r ->
+                      parse(r.getContent())
+                          .read(roomState.getContent().jsonPath())
+                          .equals(roomState.getContent().value()))
+              .toList();
     }
     return !roomStates.isEmpty();
   }
@@ -330,10 +350,11 @@ public class RoomControllerGlue {
   @Dann("{string} ist dem Raum {string} beigetreten")
   public void userInRoom(String actorName, String roomName) {
     Actor actor = theActorCalled(actorName);
-    RoomDTO room = actor.asksFor(ownRoom()
-        .withName(roomName)
-        .withMemberHasStatus(actor.recall(MX_ID), JOIN));
-    assertThat(room).as(format("Actor %s have not joined room %s", actorName, roomName)).isNotNull();
+    RoomDTO room =
+        actor.asksFor(ownRoom().withName(roomName).withMemberHasStatus(actor.recall(MX_ID), JOIN));
+    assertThat(room)
+        .as(format("Actor %s have not joined room %s", actorName, roomName))
+        .isNotNull();
     checkRoomMembershipState(room);
   }
 
@@ -347,13 +368,11 @@ public class RoomControllerGlue {
   @Und("{string} ist dem Raum {string} nicht beigetreten [Retry {long} - {long}]")
   public void userNotInRoom(String actorName, String roomName, Long timeout, Long pollInterval) {
     Actor actor = theActorCalled(actorName);
-    RoomDTO room = actor.asksFor(
-        ownRoom()
+    actor.asksFor(
+        noRoom()
             .withRoomId(getRoomByInternalName(roomName).getRoomId())
             .withMemberHasStatus(actor.recall(MX_ID), JOIN)
             .withCustomInterval(timeout, pollInterval));
-    assertThat(room).as(
-        format("Actor %s should not joined room %s but was found in status %s", actorName, roomName, JOIN)).isNull();
   }
 
   @Then("{string} did not joined chat with {string}")
@@ -364,19 +383,19 @@ public class RoomControllerGlue {
   }
 
   @Then("{string} did not joined chat with {string} [Retry {long} - {long}]")
+  @Then("{string} did NOT receive an invitation from {string} [Retry {long} - {long}]")
   @Dann("{string} ist dem Chat mit {string} nicht beigetreten [Retry {long} - {long}]")
   @Dann("{string} erhält KEINE Einladung von {string} [Retry {long} - {long}]")
-  public void userDidNotEnterChat(String actorName, String userName, Long timeout,
-      Long pollInterval) {
+  public void userDidNotEnterChat(
+      String actorName, String userName, Long timeout, Long pollInterval) {
     Actor actor = theActorCalled(actorName);
     String actorMxid = actor.recall(MX_ID);
     String userMxid = theActorCalled(userName).recall(MX_ID);
-    RoomDTO room = actor.asksFor(
-        ownRoom()
+    actor.asksFor(
+        noRoom()
             .withMembers(List.of(actorMxid, userMxid))
             .withMemberHasStatus(actorMxid, JOIN)
             .withCustomInterval(timeout, pollInterval));
-    assertThat(room).isNull();
   }
 
   @Then("{string} receives invitation to room {string} from {string}")
@@ -384,10 +403,12 @@ public class RoomControllerGlue {
   public void receiveInvitationToRoom(String actorName, String roomName, String invitingActorName) {
     Actor invitedActor = theActorCalled(actorName);
     Actor invitingActor = theActorCalled(invitingActorName);
-    RoomDTO room = invitingActor.asksFor(ownRoom()
-        .withName(roomName)
-        .withMemberHasStatus(invitedActor.recall(MX_ID), INVITE));
-    assertThat(room).as(format("Actor %s has no invitation to room %s", actorName, roomName)).isNotNull();
+    RoomDTO room =
+        invitingActor.asksFor(
+            ownRoom().withName(roomName).withMemberHasStatus(invitedActor.recall(MX_ID), INVITE));
+    assertThat(room)
+        .as(format("Actor %s has no invitation to room %s", actorName, roomName))
+        .isNotNull();
     checkRoomMembershipState(room);
     checkRoomVersion(room);
   }
@@ -400,16 +421,16 @@ public class RoomControllerGlue {
 
   @And("{string} gets no invitation from {string} for the room {string} [Retry {long} - {long}]")
   @Und("{string} erhält KEINE Einladung von {string} für den Raum {string} [Retry {long} - {long}]")
-  public void noInvitationForRoomReceived(String actorName, String userName, String roomName,
-      Long timeout, Long pollInterval) {
+  public void noInvitationForRoomReceived(
+      String actorName, String userName, String roomName, Long timeout, Long pollInterval) {
     Actor actor = theActorCalled(actorName);
     String actorMxid = actor.recall(MX_ID);
     String userMxid = theActorCalled(userName).recall(MX_ID);
-    RoomDTO room = theActorCalled(actorName).asksFor(
-        ownRoom()
-            .withMembers(List.of(actorMxid, userMxid))
-            .withName(roomName)
-            .withCustomInterval(timeout, pollInterval));
-    assertThat(room).isNull();
+    theActorCalled(actorName)
+        .asksFor(
+            noRoom()
+                .withMembers(List.of(actorMxid, userMxid))
+                .withName(roomName)
+                .withCustomInterval(timeout, pollInterval));
   }
 }

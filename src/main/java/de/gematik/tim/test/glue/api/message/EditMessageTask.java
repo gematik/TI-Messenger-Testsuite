@@ -21,7 +21,6 @@ import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.EDIT_MESSAGE;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.MESSAGE_ID_VARIABLE;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueMessageText;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addMessage;
-import static java.util.Objects.requireNonNull;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.models.MessageContentDTO;
@@ -51,12 +50,12 @@ public class EditMessageTask implements Task {
 
   @Override
   public <T extends Actor> void performAs(T actor) {
-    requireNonNull(this.message);
-    requireNonNull(this.messageId);
-    MessageContentDTO messageBody = new MessageContentDTO().body(createUniqueMessageText()).msgtype("m.text");
-    actor.attemptsTo(EDIT_MESSAGE.request()
-        .with(req -> req.pathParam(MESSAGE_ID_VARIABLE, this.messageId)
-            .body(messageBody)));
+    MessageContentDTO messageBody =
+        new MessageContentDTO().body(createUniqueMessageText()).msgtype("m.text");
+    actor.attemptsTo(
+        EDIT_MESSAGE
+            .request()
+            .with(req -> req.pathParam(MESSAGE_ID_VARIABLE, this.messageId).body(messageBody)));
     actor.remember(LAST_RESPONSE, lastResponse());
     if (HttpStatus.valueOf(lastResponse().getStatusCode()).is2xxSuccessful()) {
       addMessage(this.message, lastResponse().as(MessageDTO.class));

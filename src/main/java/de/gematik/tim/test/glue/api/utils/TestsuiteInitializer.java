@@ -43,14 +43,6 @@ import io.restassured.RestAssured;
 import io.restassured.config.HttpClientConfig;
 import io.restassured.config.ObjectMapperConfig;
 import io.restassured.internal.mapping.Jackson2Mapper;
-import lombok.NoArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
-import org.bouncycastle.asn1.x500.RDN;
-import org.bouncycastle.asn1.x500.style.BCStyle;
-import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -67,6 +59,13 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.bouncycastle.asn1.x500.RDN;
+import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)
@@ -121,10 +120,23 @@ public class TestsuiteInitializer {
     String timeoutString = p.getProperty(TIMEOUT_PROPERTY_NAME);
     String pollIntervalString = p.getProperty(POLL_INTERVAL_PROPERTY_NAME);
     RUN_WITHOUT_RETRY = Boolean.parseBoolean(p.getProperty(RUN_WITHOUT_RETRY_PROPERTY_NAME));
-    CLAIM_DURATION = Integer.parseInt(isBlank(p.getProperty(CLAIM_DURATION_PROPERTY_NAME)) ? "180" : p.getProperty(CLAIM_DURATION_PROPERTY_NAME));
-    HTTP_TIMEOUT = Integer.parseInt(isBlank(p.getProperty(HTTP_TIMEOUT_PROPERTY_NAME)) ? "180" : p.getProperty(HTTP_TIMEOUT_PROPERTY_NAME));
-    MAX_RETRY_CLAIM_REQUEST = Integer.parseInt(isBlank(p.getProperty(MAX_RETRY_CLAIM_REQUEST_NAME)) ? "3" : p.getProperty(MAX_RETRY_CLAIM_REQUEST_NAME));
-    CHECK_ROOM_STATE_FAIL = Boolean.parseBoolean(p.getProperty(CHECK_ROOM_STATE_FAIL_PROPERTY_NAME));
+    CLAIM_DURATION =
+        Integer.parseInt(
+            isBlank(p.getProperty(CLAIM_DURATION_PROPERTY_NAME))
+                ? "180"
+                : p.getProperty(CLAIM_DURATION_PROPERTY_NAME));
+    HTTP_TIMEOUT =
+        Integer.parseInt(
+            isBlank(p.getProperty(HTTP_TIMEOUT_PROPERTY_NAME))
+                ? "180"
+                : p.getProperty(HTTP_TIMEOUT_PROPERTY_NAME));
+    MAX_RETRY_CLAIM_REQUEST =
+        Integer.parseInt(
+            isBlank(p.getProperty(MAX_RETRY_CLAIM_REQUEST_NAME))
+                ? "3"
+                : p.getProperty(MAX_RETRY_CLAIM_REQUEST_NAME));
+    CHECK_ROOM_STATE_FAIL =
+        Boolean.parseBoolean(p.getProperty(CHECK_ROOM_STATE_FAIL_PROPERTY_NAME));
     CERT_CN = parseCn();
     CLEAR_ROOMS = Boolean.parseBoolean(p.getProperty(CLEAR_ROOMS_PROPERTY_NAME));
     CLAIM_PARALLEL = Boolean.parseBoolean(p.getProperty(CLAIM_PARALLEL_PROPERTY_NAME));
@@ -137,9 +149,10 @@ public class TestsuiteInitializer {
     } catch (Exception ex) {
       TIMEOUT = TIMEOUT_DEFAULT;
       pollInterval = POLL_INTERVAL_DEFAULT;
-      log.info(format(
-          "Could not parse timeout (%s) or pollInterval (%s). Will use default -> timeout: %s, pollInterval: %s",
-          timeoutString, pollIntervalString, TIMEOUT, pollInterval));
+      log.info(
+          format(
+              "Could not parse timeout (%s) or pollInterval (%s). Will use default -> timeout: %s, pollInterval: %s",
+              timeoutString, pollIntervalString, TIMEOUT, pollInterval));
     }
     mapper = createMapper();
     ObjectMapperConfig config = RestAssured.config().getObjectMapperConfig();
@@ -153,11 +166,12 @@ public class TestsuiteInitializer {
   private static void saveMavenProperties(Properties p) {
     StringBuilder sb = new StringBuilder();
     List<String> secrets = List.of("tim.keystore.pw", "tim.truststore.pw");
-    p.forEach((k, v) -> {
-      if (secrets.stream().noneMatch(secret -> k.toString().equals(secret))) {
-        sb.append("%s=%s%n".formatted(k, v));
-      }
-    });
+    p.forEach(
+        (k, v) -> {
+          if (secrets.stream().noneMatch(secret -> k.toString().equals(secret))) {
+            sb.append("%s=%s%n".formatted(k, v));
+          }
+        });
     try {
       FileUtils.write(new File("./target/saved_mvn.properties"), sb.toString(), UTF_8);
     } catch (IOException e) {
@@ -169,7 +183,9 @@ public class TestsuiteInitializer {
   @SneakyThrows
   public static void addHostsToTigerProxy() {
     Set<String> hosts = getHttpsApisFromFeatureFiles();
-    log.info("{} apis going to be added to alternative name of tiger proxy\n\t{}", hosts.size(),
+    log.info(
+        "{} apis going to be added to alternative name of tiger proxy\n\t{}",
+        hosts.size(),
         String.join("\n\t", hosts));
     TigerProxy proxy = TigerDirector.getTigerTestEnvMgr().getLocalTigerProxyOrFail();
     hosts.forEach(proxy::addAlternativeName);
@@ -177,14 +193,12 @@ public class TestsuiteInitializer {
 
   private static void configRestAssured() {
 
-    HttpClientConfig httpClientFactory = HttpClientConfig
-        .httpClientConfig()
-        .setParam("http.socket.timeout", HTTP_TIMEOUT * 1000)
-        .setParam("http.connection.timout", HTTP_TIMEOUT * 1000);
+    HttpClientConfig httpClientFactory =
+        HttpClientConfig.httpClientConfig()
+            .setParam("http.socket.timeout", HTTP_TIMEOUT * 1000)
+            .setParam("http.connection.timout", HTTP_TIMEOUT * 1000);
 
-    RestAssured.config = RestAssured
-        .config()
-        .httpClient(httpClientFactory);
+    RestAssured.config = RestAssured.config().httpClient(httpClientFactory);
   }
 
   static Jackson2Mapper getMapper() {
@@ -192,11 +206,12 @@ public class TestsuiteInitializer {
   }
 
   private static Jackson2Mapper createMapper() {
-    return new Jackson2Mapper((type, s) -> {
-      ObjectMapper om = new ObjectMapper().registerModule(new JavaTimeModule());
-      om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-      return om;
-    });
+    return new Jackson2Mapper(
+        (type, s) -> {
+          ObjectMapper om = new ObjectMapper().registerModule(new JavaTimeModule());
+          om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+          return om;
+        });
   }
 
   private static List<File> getFeatureFiles(File file) {
@@ -214,8 +229,8 @@ public class TestsuiteInitializer {
 
   private static Set<String> getHttpsApisFromFeatureFiles() {
     List<File> featureFiles = getFeatureFiles(new File(FEATURE_PATH));
-    List<GherkinDocument> features = featureFiles.stream()
-        .map(TestsuiteInitializer::transformToGherkin).toList();
+    List<GherkinDocument> features =
+        featureFiles.stream().map(TestsuiteInitializer::transformToGherkin).toList();
     return features.stream()
         .map(GherkinDocument::getFeature)
         .filter(Optional::isPresent)
@@ -242,8 +257,8 @@ public class TestsuiteInitializer {
     try (InputStream stream = new FileInputStream(System.getenv(KEY_STORE_ENV_VAR))) {
       KeyStore store = KeyStore.getInstance("PKCS12");
       store.load(stream, System.getenv(KEY_STORE_PW_ENV_VAR).toCharArray());
-      X509Certificate cert = parse(
-          store.getCertificate(store.aliases().nextElement()).getEncoded());
+      X509Certificate cert =
+          parse(store.getCertificate(store.aliases().nextElement()).getEncoded());
       RDN cn = new JcaX509CertificateHolder(cert).getSubject().getRDNs(BCStyle.CN)[0];
       return cn.getFirst().getValue().toString();
     } catch (Exception ex) {
@@ -253,26 +268,26 @@ public class TestsuiteInitializer {
   }
 
   private static GherkinDocument parseGherkinString(String gherkin) {
-    final GherkinParser parser = GherkinParser.builder()
-        .includeSource(false)
-        .includePickles(false)
-        .includeGherkinDocument(true)
-        .build();
+    final GherkinParser parser =
+        GherkinParser.builder()
+            .includeSource(false)
+            .includePickles(false)
+            .includeGherkinDocument(true)
+            .build();
 
     final Source source = new Source("not needed", gherkin, TEXT_X_CUCUMBER_GHERKIN_PLAIN);
     final Envelope envelope = Envelope.of(source);
 
-    return parser.parse(envelope)
+    return parser
+        .parse(envelope)
         .map(Envelope::getGherkinDocument)
         .flatMap(Optional::stream)
         .findAny()
-        .orElseThrow(
-            () -> new IllegalArgumentException("Could not parse invalid gherkin."));
+        .orElseThrow(() -> new IllegalArgumentException("Could not parse invalid gherkin."));
   }
 
   @SneakyThrows
   private static GherkinDocument transformToGherkin(File f) {
     return parseGherkinString(Files.readString(f.toPath()));
   }
-
 }

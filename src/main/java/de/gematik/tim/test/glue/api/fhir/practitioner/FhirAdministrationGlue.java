@@ -43,9 +43,8 @@ import io.cucumber.java.de.Wenn;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.response.Response;
-import net.serenitybdd.screenplay.Actor;
-
 import java.util.List;
+import net.serenitybdd.screenplay.Actor;
 
 public class FhirAdministrationGlue {
 
@@ -53,13 +52,14 @@ public class FhirAdministrationGlue {
   @Wenn("{listOfStrings} hinterlegt seine MXID im Verzeichnis Dienst")
   @Wenn("{listOfStrings} hinterlegen ihre MXIDs im Verzeichnis Dienst")
   public void addToFhir(List<String> actorNames) {
-    actorNames.forEach(a -> {
-      Actor actor = theActorCalled(a);
-      actor.attemptsTo(authenticateOnFhirVzd());
-      actor.should(seeThatResponse("check status code", res -> res.statusCode(OK.value())));
-      actor.attemptsTo(setMxid());
-      checkResponseCode(a, CREATED.value());
-    });
+    actorNames.forEach(
+        a -> {
+          Actor actor = theActorCalled(a);
+          actor.attemptsTo(authenticateOnFhirVzd());
+          actor.should(seeThatResponse("check status code", res -> res.statusCode(OK.value())));
+          actor.attemptsTo(setMxid());
+          checkResponseCode(a, CREATED.value());
+        });
   }
 
   @Then("{listOfStrings} removes the MXID in the own TIPractitioner FHIR resource")
@@ -67,13 +67,14 @@ public class FhirAdministrationGlue {
   @Dann("{listOfStrings} löscht seine MXID im Verzeichnis Dienst")
   @Dann("{listOfStrings} löschen ihre MXIDs im Verzeichnis Dienst")
   public void deleteFromFhir(List<String> actorNames) {
-    actorNames.forEach(a -> {
-      Actor actor = theActorCalled(a);
-      actor.attemptsTo(deleteMxidFromFhir());
-      checkResponseCode(a, NO_CONTENT.value());
-      assertThat(((Response) actor.recall(LAST_RESPONSE)).getStatusCode()).isEqualTo(
-          NO_CONTENT.value());
-    });
+    actorNames.forEach(
+        a -> {
+          Actor actor = theActorCalled(a);
+          actor.attemptsTo(deleteMxidFromFhir());
+          checkResponseCode(a, NO_CONTENT.value());
+          assertThat(((Response) actor.recall(LAST_RESPONSE)).getStatusCode())
+              .isEqualTo(NO_CONTENT.value());
+        });
   }
 
   @Wenn("{string} search MXID of user {string} in vzd")
@@ -81,10 +82,11 @@ public class FhirAdministrationGlue {
   public void searchUserInFhir(String actorName, String userName) {
     Actor actor1 = theActorCalled(actorName);
     Actor actor2 = theActorCalled(userName);
-    FhirSearchResultDTO result = actor1.asksFor(
-        practitionerInFhirDirectory().withMxid(actor2.recall(MX_ID)));
+    FhirSearchResultDTO result =
+        actor1.asksFor(practitionerInFhirDirectory().withMxId(actor2.recall(MX_ID)));
     checkResponseCode(actorName, OK.value());
-    List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
+    List<FhirEndpointDTO> endpoints =
+        getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
     assertThat(endpoints).hasSize(1);
   }
 
@@ -93,7 +95,8 @@ public class FhirAdministrationGlue {
   public void findUserInFhir(String actorName) {
     Actor actor = theActorCalled(actorName);
     FhirSearchResultDTO result = actor.asksFor(ownFhirResource().withAtLeastAmountEndpoints(1));
-    List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
+    List<FhirEndpointDTO> endpoints =
+        getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
     assertCorrectEndpointNameAndMxid(endpoints, actor);
   }
 
@@ -102,7 +105,8 @@ public class FhirAdministrationGlue {
   public void getsOwnNullMXID(String actorName) {
     Actor actor = theActorCalled(actorName);
     FhirSearchResultDTO result = theActorCalled(actorName).asksFor(ownFhirResource());
-    List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
+    List<FhirEndpointDTO> endpoints =
+        getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
     assertThat(endpoints).extracting("address").doesNotContain(actor.recall(MX_ID));
   }
 

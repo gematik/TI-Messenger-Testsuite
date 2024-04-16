@@ -23,19 +23,16 @@ import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseRespo
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getHsFromInternalName;
 import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
-import static java.util.Objects.requireNonNull;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.models.FhirEndpointDTO;
 import de.gematik.tim.test.models.FhirSearchResultDTO;
 import io.restassured.specification.RequestSpecification;
+import java.util.List;
+import java.util.Optional;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 public class FhirSearchOrgQuestion implements Question<FhirSearchResultDTO> {
 
@@ -77,8 +74,7 @@ public class FhirSearchOrgQuestion implements Question<FhirSearchResultDTO> {
   }
 
   private Optional<FhirSearchResultDTO> searchForOrganization(Actor actor) {
-    actor.attemptsTo(
-        SEARCH_ORG.request().with(this::prepareQuery));
+    actor.attemptsTo(SEARCH_ORG.request().with(this::prepareQuery));
 
     FhirSearchResultDTO resp = parseResponse(FhirSearchResultDTO.class);
     actor.remember(LAST_RESPONSE, lastResponse());
@@ -87,18 +83,16 @@ public class FhirSearchOrgQuestion implements Question<FhirSearchResultDTO> {
   }
 
   private Optional<FhirSearchResultDTO> checkConditions(FhirSearchResultDTO searchResult) {
-    List<FhirEndpointDTO> endpoints = getResourcesFromSearchResult(searchResult, ENDPOINT, FhirEndpointDTO.class);
+    List<FhirEndpointDTO> endpoints =
+        getResourcesFromSearchResult(searchResult, ENDPOINT, FhirEndpointDTO.class);
     if (mxIdInEndpoint == null && endpoints.size() >= minimalSearchResults) {
       return Optional.of(searchResult);
     }
 
-    List<String> ids = endpoints.stream()
-        .map(FhirEndpointDTO::getAddress)
-        .filter(Objects::nonNull)
-        .toList();
+    List<String> ids = endpoints.stream().map(FhirEndpointDTO::getAddress).toList();
     if (mxIdInEndpoint != null
         && ids.contains(mxIdInEndpoint)
-        && requireNonNull(searchResult.getTotal()) >= minimalSearchResults) {
+        && searchResult.getTotal() >= minimalSearchResults) {
       return Optional.of(searchResult);
     }
     return Optional.empty();

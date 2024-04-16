@@ -18,7 +18,7 @@ package de.gematik.tim.test.glue.api.message;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_MESSAGES;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
-import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequestForEmptyResult;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getCreatedMessage;
 import static java.lang.String.format;
 
@@ -34,46 +34,51 @@ import org.awaitility.core.ConditionTimeoutException;
 
 @Slf4j
 @RequiredArgsConstructor
-public class GetRoomMessageQuestion implements Question<Optional<MessageDTO>> {
+public class GetNoMessageQuestion implements Question<Boolean> {
 
   private final String messageText;
   private final String mxIdSender;
+  private Long customTimeout;
+  private Long customPollInterval;
 
-  public static GetRoomMessageQuestion messageFromSenderWithTextInActiveRoom(
+  public static GetNoMessageQuestion noMessageFromSenderWithTextInActiveRoom(
       String messageText, String mxIdSender) {
-    return new GetRoomMessageQuestion(getCreatedMessage(messageText).getBody(), mxIdSender);
+    return new GetNoMessageQuestion(getCreatedMessage(messageText).getBody(), mxIdSender);
+  }
+
+  public GetNoMessageQuestion withCustomInterval(Long timeout, Long pollInterval) {
+    this.customTimeout = timeout;
+    this.customPollInterval = pollInterval;
+    return this;
   }
 
   @Override
-  public Optional<MessageDTO> answeredBy(Actor actor) {
+  public Boolean answeredBy(Actor actor) {
     try {
-      return repeatedRequest(() -> getMessage(actor), "message");
+      repeatedRequestForEmptyResult(() -> getMessage(actor), customTimeout, customPollInterval);
     } catch (ConditionTimeoutException e) {
       log.error(
-          "Search for message from mxid {} with text '{}' did not return expected result",
-          mxIdSender,
-          messageText,
-          e);
+          "Message from mxid {} with text '{}' should not be found", mxIdSender, messageText, e);
       throw new AssertionFailed(
           format(
-              "Search for message from mxid %s with text '%s' did not return expected result",
-              mxIdSender, messageText));
+              "Message from mxid %s with text '%s' should not be found", mxIdSender, messageText));
     }
+    return true;
   }
 
-  private Optional<Optional<MessageDTO>> getMessage(Actor actor) {
+  private Boolean getMessage(Actor actor) {
     actor.attemptsTo(GET_MESSAGES.request());
     List<MessageDTO> messages = List.of(parseResponse(MessageDTO[].class));
-    return findMessage(messages);
+    return dontFindMessage(messages);
   }
 
-  private Optional<Optional<MessageDTO>> findMessage(List<MessageDTO> messages) {
+  private Boolean dontFindMessage(List<MessageDTO> messages) {
     Optional<MessageDTO> foundMessage =
         messages.stream()
             .filter(
                 message ->
                     message.getBody().equals(messageText) && message.getAuthor().equals(mxIdSender))
             .findFirst();
-    return foundMessage.isPresent() ? Optional.of(foundMessage) : Optional.empty();
+    return foundMessage.isEmpty();
   }
 }

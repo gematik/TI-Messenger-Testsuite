@@ -20,7 +20,6 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HOME_SERVER;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_INFO;
 import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.TEST_CASE_ID_HEADER;
 import static de.gematik.tim.test.glue.api.threading.ClientFactory.getClient;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.prepareApiNameForHttp;
 import static de.gematik.tim.test.glue.api.utils.ParallelUtils.fromJson;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTestcaseId;
@@ -51,7 +50,9 @@ public class ApiInfoQuestion extends ParallelQuestionRunner<InfoObjectDTO> {
   @Override
   public InfoObjectDTO searchParallel() {
     UnirestInstance client = getClient();
-    InfoObjectDTO info = fromJson(client.get(GET_INFO.getResolvedPath(actor)).asString().getBody(), InfoObjectDTO.class);
+    InfoObjectDTO info =
+        fromJson(
+            client.get(GET_INFO.getResolvedPath(actor)).asString().getBody(), InfoObjectDTO.class);
     String homeserver = info.getHomeserver();
     homeserver = addHttpsIfNotSet(homeserver);
     actor.remember(HOME_SERVER, homeserver);

@@ -16,13 +16,11 @@
 
 package de.gematik.tim.test.glue.api.threading;
 
+import static de.gematik.tim.test.glue.api.utils.IndividualLogger.individualLog;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 import static lombok.AccessLevel.PRIVATE;
 
 import de.gematik.tim.test.glue.api.exceptions.TestRunException;
-import kong.unirest.UnirestInstance;
-import lombok.NoArgsConstructor;
-
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,6 +28,8 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import kong.unirest.UnirestInstance;
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
 public class ParallelExecutor {
@@ -37,9 +37,9 @@ public class ParallelExecutor {
   private static final ExecutorService executor = newFixedThreadPool(10);
   private static final ThreadLocal<UnirestInstance> client =
       ThreadLocal.withInitial(ClientFactory::getClient);
-  private static final ConcurrentHashMap<String, ConcurrentSkipListSet<Long>> devices = new ConcurrentHashMap<>();
+  private static final ConcurrentHashMap<String, ConcurrentSkipListSet<Long>> devicesMap =
+      new ConcurrentHashMap<>();
   private static final ConcurrentHashMap<String, Integer> lastResponses = new ConcurrentHashMap<>();
-
 
   @SuppressWarnings("java:S2142")
   public static void run(List<Callable<Void>> calls) {
@@ -58,7 +58,10 @@ public class ParallelExecutor {
   }
 
   public static boolean isClaimable(String api, Long deviceId) {
-    return devices.computeIfAbsent(api, k -> new ConcurrentSkipListSet<>()).add(deviceId);
+    individualLog(
+        "Ask for DeviceID %s on APi: %s currently claimed: %s"
+            .formatted(deviceId, api, devicesMap.get(api)));
+    return devicesMap.computeIfAbsent(api, k -> new ConcurrentSkipListSet<>()).add(deviceId);
   }
 
   public static void saveLastResponseCode(String actorName, int statusCode) {
@@ -70,13 +73,11 @@ public class ParallelExecutor {
   }
 
   public static void reset() {
-    devices.clear();
+    devicesMap.clear();
     lastResponses.clear();
   }
 
   public static void removeClientOnParallelExecutor() {
     client.remove();
   }
-
-
 }

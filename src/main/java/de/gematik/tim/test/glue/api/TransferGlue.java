@@ -18,10 +18,16 @@ package de.gematik.tim.test.glue.api;
 
 import static lombok.AccessLevel.PRIVATE;
 
+import io.cucumber.java.de.Und;
 import lombok.AllArgsConstructor;
 
 
 @AllArgsConstructor(access = PRIVATE)
 public class TransferGlue {
+
+    @Und("{string} findet Healthcare-Service {string} bei Suche nach Namen minus {int}-{int} \\(Anzahl vorne-hinten) Char\\(s) abgeschnitten")
+    public void findHelathcareServiceWithSearchParam(String actorName, String HCSName, int begin, int end) {
+        //implement me
+    }
 
 }
