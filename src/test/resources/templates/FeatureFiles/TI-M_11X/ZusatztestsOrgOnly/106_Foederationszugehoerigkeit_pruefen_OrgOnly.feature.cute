@@ -1,5 +1,5 @@
 # language: de
-@File:FeatureFile_06 @Ctl:UseCase
+@File:FeatureFile_06_OrgOnly
 @PRODUKT:TIM_FD @PRODUKT:TIM_Client
 @AF-ID:AF_10064-01
 @AK-ID:ML-123672 @AK-ID:ML-123891 @AK-ID:ML-132589 @AK-ID:ML-137902
@@ -7,7 +7,7 @@
 @AK-ID:ML-123612 @AK-ID:ML-132588
 @AF-ID:AF_10061-01
 @AK-ID:ML-132864 @AK-ID:ML-132592
-Funktionalität:  06. Föderationszugehörigkeit eines Messenger-Service prüfen
+Funktionalität:  06. Föderationszugehörigkeit eines Messenger-Service prüfen_OrgOnly
 
   AF_10064-01 - Föderationszugehörigkeit eines Messenger-Service prüfen
     ML-123672 - Föderationsliste vom VZD-FHIR-Directory abrufen
@@ -24,35 +24,16 @@ Funktionalität:  06. Föderationszugehörigkeit eines Messenger-Service prüfen
     ML-132592 - TI-M Rohdatenerfassung und -lieferung
 
   Inhalt
-  TF 1  HBA versucht User außerhalb der Föderation einzuladen (Chat)
-  TF 2  Org-User versucht User außerhalb der Föderation einzuladen (Raum)
+  TF 1  Org-User versucht User außerhalb der Föderation einzuladen (Chat)
 
-  @BP:P2N @Ctl:Chat @Ctl:MsgForward @Ctl:BasicTest
-  @TCID:TIM_11_AF_601 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
-  Szenariogrundriss: 06.01 Föderationszugehörigkeit prüfen - Chat - Test-Client "A" versucht User außerhalb der Föderation einzuladen (HBA-User)
-    Angenommen Es werden folgende Clients reserviert:
-      | A | PRACTITIONER | <ApiName1> |
-    Und        "A" hinterlegen ihre MXIDs im Verzeichnis Dienst
-    Wenn       "A" versucht der MXID "@tim-gematik:matrix.org" direkt "Testnachricht 1" zu schreiben
-    Dann       erhält "A" einen Responsecode 403
-
-  @Shuffle(true)
-  @MaxSameColumnProperty(ApiName1,homeserver,1)
-  @Filter(ApiName1.hasTag("client"))
-  @Filter(ApiName1.hasTag("practitioner"))
-
-    Beispiele:
-    | ApiName1 |
-
-  @BP:O2N @Ctl:Raum @Ctl:BasicTest
-  @TCID:TIM_11_AF_602 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
-  Szenariogrundriss: 06.02 Föderationszugehörigkeit prüfen - Raum - Test-Client "A" versucht User außerhalb der Föderation einzuladen (Org-User)
+  @BP:O2N @Ctl:Raum @Ctl:OrgOnly
+  @TCID:TIM_11_AF_10601 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  Szenariogrundriss: 106.01 Föderationszugehörigkeit prüfen - Chat - Test-Client "A" versucht User außerhalb der Föderation einzuladen (Org-User)
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN    | <ApiName1A> |
       | B | CLIENT | <ApiName1B> |
     Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
-    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
-    Und        "B" versucht die MXID "@tim-gematik:matrix.org" in den Chat-Raum "TIM Testraum 1" einzuladen
+    Und        "B" versucht der MXID "@tim-gematik:matrix.org" direkt "Testnachricht 1" zu schreiben
     Dann       erhält "B" einen Responsecode 403
 
   @Shuffle(true)

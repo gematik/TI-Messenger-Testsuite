@@ -18,11 +18,24 @@
 :rootdir: ../../
 
 [[id0,Inhaltsverzeichnis]]
-= TI-Messenger-Dienst Release 1.1.1
+= TI-Messenger-Dienst Release 1.1.2
 
 image::gematikLogoRight.png[float="right"]
 
 == TI-Messenger-Dienst Testsuite
+
+{empty} +
+
+gematik
+| Version 1.1 | Stand: 18.04.2024
+
+Dokumentenhistorie
+[cols='10%,10%,10%,60%,10%']
+|===
+| *Version*  |*Stand*      | *Kap.* | *Grund der Änderung, besondere Hinweise* | *Bearbeiter*
+| 1.0        | 24.01.2023  |        | initiale Erstellung                               | gematik
+| 1.1        | 18.04.2024  |        | Kapitel 9.2 und 9.3 neu                           | gematik
+|===
 
 {empty} +
 
@@ -1395,6 +1408,13 @@ image::Testrun.png[float="left"]
 === 9. Testausführung
 
 {empty} +
+{empty} +
+
+image::Testrun.png[float="left"]
+
+==== 9.1 Testausführung allgemein
+
+{empty} +
 
 *Die Testsuite wird mit maven gestartet werden:*
 
@@ -1444,6 +1464,107 @@ Weitere Infos hierzu sind in Kapitel 6.5 vorhanden.
 mvn clean install -DclearRooms=true
 
 Bitte beachten, dass mit diesem Schalter bei jedem Login eine weitere Anfrage gesendet wird und somit eine im Idealfall unnötige Belastung darstellt.
+
+image::Testrun.png[float="left"]
+
+==== 9.2 Zulassungstests
+
+{empty} +
+{empty} +
+
+Für das erfolreiche Ausführen der Testfälle aus dem Folder "Zulasungstests" müssen auf Seiten des Anbieters folgende Clients vorhanden sein:
+
+- 1 Client mit HBA Funktionalität (Testobjekt)
+- 1 Org-Admin (Testobjekt)
+
+Der Gegenpart (z.B. die Referenzimplementierung) benötigt:
+
+- 1 Client mit HBA Funktionalität
+- 1 Org-Admin
+
+[TIP]
+[black]#*_Zur Bereitstellung der Clients seitens des Herstellers ist Kapitel 4 nochmal zu erwähnen. Die obrige Aufzählung dient der Übersichtlichkeit._*#
+
+Für den Folder Zulassungstests müssen jeweils ein Client mit HBA Funktionalität inkl Org-Admin pro Homeserver vorhanden sein.
+Dieses Testset bezieht sich auf den regulären Zulassungstest und ist unter src/test/resources/templates/FeatureFiles/TI-M_11X/Zulassungstests zu sehen.
+
+Für das Ausführen dieser Suite in Gänze reicht es den Befehlt "mvn clean install" zu nutzen. (siehe Kapitel 9.1)
+
+Die Combine Items kann dann z.B. wie folgt aussehen, wenn wir hier davon ausgehen, dass "A" der Hersteller ist und "B" z.B. die
+Referenzimplementierung oder zu Testzwecken eine weitere Instanz.
+
+.Abbildung{counter:my-example-number: 1}: Beispiel Combine Items Zulasungstests
+image:Combine_Zulass.png[float="center"]
+
+image::Testrun.png[float="left"]
+
+==== 9.3 Zusätzliche Tests - ZusatztestsOrgOnly
+
+{empty} +
+
+[TIP]
+[black]#*_Diese zusätzlichen "ZusatztestsOrgOnly" Tests sind ausschließlich für die Zulassung von Clients, die nur eine Org-User Funktionalität haben. Für eine Zulassung eines TI-Messenger benötigen wir immer mindestens einen Client der auch die Funktionalität HBA-User hat. Die Zulassung einzelner Org-User Client kann nur im Anschluß einer HBA-User Client Zulassung durchgeführt werden._*#
+
+Der neue Folder src/test/resources/templates/FeatureFiles/TI-M_11X/ZusatztestsOrgOnly ist entstanden, um die Möglichkeit zu haben, auch die Funktionalität eines
+Client ohne die Nutzung der HBA Funktionalität, also der Rolle Organisations User, komplett testen zu können.
+
+In diesem Folder sind all die Testfälle enthalten und für ihren Zweck angepasst, deren Funktionalität in der regulären Suite nur über die Clients mit HBA Funktionalität und dessen Gebrauch abgebildet wurden.
+
+In Kombination mit den Testfällen der regulären Suite (mit dem Tag OrgOnly versehen) bildet ZusatztestsOrgOnly ein Testset ab, welches alle geforderten Funktionalitäten der normalen Suite beinhaltet und
+die Möglichkeit bietet, einen Client abseits der HBA Funktionalität umfänglich zu testen. Dieser Client darf bei der Abfrage
+der Schnittstelle nicht den Tag 'practitioner' besitzen bzw. muss info.app.clientInfo.canAdministrateFhirPractitioner=false sein.
+
+Für das erfolgreiche Ausführen dieser Testfälle müssen auf der Seite des Anbieters folgende Clients vorhanden sein:
+
+- 1 Client mit HBA Funktionalität
+- 1 Client ohne HBA Funktionalität/ohne den Tag 'practitioner' (Testobjekt)
+- 1 Org-Admin
+
+Der Gegenpart (z.B. die Referenzimplementierung) benötigt:
+
+- 1 Client mit HBA Funktionalität
+- 1 Org-Admin
+
+[TIP]
+[black]#*_Für die Bereitstellung der Clients seitens des Herstellers ist das Kapitel 4 nochmal zu erwähnen. Die obrige Aufzählung dient der Übersichtlichkeit._*#
+
+In der Combine Items müssen die Tags "new" (für das Testobjekt) und "preIOP" (für alle Clients) wie folgt vergeben werden (die einzelnen Schnittstellen müssen dann auch in der tiger.yml eingetragen sein),
+wenn wir hier auch davon ausgehen, dass "A" der Hersteller ist und "B" z.B. die Referenzimplementierung oder zu Testzwecken eine weitere Instanz.
+
+.Abbildung{counter:my-example-number: 1}: Beispiel Combine Items ZusatztestsOrgOnly
+image:Combine_OrgOnly.png[float="center"]
+
+Der "new" Tag beschreibt hier das eigentliche Testobjekt und gibt später die Möglich explizit nur Kombinationen zu testen, wo das Testobjekt enthalten ist.
+Andere Kombinationen werden, wo das "new" Testobjekt nicht enthalten ist, herausgefiltert.
+Der Tag "preIOP" dient dazu alle anderen Clients in den IOP Tests auch gegen das Testobjekt mit dem "new" Tag zu testen und die entsprechenden Kombinationen zu bilden.
+
+[TIP]
+[black]#*_Weitere Informationen zu dem Nutzen und Verhalten der Tags sind in Kapitel 6.3 nachzulesen._*#
+
+Eine weitere Einstellung die getätigt werden muss ist die folgende:
+
+In der pom.xml muss der Pfad angepasst werden, der auf die zu nutzenden Feature Files zielt.
+
+Default ist:
+
+.Abbildung{counter:my-example-number: 1}: Auszug pom.xml - Default
+image:TempDir_Zulass.png[float="center"]
+
+Der Eintrag muss wie folgt geändert werden, damit auch der ZusatztestsOrgOnly Folder mit in den Testrun einbezogen wird:
+
+.Abbildung{counter:my-example-number: 1}: Auszug pom.xml - Änderung
+image:TempDir_OrgOnly.png[float="center"]
+
+Wenn diese Änderung temporär vorgenommen wurden, kann ein Testrun mit diesem Befehlt gestartet werden:
+
+mvn clean install -Dcucumber.filter.tags=@Ctl:OrgOnly -Pprod,newonly,dont-break-preperation
+
+Der Paramerter kann auch beim Starten mit angegeben werden:
+
+-Dfeature.template.dir=<projectdir>/src/test/resources/templates/FeatureFiles/TI-M_11X
+
+Das Profil "dont-break-preperation" muss hier genutzt werden, da nur für spezifische TestfällKombinationen (mit dem Tag OrgOnly und nur Kombinationen wo der Tag "new" setzt wurde)
+gebildet werden. Da andere Tabellen leer bleiben, würde ohne dieses Profil der ganze Testrun direkt nach dem Start abbrechen!
 
 [.text-right]
 <<id0,Inhaltsverzeichnis>>

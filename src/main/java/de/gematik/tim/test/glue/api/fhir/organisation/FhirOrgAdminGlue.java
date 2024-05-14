@@ -44,8 +44,10 @@ import static de.gematik.tim.test.glue.api.utils.GlueUtils.mxidToUri;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.readJsonFile;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addEndpoint;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getEndpointFromInternalName;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getHsFromInternalName;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.removeInternalEndpointWithName;
 import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
+import static de.gematik.tim.test.models.FhirResourceTypeDTO.HEALTHCARESERVICE;
 import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorInTheSpotlight;
@@ -59,6 +61,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
 import de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UseEndpointAbility;
+import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.HealthcareServiceInfo;
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility;
 import de.gematik.tim.test.glue.api.fhir.organisation.location.FhirGetLocationListQuestion;
 import de.gematik.tim.test.models.FhirEndpointDTO;
@@ -93,6 +96,41 @@ public class FhirOrgAdminGlue {
     List<FhirEndpointDTO> endpoints =
         getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
     assertCorrectEndpointNameAndMxid(endpoints, theActorCalled(userName));
+  }
+
+  @And(
+      "{string} can find healthcare service {string} by searching by name with cut {int}-{int} \\(amount front-back) char\\(s)")
+  @Und(
+      "{string} findet Healthcare-Service {string} bei Suche nach Namen minus {int}-{int} \\(Anzahl vorne-hinten) Char\\(s) abgeschnitten")
+  public void findHealthcareServiceWithSearchParam(
+      String actorName, String healthcareServiceName, int begin, int end) {
+    Actor actor = theActorCalled(actorName);
+
+    HealthcareServiceInfo healthcareServiceInfo = getHsFromInternalName(healthcareServiceName);
+    String uniqueHealthcareServiceName = healthcareServiceInfo.name();
+    assertThat(begin + end)
+        .as("You cut to much of the healthcare service name: " + uniqueHealthcareServiceName)
+        .isLessThan(uniqueHealthcareServiceName.length());
+    String cutName =
+        uniqueHealthcareServiceName.substring(begin, uniqueHealthcareServiceName.length() - end);
+
+    FhirSearchResultDTO searchResult =
+        actor.asksFor(organizationEndpoints().withUniqueHsName(cutName));
+    checkResponseCode(actor, OK.value());
+    List<FhirHealthcareServiceDTO> healthcareServices =
+        getResourcesFromSearchResult(
+            searchResult, HEALTHCARESERVICE, FhirHealthcareServiceDTO.class);
+    List<FhirHealthcareServiceDTO> healthcareServicesWithMatchingName =
+        healthcareServices.stream()
+            .filter(
+                healthcareService ->
+                    healthcareService.getName().equals(uniqueHealthcareServiceName))
+            .toList();
+    assertThat(healthcareServicesWithMatchingName.size())
+        .as(
+            "Found none or more than one healthcare service with name "
+                + healthcareServicesWithMatchingName)
+        .isEqualTo(1);
   }
 
   @And("{string} creates a healthcare service {string}")

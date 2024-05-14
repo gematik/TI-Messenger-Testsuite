@@ -6,6 +6,14 @@
 
 - - -
 
+## Release 1.1.0
+
+- Adds new test step for healthcare service search by name
+- New folder structure in src/test/resources/templates/FeatureFiles
+- New feature files for OrgOnly tests in src/test/resources/templates/FeatureFiles/TI-M_11X/ZusatztestsOrgOnly
+  Note: For the purpose and usage please read chapter 9.3 in testsuite.adoc
+- New documentation file for TI-Messenger (ePA) (Testsuite_ePA.adoc)
+
 ## Release 1.0.1
 
 ### Changes

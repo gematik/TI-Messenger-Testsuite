@@ -1,0 +1,94 @@
+# language: de
+@File:FeatureFile_07_OrgOnly
+@PRODUKT:TIM_FD @PRODUKT:TIM_Client
+@AF-ID:AF_10104-01
+@AK-ID:ML-123896 @AK-ID:ML-129415 @AK-ID:ML-129414 @AK-ID:ML-132590
+@AF-ID:AF_10064-01
+@AK-ID:ML-123672 @AK-ID:ML-123891 @AK-ID:ML-132589 @AK-ID:ML-137902
+@AF-ID:AF_10058-01
+@AK-ID:ML-123612 @AK-ID:ML-132588
+@AF-ID:AF_10059-01
+@AK-ID:ML-123627 @AK-ID:ML-132586
+@AK-ID:ML-123654
+Funktionalität:  07. Einladung von Akteuren innerhalb einer Organisation_OrgOnly
+
+  AF_10104-01 - Einladung von Akteuren innerhalb einer Organisation
+    ML-123896 - Matrix-Homeserver nach Akteuren durchsuchen
+    ML-129415 - Messenger-Proxy prüft TI-Föderationszugehörigkeit
+    ML-129414 - Akteure sind dem Chatraum beigetreten
+    ML-132590 - TI-M Rohdatenerfassung und -lieferung
+
+  AF_10064-01 - Föderationszugehörigkeit eines Messenger-Service prüfen
+    ML-123672 - Föderationsliste vom VZD-FHIR-Directory abrufen
+    ML-123891 - Matrix-Domain Teil der Föderationsliste & Aktualitätscheck
+    ML-132589 - TI-M Rohdatenerfassung und -lieferung
+    ML-137902 - Aktualität - Föderationsliste Messenger-Proxy
+
+  AF_10058-01 Akteur (User-HBA) im Verzeichnisdienst hinzufügen
+    ML-123612 - Akteur als Practitioner hinzufügen
+    ML-132588 - TI-M Rohdatenerfassung und -lieferung
+
+  AF_10059-01 - Organisationsressourcen im Verzeichnisdienst hinzufügen
+    ML-123627 - Organisationsressourcen im VZD-FHIR-Directory hinzufügen
+    ML-132586 - TI-M Rohdatenerfassung und -lieferung
+    ML-123654 - Suche im VZD-FHIR-Directory
+
+  In diesem Anwendungsfall erfolgt gleichzeitig eine Prüfung des Berechtigungskonzept.
+
+  Inhalt
+  TF 1 & 2 Einladung in Chat/Raum Teilqualifizierte Suche (OrgUser - OrgUser)
+
+  @BP:P2P @Ctl:Chat @Ctl:SeachPart @Ctl:OrgOnly
+  @TCID:TIM_11_AF_10701 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 107.01 Einladung innerhalb einer Organisation - Einladung in Chat - Teilqualifizierte Suche (OrgUser - OrgUser)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN | <ApiName1A> |
+      | B | CLIENT    | <ApiName1B> |
+      | C | CLIENT    | <ApiName1C> |
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
+    Und        "B" findet Healthcare-Service "HealthcareServiceName2" bei Suche nach Namen minus 0-1 (Anzahl vorne-hinten) Char(s) abgeschnitten
+    Wenn       "B" schreibt "C" über den Healthcare-Service "HealthcareServiceName2" direkt "Testnachricht 1"
+    Dann       "C" erhält eine Einladung von "B"
+    Und        "C" bestätigt eine Einladung von "B"
+    Und        "C" empfängt eine Nachricht "Testnachricht 1" von "B"
+
+    @Shuffle(true) #
+    @MaxSameColumnProperty(ApiName1B,homeserver,1) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1C.hasTag("client"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B | ApiName1C |
+
+  @BP:P2P @Ctl:Chat @Ctl:SeachPart @Ctl:OrgOnly
+  @TCID:TIM_11_AF_10702 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 107.02 Einladung innerhalb einer Organisation - Einladung in Raum - Teilqualifizierte Suche (OrgUser - OrgUser)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN | <ApiName1A> |
+      | B | CLIENT    | <ApiName1B> |
+      | C | CLIENT    | <ApiName1C> |
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
+    Und        "B" findet Healthcare-Service "HealthcareServiceName2" bei Suche nach Namen minus 0-1 (Anzahl vorne-hinten) Char(s) abgeschnitten
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Wenn       "B" lädt "C" über den HealthcareService "HealthcareServiceName2" in den Chat-Raum "TIM Testraum 1" ein
+    Dann       "C" erhält eine Einladung in Raum "TIM Testraum 1" von "B"
+    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "B"
+    Und        "C" ist dem Raum "TIM Testraum 1" beigetreten
+
+    @Shuffle(true) #
+    @MaxSameColumnProperty(ApiName1B,homeserver,1) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1C.hasTag("client"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B | ApiName1C |

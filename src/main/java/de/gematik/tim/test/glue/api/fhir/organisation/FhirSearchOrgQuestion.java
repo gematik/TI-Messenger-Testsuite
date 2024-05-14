@@ -47,6 +47,11 @@ public class FhirSearchOrgQuestion implements Question<FhirSearchResultDTO> {
   }
 
   public FhirSearchOrgQuestion withHsName(String hsName) {
+    this.hsName = getHsFromInternalName(hsName).name();
+    return this;
+  }
+
+  public FhirSearchOrgQuestion withUniqueHsName(String hsName) {
     this.hsName = hsName;
     return this;
   }
@@ -100,7 +105,7 @@ public class FhirSearchOrgQuestion implements Question<FhirSearchResultDTO> {
 
   private RequestSpecification prepareQuery(RequestSpecification request) {
     if (StringUtils.isNotBlank(hsName)) {
-      request.queryParam("healthcareServiceName", getHsFromInternalName(hsName).name());
+      request.queryParam("healthcareServiceName", hsName);
     }
     return request;
   }
