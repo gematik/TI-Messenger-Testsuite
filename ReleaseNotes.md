@@ -6,6 +6,10 @@
 
 - - -
 
+## Release 1.1.1
+
+- Updates internal dependencies
+
 ## Release 1.1.0
 
 - Adds new test step for healthcare service search by name
