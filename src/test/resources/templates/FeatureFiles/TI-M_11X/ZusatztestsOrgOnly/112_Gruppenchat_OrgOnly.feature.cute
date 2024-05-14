@@ -1,0 +1,39 @@
+# language: de
+@File:FeatureFile_12_OrgOnly @Ctl:Additional @Ctl:Gruppenchat
+@PRODUKT:TIM_FD @PRODUKT:TIM_Client
+@AF-ID:AF_10036
+Funktionalität:  12. Gruppenchat_OrgOnly
+  Zentrales Konzept beim Chatten in Matrix sind die "Räume". Die folgenden Testfälle sollen das Konzept 'Gruppenchat'
+  behandeln. Wenn ein Akteur mehrere Personen in einen "Raum" einlädt, erzeugt man einen Gruppenchat.
+
+  TF 1     Gruppenchat gleiche Organisation (OrgUser)
+
+  @BP:P2P @Ctl:OneHomeServer @Ctl:MsgBackward @Ctl:OrgOnly
+    @TCID:TIM_11_AF_11201 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 112.01 Events innerhalb einer Organisation - Gruppenchat - Test-Client "D" sendet eine Nachricht (Org-User)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN | <ApiName1A> |
+      | B | CLIENT    | <ApiName1B> |
+      | C | CLIENT    | <ApiName1C> |
+      | D | CLIENT    | <ApiName1D> |
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName3" und setzen einen Endpunkt auf "D"
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "B" lädt "C", "D" in Chat-Raum "TIM Testraum 1" ein
+    Und        "C", "D" erhalten eine Einladung von "B"
+    Und        "C", "D" bestätigt eine Einladung von "B"
+    Wenn       "D" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Dann       "B", "C" empfangen eine Nachricht "Testnachricht 1" von "D" im Raum "TIM Testraum 1"
+
+  #@Shuffle
+    @EqualProperty(homeserver)
+    @MinimalTable(true)
+    @AllowSelfCombine(true)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("client"))
+    @Filter(ApiName1C.hasTag("client"))
+    @Filter(ApiName1D.hasTag("client"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B | ApiName1C | ApiName1D |

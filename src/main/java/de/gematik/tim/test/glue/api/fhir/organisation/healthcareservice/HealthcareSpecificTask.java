@@ -37,8 +37,8 @@ public abstract class HealthcareSpecificTask implements Task {
 
   @Override
   public <T extends Actor> void performAs(T actor) {
-    UseHealthcareServiceAbility useHealthcareServiceAbility = actor.abilityTo(
-        UseHealthcareServiceAbility.class);
+    UseHealthcareServiceAbility useHealthcareServiceAbility =
+        actor.abilityTo(UseHealthcareServiceAbility.class);
     if (isNotBlank(getHsName())) {
       useHealthcareServiceAbility.setActive(getHsName());
     } else {

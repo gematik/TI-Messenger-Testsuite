@@ -6,7 +6,7 @@
 
   <groupId>de.gematik.tim.test</groupId>
   <artifactId>TI-Messenger-Testsuite</artifactId>
-  <version>1.0.1</version>
+  <version>1.1.0</version>
   <packaging>jar</packaging>
   <name>TI-Messenger-Testsuite</name>
   <description>Testsuite to check functionality of TI-Messenger-Clients</description>
@@ -20,7 +20,7 @@
 
     <jacoco.version>0.8.8</jacoco.version>
     <cucumber-test-combinations-maven-plugin.version>
-      2.9.19
+      2.9.21
     </cucumber-test-combinations-maven-plugin.version>
     <tiger.version>3.0.1</tiger.version>
     <serenity.core.version>4.1.0</serenity.core.version>
@@ -28,19 +28,20 @@
     <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
     <maven.javadoc.plugin.version>3.6.3</maven.javadoc.plugin.version>
     <junit.engine.version>5.8.2</junit.engine.version>
-    <ti.m.mtls.certs.version>1.0.4</ti.m.mtls.certs.version>
+    <ti.m.mtls.certs.version>1.0.5</ti.m.mtls.certs.version>
     <ti.m.sim.version>4.7.0</ti.m.sim.version>
 
     <feature_dir>${project.build.directory}/features/</feature_dir>
     <feature.template.dir>
-      ${project.basedir}/src/test/resources/templates/FeatureFiles/Zulassungstests
+      ${project.basedir}/src/test/resources/templates/FeatureFiles/TI-M_11X/Zulassungstests
     </feature.template.dir>
     <sonar.coverage.exclusions>**/*</sonar.coverage.exclusions>
     <feature.tables.max_rows>9999</feature.tables.max_rows>
     <maven.build.timestamp.format>yyyy-MM-dd_HH_mm_ss</maven.build.timestamp.format>
     <skip.saving.reports>false</skip.saving.reports>
     <tiger.config.file>tiger.yml</tiger.config.file>
-    <combine.items.file>${project.basedir}/src/test/resources/combine_items.json
+    <combine.items.file>
+      ${project.basedir}/src/test/resources/combine_items.json
     </combine.items.file>
     <tim.truststore>${env.TIM_TRUSTSTORE}</tim.truststore>
     <tim.truststore.pw>${env.TIM_TRUSTSTORE_PW}</tim.truststore.pw>
@@ -85,75 +86,6 @@
     </snapshotRepository>
   </distributionManagement>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>net.serenity-bdd</groupId>
-        <artifactId>serenity-core</artifactId>
-        <version>${serenity.core.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>net.serenity-bdd</groupId>
-        <artifactId>serenity-model</artifactId>
-        <version>${serenity.core.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>net.serenity-bdd</groupId>
-        <artifactId>serenity-cucumber</artifactId>
-        <version>${serenity.core.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>net.serenity-bdd</groupId>
-        <artifactId>serenity-rest-assured</artifactId>
-        <version>${serenity.core.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>net.serenity-bdd</groupId>
-        <artifactId>serenity-screenplay</artifactId>
-        <version>${serenity.core.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>net.serenity-bdd</groupId>
-        <artifactId>serenity-screenplay-rest</artifactId>
-        <version>${serenity.core.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>net.serenity-bdd</groupId>
-        <artifactId>serenity-ensure</artifactId>
-        <version>${serenity.core.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter</artifactId>
-        <version>${junit.engine.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-params</artifactId>
-        <version>${junit.engine.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-api</artifactId>
-        <version>${junit.engine.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.junit.vintage</groupId>
-        <artifactId>junit-vintage-engine</artifactId>
-        <version>${junit.engine.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <version>1.18.30</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>de.gematik.test</groupId>
@@ -180,7 +112,6 @@
       <artifactId>javafaker</artifactId>
       <version>1.0.2</version>
     </dependency>
-    <!-- screenplay -->
     <dependency>
       <groupId>net.serenity-bdd</groupId>
       <artifactId>serenity-screenplay-rest</artifactId>
@@ -194,6 +125,7 @@
     <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
+      <version>${junit.engine.version}</version>
     </dependency>
     <dependency>
       <groupId>com.nimbusds</groupId>
@@ -201,23 +133,27 @@
       <version>9.37.3</version>
     </dependency>
     <dependency>
-      <groupId>io.freefair.gradle</groupId>
-      <artifactId>lombok-plugin</artifactId>
-      <version>8.4</version>
-    </dependency>
-    <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
+      <version>1.18.30</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.engine.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
+      <version>${junit.engine.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
+      <version>${junit.engine.version}</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
@@ -1074,6 +1010,4 @@
       <organizationUrl>https://www.gematik.de/</organizationUrl>
     </developer>
   </developers>
-
-
 </project>
