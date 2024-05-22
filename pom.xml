@@ -6,7 +6,7 @@
 
   <groupId>de.gematik.tim.test</groupId>
   <artifactId>TI-Messenger-Testsuite</artifactId>
-  <version>1.1.1</version>
+  <version>1.2.0</version>
   <packaging>jar</packaging>
   <name>TI-Messenger-Testsuite</name>
   <description>Testsuite to check functionality of TI-Messenger-Clients</description>
@@ -170,27 +170,6 @@
     </resources>
     <plugins>
       <plugin>
-        <groupId>com.googlecode.maven-download-plugin</groupId>
-        <artifactId>download-maven-plugin</artifactId>
-        <version>1.6.0</version>
-        <executions>
-          <execution>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>wget</goal>
-            </goals>
-            <configuration>
-              <url>
-                https://raw.githubusercontent.com/gematik/api-ti-messenger/Release-1.1.1-8/src/openapi/TiMessengerTestTreiber.yaml
-              </url>
-              <sha256>7bae58b9f823e085bf92401ee47f14ad2b2d513d68b14a5328d11a3ec254f645</sha256>
-              <outputFileName>TiMessengerTestTreiber.yaml</outputFileName>
-              <outputDirectory>${project.build.directory}</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.7.0</version>
@@ -220,7 +199,6 @@
         <version>${maven.javadoc.plugin.version}</version>
         <configuration>
           <doclint>none</doclint>
-          <!-- <sourcepath>src/main/java</sourcepath>--> <!-- falls javadoc via Jenkins nicht erstellt werden kann, die Zeile hinzufügen -->
         </configuration>
         <executions>
           <execution>
@@ -397,7 +375,7 @@
             </goals>
             <configuration>
               <inputSpec>
-                ${project.build.directory}/TiMessengerTestTreiber.yaml
+                ${project.basedir}/src/main/resources/api/TiMessengerTestTreiber.yaml
               </inputSpec>
               <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
               <generatorName>java</generatorName>
