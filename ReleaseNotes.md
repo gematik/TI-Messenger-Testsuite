@@ -6,6 +6,12 @@
 
 - - -
 
+## Release 1.2.0
+
+- Moves test driver API from api-ti-messenger repository into TI-Messenger-Testsuite repository under
+  src/main/resources/api/TiMessengerTestTreiber.yaml
+- Adds functions required for TI-M ePa into test driver API
+
 ## Release 1.1.1
 
 - Updates internal dependencies
