@@ -17,8 +17,8 @@
 package de.gematik.tim.test.glue.api.devices;
 
 public enum ClientKind {
-
   PRACTITIONER,
   CLIENT,
-  ORG_ADMIN
+  ORG_ADMIN,
+  INSURANT
 }

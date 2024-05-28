@@ -76,6 +76,9 @@ tags:
 
 paths:
   /:
+    parameters:
+      - $ref: "#/components/parameters/transactionIdHeader"
+
     get:
       tags:
         - info
@@ -115,6 +118,9 @@ paths:
           $ref: "#/components/responses/DefaultResponse"
 
   /devices:
+    parameters:
+      - $ref: "#/components/parameters/transactionIdHeader"
+
     get:
       tags:
         - devices
@@ -2219,46 +2225,205 @@ components:
 
   schemas:
 
-    InfoObject:
-      description: ""
-      required:
-        - title
-        - clientInfo
-        - fachdienstInfo
-        - testDriverVersion
-        - homeserver
-        - contact
-        - description
+    Account:
+      description: "General information of an account"
       readOnly: true
       type: object
+      allOf:
+        - $ref: "#/components/schemas/MxId"
+      required:
+        - username
+        - password
+        - displayName
       properties:
-        title:
+        username:
           type: string
-          description: "Der Titel der Anwendung"
-          example: "Test-Schnittstelle des TI-Messenger Clients"
-        description:
+          description: "Username that can be used to login to this account"
+          example: "ThomasMueller"
+        password:
           type: string
-          description: "Eine kurze Beschreibung der Anwendung"
-          example: "TI-Messenger-Client Test-Schnittstelle"
-        termsOfService:
+          description: "Password that can be used to login to this account"
+          example: "SafePassword123"
+        displayName:
           type: string
-          format: uri
-          description: "Eine URL zu den Terms of Service für dieses API."
-          example: "https://example.com/terms/"
-        homeserver:
+          description: "The displayName"
+          example: "some name"
+
+    ApplicationType:
+      description: "Enum of possible types of applications"
+      type: string
+      enum: [ Native, WebApp ]
+
+    AuthFlow:
+      description: "Authentication flow and its stages"
+      type: object
+      properties:
+        stages:
+          description: "Stages for this flow"
+          type: array
+          items:
+            $ref: "#/components/schemas/AuthStageName"
+
+    AuthFlows:
+      description: "Information about available authentication flows and already completed stages"
+      type: object
+      properties:
+        completedAuthStages:
+          description: "Already completed stages"
+          type: array
+          items:
+            $ref: "#/components/schemas/AuthStageName"
+        flows:
+          description: "Available authentication flows and their stages"
+          type: array
+          items:
+            $ref: "#/components/schemas/AuthFlow"
+        params:
+          description: "Parameters for all the stages"
+          type: object
+          properties:
+            basicAuth:
+              $ref: "#/components/schemas/BasicAuthStage"
+
+    AuthStageName:
+      description: "A stage in an authentication flow"
+      type: string
+      enum: [ basicAuth ]
+      example: basicAuth
+
+    AuthorizationList:
+      description: "The list of entries in authorization list"
+      type: object
+      properties:
+        mxids:
+          description: "The list of mxids"
+          type: array
+          items:
+            $ref: "#/components/schemas/MxId"
+        domains:
+          description: "The list of domains"
+          type: array
+          items:
+            $ref: "#/components/schemas/Domain"
+
+    AuthorizationMode:
+      description: "Information about the client authorization mode"
+      type: object
+
+      required:
+        - AuthorizationType
+      properties:
+        authorizationType:
+          $ref: "#/components/schemas/AuthorizationType"
+
+    AuthorizationType:
+      type: string
+      description: "Type of authorization"
+      example: "AllowAll"
+      enum: [ AllowAll, BlockAll ]
+
+    BasicAuthStage:
+      description: "AuthStage for username + password authentication"
+      required:
+        - username
+        - password
+      type: object
+      properties:
+        username:
           type: string
-          description: "Name des zuständigen Homeservers"
-          example: "gematik.de"
-        contact:
-          $ref: "#/components/schemas/ContactInfo"
-        clientInfo:
-          $ref: "#/components/schemas/ClientSoftwareInfo"
-        fachdienstInfo:
-          $ref: "#/components/schemas/SoftwareInfo"
-        testDriverVersion:
+          description: "The username (localpart of the MXID)"
+          example: "myUsername"
+        password:
           type: string
-          description: "Version of the implemented TiMessengerTestDriver"
-          example: "1.0.0"
+          format: password
+          description: "If authMethod is basicAuth, a password is required"
+          example: "mySecretPassword"
+
+    BrowserInfo:
+      description: "Additional information about the used browser. Should only be filled if application type is 'WebApp'"
+      properties:
+        name:
+          type: string
+          description: "Name of the used browser"
+          example: Firefox
+        version:
+          type: string
+          description: "Version of the used Browser"
+          example: 1.0.0
+
+    ClaimDeviceRequest:
+      required:
+        - claimerName
+        - claimFor
+      type: object
+      description: "Request for claiming a device"
+      properties:
+        claimerName:
+          type: string
+          description: "Name of the claimer"
+          example: "some name"
+        claimFor:
+          type: integer
+          description: "Duration in seconds this device should be exclusively claimed for. Resets after using device."
+          minimum: 60
+          maximum: 300
+          example: 180
+
+    ClientCapabilities:
+      description: "Flags for implemented capabilities of the client"
+      type: object
+      properties:
+        canAdministrateFhirOrganization:
+          type: boolean
+          description: "Whether this client can handle OrgAdmin-operations to administrate an organization in FHIR-VZD"
+        canAdministrateFhirPractitioner:
+          type: boolean
+          description: "Whether this client can handle operations to administrate a practitioner entry in FHIR-VZD"
+        canSendMessages:
+          type: boolean
+          description: "Whether this client has basic messaging capabilities"
+        isInsurance:
+          type: boolean
+          description: "Whether this client is part of an insurance domain and therefore belongs to an insured person"
+
+    ClientSoftwareInfo:
+      description: "General information about the client software"
+      allOf:
+        - $ref: "#/components/schemas/SoftwareInfo"
+        - $ref: "#/components/schemas/ClientCapabilities"
+      properties:
+        browserInfo:
+          $ref: "#/components/schemas/BrowserInfo"
+
+    Contact:
+      description: "Contact settings"
+      type: object
+      properties:
+        mxid:
+          type: string
+          description: "ID of the contact (mxid)"
+          example: "@someone:gematik.de"
+        inviteSettings:
+          type: object
+          properties:
+            start:
+              type: integer
+              minimum: 0
+              format: int64
+              description: "start (Epoch Unix Timestamp, SECONDS SINCE JAN 01 1970. (UTC))"
+              example: 1654159585
+            end:
+              type: integer
+              minimum: 0
+              format: int64
+              description: "end  (Epoch Unix Timestamp, SECONDS SINCE JAN 01 1970. (UTC))"
+              example: 1654169585
+          required:
+            - start
+          description: "Invites from the mxid are granted between start and end date-time"
+      required:
+        - mxid
+        - inviteSettings
 
     ContactInfo:
       readOnly: true
@@ -2283,136 +2448,27 @@ components:
           description: "Der E-Mail Adresse der Kontaktperson / -Organisation."
           example: "support@example.com"
 
-    SoftwareInfo:
-      description: "General information about the software"
-      required:
-        - name
-        - version
+    Contacts:
+      description: "The list of contacts and their settings"
       type: object
       properties:
-        name:
-          type: string
-          description: "Name of the provided software"
-          example: "TI-Messenger-Software"
-        description:
-          description: "A short description of the provided software"
-          example: "The TI-Messenger-Software is an implementation of the TI-Messenger specification."
-          type: string
-        version:
-          description: "The version of the software"
-          example: "1.0.0"
-          type: string
-        osInfo:
-          $ref: "#/components/schemas/OsInfo"
-        applicationType:
-          $ref: "#/components/schemas/ApplicationType"
-        contact:
-          $ref: "#/components/schemas/ContactInfo"
-        matrixVersion:
-          type: string
-          example: "1.3"
-          description: Implemented version of matrix protocol https://spec.matrix.org/latest/
-
-    ClientSoftwareInfo:
-      description: "General information about the client software"
-      allOf:
-        - $ref: "#/components/schemas/SoftwareInfo"
-        - $ref: "#/components/schemas/ClientCapabilities"
-      properties:
-        browserInfo:
-          $ref: "#/components/schemas/BrowserInfo"
-
-    ClientCapabilities:
-      description: "Flags for implemented capabilities of the client"
-      type: object
-      properties:
-        canAdministrateFhirOrganization:
-          type: boolean
-          description: "Whether this client can handle OrgAdmin-operations to administrate an organization in FHIR-VZD"
-        canAdministrateFhirPractitioner:
-          type: boolean
-          description: "Whether this client can handle operations to administrate a practitioner entry in FHIR-VZD"
-        canSendMessages:
-          type: boolean
-          description: "Whether this client has basic messaging capabilities"
-
-    OsInfo:
-      description: "General information about the underlying operating system"
-      required:
-        - operatingSystem
-      type: object
-      properties:
-        operatingSystem:
-          $ref: "#/components/schemas/OperatingSystem"
-        version:
-          description: "Version of the OS"
-          example: "1.0.0"
-          type: string
-
-    OperatingSystem:
-      description: "Enum of possible operating systems"
-      type: string
-      enum: [ Windows, OSx, iOS, Android, Linux ]
-
-    ApplicationType:
-      description: "Enum of possible types of applications"
-      type: string
-      enum: [ Native, WebApp ]
-
-    BrowserInfo:
-      description: "Additional information about the used browser. Should only be filled if application type is 'WebApp'"
-      properties:
-        name:
-          type: string
-          description: "Name of the used browser"
-          example: Firefox
-        version:
-          type: string
-          description: "Version of the used Browser"
-          example: 1.0.0
-
-    Error:
-      description: "Default error object with information about the occurred error"
-      type: object
-      properties:
-        errorCode:
-          description: "A code identifying this error"
-          type: string
-        errorMessage:
-          description: "A readable message describing the error"
-          type: string
-      required:
-        - errorCode
-        - errorMessage
-
-    ClaimDeviceRequest:
-      required:
-        - claimerName
-        - claimFor
-      type: object
-      description: "Request for claiming a device"
-      properties:
-        claimerName:
-          type: string
-          description: "Name of the claimer"
-          example: "some name"
-        claimFor:
-          type: integer
-          description: "Duration in seconds this device should be exclusively claimed for. Resets after using device."
-          minimum: 60
-          maximum: 300
-          example: 180
-
-    Devices:
-      description: "The list of connected devices and their status"
-      type: object
-      properties:
-        devices:
-          description: "The list of connected devices and their status"
+        contacts:
+          description: "The list of contacts and their settings"
           type: array
           items:
-            $ref: "#/components/schemas/DeviceInfo"
+            $ref: "#/components/schemas/Contact"
           readOnly: true
+
+    CreateRoomRequest:
+      description: "Information for a new room"
+      allOf:
+        - $ref: "#/components/schemas/RoomProperties"
+      properties:
+        invitedMembers:
+          description: "List of accounts to invite into the new room"
+          type: array
+          items:
+            $ref: "#/components/schemas/MxId"
 
     DeviceInfo:
       description: "Claim information about a device"
@@ -2460,59 +2516,592 @@ components:
           description: "Time until device is unclaimed. Each interaction with device extends claim time."
           example: 2022-04-01T08:30:00Z
 
-    AuthFlows:
-      description: "Information about available authentication flows and already completed stages"
+    Devices:
+      description: "The list of connected devices and their status"
       type: object
       properties:
-        completedAuthStages:
-          description: "Already completed stages"
+        devices:
+          description: "The list of connected devices and their status"
           type: array
           items:
-            $ref: "#/components/schemas/AuthStageName"
-        flows:
-          description: "Available authentication flows and their stages"
-          type: array
-          items:
-            $ref: "#/components/schemas/AuthFlow"
-        params:
-          description: "Parameters for all the stages"
-          type: object
-          properties:
-            basicAuth:
-              $ref: "#/components/schemas/BasicAuthStage"
+            $ref: "#/components/schemas/DeviceInfo"
+          readOnly: true
 
-    AuthStageName:
-      description: "A stage in an authentication flow"
-      type: string
-      enum: [ basicAuth ]
-      example: basicAuth
-
-    AuthFlow:
-      description: "Authentication flow and its stages"
+    DirectMessage:
+      description: "A direct message to an other account."
       type: object
       properties:
-        stages:
-          description: "Stages for this flow"
-          type: array
-          items:
-            $ref: "#/components/schemas/AuthStageName"
+        toAccount:
+          type: string
+          description: "The recipients account ID. Can be the mxId or an other account id returned by the searchInFhirDirectory operations."
+          example: "@someone:gematik.de"
+      allOf:
+        - $ref: "#/components/schemas/MessageContent"
 
-    BasicAuthStage:
-      description: "AuthStage for username + password authentication"
+    Domain:
+      description: "A Matrix-Domain"
+      type: object
       required:
-        - username
-        - password
+        - domain
+      properties:
+        domain:
+          description: "The Matrix-Domain"
+          type: string
+          example: ":matrix.org"
+
+    Error:
+      description: "Default error object with information about the occurred error"
       type: object
       properties:
-        username:
+        errorCode:
+          description: "A code identifying this error"
           type: string
-          description: "The username (localpart of the MXID)"
-          example: "myUsername"
-        password:
+        errorMessage:
+          description: "A readable message describing the error"
           type: string
-          format: password
-          description: "If authMethod is basicAuth, a password is required"
-          example: "mySecretPassword"
+      required:
+        - errorCode
+        - errorMessage
+
+    FhirAddress:
+      type: object
+      description: "Possible address"
+      properties:
+        use:
+          type: string
+          description: "For what should this address be used"
+          example: "work"
+        type:
+          type: string
+          description: "Describes what kind of address is it"
+          example: "postal"
+        text:
+          type: string
+          description: "Full address in one text"
+          example: "Müllersteige 38 74626 Bretzfeld Baden-Württemberg DE"
+        line:
+          type: array
+          example: [ "Müllersteige 38" ]
+          description: "Multiple address lines"
+          items:
+            type: string
+        city:
+          type: string
+          description: "City of address"
+          example: "Bretzfeld"
+        state:
+          type: string
+          description: "State of address"
+          example: "Baden-Württemberg"
+        postalCode:
+          type: string
+          description: "Postal code of address"
+          example: "74626"
+        country:
+          type: string
+          description: "Country code of address"
+          example: "DE"
+
+    FhirAvailableTimes:
+      type: object
+      description: "Summary of available times"
+      properties:
+        daysOfWeek:
+          type: array
+          description: "Short term of day"
+          example: [ "mon", "tue", "wed" ]
+          items:
+            type: string
+        availableStartTime:
+          type: string
+          description: "Start time"
+          example: "08:00:00"
+        availableEndTime:
+          type: string
+          description: "Start time"
+          example: "18:00:00"
+
+    FhirBaseResource:
+      type: object
+      description: "FhirBaseResource"
+      discriminator:
+        propertyName: resourceType
+        mapping:
+          Organization: "#/components/schemas/FhirOrganization"
+          HealthcareService: "#/components/schemas/FhirHealthcareService"
+          PractitionerRole: "#/components/schemas/FhirPractitionerRole"
+          Location: "#/components/schemas/FhirLocation"
+          Endpoint: "#/components/schemas/FhirEndpoint"
+          Practitioner: "#/components/schemas/FhirPractitioner"
+      required:
+        - resourceType
+      properties:
+        resourceType:
+          $ref: "#/components/schemas/FhirResourceType"
+        id:
+          type: string
+          description: "UUID of resource"
+          example: "97563406-5836-475d-9ee6-48e02917dae2"
+        meta:
+          $ref: "#/components/schemas/FhirMeta"
+        text:
+          $ref: "#/components/schemas/FhirText"
+        identifier:
+          type: array
+          items:
+            $ref: "#/components/schemas/FhirIdentifier"
+
+    FhirCodeableConcept:
+      description: "Coding object"
+      type: object
+      properties:
+        coding:
+          type: array
+          items:
+            $ref: "#/components/schemas/FhirCoding"
+        text:
+          type: string
+          description: "Plain text representation of the concept"
+
+    FhirCoding:
+      description: "Coding object"
+      type: object
+      properties:
+        system:
+          type: string
+          example: "http://terminology.hl7.org/CodeSystem/v2-0203"
+        code:
+          type: string
+          example: "PRN"
+        display:
+          type: string
+          example: "TI-Messenger chat"
+
+    FhirConnectionType:
+      type: object
+      properties:
+        system:
+          type: string
+          example: "https://gematik.de/fhir/directory/CodeSystem/EndpointDirectoryConnectionType"
+        code:
+          type: string
+          example: "tim"
+
+    FhirEndpoint:
+      allOf:
+        - $ref: "#/components/schemas/FhirBaseResource"
+      type: object
+      required:
+        - name
+        - address
+      properties:
+        name:
+          type: string
+          description: "Name of the resource"
+          example: "Surgery station"
+        managingOrganization:
+          type: string
+          description: "Name of managing organization"
+          example: "Charite Berlin"
+        status:
+          type: string
+          description: "Status of the resource"
+          example: "active"
+          enum: [ active, suspended, "off" ]
+        address:
+          description: "For endpoint in tim context the mxid in uri scheme"
+          type: string
+          example: "matrix:u/test:gematik.de"
+        connectionType:
+          $ref: "#/components/schemas/FhirConnectionType"
+        payloadType:
+          type: array
+          items:
+            $ref: "#/components/schemas/FhirCodeableConcept"
+
+    FhirEntry:
+      description: "FhirSearchEntry"
+      type: object
+      required:
+        - resource
+      properties:
+        fullUrl:
+          type: string
+          description: "The full URL to the resource"
+          example: "https://fhir-directory-ref.vzd.ti-dienste.de/owner/HealthcareService/97563406-5836-475d-9ee6-48e02917dae2"
+        resource:
+          $ref: "#/components/schemas/FhirBaseResource"
+        search:
+          $ref: "#/components/schemas/FhirSearch"
+
+    FhirHealthcareService:
+      allOf:
+        - $ref: "#/components/schemas/FhirBaseResource"
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: "Name of the resource"
+          example: "Surgery station"
+        providedBy:
+          $ref: "#/components/schemas/FhirReference"
+        location:
+          type: array
+          items:
+            $ref: "#/components/schemas/FhirReference"
+        telecom:
+          type: array
+          items:
+            $ref: "#/components/schemas/FhirTelecom"
+        endpoint:
+          type: array
+          items:
+            $ref: "#/components/schemas/FhirReference"
+        serviceProvisionCode:
+          type: array
+          items:
+            $ref: "#/components/schemas/FhirCodeableConcept"
+        communication:
+          type: array
+          items:
+            $ref: "#/components/schemas/FhirCodeableConcept"
+        appointmentRequired:
+          type: boolean
+          description: "Is an appointment mandatory"
+        availableTime:
+          type: array
+          items:
+            $ref: "#/components/schemas/FhirAvailableTimes"
+        availabilityExceptions:
+          type: string
+          description: ""
+          example: "Closed on Friday 3.14.15926"
+
+    FhirIdentifier:
+      description: "Object of text"
+      type: object
+      properties:
+        system:
+          type: string
+          example: "https://gematik.de/fhir/directory/CodeSystem/ldapUID"
+        value:
+          type: string
+          example: "681b6c9f-a9d1-4dea-937c-4e4cf70b1f31"
+        type:
+          $ref: "#/components/schemas/FhirType"
+
+    FhirLocation:
+      allOf:
+        - $ref: "#/components/schemas/FhirBaseResource"
+      type: object
+      properties:
+        name:
+          type: string
+          description: "Name of the resource"
+          example: "Surgery station"
+        address:
+          $ref: "#/components/schemas/FhirAddress"
+
+    FhirMeta:
+      description: "Metadata of resource"
+      type: object
+      properties:
+        lastUpdated:
+          type: string
+          format: date-time
+          description: "Time when the depending resource was last updated"
+          example: 2022-04-01T08:30:00Z
+        versionId:
+          type: integer
+          description: "How many times this resource have been updated"
+          example: 2
+        source:
+          type: string
+        profile:
+          type: array
+          items:
+            $ref: "#/components/schemas/FhirProfile"
+        tag:
+          type: array
+          items:
+            $ref: "#/components/schemas/FhirTag"
+
+    FhirName:
+      type: object
+      description: "Personal data of practitioner"
+      required:
+        - text
+      properties:
+        use:
+          example: "usual"
+          description: "Use of the name"
+          type: string
+        text:
+          example: "Kersta Hoefler"
+          description: "Full Name"
+          type: string
+        family:
+          example: "Hoefler"
+          description: "Last name"
+          type: string
+        given:
+          type: array
+          items:
+            type: string
+          description: "First names"
+          example: [ "Kersta" ]
+        prefix:
+          type: array
+          items:
+            type: string
+          description: "Title and other prefixes"
+          example: [ "Dr.", "Prof." ]
+
+    FhirOrganization:
+      allOf:
+        - $ref: "#/components/schemas/FhirBaseResource"
+      type: object
+      properties:
+        name:
+          type: string
+          description: "Name of the resource"
+          example: "Surgery station"
+        active:
+          type: boolean
+          description: "Is resource active"
+        type:
+          type: array
+          items:
+            $ref: "#/components/schemas/FhirType"
+        alias:
+          type: array
+          items:
+            type: string
+
+    FhirPractitioner:
+      allOf:
+        - $ref: "#/components/schemas/FhirBaseResource"
+      type: object
+      properties:
+        active:
+          type: boolean
+          description: "Is resource active"
+        name:
+          type: array
+          items:
+            $ref: "#/components/schemas/FhirName"
+        telecom:
+          type: array
+          items:
+            $ref: '#/components/schemas/FhirTelecom'
+
+    FhirPractitionerRole:
+      allOf:
+        - $ref: "#/components/schemas/FhirBaseResource"
+      type: object
+      required:
+        - practitioner
+      properties:
+        practitioner:
+          $ref: "#/components/schemas/FhirReference"
+        location:
+          type: array
+          items:
+            $ref: "#/components/schemas/FhirReference"
+        endpoint:
+          type: array
+          items:
+            $ref: "#/components/schemas/FhirReference"
+
+    FhirProfile:
+      description: "Url to FHIR profile of the resource"
+      type: string
+      example: "https://gematik.de/fhir/directory/StructureDefinition/HealthcareServiceDirectory"
+
+    FhirReference:
+      description: "Reference to another Fhirresource"
+      type: object
+      required:
+        - reference
+      properties:
+        reference:
+          type: string
+          description: "ResourceType and followed by ID of the other reference divided by '/'"
+          example: "Organization/681b6c9f-a9d1-4dea-937c-4e4cf70b1f31"
+
+    FhirResourceType:
+      type: string
+      description: "Name of resourceType"
+      example: "HealthcareService"
+      enum: [ HealthcareService, Organization, Location, Endpoint, Practitioner, PractitionerRole ]
+
+    FhirSearch:
+      description: "Description of search type"
+      type: object
+      properties:
+        mode:
+          type: string
+          example: "match"
+
+    FhirSearchResult:
+      description: "A FHIR Bundle containing search results"
+      type: object
+      required:
+        - total
+        - entry
+      properties:
+        resourceType:
+          type: string
+          example: "Bundle"
+        id:
+          type: string
+          example: "b2d4770f-2e18-4284-za6d-cb8463e5ea70"
+        meta:
+          $ref: "#/components/schemas/FhirMeta"
+        type:
+          type: string
+        total:
+          type: integer
+          example: 2
+          minimum: 0
+          maximum: 100
+          format: int64
+          description: "Number of all found entries"
+        entry:
+          type: array
+          items:
+            $ref: "#/components/schemas/FhirEntry"
+
+    FhirTag:
+      description: "Tag for resource"
+      properties:
+        system:
+          type: string
+          example: "https://gematik.de/fhir/directory/CodeSystem/Origin"
+        code:
+          type: string
+          description: "Code identifier for tag"
+          example: "ldap"
+        display:
+          type: string
+          description: "What should be displayed for this tag"
+          example: "Synchronized from LDAP VZD"
+        userSelected:
+          type: boolean
+          example: true
+
+    FhirTelecom:
+      description: "Coding object"
+      type: object
+      properties:
+        system:
+          type: string
+          example: "phone"
+          description: "one of phone | fax | email | pager | url | sms | other"
+        value:
+          type: string
+          example: "030-606 06 60"
+          description: "The actual value"
+        use:
+          type: string
+          example: "work"
+          description: "home | work | temp | old | mobile - purpose of this contact point"
+
+    FhirText:
+      description: "Object of text"
+      type: object
+      properties:
+        status:
+          type: string
+          example: "generated"
+        div:
+          type: string
+          example: "This is a sync generated HealthcareService"
+
+    FhirType:
+      type: object
+      properties:
+        coding:
+          type: array
+          items:
+            $ref: "#/components/schemas/FhirCoding"
+
+    HomeserverSearchResult:
+      description: "A flat description of an endpoint with belonging healthcare-service and organization"
+      readOnly: true
+      type: object
+      required:
+        - mxId
+      properties:
+        mxId:
+          description: "The Matrix-ID of an account"
+          type: string
+          example: "@someone:gematik.de"
+        displayName:
+          description: "The displayName"
+          type: string
+          example: "some name"
+
+    HomeserverSearchResultList:
+      description: "The result for a search request for on homeserver"
+      readOnly: true
+      type: object
+      required:
+        - totalSearchResults
+        - searchResults
+      properties:
+        totalSearchResults:
+          description: "Total result count for this search. The number of entries in searchResults may be less or equal this number."
+          type: integer
+          example: 42
+        searchResults:
+          description: "The list of search results. Its size May be smaller than totalSearchResults, if there are many results."
+          type: array
+          items:
+            $ref: "#/components/schemas/HomeserverSearchResult"
+
+    InfoObject:
+      description: ""
+      required:
+        - title
+        - clientInfo
+        - fachdienstInfo
+        - testDriverVersion
+        - homeserver
+        - contact
+        - description
+      readOnly: true
+      type: object
+      properties:
+        title:
+          type: string
+          description: "Der Titel der Anwendung"
+          example: "Test-Schnittstelle des TI-Messenger Clients"
+        description:
+          type: string
+          description: "Eine kurze Beschreibung der Anwendung"
+          example: "TI-Messenger-Client Test-Schnittstelle"
+        termsOfService:
+          type: string
+          format: uri
+          description: "Eine URL zu den Terms of Service für dieses API."
+          example: "https://example.com/terms/"
+        homeserver:
+          type: string
+          description: "Name des zuständigen Homeservers"
+          example: "gematik.de"
+        contact:
+          $ref: "#/components/schemas/ContactInfo"
+        clientInfo:
+          $ref: "#/components/schemas/ClientSoftwareInfo"
+        fachdienstInfo:
+          $ref: "#/components/schemas/SoftwareInfo"
+        testDriverVersion:
+          type: string
+          description: "Version of the implemented TiMessengerTestDriver"
+          example: "1.0.0"
 
     Login:
       description: "Login data"
@@ -2522,41 +3111,6 @@ components:
       properties:
         authStage:
           $ref: "#/components/schemas/AuthStageName"
-
-    Account:
-      description: "General information of an account"
-      readOnly: true
-      type: object
-      allOf:
-        - $ref: "#/components/schemas/MxId"
-      required:
-        - username
-        - password
-        - displayName
-      properties:
-        username:
-          type: string
-          description: "Username that can be used to login to this account"
-          example: "ThomasMueller"
-        password:
-          type: string
-          description: "Password that can be used to login to this account"
-          example: "SafePassword123"
-        displayName:
-          type: string
-          description: "The displayName"
-          example: "some name"
-
-    MxId:
-      description: "The Matrix-ID of an account"
-      type: object
-      required:
-        - mxid
-      properties:
-        mxid:
-          description: "The Matrix-ID of an account"
-          type: string
-          example: "@someone:gematik.de"
 
     matrixKeyInfo:
       description: "Information about recoveryKey"
@@ -2569,11 +3123,14 @@ components:
           description: "The actual key"
           example: "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 
-    Messages:
-      description: "A list of messages and its properties"
-      type: array
-      items:
-        $ref: "#/components/schemas/Message"
+    MediaFileId:
+      description: "A unique id to a previously uploaded file. For example an UUID."
+      required:
+        - fileId
+      properties:
+        fileId:
+          type: string
+          example: "74738ff5-5367-5958-9aee-98fffdcd1876"
 
     Message:
       description: "A message and its metadata"
@@ -2634,48 +3191,40 @@ components:
               description: "Size of the file in bytes."
               example: 123456
 
-    MediaFileId:
-      description: "A unique id to a previously uploaded file. For example an UUID."
-      required:
-        - fileId
-      properties:
-        fileId:
-          type: string
-          example: "74738ff5-5367-5958-9aee-98fffdcd1876"
+    Messages:
+      description: "A list of messages and its properties"
+      type: array
+      items:
+        $ref: "#/components/schemas/Message"
 
-    DirectMessage:
-      description: "A direct message to an other account."
+    MxId:
+      description: "The Matrix-ID of an account"
+      type: object
+      required:
+        - mxid
+      properties:
+        mxid:
+          description: "The Matrix-ID of an account"
+          type: string
+          example: "@someone:gematik.de"
+
+    OperatingSystem:
+      description: "Enum of possible operating systems"
+      type: string
+      enum: [ Windows, OSx, iOS, Android, Linux ]
+
+    OsInfo:
+      description: "General information about the underlying operating system"
+      required:
+        - operatingSystem
       type: object
       properties:
-        toAccount:
+        operatingSystem:
+          $ref: "#/components/schemas/OperatingSystem"
+        version:
+          description: "Version of the OS"
+          example: "1.0.0"
           type: string
-          description: "The recipients account ID. Can be the mxId or an other account id returned by the searchInFhirDirectory operations."
-          example: "@someone:gematik.de"
-      allOf:
-        - $ref: "#/components/schemas/MessageContent"
-
-    Rooms:
-      description: "List of rooms and their properties"
-      type: array
-      items:
-        $ref: "#/components/schemas/Room"
-
-    RoomInvite:
-      description: "List of accounts to invite into a room"
-      type: array
-      items:
-        $ref: "#/components/schemas/MxId"
-
-    CreateRoomRequest:
-      description: "Information for a new room"
-      allOf:
-        - $ref: "#/components/schemas/RoomProperties"
-      properties:
-        invitedMembers:
-          description: "List of accounts to invite into the new room"
-          type: array
-          items:
-            $ref: "#/components/schemas/MxId"
 
     Room:
       description: "Information about a room and its members"
@@ -2685,6 +3234,43 @@ components:
       allOf:
         - $ref: "#/components/schemas/RoomProperties"
         - $ref: "#/components/schemas/RoomMembers"
+
+    RoomInvite:
+      description: "List of accounts to invite into a room"
+      type: array
+      items:
+        $ref: "#/components/schemas/MxId"
+
+    RoomMember:
+      description: ""
+      type: object
+      required:
+        - mxid
+        - membershipState
+      properties:
+        mxid:
+          description: "MxId as identifier, refers to an existing account"
+          type: string
+          example: "@someone:gematik.de"
+        membershipState:
+          $ref: "#/components/schemas/RoomMembershipState"
+
+    RoomMembers:
+      description: "List of room associated accounts and their states"
+      type: object
+      required:
+        - members
+      properties:
+        members:
+          type: array
+          description: "Associated accounts of the room and their states"
+          items:
+            $ref: "#/components/schemas/RoomMember"
+
+    RoomMembershipState:
+      description: "Membership state of an account for a room"
+      type: string
+      enum: [ knock, invite, join, ban, leave ]
 
     RoomProperties:
       description: "Some general properties of a room"
@@ -2716,37 +3302,6 @@ components:
           type: string
           description: "The room version"
           example: "10"
-
-    RoomMembershipState:
-      description: "Membership state of an account for a room"
-      type: string
-      enum: [ knock, invite, join, ban, leave ]
-
-    RoomMember:
-      description: ""
-      type: object
-      required:
-        - mxid
-        - membershipState
-      properties:
-        mxid:
-          description: "MxId as identifier, refers to an existing account"
-          type: string
-          example: "@someone:gematik.de"
-        membershipState:
-          $ref: "#/components/schemas/RoomMembershipState"
-
-    RoomMembers:
-      description: "List of room associated accounts and their states"
-      type: object
-      required:
-        - members
-      properties:
-        members:
-          type: array
-          description: "Associated accounts of the room and their states"
-          items:
-            $ref: "#/components/schemas/RoomMember"
 
     RoomState:
       description: "Description of a room state event"
@@ -2788,594 +3343,50 @@ components:
       items:
         $ref: "#/components/schemas/RoomState"
 
-    Contact:
-      description: "Contact settings"
-      type: object
-      properties:
-        mxid:
-          type: string
-          description: "ID of the contact (mxid)"
-          example: "@someone:gematik.de"
-        inviteSettings:
-          type: object
-          properties:
-            start:
-              type: integer
-              minimum: 0
-              format: int64
-              description: "start (Epoch Unix Timestamp, SECONDS SINCE JAN 01 1970. (UTC))"
-              example: 1654159585
-            end:
-              type: integer
-              minimum: 0
-              format: int64
-              description: "end  (Epoch Unix Timestamp, SECONDS SINCE JAN 01 1970. (UTC))"
-              example: 1654169585
-          required:
-            - start
-          description: "Invites from the mxid are granted between start and end date-time"
-      required:
-        - mxid
-        - inviteSettings
+    Rooms:
+      description: "List of rooms and their properties"
+      type: array
+      items:
+        $ref: "#/components/schemas/Room"
 
-    Contacts:
-      description: "The list of contacts and their settings"
-      type: object
-      properties:
-        contacts:
-          description: "The list of contacts and their settings"
-          type: array
-          items:
-            $ref: "#/components/schemas/Contact"
-          readOnly: true
-
-    HomeserverSearchResultList:
-      description: "The result for a search request for on homeserver"
-      readOnly: true
-      type: object
-      required:
-        - totalSearchResults
-        - searchResults
-      properties:
-        totalSearchResults:
-          description: "Total result count for this search. The number of entries in searchResults may be less or equal this number."
-          type: integer
-          example: 42
-        searchResults:
-          description: "The list of search results. Its size May be smaller than totalSearchResults, if there are many results."
-          type: array
-          items:
-            $ref: "#/components/schemas/HomeserverSearchResult"
-
-    HomeserverSearchResult:
-      description: "A flat description of an endpoint with belonging healthcare-service and organization"
-      readOnly: true
-      type: object
-      required:
-        - mxId
-      properties:
-        mxId:
-          description: "The Matrix-ID of an account"
-          type: string
-          example: "@someone:gematik.de"
-        displayName:
-          description: "The displayName"
-          type: string
-          example: "some name"
-
-    AuthorizationMode:
-      description: "Information about the client authorization mode"
-      type: object
-
-      required:
-        - AuthorizationType
-      properties:
-        authorizationType:
-          $ref: "#/components/schemas/AuthorizationType"
-
-    AuthorizationType:
-      type: string
-      description: "Type of authorization"
-      example: "AllowAll"
-      enum: [ AllowAll, BlockAll ]
-
-    AuthorizationList:
-      description: "The list of entries in authorization list"
-      type: object
-      properties:
-        mxids:
-          description: "The list of mxids"
-          type: array
-          items:
-            $ref: "#/components/schemas/MxId"
-        domains:
-          description: "The list of domains"
-          type: array
-          items:
-            $ref: "#/components/schemas/Domain"
-
-    Domain:
-      description: "A Matrix-Domain"
-      type: object
-      required:
-        - domain
-      properties:
-        domain:
-          description: "The Matrix-Domain"
-          type: string
-          example: ":matrix.org"
-
-    FhirSearchResult:
-      description: "A FHIR Bundle containing search results"
-      type: object
-      required:
-        - total
-        - entry
-      properties:
-        resourceType:
-          type: string
-          example: "Bundle"
-        id:
-          type: string
-          example: "b2d4770f-2e18-4284-za6d-cb8463e5ea70"
-        meta:
-          $ref: "#/components/schemas/FhirMeta"
-        type:
-          type: string
-        total:
-          type: integer
-          example: 2
-          minimum: 0
-          maximum: 100
-          format: int64
-          description: "Number of all found entries"
-        entry:
-          type: array
-          items:
-            $ref: "#/components/schemas/FhirEntry"
-
-    FhirMeta:
-      description: "Metadata of resource"
-      type: object
-      properties:
-        lastUpdated:
-          type: string
-          format: date-time
-          description: "Time when the depending resource was last updated"
-          example: 2022-04-01T08:30:00Z
-        versionId:
-          type: integer
-          description: "How many times this resource have been updated"
-          example: 2
-        source:
-          type: string
-        profile:
-          type: array
-          items:
-            $ref: "#/components/schemas/FhirProfile"
-        tag:
-          type: array
-          items:
-            $ref: "#/components/schemas/FhirTag"
-
-    FhirTag:
-      description: "Tag for resource"
-      properties:
-        system:
-          type: string
-          example: "https://gematik.de/fhir/directory/CodeSystem/Origin"
-        code:
-          type: string
-          description: "Code identifier for tag"
-          example: "ldap"
-        display:
-          type: string
-          description: "What should be displayed for this tag"
-          example: "Synchronized from LDAP VZD"
-        userSelected:
-          type: boolean
-          example: true
-
-    FhirProfile:
-      description: "Url to FHIR profile of the resource"
-      type: string
-      example: "https://gematik.de/fhir/directory/StructureDefinition/HealthcareServiceDirectory"
-
-    FhirEntry:
-      description: "FhirSearchEntry"
-      type: object
-      required:
-        - resource
-      properties:
-        fullUrl:
-          type: string
-          description: "The full URL to the resource"
-          example: "https://fhir-directory-ref.vzd.ti-dienste.de/owner/HealthcareService/97563406-5836-475d-9ee6-48e02917dae2"
-        resource:
-          $ref: "#/components/schemas/FhirBaseResource"
-        search:
-          $ref: "#/components/schemas/FhirSearch"
-
-    FhirBaseResource:
-      type: object
-      description: "FhirBaseResource"
-      discriminator:
-        propertyName: resourceType
-        mapping:
-          Organization: "#/components/schemas/FhirOrganization"
-          HealthcareService: "#/components/schemas/FhirHealthcareService"
-          PractitionerRole: "#/components/schemas/FhirPractitionerRole"
-          Location: "#/components/schemas/FhirLocation"
-          Endpoint: "#/components/schemas/FhirEndpoint"
-          Practitioner: "#/components/schemas/FhirPractitioner"
-      required:
-        - resourceType
-      properties:
-        resourceType:
-          $ref: "#/components/schemas/FhirResourceType"
-        id:
-          type: string
-          description: "UUID of resource"
-          example: "97563406-5836-475d-9ee6-48e02917dae2"
-        meta:
-          $ref: "#/components/schemas/FhirMeta"
-        text:
-          $ref: "#/components/schemas/FhirText"
-        identifier:
-          type: array
-          items:
-            $ref: "#/components/schemas/FhirIdentifier"
-
-    FhirResourceType:
-      type: string
-      description: "Name of resourceType"
-      example: "HealthcareService"
-      enum: [ HealthcareService, Organization, Location, Endpoint, Practitioner, PractitionerRole ]
-
-    FhirHealthcareService:
-      allOf:
-        - $ref: "#/components/schemas/FhirBaseResource"
-      type: object
-      properties:
-        name:
-          type: string
-          description: "Name of the resource"
-          example: "Surgery station"
-        providedBy:
-          $ref: "#/components/schemas/FhirReference"
-        location:
-          type: array
-          items:
-            $ref: "#/components/schemas/FhirReference"
-        telecom:
-          type: array
-          items:
-            $ref: "#/components/schemas/FhirTelecom"
-        endpoint:
-          type: array
-          items:
-            $ref: "#/components/schemas/FhirReference"
-        serviceProvisionCode:
-          type: array
-          items:
-            $ref: "#/components/schemas/FhirCodeableConcept"
-        communication:
-          type: array
-          items:
-            $ref: "#/components/schemas/FhirCodeableConcept"
-        appointmentRequired:
-          type: boolean
-          description: "Is an appointment mandatory"
-        availableTime:
-          type: array
-          items:
-            $ref: "#/components/schemas/FhirAvailableTimes"
-        availabilityExceptions:
-          type: string
-          description: ""
-          example: "Closed on Friday 3.14.15926"
-
-    FhirOrganization:
-      allOf:
-        - $ref: "#/components/schemas/FhirBaseResource"
-      type: object
-      properties:
-        name:
-          type: string
-          description: "Name of the resource"
-          example: "Surgery station"
-        active:
-          type: boolean
-          description: "Is resource active"
-        type:
-          type: array
-          items:
-            $ref: "#/components/schemas/FhirType"
-        alias:
-          type: array
-          items:
-            type: string
-
-    FhirPractitionerRole:
-      allOf:
-        - $ref: "#/components/schemas/FhirBaseResource"
-      type: object
-      required:
-        - practitioner
-      properties:
-        practitioner:
-          $ref: "#/components/schemas/FhirReference"
-        location:
-          type: array
-          items:
-            $ref: "#/components/schemas/FhirReference"
-        endpoint:
-          type: array
-          items:
-            $ref: "#/components/schemas/FhirReference"
-
-    FhirLocation:
-      allOf:
-        - $ref: "#/components/schemas/FhirBaseResource"
-      type: object
-      properties:
-        name:
-          type: string
-          description: "Name of the resource"
-          example: "Surgery station"
-        address:
-          $ref: "#/components/schemas/FhirAddress"
-
-    FhirEndpoint:
-      allOf:
-        - $ref: "#/components/schemas/FhirBaseResource"
-      type: object
+    SoftwareInfo:
+      description: "General information about the software"
       required:
         - name
-        - address
+        - version
+      type: object
       properties:
         name:
           type: string
-          description: "Name of the resource"
-          example: "Surgery station"
-        managingOrganization:
+          description: "Name of the provided software"
+          example: "TI-Messenger-Software"
+        description:
+          description: "A short description of the provided software"
+          example: "The TI-Messenger-Software is an implementation of the TI-Messenger specification."
           type: string
-          description: "Name of managing organization"
-          example: "Charite Berlin"
-        status:
+        version:
+          description: "The version of the software"
+          example: "1.0.0"
           type: string
-          description: "Status of the resource"
-          example: "active"
-          enum: [ active, suspended, "off" ]
-        address:
-          description: "For endpoint in tim context the mxid in uri scheme"
+        osInfo:
+          $ref: "#/components/schemas/OsInfo"
+        applicationType:
+          $ref: "#/components/schemas/ApplicationType"
+        contact:
+          $ref: "#/components/schemas/ContactInfo"
+        matrixVersion:
           type: string
-          example: "matrix:u/test:gematik.de"
-        connectionType:
-          $ref: "#/components/schemas/FhirConnectionType"
-        payloadType:
-          type: array
-          items:
-            $ref: "#/components/schemas/FhirCodeableConcept"
-
-    FhirPractitioner:
-      allOf:
-        - $ref: "#/components/schemas/FhirBaseResource"
-      type: object
-      properties:
-        active:
-          type: boolean
-          description: "Is resource active"
-        name:
-          type: array
-          items:
-            $ref: "#/components/schemas/FhirName"
-        telecom:
-          type: array
-          items:
-            $ref: '#/components/schemas/FhirTelecom'
-
-    FhirAvailableTimes:
-      type: object
-      description: "Summary of available times"
-      properties:
-        daysOfWeek:
-          type: array
-          description: "Short term of day"
-          example: [ "mon", "tue", "wed" ]
-          items:
-            type: string
-        availableStartTime:
-          type: string
-          description: "Start time"
-          example: "08:00:00"
-        availableEndTime:
-          type: string
-          description: "Start time"
-          example: "18:00:00"
-
-    FhirAddress:
-      type: object
-      description: "Possible address"
-      properties:
-        use:
-          type: string
-          description: "For what should this address be used"
-          example: "work"
-        type:
-          type: string
-          description: "Describes what kind of address is it"
-          example: "postal"
-        text:
-          type: string
-          description: "Full address in one text"
-          example: "Müllersteige 38 74626 Bretzfeld Baden-Württemberg DE"
-        line:
-          type: array
-          example: [ "Müllersteige 38" ]
-          description: "Multiple address lines"
-          items:
-            type: string
-        city:
-          type: string
-          description: "City of address"
-          example: "Bretzfeld"
-        state:
-          type: string
-          description: "State of address"
-          example: "Baden-Württemberg"
-        postalCode:
-          type: string
-          description: "Postal code of address"
-          example: "74626"
-        country:
-          type: string
-          description: "Country code of address"
-          example: "DE"
-
-    FhirSearch:
-      description: "Description of search type"
-      type: object
-      properties:
-        mode:
-          type: string
-          example: "match"
-
-    FhirReference:
-      description: "Reference to another Fhirresource"
-      type: object
-      required:
-        - reference
-      properties:
-        reference:
-          type: string
-          description: "ResourceType and followed by ID of the other reference divided by '/'"
-          example: "Organization/681b6c9f-a9d1-4dea-937c-4e4cf70b1f31"
-
-    FhirText:
-      description: "Object of text"
-      type: object
-      properties:
-        status:
-          type: string
-          example: "generated"
-        div:
-          type: string
-          example: "This is a sync generated HealthcareService"
-
-    FhirIdentifier:
-      description: "Object of text"
-      type: object
-      properties:
-        system:
-          type: string
-          example: "https://gematik.de/fhir/directory/CodeSystem/ldapUID"
-        value:
-          type: string
-          example: "681b6c9f-a9d1-4dea-937c-4e4cf70b1f31"
-        type:
-          $ref: "#/components/schemas/FhirType"
-
-    FhirType:
-      type: object
-      properties:
-        coding:
-          type: array
-          items:
-            $ref: "#/components/schemas/FhirCoding"
-
-    FhirCodeableConcept:
-      description: "Coding object"
-      type: object
-      properties:
-        coding:
-          type: array
-          items:
-            $ref: "#/components/schemas/FhirCoding"
-        text:
-          type: string
-          description: "Plain text representation of the concept"
-
-    FhirCoding:
-      description: "Coding object"
-      type: object
-      properties:
-        system:
-          type: string
-          example: "http://terminology.hl7.org/CodeSystem/v2-0203"
-        code:
-          type: string
-          example: "PRN"
-        display:
-          type: string
-          example: "TI-Messenger chat"
-
-    FhirTelecom:
-      description: "Coding object"
-      type: object
-      properties:
-        system:
-          type: string
-          example: "phone"
-          description: "one of phone | fax | email | pager | url | sms | other"
-        value:
-          type: string
-          example: "030-606 06 60"
-          description: "The actual value"
-        use:
-          type: string
-          example: "work"
-          description: "home | work | temp | old | mobile - purpose of this contact point"
-
-    FhirConnectionType:
-      type: object
-      properties:
-        system:
-          type: string
-          example: "https://gematik.de/fhir/directory/CodeSystem/EndpointDirectoryConnectionType"
-        code:
-          type: string
-          example: "tim"
-
-    FhirName:
-      type: object
-      description: "Personal data of practitioner"
-      required:
-        - text
-      properties:
-        use:
-          example: "usual"
-          description: "Use of the name"
-          type: string
-        text:
-          example: "Kersta Hoefler"
-          description: "Full Name"
-          type: string
-        family:
-          example: "Hoefler"
-          description: "Last name"
-          type: string
-        given:
-          type: array
-          items:
-            type: string
-          description: "First names"
-          example: [ "Kersta" ]
-        prefix:
-          type: array
-          items:
-            type: string
-          description: "Title and other prefixes"
-          example: [ "Dr.", "Prof." ]
+          example: "1.3"
+          description: Implemented version of matrix protocol https://spec.matrix.org/latest/
 
 
 
-    # Mutual TLS is used for authentication of clients. In openAPI 3.0.x is mTLS not supported. Therefore the security scheme is not used.
-    #  securitySchemes:
-    #    mTLS:
-    #      type: mutualTLS
-    #
-    #
-    #security:
-    #  - mTLS:
-    #
+  # Mutual TLS is used for authentication of clients. In openAPI 3.0.x is mTLS not supported. Therefore the security scheme is not used.
+  #  securitySchemes:
+  #    mTLS:
+  #      type: mutualTLS
+  #
+  #
+  #security:
+  #  - mTLS:
+  #
