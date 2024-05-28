@@ -6,7 +6,21 @@
 
 - - -
 
+## Release 1.2.1
+
+### Features
+
+- Adds new client kind 'insurant' in preparation for ePa test cases
+
+### Changes
+
+- Additional data will be written into the report directory (additional-data)
+- new serenityReportsFolderPath ${basedir}/reports/${build.time}/report
+- test driver API: adds missing transactionIds, required name field for FhirHealthcareService and sorts schemas
+
 ## Release 1.2.0
+
+### Changes
 
 - Moves test driver API from api-ti-messenger repository into TI-Messenger-Testsuite repository under
   src/main/resources/api/TiMessengerTestTreiber.yaml
@@ -17,6 +31,8 @@
 - Updates internal dependencies
 
 ## Release 1.1.0
+
+### Changes
 
 - Adds new test step for healthcare service search by name
 - New folder structure in src/test/resources/templates/FeatureFiles
