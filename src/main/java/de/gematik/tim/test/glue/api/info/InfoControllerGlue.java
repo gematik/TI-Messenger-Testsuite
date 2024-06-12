@@ -18,6 +18,7 @@ package de.gematik.tim.test.glue.api.info;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HOME_SERVER;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MATRIX_CLIENT_VERSION;
+import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_INFO;
 import static de.gematik.tim.test.glue.api.info.ApiInfoQuestion.apiInfo;
 import static de.gematik.tim.test.glue.api.info.SupportedMatrixVersionQuestion.matrixSupportedServerVersion;
@@ -28,6 +29,7 @@ import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeT
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.not;
+import static org.springframework.http.HttpStatus.OK;
 
 import io.cucumber.java.de.Angenommen;
 import io.cucumber.java.de.Dann;
@@ -35,10 +37,9 @@ import io.cucumber.java.de.Wenn;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import java.util.List;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
-
-import java.util.List;
 
 public class InfoControllerGlue {
 
@@ -51,15 +52,19 @@ public class InfoControllerGlue {
   @Then("test driver information is returned to {string}")
   @Dann("werden Informationen über den Testtreiber an {string} zurückgegeben")
   public void returnsAppInfo(String actorName) {
-    theActorCalled(actorName).should(seeThatResponse("check application info is not empty",
-        res -> res.statusCode(200)
-            .body("title", not(emptyOrNullString()))
-            .body("description", not(emptyOrNullString()))
-            .body("contact", not(emptyOrNullString()))
-            .body("clientInfo.version", not(emptyOrNullString()))
-            .body("fachdienstInfo.version", not(emptyOrNullString()))
-            .body("testDriverVersion", not(emptyOrNullString()))
-    ));
+    checkResponseCode(actorName, OK.value());
+    theActorCalled(actorName)
+        .should(
+            seeThatResponse(
+                "check application info is not empty",
+                res ->
+                    res.statusCode(200)
+                        .body("title", not(emptyOrNullString()))
+                        .body("description", not(emptyOrNullString()))
+                        .body("contact", not(emptyOrNullString()))
+                        .body("clientInfo.version", not(emptyOrNullString()))
+                        .body("fachdienstInfo.version", not(emptyOrNullString()))
+                        .body("testDriverVersion", not(emptyOrNullString()))));
   }
 
   @Given("{word} request Home-Server-Address at api {word}")
@@ -82,8 +87,10 @@ public class InfoControllerGlue {
   @Then("no version is higher than {string}")
   @Dann("ist keine unterstützte Version über {string}")
   public void noVersionIsHigherThan(String highestVersion) {
-    SupportedMatrixVersionInfo supportedMatrixVersionInfo = theActorInTheSpotlight().recall(MATRIX_CLIENT_VERSION);
-    List<SemVersion> supportedVersions = supportedMatrixVersionInfo.versions().stream().map(SemVersion::new).toList();
+    SupportedMatrixVersionInfo supportedMatrixVersionInfo =
+        theActorInTheSpotlight().recall(MATRIX_CLIENT_VERSION);
+    List<SemVersion> supportedVersions =
+        supportedMatrixVersionInfo.versions().stream().map(SemVersion::new).toList();
     SemVersion maxVersion = new SemVersion(highestVersion);
     assertThat(supportedVersions.stream().anyMatch(version -> version.compareTo(maxVersion) > 0))
         .as("Found higher version than %s in %s", maxVersion, supportedVersions)

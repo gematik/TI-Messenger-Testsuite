@@ -236,13 +236,13 @@ public class GlueUtils {
       FhirSearchResultDTO result, FhirResourceTypeDTO type) {
     return switch (type) {
       case PRACTITIONER -> getResourcesFromSearchResult(result, type, FhirPractitionerDTO.class);
-      case PRACTITIONERROLE -> getResourcesFromSearchResult(
-          result, type, FhirPractitionerRoleDTO.class);
+      case PRACTITIONERROLE ->
+          getResourcesFromSearchResult(result, type, FhirPractitionerRoleDTO.class);
       case ORGANIZATION -> getResourcesFromSearchResult(result, type, FhirOrganizationDTO.class);
       case ENDPOINT -> getResourcesFromSearchResult(result, type, FhirEndpointDTO.class);
       case LOCATION -> getResourcesFromSearchResult(result, type, FhirLocationDTO.class);
-      case HEALTHCARESERVICE -> getResourcesFromSearchResult(
-          result, type, FhirHealthcareServiceDTO.class);
+      case HEALTHCARESERVICE ->
+          getResourcesFromSearchResult(result, type, FhirHealthcareServiceDTO.class);
     };
   }
 
@@ -329,7 +329,11 @@ public class GlueUtils {
   private static void checkIfAllActorsRelatedToRoomHaveCorrectMembershipState(RoomDTO room) {
     getAllActiveActors().stream()
         .filter(
-            actor -> nonNull(actor.recall(room.getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX)))
+            actor ->
+                actor.recall(room.getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX) != null
+                    && !actor
+                        .recall(room.getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX)
+                        .equals(RoomMembershipStateDTO.LEAVE))
         .forEach(
             actor -> {
               RoomMembershipStateDTO status =

@@ -16,11 +16,9 @@
 
 package de.gematik.tim.test.glue.api.login;
 
-import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
 import static de.gematik.tim.test.glue.api.devices.CheckClientKindTask.checkIs;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.CLIENT;
-import static de.gematik.tim.test.glue.api.devices.ClientKind.ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.PRACTITIONER;
 import static de.gematik.tim.test.glue.api.login.LoginTask.login;
 import static de.gematik.tim.test.glue.api.login.LogoutTask.logout;
@@ -35,9 +33,8 @@ import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Wenn;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import net.serenitybdd.screenplay.Actor;
-
 import java.util.List;
+import net.serenitybdd.screenplay.Actor;
 
 public class LoginGlue {
 
@@ -50,7 +47,7 @@ public class LoginGlue {
 
   public static void logsIn(Actor actor) {
     login().withActor(actor).run();
-    checkResponseCode(actor, OK.value());
+    checkResponseCode(actor.getName(), OK.value());
   }
 
   @Then("registration successful for {string}")
@@ -62,7 +59,7 @@ public class LoginGlue {
   }
 
   public static void loginSuccess(Actor actor) {
-    checkResponseCode(actor, OK.value());
+    checkResponseCode(actor.getName(), OK.value());
   }
 
   @Then("registration failed for {string}")
@@ -92,15 +89,5 @@ public class LoginGlue {
     Actor actor = theActorCalled(actorName);
     logsIn(actor);
     checkIs(List.of(CLIENT)).withActor(actor).run();
-  }
-
-  @When("{string} logs in as OrgAdmin")
-  @Wenn("{string} sich als OrgAdmin einloggt")
-  public void sichAlsOrgAdminRegistriert(String actorName) {
-    Actor actor = theActorCalled(actorName);
-    actor.remember(IS_ORG_ADMIN, true);
-    theActorCalled(actorName).attemptsTo(login().withoutClearingRooms());
-    checkResponseCode(actorName, OK.value());
-    checkIs(List.of(ORG_ADMIN)).withActor(actor).run();
   }
 }

@@ -4,7 +4,19 @@
 
 ## Link to TI-Messenger-testsuite [`docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
 
-- - -
+## Release 1.3.0
+
+### Bugs
+
+- Fixes Testcase 0.05 which now correctly calls '/.well-known/matrix/client' instead of '/.well-known/matrix/server' to
+  get the server address (see https://github.com/gematik/TI-Messenger-Testsuite/issues/28)
+
+### Changes
+
+- Refactors some test to avoid an issue with miscounted tests in the Serenity report, no functional changes
+- Deleted feature files for OrgOnly tests
+- Deleted chapter 9.3 in testsuite.adoc
+- Membership status 'leave' will be treated the same as no status, even after room was forgotten
 
 ## Release 1.2.1
 
@@ -16,7 +28,9 @@
 
 - Additional data will be written into the report directory (additional-data)
 - new serenityReportsFolderPath ${basedir}/reports/${build.time}/report
+- change default test run
 - test driver API: adds missing transactionIds, required name field for FhirHealthcareService and sorts schemas
+- new default claim duration 600 sec
 
 ## Release 1.2.0
 

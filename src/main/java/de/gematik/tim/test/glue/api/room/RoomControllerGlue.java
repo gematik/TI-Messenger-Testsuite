@@ -50,6 +50,7 @@ import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.glue.api.room.questions.RoomStates;
 import de.gematik.tim.test.models.RoomDTO;
 import de.gematik.tim.test.models.RoomMemberDTO;
+import de.gematik.tim.test.models.RoomMembershipStateDTO;
 import de.gematik.tim.test.models.RoomStateDTO;
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Und;
@@ -290,6 +291,7 @@ public class RoomControllerGlue {
     Optional<RoomMemberDTO> otherMemberInRoom =
         room.getMembers().stream()
             .filter(member -> !member.getMxid().equals(actor.recall(MX_ID)))
+            .filter(member -> !member.getMembershipState().equals(RoomMembershipStateDTO.LEAVE))
             .findFirst();
     if (otherMemberInRoom.isPresent()) {
       List<Actor> otherActorsInRoom =
@@ -300,6 +302,7 @@ public class RoomControllerGlue {
                 "Mxid <%s> not known in room <%s>",
                 otherMemberInRoom.get().getMxid(), room.getName()));
       }
+
       RoomDTO updatedRoom =
           otherActorsInRoom
               .get(0)

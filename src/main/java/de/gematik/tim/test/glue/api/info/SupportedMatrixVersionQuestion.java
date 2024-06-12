@@ -18,7 +18,7 @@ package de.gematik.tim.test.glue.api.info;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MATRIX_CLIENT_VERSION;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_SUPPORTED_VERSIONS;
-import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_WELL_KNOWN_MATRIX_SERVER;
+import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_WELL_KNOWN_HOMESERVER;
 import static de.gematik.tim.test.glue.api.utils.IndividualLogger.individualLog;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
@@ -38,19 +38,26 @@ public class SupportedMatrixVersionQuestion implements Question<SupportedMatrixV
   @Override
   @SneakyThrows
   public SupportedMatrixVersionInfo answeredBy(Actor actor) {
-    actor.attemptsTo(GET_WELL_KNOWN_MATRIX_SERVER.request());
+    actor.attemptsTo(GET_WELL_KNOWN_HOMESERVER.request());
     if (HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful()) {
-      String url = lastResponse().jsonPath().getString("'m.server'");
+      String url = lastResponse().jsonPath().getString("'m.homeserver'.base_url");
       if (!url.startsWith("http://") && !url.startsWith("https://")) {
         url = "https://" + url;
+      }
+      if (url.endsWith("/")) {
+        url = url.substring(0, url.length() - 1);
       }
       actor.can(CallAnApi.at(url));
     }
     actor.attemptsTo(GET_SUPPORTED_VERSIONS.request());
 
-    SupportedMatrixVersionInfo supportedMatrixVersionInfo = parseResponse(SupportedMatrixVersionInfo.class);
+    SupportedMatrixVersionInfo supportedMatrixVersionInfo =
+        parseResponse(SupportedMatrixVersionInfo.class);
     actor.remember(MATRIX_CLIENT_VERSION, supportedMatrixVersionInfo);
-    individualLog("supportedMatrixVersion", actor.abilityTo(CallAnApi.class).resolve(""), supportedMatrixVersionInfo);
+    individualLog(
+        "supportedMatrixVersion",
+        actor.abilityTo(CallAnApi.class).resolve(""),
+        supportedMatrixVersionInfo);
     return supportedMatrixVersionInfo;
   }
 }

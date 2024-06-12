@@ -27,7 +27,9 @@ import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
-import de.gematik.tim.test.glue.api.exceptions.RequestedRessourceNotAvailable;
+import de.gematik.tim.test.glue.api.exceptions.RequestedResourceNotAvailable;
+import de.gematik.tim.test.glue.api.exceptions.TestRunException;
+import de.gematik.tim.test.glue.api.teardown.TeardownException;
 import de.gematik.tim.test.models.FhirBaseResourceDTO;
 import de.gematik.tim.test.models.FhirSearchResultDTO;
 import java.time.Duration;
@@ -73,7 +75,7 @@ public class RequestResponseUtils {
           .get()
           .orElseThrow(
               () ->
-                  new ConditionTimeoutException(
+                  new TestRunException(
                       format("Asked for %s, but could not be found", resourceType)));
     }
     return await()
@@ -84,7 +86,7 @@ public class RequestResponseUtils {
         .until(request::get, Optional::isPresent)
         .orElseThrow(
             () ->
-                new RequestedRessourceNotAvailable(
+                new RequestedResourceNotAvailable(
                     format("Asked for %s, but could not be found", resourceType)));
   }
 
@@ -96,7 +98,7 @@ public class RequestResponseUtils {
     }
     if (customTimeout <= 1 || RUN_WITHOUT_RETRY) {
       if (!request.getAsBoolean()) {
-        throw new ConditionTimeoutException("Expected no result, but a result was found");
+        throw new TestRunException("Expected no result, but a result was found");
       }
     } else {
       await()
@@ -116,12 +118,10 @@ public class RequestResponseUtils {
           .get()
           .orElseThrow(
               () ->
-                  new ConditionTimeoutException(
+                  new TeardownException(
                       "Teardown failed for actor "
                           + actor.getName()
-                          + "! Looks like you have tried to delete a resource "
-                          + request.get().toString()
-                          + " that should not be available"));
+                          + "! Looks like you have tried to delete a resource that should not be available"));
       return;
     }
     try {
@@ -132,7 +132,7 @@ public class RequestResponseUtils {
           .pollInterval(Duration.of(5, SECONDS))
           .until(request::get, Optional::isPresent);
     } catch (ConditionTimeoutException ex) {
-      log.warn("Could not teardown correctly actor " + actor.getName() + "!");
+      log.warn("Could not teardown correctly actor {}!", actor.getName());
       addFailedActor(actor);
     }
   }
@@ -145,7 +145,7 @@ public class RequestResponseUtils {
       }
       return lastResponse().as(clazz);
     } catch (Exception e) {
-      log.error(e.getMessage());
+      log.error("Could not parse response: ", e);
       assertThat(false)
           .as(
               "Expected "
@@ -156,6 +156,6 @@ public class RequestResponseUtils {
                   + lastResponse().statusCode())
           .isTrue();
     }
-    throw new RequestedRessourceNotAvailable("This code should not be reached!");
+    throw new RequestedResourceNotAvailable("This code should not be reached!");
   }
 }

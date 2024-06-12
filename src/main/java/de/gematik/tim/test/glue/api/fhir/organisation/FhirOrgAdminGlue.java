@@ -48,22 +48,19 @@ import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getHs
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.removeInternalEndpointWithName;
 import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
 import static de.gematik.tim.test.models.FhirResourceTypeDTO.HEALTHCARESERVICE;
-import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorInTheSpotlight;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
+import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UseEndpointAbility;
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.HealthcareServiceInfo;
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility;
-import de.gematik.tim.test.glue.api.fhir.organisation.location.FhirGetLocationListQuestion;
 import de.gematik.tim.test.models.FhirEndpointDTO;
 import de.gematik.tim.test.models.FhirHealthcareServiceDTO;
 import de.gematik.tim.test.models.FhirLocationDTO;
@@ -116,7 +113,7 @@ public class FhirOrgAdminGlue {
 
     FhirSearchResultDTO searchResult =
         actor.asksFor(organizationEndpoints().withUniqueHsName(cutName));
-    checkResponseCode(actor, OK.value());
+    checkResponseCode(actor.getName(), OK.value());
     List<FhirHealthcareServiceDTO> healthcareServices =
         getResourcesFromSearchResult(
             searchResult, HEALTHCARESERVICE, FhirHealthcareServiceDTO.class);
@@ -335,9 +332,16 @@ public class FhirOrgAdminGlue {
   @Then("no location {string} for the healthcare service {string} exists")
   @Dann("existiert keine Location {string} für den Healthcare-Service {string}")
   public void noHealthcareServiceLocationWithName(String locationName, String hsName) {
-    FhirGetLocationListQuestion locationList =
-        getLocationList().filterForName(locationName).forHealthcareService(hsName);
-    theActorInTheSpotlight().should(seeThat(locationList, is(empty())));
+    List<FhirLocationDTO> locationList =
+        theActorInTheSpotlight()
+            .asksFor(getLocationList().filterForName(locationName).forHealthcareService(hsName));
+    if (locationList.isEmpty()) {
+      throw new TestRunException(
+          "No matching location found with name "
+              + locationName
+              + " and healthcare service "
+              + hsName);
+    }
   }
 
   @Then("no endpoint exists for {string} in the health-care-service {string}")

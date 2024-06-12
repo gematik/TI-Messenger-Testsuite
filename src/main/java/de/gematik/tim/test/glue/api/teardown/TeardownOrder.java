@@ -1,11 +1,11 @@
 /*
- * Copyright 2023 gematik GmbH
+ * Copyright 2024 gematik GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.gematik.tim.test.glue.api;
+package de.gematik.tim.test.glue.api.teardown;
 
 import de.gematik.tim.test.glue.api.contact.HasContactAbility;
 import de.gematik.tim.test.glue.api.devices.UseDeviceAbility;
@@ -24,11 +24,10 @@ import de.gematik.tim.test.glue.api.fhir.organisation.location.UseLocationAbilit
 import de.gematik.tim.test.glue.api.fhir.practitioner.CanDeleteOwnMxidAbility;
 import de.gematik.tim.test.glue.api.login.IsLoggedInAbility;
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
-import lombok.RequiredArgsConstructor;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum TeardownOrder {

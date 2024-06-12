@@ -16,44 +16,35 @@
 
 package de.gematik.tim.test.glue.api;
 
-import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
-import static net.serenitybdd.screenplay.actors.OnStage.theActorInTheSpotlight;
-import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
+import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.lessThan;
 
+import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.glue.api.threading.ParallelExecutor;
 import de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager;
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.en.Then;
-import net.serenitybdd.screenplay.Actor;
-import org.hamcrest.Matcher;
+import org.springframework.http.HttpStatus;
 
 public class GeneralStepsGlue {
 
-  private GeneralStepsGlue() {
-  }
+  private GeneralStepsGlue() {}
 
   @Then("{string} receives a response code {int}")
   @Dann("erhält {string} einen Responsecode {int}")
   public static void checkResponseCode(String actorName, int responseCode) {
-    checkResponseCode(theActorCalled(actorName), responseCode);
-  }
-
-  public static void checkResponseCode(Actor actor, int responseCode) {
     if (TestcasePropertiesManager.isRunningParallel()) {
-      assertThat(ParallelExecutor.getLastResponseCodeForActor(actor.getName())).isEqualTo(responseCode);
+      assertThat(ParallelExecutor.getLastResponseCodeForActor(actorName)).isEqualTo(responseCode);
     } else {
-      actor.should(seeThatResponse(res -> res.statusCode(responseCode)));
+      if (lastResponse().statusCode() != responseCode) {
+        throw new TestRunException("Operation returned error code " + lastResponse().statusCode());
+      }
     }
   }
 
-  @Then("the operation was successful")
-  @Dann("war die Operation erfolgreich")
   public static void checkResponseCode() {
-    Matcher<Integer> is2xx = allOf(greaterThanOrEqualTo(200), lessThan(300));
-    theActorInTheSpotlight().should(seeThatResponse(res -> res.statusCode(is2xx)));
+    if (!HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful()) {
+      throw new TestRunException("Operation returned error code " + lastResponse().statusCode());
+    }
   }
 }
