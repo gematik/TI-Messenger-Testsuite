@@ -28,7 +28,6 @@ import static de.gematik.tim.test.glue.api.utils.GlueUtils.assertCorrectEndpoint
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
 import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
-import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -53,12 +52,12 @@ public class FhirAdministrationGlue {
   @Wenn("{listOfStrings} hinterlegen ihre MXIDs im Verzeichnis Dienst")
   public void addToFhir(List<String> actorNames) {
     actorNames.forEach(
-        a -> {
-          Actor actor = theActorCalled(a);
+        actorName -> {
+          Actor actor = theActorCalled(actorName);
           actor.attemptsTo(authenticateOnFhirVzd());
-          actor.should(seeThatResponse("check status code", res -> res.statusCode(OK.value())));
+          checkResponseCode();
           actor.attemptsTo(setMxid());
-          checkResponseCode(a, CREATED.value());
+          checkResponseCode(actorName, CREATED.value());
         });
   }
 
@@ -68,10 +67,10 @@ public class FhirAdministrationGlue {
   @Dann("{listOfStrings} löschen ihre MXIDs im Verzeichnis Dienst")
   public void deleteFromFhir(List<String> actorNames) {
     actorNames.forEach(
-        a -> {
-          Actor actor = theActorCalled(a);
+        actorName -> {
+          Actor actor = theActorCalled(actorName);
           actor.attemptsTo(deleteMxidFromFhir());
-          checkResponseCode(a, NO_CONTENT.value());
+          checkResponseCode(actorName, NO_CONTENT.value());
           assertThat(((Response) actor.recall(LAST_RESPONSE)).getStatusCode())
               .isEqualTo(NO_CONTENT.value());
         });

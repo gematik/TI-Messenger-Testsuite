@@ -37,7 +37,7 @@ public final class TestdriverApiPath {
   public static final String MEDIA_ID_VARIABLE = "mediaId";
 
   public static final String INFO_PATH = "/";
-  public static final String WELL_KNOWN_SERVER_PATH = "/.well-known/matrix/server";
+  public static final String WELL_KNOWN_HOMESERVER_PATH = "/.well-known/matrix/client";
   public static final String SUPPORTED_VERSIONS_PATH = "/_matrix/client/versions";
 
   // DEVICE
@@ -86,7 +86,8 @@ public final class TestdriverApiPath {
   // FHIR ORG_ADMIN
   public static final String FHIR_SEARCH_ORG_PATH =
       FHIR_BASE_PATH + "/searchOrganizationInFhirDirectory";
-  public static final String FHIR_SEARCH_ENDPOINT_PATH = FHIR_BASE_PATH + "/searchHealthcareServiceEndpointInFhirDirectory";
+  public static final String FHIR_SEARCH_ENDPOINT_PATH =
+      FHIR_BASE_PATH + "/searchHealthcareServiceEndpointInFhirDirectory";
   public static final String FHIR_HEALTHCARE_SERVICE_PATH = FHIR_ORG_PATH + "/healthcareService";
   public static final String FHIR_HS_ADMIN_PATH =
       FHIR_HEALTHCARE_SERVICE_PATH + "/" + PATH_VARIABLE.formatted(HEALTHCARE_SERVICE_ID_VARIABLE);
@@ -98,7 +99,7 @@ public final class TestdriverApiPath {
   public static final String FHIR_LOCATION_ADMIN_PATH =
       FHIR_LOCATION_PATH + "/" + PATH_VARIABLE.formatted(LOCATION_ID_VARIABLE);
 
-  //CONTACT-MANAGEMENT
+  // CONTACT-MANAGEMENT
   public static final String CONTACT_PATH = DEVICE_ID_PATH + "/contacts";
   public static final String DELETE_CONTACT_PATH =
       CONTACT_PATH + "/" + PATH_VARIABLE.formatted(MXID_VARIABLE);

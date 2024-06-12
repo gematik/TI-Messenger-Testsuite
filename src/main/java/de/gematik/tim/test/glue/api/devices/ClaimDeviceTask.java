@@ -19,6 +19,7 @@ package de.gematik.tim.test.glue.api.devices;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.CLAIMER_NAME;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DEVICE_ID;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_LOGGED_IN;
+import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.CLAIM_DEVICE;
 import static de.gematik.tim.test.glue.api.devices.UnclaimedDevicesQuestion.unclaimedDevices;
 import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.TEST_CASE_ID_HEADER;
@@ -38,8 +39,8 @@ import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static lombok.AccessLevel.PRIVATE;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
-import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.springframework.http.HttpStatus.OK;
 
 import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.glue.api.threading.ParallelTaskRunner;
@@ -135,11 +136,9 @@ public class ClaimDeviceTask extends ParallelTaskRunner {
       Thread.sleep(5000);
       sendRequest(actor, claimRequest);
     }
-    actor.should(
-        seeThatResponse(
-            "device is successfully claimed",
-            res ->
-                res.statusCode(200).body("claimerName", equalTo(claimRequest.getClaimerName()))));
+
+    checkResponseCode(actor.getName(), OK.value());
+    lastResponse().then().assertThat().body("claimerName", is(claimRequest.getClaimerName()));
     DeviceInfoDTO device = parseResponse(DeviceInfoDTO.class);
     this.deviceId = device.getDeviceId();
     actor.remember(CLAIMER_NAME, claimRequest.getClaimerName());

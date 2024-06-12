@@ -57,7 +57,7 @@ import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_LEAVE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_STATE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.SUPPORTED_VERSIONS_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.UNCLAIM_DEVICE_PATH;
-import static de.gematik.tim.test.glue.api.TestdriverApiPath.WELL_KNOWN_SERVER_PATH;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.WELL_KNOWN_HOMESERVER_PATH;
 import static java.util.Objects.requireNonNull;
 
 import de.gematik.tim.test.glue.api.devices.UseDeviceAbility;
@@ -67,6 +67,9 @@ import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.LookForD
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility;
 import de.gematik.tim.test.glue.api.fhir.organisation.location.UseLocationAbility;
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
@@ -77,17 +80,12 @@ import net.serenitybdd.screenplay.rest.interactions.Post;
 import net.serenitybdd.screenplay.rest.interactions.Put;
 import net.serenitybdd.screenplay.rest.interactions.RestInteraction;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Function;
-
 @Getter
 public enum TestdriverApiEndpoint {
-
   GET_INFO(GET, INFO_PATH),
   CLEAN_REQUEST(POST, INFO_PATH),
 
-  GET_WELL_KNOWN_MATRIX_SERVER(GET, WELL_KNOWN_SERVER_PATH),
+  GET_WELL_KNOWN_HOMESERVER(GET, WELL_KNOWN_HOMESERVER_PATH),
   GET_SUPPORTED_VERSIONS(GET, SUPPORTED_VERSIONS_PATH),
 
   // DEVICE
@@ -102,7 +100,7 @@ public enum TestdriverApiEndpoint {
   GET_SESSION_KEY(GET, KEY_PATH, UseDeviceAbility.class),
   IMPORT_SESSION_KEY(POST, KEY_PATH, UseDeviceAbility.class),
 
-  //LOGIN
+  // LOGIN
   LOGIN(POST, LOGIN_PATH, UseDeviceAbility.class),
   LOGOUT(POST, LOGOUT_PATH, UseDeviceAbility.class),
 
@@ -143,44 +141,69 @@ public enum TestdriverApiEndpoint {
   // FHIR ORG_ADMIN HEALTHCARE SERVICE
   GET_HEALTHCARE_SERVICES(GET, FHIR_HEALTHCARE_SERVICE_PATH, UseDeviceAbility.class),
   CREATE_HEALTHCARE_SERVICE(POST, FHIR_HEALTHCARE_SERVICE_PATH, UseDeviceAbility.class),
-  GET_HEALTHCARE_SERVICE(GET, FHIR_HS_ADMIN_PATH, UseDeviceAbility.class,
-      UseHealthcareServiceAbility.class),
-  SEARCH_DELETED_HEALTHCARE_SERVICE(GET, FHIR_HS_ADMIN_PATH, UseDeviceAbility.class,
+  GET_HEALTHCARE_SERVICE(
+      GET, FHIR_HS_ADMIN_PATH, UseDeviceAbility.class, UseHealthcareServiceAbility.class),
+  SEARCH_DELETED_HEALTHCARE_SERVICE(
+      GET,
+      FHIR_HS_ADMIN_PATH,
+      UseDeviceAbility.class,
       LookForDeletedHealthcareServiceAbility.class),
-  UPDATE_HEALTHCARE_SERVICE(PUT, FHIR_HS_ADMIN_PATH, UseDeviceAbility.class,
-      UseHealthcareServiceAbility.class),
-  DELETE_HEALTHCARE_SERVICE(DELETE, FHIR_HS_ADMIN_PATH, UseDeviceAbility.class,
-      UseHealthcareServiceAbility.class),
+  UPDATE_HEALTHCARE_SERVICE(
+      PUT, FHIR_HS_ADMIN_PATH, UseDeviceAbility.class, UseHealthcareServiceAbility.class),
+  DELETE_HEALTHCARE_SERVICE(
+      DELETE, FHIR_HS_ADMIN_PATH, UseDeviceAbility.class, UseHealthcareServiceAbility.class),
 
   // FHIR ORG_ADMIN ENDPOINT
-  GET_ENDPOINTS(GET, FHIR_ENDPOINT_PATH, UseDeviceAbility.class,
-      UseHealthcareServiceAbility.class),
-  CREATE_ENDPOINT(POST, FHIR_ENDPOINT_PATH, UseDeviceAbility.class,
-      UseHealthcareServiceAbility.class),
-  GET_ENDPOINT(GET, FHIR_ENDPOINT_ADMIN_PATH, UseDeviceAbility.class,
-      UseHealthcareServiceAbility.class, UseEndpointAbility.class),
-  UPDATE_ENDPOINT(PUT, FHIR_ENDPOINT_ADMIN_PATH, UseDeviceAbility.class,
-      UseHealthcareServiceAbility.class, UseEndpointAbility.class),
-  DELETE_ENDPOINT(DELETE, FHIR_ENDPOINT_ADMIN_PATH, UseDeviceAbility.class,
-      UseHealthcareServiceAbility.class, UseEndpointAbility.class),
+  GET_ENDPOINTS(GET, FHIR_ENDPOINT_PATH, UseDeviceAbility.class, UseHealthcareServiceAbility.class),
+  CREATE_ENDPOINT(
+      POST, FHIR_ENDPOINT_PATH, UseDeviceAbility.class, UseHealthcareServiceAbility.class),
+  GET_ENDPOINT(
+      GET,
+      FHIR_ENDPOINT_ADMIN_PATH,
+      UseDeviceAbility.class,
+      UseHealthcareServiceAbility.class,
+      UseEndpointAbility.class),
+  UPDATE_ENDPOINT(
+      PUT,
+      FHIR_ENDPOINT_ADMIN_PATH,
+      UseDeviceAbility.class,
+      UseHealthcareServiceAbility.class,
+      UseEndpointAbility.class),
+  DELETE_ENDPOINT(
+      DELETE,
+      FHIR_ENDPOINT_ADMIN_PATH,
+      UseDeviceAbility.class,
+      UseHealthcareServiceAbility.class,
+      UseEndpointAbility.class),
 
   // FHIR ORG_ADMIN LOCATION
-  GET_LOCATIONS(GET, FHIR_LOCATION_PATH, UseDeviceAbility.class,
-      UseHealthcareServiceAbility.class),
-  CREATE_LOCATION(POST, FHIR_LOCATION_PATH, UseDeviceAbility.class,
-      UseHealthcareServiceAbility.class),
-  UPDATE_LOCATION(PUT, FHIR_LOCATION_ADMIN_PATH, UseDeviceAbility.class,
-      UseHealthcareServiceAbility.class, UseLocationAbility.class),
-  GET_LOCATION(GET, FHIR_LOCATION_ADMIN_PATH, UseDeviceAbility.class,
-      UseHealthcareServiceAbility.class, UseLocationAbility.class),
-  DELETE_LOCATION(DELETE, FHIR_LOCATION_ADMIN_PATH, UseDeviceAbility.class,
-      UseHealthcareServiceAbility.class, UseLocationAbility.class),
+  GET_LOCATIONS(GET, FHIR_LOCATION_PATH, UseDeviceAbility.class, UseHealthcareServiceAbility.class),
+  CREATE_LOCATION(
+      POST, FHIR_LOCATION_PATH, UseDeviceAbility.class, UseHealthcareServiceAbility.class),
+  UPDATE_LOCATION(
+      PUT,
+      FHIR_LOCATION_ADMIN_PATH,
+      UseDeviceAbility.class,
+      UseHealthcareServiceAbility.class,
+      UseLocationAbility.class),
+  GET_LOCATION(
+      GET,
+      FHIR_LOCATION_ADMIN_PATH,
+      UseDeviceAbility.class,
+      UseHealthcareServiceAbility.class,
+      UseLocationAbility.class),
+  DELETE_LOCATION(
+      DELETE,
+      FHIR_LOCATION_ADMIN_PATH,
+      UseDeviceAbility.class,
+      UseHealthcareServiceAbility.class,
+      UseLocationAbility.class),
 
   // MEDIA
   UPLOAD_MEDIA(POST, MEDIA_PATH, UseDeviceAbility.class),
   DOWNLOAD_MEDIA(GET, MEDIA_DOWNLOAD_PATH, UseDeviceAbility.class),
 
-  //CONTACT-MANAGEMENT
+  // CONTACT-MANAGEMENT
   GET_CONTACT(GET, CONTACT_PATH, UseDeviceAbility.class),
   ADD_CONTACT(POST, CONTACT_PATH, UseDeviceAbility.class),
   DELETE_CONTACT(DELETE, DELETE_CONTACT_PATH, UseDeviceAbility.class);
@@ -190,7 +213,9 @@ public enum TestdriverApiEndpoint {
   private final List<Class<? extends TestdriverApiAbility>> neededAbilities;
 
   @SafeVarargs
-  TestdriverApiEndpoint(HttpMethod httpMethod, String path,
+  TestdriverApiEndpoint(
+      HttpMethod httpMethod,
+      String path,
       Class<? extends TestdriverApiAbility>... neededAbilities) {
     this.httpMethod = httpMethod;
     this.path = path;
@@ -207,14 +232,25 @@ public enum TestdriverApiEndpoint {
     for (Class<? extends TestdriverApiAbility> c : this.neededAbilities) {
       if (c == UseDeviceAbility.class) {
         UseDeviceAbility ability = (UseDeviceAbility) actor.abilityTo(c);
-        requireNonNull(ability, "Actor '%s' needs the '%s' to perform this request!".formatted(actor.getName(), c.getSimpleName()));
-        resourcePath = resourcePath.replaceAll("\\{" + DEVICE_ID_VARIABLE + "\\}", String.valueOf(ability.getDeviceId()));
+        requireNonNull(
+            ability,
+            "Actor '%s' needs the '%s' to perform this request!"
+                .formatted(actor.getName(), c.getSimpleName()));
+        resourcePath =
+            resourcePath.replaceAll(
+                "\\{" + DEVICE_ID_VARIABLE + "\\}", String.valueOf(ability.getDeviceId()));
       } else if (c == UseRoomAbility.class) {
         UseRoomAbility ability = (UseRoomAbility) actor.abilityTo(c);
-        requireNonNull(ability, "Actor '%s' needs the '%s' to perform this request!".formatted(actor.getName(), c.getSimpleName()));
-        resourcePath = resourcePath.replaceAll("\\{" + ROOM_ID_VARIABLE + "\\}", String.valueOf(ability.getActive().getRoomId()));
+        requireNonNull(
+            ability,
+            "Actor '%s' needs the '%s' to perform this request!"
+                .formatted(actor.getName(), c.getSimpleName()));
+        resourcePath =
+            resourcePath.replaceAll(
+                "\\{" + ROOM_ID_VARIABLE + "\\}", String.valueOf(ability.getActive().getRoomId()));
       } else {
-        throw new TestRunException("Please implement behaviour for needed ability %s".formatted(c.getSimpleName()));
+        throw new TestRunException(
+            "Please implement behaviour for needed ability %s".formatted(c.getSimpleName()));
       }
     }
     return actor.abilityTo(CallAnApi.class).resolve("") + resourcePath;

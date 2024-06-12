@@ -16,6 +16,7 @@
 
 package de.gematik.tim.test.glue.api.room;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_ID_VARIABLE;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
 import static de.gematik.tim.test.glue.api.room.tasks.ForgetRoomTask.forgetRoom;
@@ -30,6 +31,7 @@ import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import de.gematik.tim.test.glue.api.MultiTargetAbility;
 import de.gematik.tim.test.glue.api.TestdriverApiAbility;
 import de.gematik.tim.test.models.RoomDTO;
+import de.gematik.tim.test.models.RoomMembershipStateDTO;
 import io.restassured.specification.RequestSpecification;
 import java.util.List;
 import java.util.Map.Entry;
@@ -113,23 +115,39 @@ public class UseRoomAbility extends MultiTargetAbility<String, RoomDTO>
     return new Task() {
       @Override
       public <T extends Actor> void performAs(T actor) {
-        repeatedRequestForTeardown(
-            () -> {
-              actor.attemptsTo(leaveRoom());
-              return HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful()
-                  ? Optional.of(TRUE)
-                  : Optional.empty();
-            },
-            actor);
-        repeatedRequestForTeardown(
-            () -> {
-              actor.attemptsTo(forgetRoom());
-              return HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful()
-                  ? Optional.of(TRUE)
-                  : Optional.empty();
-            },
-            actor);
+        repeatedRequestForTeardown(() -> leaveRoomInTeardown(), actor);
+        repeatedRequestForTeardown(() -> forgetRoomInTeardown(), actor);
       }
     };
+  }
+
+  private Optional<Boolean> leaveRoomInTeardown() {
+    RoomMembershipStateDTO status =
+        actor.recall(
+            actor.abilityTo(UseRoomAbility.class).getActiveValue().getRoomId()
+                + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX);
+    if (status == null || status.equals(RoomMembershipStateDTO.LEAVE)) {
+      return Optional.of(TRUE);
+    } else {
+      actor.attemptsTo(leaveRoom());
+      return HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful()
+          ? Optional.of(TRUE)
+          : Optional.empty();
+    }
+  }
+
+  private Optional<Boolean> forgetRoomInTeardown() {
+    RoomMembershipStateDTO status =
+        actor.recall(
+            actor.abilityTo(UseRoomAbility.class).getActiveValue().getRoomId()
+                + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX);
+    if (status == null) {
+      return Optional.of(TRUE);
+    } else {
+      actor.attemptsTo(forgetRoom());
+      return HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful()
+          ? Optional.of(TRUE)
+          : Optional.empty();
+    }
   }
 }

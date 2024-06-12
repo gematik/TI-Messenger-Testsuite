@@ -19,6 +19,7 @@ package de.gematik.tim.test.glue.api.room.questions;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getRoomByInternalName;
+import static de.gematik.tim.test.models.RoomMembershipStateDTO.LEAVE;
 
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
 import de.gematik.tim.test.models.RoomDTO;
@@ -78,7 +79,12 @@ public class GetRoomQuestion implements Question<RoomDTO> {
 
   public Question<RoomDTO> notHavingMember(String mxId) {
     this.filterList.add(
-        room -> room.getMembers().stream().noneMatch(member -> member.getMxid().equals(mxId)));
+        room ->
+            room.getMembers().stream()
+                .noneMatch(
+                    member ->
+                        (member.getMxid().equals(mxId)
+                            && !member.getMembershipState().equals(LEAVE))));
     return this;
   }
 

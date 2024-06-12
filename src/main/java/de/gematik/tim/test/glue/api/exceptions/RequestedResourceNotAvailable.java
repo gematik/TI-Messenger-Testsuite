@@ -16,9 +16,9 @@
 
 package de.gematik.tim.test.glue.api.exceptions;
 
-public class RequestedRessourceNotAvailable extends RuntimeException {
+public class RequestedResourceNotAvailable extends RuntimeException {
 
-  public RequestedRessourceNotAvailable(String message) {
+  public RequestedResourceNotAvailable(String message) {
     super(message);
   }
 }

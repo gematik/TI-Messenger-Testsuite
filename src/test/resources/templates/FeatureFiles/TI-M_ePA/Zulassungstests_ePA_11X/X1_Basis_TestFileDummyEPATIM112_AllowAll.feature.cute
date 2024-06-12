@@ -1,7 +1,7 @@
 #  language: de
 @File:FeatureFile_DummyEPA
 
-Funktionalität: 01. Basis - Dummy Tests
+Funktionalität: X1_Basis_TestFileDummyEPATIM112_AllowAll
 
   Vs TI-M 1.1.X
   Inhalt
@@ -10,27 +10,27 @@ Funktionalität: 01. Basis - Dummy Tests
   TF 5  -  6 Via Freigabeliste: Versicherter - Organisations-User und Organisations-User - Versicherter (Chat)
 
 # Evtl wird hier die Suche auf dem Homeserver schon unterbunden ... dann Schritt auskommentieren
-  @TCID:TIM_ePA_AF_0101 @PRIO:1 @TESTFALL:Negativ @STATUS:Zurückgestellt
-  Szenariogrundriss: 01.01 TI-M ePA - Versichertenkommunikation eigener HomeServer
-    Angenommen Es werden folgende Clients reserviert:
-      | A | INSURANT    | <ApiName1A> |
-      | B | INSURANT    | <ApiName1B> |
-    Und        "A" prüft, ob seinen Authorization Mode auf "AllowAll" gesetzt ist
-    Und        "A" findet TI-Messenger-Nutzer "B" bei der Suche im HomeServer
-    Wenn       "A" versucht "B" direkt "Testnachricht 1" zu schreiben
-    Dann       erhält "A" einen Responsecode 403
-    Und        "B" erhält KEINE Einladung von "A" [Retry 10 - 3]
-
-    @EqualProperty(homeserver)
-    @AllowSelfCombine(true)
-    @AllowDoubleLineup(true)
-    @Filter(ApiName1A.hasTag("client"))
-    @Filter(ApiName1B.hasTag("client"))
-    @Filter(ApiName1A.hasTag("insurant"))
-    @Filter(ApiName1B.hasTag("insurant"))
-
-    Beispiele:
-      | ApiName1A | ApiName1B |
+#  @TCID:TIM_ePA_AF_0101 @PRIO:1 @TESTFALL:Negativ @STATUS:Zurückgestellt
+#  Szenariogrundriss: 01.01 TI-M ePA - Versichertenkommunikation eigener HomeServer
+#    Angenommen Es werden folgende Clients reserviert:
+#      | A | INSURANT    | <ApiName1A> |
+#      | B | INSURANT    | <ApiName1B> |
+#    Und        "A" prüft, ob seinen Authorization Mode auf "AllowAll" gesetzt ist
+#    Und        "A" findet TI-Messenger-Nutzer "B" bei der Suche im HomeServer
+#    Wenn       "A" versucht "B" direkt "Testnachricht 1" zu schreiben
+#    Dann       erhält "A" einen Responsecode 403
+#    Und        "B" erhält KEINE Einladung von "A" [Retry 10 - 3]
+#
+#    @EqualProperty(homeserver)
+#    @AllowSelfCombine(true)
+#    @AllowDoubleLineup(true)
+#    @Filter(ApiName1A.hasTag("client"))
+#    @Filter(ApiName1B.hasTag("client"))
+#    @Filter(ApiName1A.hasTag("insurant"))
+#    @Filter(ApiName1B.hasTag("insurant"))
+#
+#    Beispiele:
+#      | ApiName1A | ApiName1B |
 
 # final nicht zu testen, da die Ref Impl diesen Case nicht einbauen wird, daher erstmal nur evtl für den SIM relevant
   @WIP
@@ -55,128 +55,126 @@ Funktionalität: 01. Basis - Dummy Tests
     Beispiele:
       | ApiName1A | ApiName1B |
 
-  @TCID:TIM_ePA_AF_0103 @PRIO:1 @TESTFALL:Positiv @STATUS:Zurückgestellt
-  Szenariogrundriss: 01.03 TI-M ePA - Einladung via Freigabeliste außerhalb einer Organisation - Chat - Beide User jeweils in Freigabeliste (HBA-User an Versicherten)
-    Angenommen Es werden folgende Clients reserviert:
-      | A | INSURANT     | <ApiName1> |
-      | B | PRACTITIONER | <ApiName2> |
-    Und        "A" prüft, ob seinen Authorization Mode auf "AllowAll" gesetzt ist
-    Und        "B" hinterlegt "A" in seiner Freigabeliste
-    Wenn       "B" schreibt "A" direkt "Testnachricht 1"
-    Dann       "A" erhält eine Einladung von "B"
-    Und        "A" bestätigt eine Einladung von "B"
-    Und        "A" empfängt eine Nachricht "Testnachricht 1" von "B"
-    Und        "A" verlässt Raum "TIM Testraum 1"
-    Und        "B" verlässt Raum "TIM Testraum 1"
-    Und        "A" verlässt Chat mit "B"
-    Und        "B" verlässt Chat mit "A"
-    Und        "B" löscht "A" in seiner Freigabeliste
-
-  #@Shuffle(true)
-  #@MaxSameColumnProperty(ApiName1,homeserver,2)
-    @DistinctProperty(homeserver)
-    @AllowSelfCombine(true)
-    @AllowDoubleLineup(true)
-    @Filter(ApiName1.hasTag("client"))
-    @Filter(ApiName2.hasTag("client"))
-    @Filter(ApiName1.hasTag("insurant"))
-    @Filter(ApiName2.hasTag("practitioner"))
-    @SoftFilter(ApiName1.hasTag("prefIOP"))
-    @SoftFilter(ApiName2.hasTag("prefIOP"))
-
-    Beispiele:
-      | ApiName1 | ApiName2 |
-
-  @TCID:TIM_ePA_AF_0104 @PRIO:1 @TESTFALL:Positiv @STATUS:Zurückgestellt
-  Szenariogrundriss: 01.04 TI-M ePA - Einladung via Freigabeliste außerhalb einer Organisation - Chat - Beide User jeweils in Freigabeliste (Versicherter an HBA-User)
-    Angenommen Es werden folgende Clients reserviert:
-      | A | INSURANT     | <ApiName1> |
-      | B | PRACTITIONER | <ApiName2> |
-    Und        "A" prüft, ob seinen Authorization Mode auf "AllowAll" gesetzt ist
-    Und        "B" hinterlegt "A" in seiner Freigabeliste
-    Wenn       "A" schreibt "B" direkt "Testnachricht 1"
-    Dann       "B" erhält eine Einladung von "A"
-    Und        "B" bestätigt eine Einladung von "A"
-    Und        "B" empfängt eine Nachricht "Testnachricht 1" von "A"
-    Und        "A" verlässt Chat mit "B"
-    Und        "B" verlässt Chat mit "A"
-    Und        "B" löscht "A" in seiner Freigabeliste
-
-  #@Shuffle(true)
-  #@MaxSameColumnProperty(ApiName1,homeserver,2)
-    @DistinctProperty(homeserver)
-    @AllowSelfCombine(true)
-    @AllowDoubleLineup(true)
-    @Filter(ApiName1.hasTag("client"))
-    @Filter(ApiName2.hasTag("client"))
-    @Filter(ApiName1.hasTag("insurant"))
-    @Filter(ApiName2.hasTag("practitioner"))
-    @SoftFilter(ApiName1.hasTag("prefIOP"))
-    @SoftFilter(ApiName2.hasTag("prefIOP"))
-
-    Beispiele:
-      | ApiName1 | ApiName2 |
-
-  @TCID:TIM_ePA_AF_0105 @PRIO:1 @TESTFALL:Positiv @STATUS:Zurückgestellt
-  Szenariogrundriss: 01.05 Einladung via Freigabeliste außerhalb einer Organisation - Chat - Beide User jeweils in Freigabeliste (Organisations-User an Versicherter)
-    Angenommen Es werden folgende Clients reserviert:
-      | A | ORG_ADMIN    | <ApiName1A> |
-      | B | CLIENT       | <ApiName1B> |
-      | C | INSURANT     | <ApiName2>  |
-    Und        "C" prüft, ob seinen Authorization Mode auf "AllowAll" gesetzt ist
-    Und        "B" hinterlegt "C" in seiner Freigabeliste
-    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
-    Wenn       "B" schreibt "C" direkt "Testnachricht 1"
-    Dann       "C" erhält eine Einladung von "B"
-    Und        "C" bestätigt eine Einladung von "B"
-    Und        "C" empfängt eine Nachricht "Testnachricht 1" von "B"
-    Und        "C" verlässt Chat mit "B"
-    Und        "B" verlässt Chat mit "C"
-    Und        "B" löscht "C" in seiner Freigabeliste
-
-  #@Shuffle(true)
-  #@DistinctColumn(ApiName1B)
-  #@MaxSameColumnProperty(ApiName1B,homeserver,2)
-    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-    @Filter(!ApiName2.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-    @AllowSelfCombine(true)
-    @AllowDoubleLineup(true)
-    @Filter(ApiName1A.hasTag("orgAdmin"))
-    @Filter(ApiName1B.hasTag("client"))
-    @Filter(ApiName2.hasTag("client"))
-    @Filter(ApiName2.hasTag("insurant"))
-
-    Beispiele:
-      | ApiName1A | ApiName1B | ApiName2 |
-
-  @TCID:TIM_ePA_AF_0106 @PRIO:1 @TESTFALL:Positiv @STATUS:Zurückgestellt
-  Szenariogrundriss: 01.06 Einladung via Freigabeliste außerhalb einer Organisation - Chat - Beide User jeweils in Freigabeliste (Versicherter an Organisations-User)
-    Angenommen Es werden folgende Clients reserviert:
-      | A | ORG_ADMIN    | <ApiName1A> |
-      | B | CLIENT       | <ApiName1B> |
-      | C | INSURANT     | <ApiName2>  |
-    Und        "C" prüft, ob seinen Authorization Mode auf "AllowAll" gesetzt ist
-    Und        "B" hinterlegt "C" in seiner Freigabeliste
-    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
-    Wenn       "C" schreibt "B" direkt "Testnachricht 1"
-    Dann       "B" erhält eine Einladung von "C"
-    Und        "B" bestätigt eine Einladung von "C"
-    Und        "B" empfängt eine Nachricht "Testnachricht 1" von "C"
-    Und        "C" verlässt Chat mit "B"
-    Und        "B" verlässt Chat mit "C"
-    Und        "B" löscht "C" in seiner Freigabeliste
-
-  #@Shuffle(true)
-  #@DistinctColumn(ApiName1B)
-  #@MaxSameColumnProperty(ApiName1B,homeserver,2)
-    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-    @Filter(!ApiName2.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-    @AllowSelfCombine(true)
-    @AllowDoubleLineup(true)
-    @Filter(ApiName1A.hasTag("orgAdmin"))
-    @Filter(ApiName1B.hasTag("client"))
-    @Filter(ApiName2.hasTag("client"))
-    @Filter(ApiName2.hasTag("insurant"))
-
-    Beispiele:
-      | ApiName1A | ApiName1B | ApiName2 |
+#  @TCID:TIM_ePA_AF_0103 @PRIO:1 @TESTFALL:Positiv @STATUS:Zurückgestellt
+#  Szenariogrundriss: 01.03 TI-M ePA - Einladung via Freigabeliste außerhalb einer Organisation - Chat - Beide User jeweils in Freigabeliste (HBA-User an Versicherten)
+#    Angenommen Es werden folgende Clients reserviert:
+#      | A | INSURANT     | <ApiName1> |
+#      | B | PRACTITIONER | <ApiName2> |
+#    Und        "A" prüft, ob seinen Authorization Mode auf "AllowAll" gesetzt ist
+#    Und        "B" hinterlegt "A" in seiner Freigabeliste
+#    Wenn       "B" schreibt "A" direkt "Testnachricht 1"
+#    Dann       "A" erhält eine Einladung von "B"
+#    Und        "A" bestätigt eine Einladung von "B"
+#    Und        "A" empfängt eine Nachricht "Testnachricht 1" von "B"
+#    Und        "A" verlässt Chat mit "B"
+#    Und        "B" verlässt Chat mit "A"
+#    Und        "B" löscht "A" in seiner Freigabeliste
+#
+#  #@Shuffle(true)
+#  #@MaxSameColumnProperty(ApiName1,homeserver,2)
+#    @DistinctProperty(homeserver)
+#    @AllowSelfCombine(true)
+#    @AllowDoubleLineup(true)
+#    @Filter(ApiName1.hasTag("client"))
+#    @Filter(ApiName2.hasTag("client"))
+#    @Filter(ApiName1.hasTag("insurant"))
+#    @Filter(ApiName2.hasTag("practitioner"))
+#    @SoftFilter(ApiName1.hasTag("prefIOP"))
+#    @SoftFilter(ApiName2.hasTag("prefIOP"))
+#
+#    Beispiele:
+#      | ApiName1 | ApiName2 |
+#
+#  @TCID:TIM_ePA_AF_0104 @PRIO:1 @TESTFALL:Positiv @STATUS:Zurückgestellt
+#  Szenariogrundriss: 01.04 TI-M ePA - Einladung via Freigabeliste außerhalb einer Organisation - Chat - Beide User jeweils in Freigabeliste (Versicherter an HBA-User)
+#    Angenommen Es werden folgende Clients reserviert:
+#      | A | INSURANT     | <ApiName1> |
+#      | B | PRACTITIONER | <ApiName2> |
+#    Und        "A" prüft, ob seinen Authorization Mode auf "AllowAll" gesetzt ist
+#    Und        "B" hinterlegt "A" in seiner Freigabeliste
+#    Wenn       "A" schreibt "B" direkt "Testnachricht 1"
+#    Dann       "B" erhält eine Einladung von "A"
+#    Und        "B" bestätigt eine Einladung von "A"
+#    Und        "B" empfängt eine Nachricht "Testnachricht 1" von "A"
+#    Und        "A" verlässt Chat mit "B"
+#    Und        "B" verlässt Chat mit "A"
+#    Und        "B" löscht "A" in seiner Freigabeliste
+#
+#  #@Shuffle(true)
+#  #@MaxSameColumnProperty(ApiName1,homeserver,2)
+#    @DistinctProperty(homeserver)
+#    @AllowSelfCombine(true)
+#    @AllowDoubleLineup(true)
+#    @Filter(ApiName1.hasTag("client"))
+#    @Filter(ApiName2.hasTag("client"))
+#    @Filter(ApiName1.hasTag("insurant"))
+#    @Filter(ApiName2.hasTag("practitioner"))
+#    @SoftFilter(ApiName1.hasTag("prefIOP"))
+#    @SoftFilter(ApiName2.hasTag("prefIOP"))
+#
+#    Beispiele:
+#      | ApiName1 | ApiName2 |
+#
+#  @TCID:TIM_ePA_AF_0105 @PRIO:1 @TESTFALL:Positiv @STATUS:Zurückgestellt
+#  Szenariogrundriss: 01.05 Einladung via Freigabeliste außerhalb einer Organisation - Chat - Beide User jeweils in Freigabeliste (Organisations-User an Versicherter)
+#    Angenommen Es werden folgende Clients reserviert:
+#      | A | ORG_ADMIN    | <ApiName1A> |
+#      | B | CLIENT       | <ApiName1B> |
+#      | C | INSURANT     | <ApiName2>  |
+#    Und        "C" prüft, ob seinen Authorization Mode auf "AllowAll" gesetzt ist
+#    Und        "B" hinterlegt "C" in seiner Freigabeliste
+#    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
+#    Wenn       "B" schreibt "C" direkt "Testnachricht 1"
+#    Dann       "C" erhält eine Einladung von "B"
+#    Und        "C" bestätigt eine Einladung von "B"
+#    Und        "C" empfängt eine Nachricht "Testnachricht 1" von "B"
+#    Und        "C" verlässt Chat mit "B"
+#    Und        "B" verlässt Chat mit "C"
+#    Und        "B" löscht "C" in seiner Freigabeliste
+#
+#  #@Shuffle(true)
+#  #@DistinctColumn(ApiName1B)
+#  #@MaxSameColumnProperty(ApiName1B,homeserver,2)
+#    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+#    @Filter(!ApiName2.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+#    @AllowSelfCombine(true)
+#    @AllowDoubleLineup(true)
+#    @Filter(ApiName1A.hasTag("orgAdmin"))
+#    @Filter(ApiName1B.hasTag("client"))
+#    @Filter(ApiName2.hasTag("client"))
+#    @Filter(ApiName2.hasTag("insurant"))
+#
+#    Beispiele:
+#      | ApiName1A | ApiName1B | ApiName2 |
+#
+#  @TCID:TIM_ePA_AF_0106 @PRIO:1 @TESTFALL:Positiv @STATUS:Zurückgestellt
+#  Szenariogrundriss: 01.06 Einladung via Freigabeliste außerhalb einer Organisation - Chat - Beide User jeweils in Freigabeliste (Versicherter an Organisations-User)
+#    Angenommen Es werden folgende Clients reserviert:
+#      | A | ORG_ADMIN    | <ApiName1A> |
+#      | B | CLIENT       | <ApiName1B> |
+#      | C | INSURANT     | <ApiName2>  |
+#    Und        "C" prüft, ob seinen Authorization Mode auf "AllowAll" gesetzt ist
+#    Und        "B" hinterlegt "C" in seiner Freigabeliste
+#    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
+#    Wenn       "C" schreibt "B" direkt "Testnachricht 1"
+#    Dann       "B" erhält eine Einladung von "C"
+#    Und        "B" bestätigt eine Einladung von "C"
+#    Und        "B" empfängt eine Nachricht "Testnachricht 1" von "C"
+#    Und        "C" verlässt Chat mit "B"
+#    Und        "B" verlässt Chat mit "C"
+#    Und        "B" löscht "C" in seiner Freigabeliste
+#
+#  #@Shuffle(true)
+#  #@DistinctColumn(ApiName1B)
+#  #@MaxSameColumnProperty(ApiName1B,homeserver,2)
+#    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+#    @Filter(!ApiName2.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+#    @AllowSelfCombine(true)
+#    @AllowDoubleLineup(true)
+#    @Filter(ApiName1A.hasTag("orgAdmin"))
+#    @Filter(ApiName1B.hasTag("client"))
+#    @Filter(ApiName2.hasTag("client"))
+#    @Filter(ApiName2.hasTag("insurant"))
+#
+#    Beispiele:
+#      | ApiName1A | ApiName1B | ApiName2 |

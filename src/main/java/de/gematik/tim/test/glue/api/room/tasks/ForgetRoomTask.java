@@ -16,7 +16,6 @@
 
 package de.gematik.tim.test.glue.api.room.tasks;
 
-import static de.gematik.tim.test.glue.api.ActorMemoryKeys.OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.FORGET_ROOM;
 import static de.gematik.tim.test.glue.api.threading.ClientFactory.getClient;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
@@ -43,7 +42,6 @@ public class ForgetRoomTask extends RoomSpecificTask {
   public <T extends Actor> void performAs(T actor) {
     actor.attemptsTo(FORGET_ROOM.request());
     if (lastResponse().statusCode() == HttpStatus.NO_CONTENT.value()) {
-      actor.forget(actor.abilityTo(UseRoomAbility.class).getActiveValue().getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX);
       actor.abilityTo(UseRoomAbility.class).removeCurrent();
     }
   }
@@ -53,11 +51,10 @@ public class ForgetRoomTask extends RoomSpecificTask {
     UnirestInstance client = getClient();
     HttpResponse<Empty> res = client.delete(FORGET_ROOM.getResolvedPath(actor)).asEmpty();
     if (res.isSuccess()) {
-      actor.forget(actor.abilityTo(UseRoomAbility.class).getActiveValue().getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX);
       actor.abilityTo(UseRoomAbility.class).removeCurrent();
     } else {
       throw new TestRunException(
-          "could not forget room, response code was %d".formatted(res.getStatus()));
+          "Could not forget room, response code was %d".formatted(res.getStatus()));
     }
   }
 }

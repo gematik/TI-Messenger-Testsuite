@@ -17,9 +17,11 @@
 package de.gematik.tim.test.glue.api.account;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
+import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
+import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
-import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.springframework.http.HttpStatus.CREATED;
 
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.en.Then;
@@ -33,9 +35,7 @@ public class AccountControllerGlue {
     Actor actor = theActorCalled(actorName);
     String mxid = actor.recall(MX_ID);
 
-    actor.should(
-        seeThatResponse("check status code", res -> res.statusCode(201)),
-        seeThatResponse("check mxid", res -> res.body("mxid", equalTo(mxid)))
-    );
+    checkResponseCode(actor.getName(), CREATED.value());
+    lastResponse().then().assertThat().body("mxid", is(mxid));
   }
 }

@@ -21,7 +21,7 @@ import static de.gematik.tim.test.glue.api.TestdriverApiPath.DEVICE_ID_VARIABLE;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTestcaseId;
 import static java.util.Objects.nonNull;
 
-import de.gematik.tim.test.glue.api.TeardownAbility;
+import de.gematik.tim.test.glue.api.teardown.TeardownAbility;
 import de.gematik.tim.test.glue.api.TestdriverApiAbility;
 import de.gematik.tim.test.glue.api.login.IsLoggedInAbility;
 import io.restassured.specification.RequestSpecification;
@@ -32,7 +32,6 @@ import net.serenitybdd.screenplay.Actor;
 @Getter
 @RequiredArgsConstructor
 public class UseDeviceAbility extends TeardownAbility implements TestdriverApiAbility {
-
 
   public static final String TEST_CASE_ID_HEADER = "Transaction-Id";
   private final long deviceId;

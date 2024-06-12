@@ -22,10 +22,12 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HOME_SERVER;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
+import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_DEVICES;
 import static de.gematik.tim.test.glue.api.devices.CheckClientKindTask.checkIs;
 import static de.gematik.tim.test.glue.api.devices.ClaimDeviceTask.claimDevice;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.CLIENT;
+import static de.gematik.tim.test.glue.api.devices.ClientKind.INSURANT;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.PRACTITIONER;
 import static de.gematik.tim.test.glue.api.login.LoginGlue.loginSuccess;
@@ -43,8 +45,8 @@ import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static net.serenitybdd.screenplay.actors.OnStage.stage;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static net.serenitybdd.screenplay.actors.OnStage.withCurrentActor;
-import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
-import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.springframework.http.HttpStatus.OK;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.glue.api.threading.ParallelExecutor;
@@ -137,6 +139,7 @@ public class DevicesControllerGlue {
       case PRACTITIONER -> reserveClient(claimInfo.actor, claimInfo.api, CLIENT, PRACTITIONER);
       case ORG_ADMIN -> reserveClient(claimInfo.actor, claimInfo.api, ORG_ADMIN);
       case CLIENT -> reserveClient(claimInfo.actor, claimInfo.api, CLIENT);
+      case INSURANT -> reserveClient(claimInfo.actor, claimInfo.api, INSURANT);
     }
   }
 
@@ -190,11 +193,9 @@ public class DevicesControllerGlue {
   @Dann("prüfe ob {string} ein Gerät reserviert hat")
   public void checkIfDeviceIsClaimedGivenActor(String actorName) {
     Actor actor = theActorCalled(actorName);
+    checkResponseCode(actor.getName(), OK.value());
     String claimerName = actor.recall(CLAIMER_NAME);
-    actor.should(
-        seeThatResponse(
-            "Check if a device is claimed",
-            res -> res.statusCode(200).body("devices.claimerName", hasItem(claimerName))));
+    lastResponse().then().assertThat().body("devices.claimerName", hasItem(claimerName));
   }
 
   private ClaimInfo toClaimInfo(List<String> data) {

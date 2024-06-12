@@ -6,7 +6,7 @@
 
   <groupId>de.gematik.tim.test</groupId>
   <artifactId>TI-Messenger-Testsuite</artifactId>
-  <version>1.2.1</version>
+  <version>1.3.0</version>
   <packaging>jar</packaging>
   <name>TI-Messenger-Testsuite</name>
   <description>Testsuite to check functionality of TI-Messenger-Clients</description>
@@ -28,8 +28,8 @@
     <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
     <maven.javadoc.plugin.version>3.6.3</maven.javadoc.plugin.version>
     <junit.engine.version>5.8.2</junit.engine.version>
-    <ti.m.mtls.certs.version>1.1.0</ti.m.mtls.certs.version>
-    <ti.m.sim.version>5.0.0</ti.m.sim.version>
+    <ti.m.mtls.certs.version>1.1.1</ti.m.mtls.certs.version>
+    <ti.m.sim.version>5.0.2</ti.m.sim.version>
 
     <feature_dir>${project.build.directory}/features/</feature_dir>
     <feature.template.dir>
@@ -741,7 +741,7 @@
         <tim.keystore.pw>changeit</tim.keystore.pw>
         <timeout>240</timeout>
         <pollInterval>5</pollInterval>
-        <claimDuration>300</claimDuration>
+        <claimDuration>600</claimDuration>
         <soft-filter.to.hard>true</soft-filter.to.hard>
         <cutest.count.format>txt,json</cutest.count.format>
       </properties>
@@ -872,15 +872,18 @@
     <profile>
       <id>dont-break-preperation</id>
       <properties>
-        <cutest.combine.break>false</cutest.combine.break>
-        <cutest.prepare.break>false</cutest.prepare.break>
+        <cutest.break.context>false</cutest.break.context>
+        <cutest.break.request>false</cutest.break.request>
+        <cutest.break.tablesize>false</cutest.break.tablesize>
       </properties>
     </profile>
     <profile>
       <id>polarion-upload</id>
       <properties>
-        <testRun>testruns</testRun>
+        <testRun>TI-M_Testsuite</testRun>
         <polarion.project>releaseTIMessenger1101</polarion.project>
+        <serenityReportsFolderPath>${basedir}/reports/${build.time}/report
+        </serenityReportsFolderPath>
       </properties>
       <build>
         <plugins>
@@ -890,12 +893,13 @@
             <version>${polarion.toolbox.version}</version>
             <executions>
               <execution>
+                <id>upload</id>
                 <configuration>
                   <username>${env.POLARION_CREDENTIALS_USR}</username>
                   <password>${env.POLARION_CREDENTIALS_PSW}</password>
                   <project>${polarion.project}</project>
                   <testRun>${testRun}</testRun>
-                  <serenityReportsFolderPath>${basedir}/reports/${build.time}/report
+                  <serenityReportsFolderPath>${serenityReportsFolderPath}
                   </serenityReportsFolderPath>
                 </configuration>
                 <phase>post-integration-test</phase>
