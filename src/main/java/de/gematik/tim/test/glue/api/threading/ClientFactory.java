@@ -16,8 +16,6 @@
 
 package de.gematik.tim.test.glue.api.threading;
 
-import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.TEST_CASE_ID_HEADER;
-import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTestcaseId;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.HTTP_TIMEOUT;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.TIMEOUT;
 
@@ -36,20 +34,20 @@ public class ClientFactory {
 
   private ClientFactory() {
     TigerProxy proxy = TigerDirector.getTigerTestEnvMgr().getLocalTigerProxyOrFail();
-    client.config()
+    client
+        .config()
         .proxy("localhost", proxy.getProxyPort())
         .addDefaultHeader("Accept", ACCEPT)
         .addDefaultHeader("Content-Type", CONTENT_TYPE)
-        .addDefaultHeader(TEST_CASE_ID_HEADER, getTestcaseId())
         .interceptor(new CurlInterceptor())
         .connectTimeout(HTTP_TIMEOUT * 1000)
         .socketTimeout(HTTP_TIMEOUT * 1000)
         .sslContext(proxy.buildSslContext());
-    cleanUpClient.config()
+    cleanUpClient
+        .config()
         .proxy("localhost", proxy.getProxyPort())
         .addDefaultHeader("Accept", ACCEPT)
         .addDefaultHeader("Content-Type", CONTENT_TYPE)
-        .addDefaultHeader(TEST_CASE_ID_HEADER, getTestcaseId())
         .interceptor(new CurlInterceptor())
         .connectTimeout((int) (TIMEOUT * 2000))
         .socketTimeout((int) (TIMEOUT * 2000))

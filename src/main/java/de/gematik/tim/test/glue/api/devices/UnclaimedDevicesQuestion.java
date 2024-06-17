@@ -17,9 +17,11 @@
 package de.gematik.tim.test.glue.api.devices;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_DEVICES;
+import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.TEST_CASE_ID_HEADER;
 import static de.gematik.tim.test.glue.api.utils.IndividualLogger.individualLog;
 import static de.gematik.tim.test.glue.api.utils.ParallelUtils.fromJson;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTestcaseId;
 import static de.gematik.tim.test.models.DeviceInfoDTO.DeviceStatusEnum.CLAIMED;
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
@@ -28,16 +30,14 @@ import de.gematik.tim.test.glue.api.threading.ParallelExecutor;
 import de.gematik.tim.test.glue.api.threading.ParallelQuestionRunner;
 import de.gematik.tim.test.models.DeviceInfoDTO;
 import de.gematik.tim.test.models.DevicesDTO;
+import java.util.List;
 import kong.unirest.UnirestInstance;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 public class UnclaimedDevicesQuestion extends ParallelQuestionRunner<List<Long>> {
 
-  public static final String NO_FREE_DEVICE_LOG = "No free device found at %s";
+  private static final String NO_FREE_DEVICE_LOG = "No free device found at %s";
 
   public static UnclaimedDevicesQuestion unclaimedDevices() {
     return new UnclaimedDevicesQuestion();
@@ -45,30 +45,39 @@ public class UnclaimedDevicesQuestion extends ParallelQuestionRunner<List<Long>>
 
   public List<Long> searchParallel() {
     UnirestInstance client = ParallelExecutor.getParallelClient().get();
-    String jsonString = client.get(GET_DEVICES.getResolvedPath(actor)).asJson().getBody().toString();
+    String jsonString =
+        client
+            .get(GET_DEVICES.getResolvedPath(actor))
+            .header(TEST_CASE_ID_HEADER, getTestcaseId())
+            .asJson()
+            .getBody()
+            .toString();
     return getUnclaimedDevices(fromJson(jsonString, DevicesDTO.class));
   }
 
   @Override
   public List<Long> answeredBy(Actor actor) {
-    actor.attemptsTo(GET_DEVICES.request());
-    DevicesDTO res = parseResponse(DevicesDTO.class);
-    return getUnclaimedDevices(res);
+    actor.attemptsTo(
+        GET_DEVICES.request().with(res -> res.header(TEST_CASE_ID_HEADER, getTestcaseId())));
+    DevicesDTO devices = parseResponse(DevicesDTO.class);
+    return getUnclaimedDevices(devices);
   }
 
-  private List<Long> getUnclaimedDevices(DevicesDTO res) {
-    List<Long> freeDeviceIds = getResult(res.getDevices());
+  private List<Long> getUnclaimedDevices(DevicesDTO devices) {
+    List<Long> freeDeviceIds = getResult(devices.getDevices());
     if (freeDeviceIds.isEmpty()) {
       individualLog(format(NO_FREE_DEVICE_LOG, actor.abilityTo(CallAnApi.class).resolve("")));
     }
     return freeDeviceIds;
   }
 
-  @NotNull
   private static List<Long> getResult(List<DeviceInfoDTO> devices) {
     if (devices == null) {
       return emptyList();
     }
-    return devices.stream().filter(device -> !CLAIMED.equals(device.getDeviceStatus())).map(DeviceInfoDTO::getDeviceId).toList();
+    return devices.stream()
+        .filter(device -> !CLAIMED.equals(device.getDeviceStatus()))
+        .map(DeviceInfoDTO::getDeviceId)
+        .toList();
   }
 }

@@ -18,7 +18,9 @@ package de.gematik.tim.test.glue.api.room.tasks;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.LEAVE_ROOM;
+import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.TEST_CASE_ID_HEADER;
 import static de.gematik.tim.test.glue.api.threading.ClientFactory.getClient;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTestcaseId;
 import static de.gematik.tim.test.models.RoomMembershipStateDTO.LEAVE;
 
 import de.gematik.tim.test.glue.api.exceptions.TestRunException;
@@ -41,16 +43,27 @@ public class LeaveRoomTask extends RoomSpecificTask {
   @Override
   public <T extends Actor> void performAs(T actor) {
     actor.attemptsTo(LEAVE_ROOM.request());
-    actor.remember(actor.abilityTo(UseRoomAbility.class).getActiveValue().getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX, LEAVE);
+    actor.remember(
+        actor.abilityTo(UseRoomAbility.class).getActiveValue().getRoomId()
+            + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX,
+        LEAVE);
   }
 
   @Override
   public void runParallel() {
     UnirestInstance client = getClient();
-    HttpResponse<Empty> res = client.get(LEAVE_ROOM.getResolvedPath(actor)).asEmpty();
+    HttpResponse<Empty> res =
+        client
+            .get(LEAVE_ROOM.getResolvedPath(actor))
+            .header(TEST_CASE_ID_HEADER, getTestcaseId())
+            .asEmpty();
     if (!res.isSuccess()) {
-      throw new TestRunException("could not leave room, response code was %d".formatted(res.getStatus()));
+      throw new TestRunException(
+          "could not leave room, response code was %d".formatted(res.getStatus()));
     }
-    actor.remember(actor.abilityTo(UseRoomAbility.class).getActiveValue().getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX, LEAVE);
+    actor.remember(
+        actor.abilityTo(UseRoomAbility.class).getActiveValue().getRoomId()
+            + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX,
+        LEAVE);
   }
 }
