@@ -17,17 +17,18 @@
 package de.gematik.tim.test.glue.api.room.questions;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_ROOMS;
+import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.TEST_CASE_ID_HEADER;
 import static de.gematik.tim.test.glue.api.room.UseRoomAbility.updateAvailableRooms;
 import static de.gematik.tim.test.glue.api.threading.ClientFactory.getClient;
 import static de.gematik.tim.test.glue.api.utils.ParallelUtils.fromJson;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTestcaseId;
 
 import de.gematik.tim.test.glue.api.threading.ParallelQuestionRunner;
 import de.gematik.tim.test.models.RoomDTO;
+import java.util.List;
 import kong.unirest.UnirestInstance;
 import net.serenitybdd.screenplay.Actor;
-
-import java.util.List;
 
 public class GetRoomsQuestion extends ParallelQuestionRunner<List<RoomDTO>> {
 
@@ -46,7 +47,15 @@ public class GetRoomsQuestion extends ParallelQuestionRunner<List<RoomDTO>> {
   @Override
   public List<RoomDTO> searchParallel() {
     UnirestInstance client = getClient();
-    List<RoomDTO> rooms = List.of(fromJson(client.get(GET_ROOMS.getResolvedPath(actor)).asString().getBody(), RoomDTO[].class));
+    List<RoomDTO> rooms =
+        List.of(
+            fromJson(
+                client
+                    .get(GET_ROOMS.getResolvedPath(actor))
+                    .header(TEST_CASE_ID_HEADER, getTestcaseId())
+                    .asString()
+                    .getBody(),
+                RoomDTO[].class));
     updateAvailableRooms(rooms, actor);
     return rooms;
   }

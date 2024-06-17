@@ -229,28 +229,28 @@ public enum TestdriverApiEndpoint {
 
   public String getResolvedPath(Actor actor) {
     String resourcePath = this.getPath();
-    for (Class<? extends TestdriverApiAbility> c : this.neededAbilities) {
-      if (c == UseDeviceAbility.class) {
-        UseDeviceAbility ability = (UseDeviceAbility) actor.abilityTo(c);
+    for (Class<? extends TestdriverApiAbility> clazz : this.neededAbilities) {
+      if (clazz == UseDeviceAbility.class) {
+        UseDeviceAbility ability = (UseDeviceAbility) actor.abilityTo(clazz);
         requireNonNull(
             ability,
             "Actor '%s' needs the '%s' to perform this request!"
-                .formatted(actor.getName(), c.getSimpleName()));
+                .formatted(actor.getName(), clazz.getSimpleName()));
         resourcePath =
             resourcePath.replaceAll(
                 "\\{" + DEVICE_ID_VARIABLE + "\\}", String.valueOf(ability.getDeviceId()));
-      } else if (c == UseRoomAbility.class) {
-        UseRoomAbility ability = (UseRoomAbility) actor.abilityTo(c);
+      } else if (clazz == UseRoomAbility.class) {
+        UseRoomAbility ability = (UseRoomAbility) actor.abilityTo(clazz);
         requireNonNull(
             ability,
             "Actor '%s' needs the '%s' to perform this request!"
-                .formatted(actor.getName(), c.getSimpleName()));
+                .formatted(actor.getName(), clazz.getSimpleName()));
         resourcePath =
             resourcePath.replaceAll(
                 "\\{" + ROOM_ID_VARIABLE + "\\}", String.valueOf(ability.getActive().getRoomId()));
       } else {
         throw new TestRunException(
-            "Please implement behaviour for needed ability %s".formatted(c.getSimpleName()));
+            "Please implement behaviour for needed ability %s".formatted(clazz.getSimpleName()));
       }
     }
     return actor.abilityTo(CallAnApi.class).resolve("") + resourcePath;

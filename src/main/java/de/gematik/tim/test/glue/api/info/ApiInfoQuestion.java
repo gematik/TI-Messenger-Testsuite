@@ -52,7 +52,12 @@ public class ApiInfoQuestion extends ParallelQuestionRunner<InfoObjectDTO> {
     UnirestInstance client = getClient();
     InfoObjectDTO info =
         fromJson(
-            client.get(GET_INFO.getResolvedPath(actor)).asString().getBody(), InfoObjectDTO.class);
+            client
+                .get(GET_INFO.getResolvedPath(actor))
+                .header(TEST_CASE_ID_HEADER, getTestcaseId())
+                .asString()
+                .getBody(),
+            InfoObjectDTO.class);
     String homeserver = info.getHomeserver();
     homeserver = addHttpsIfNotSet(homeserver);
     actor.remember(HOME_SERVER, homeserver);

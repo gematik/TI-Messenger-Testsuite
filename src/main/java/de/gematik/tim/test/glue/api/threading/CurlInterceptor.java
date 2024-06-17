@@ -29,19 +29,32 @@ public class CurlInterceptor implements Interceptor {
   public void onRequest(HttpRequest<?> request, Config config) {
     String headers = extractHeadersFrom(request);
     String body = extractBody(request);
-    log.info("PARALLEL cURL command: curl -v {}{} -X {} {}",
-        headers, body, request.getHttpMethod(), request.getUrl());
+    log.info(
+        "PARALLEL cURL command: curl -v {}{} -X {} {}",
+        headers,
+        body,
+        request.getHttpMethod(),
+        request.getUrl());
   }
 
   @NotNull
   private static String extractHeadersFrom(HttpRequest<?> request) {
     StringBuilder headers = new StringBuilder();
-    request.getHeaders().all().forEach(
-        h -> headers.append("-H \"").append(h.getName()).append(": ").append(h.getValue()).append("\" "));
+    request
+        .getHeaders()
+        .all()
+        .forEach(
+            header ->
+                headers
+                    .append("-H \"")
+                    .append(header.getName())
+                    .append(": ")
+                    .append(header.getValue())
+                    .append("\" "));
     return headers.toString();
   }
 
   private String extractBody(HttpRequest<?> request) {
-    return request.getBody().map(b -> "-d " + b.uniPart().getValue()).orElse("");
+    return request.getBody().map(body -> "-d " + body.uniPart().getValue()).orElse("");
   }
 }

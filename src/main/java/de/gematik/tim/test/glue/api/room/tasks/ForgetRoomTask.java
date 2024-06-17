@@ -17,7 +17,9 @@
 package de.gematik.tim.test.glue.api.room.tasks;
 
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.FORGET_ROOM;
+import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.TEST_CASE_ID_HEADER;
 import static de.gematik.tim.test.glue.api.threading.ClientFactory.getClient;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTestcaseId;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.glue.api.exceptions.TestRunException;
@@ -49,7 +51,11 @@ public class ForgetRoomTask extends RoomSpecificTask {
   @Override
   public void runParallel() {
     UnirestInstance client = getClient();
-    HttpResponse<Empty> res = client.delete(FORGET_ROOM.getResolvedPath(actor)).asEmpty();
+    HttpResponse<Empty> res =
+        client
+            .delete(FORGET_ROOM.getResolvedPath(actor))
+            .header(TEST_CASE_ID_HEADER, getTestcaseId())
+            .asEmpty();
     if (res.isSuccess()) {
       actor.abilityTo(UseRoomAbility.class).removeCurrent();
     } else {

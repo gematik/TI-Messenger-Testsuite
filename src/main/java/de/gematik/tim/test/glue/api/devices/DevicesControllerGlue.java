@@ -20,7 +20,6 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.ACCOUNT_PASSWORD;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.CLAIMER_NAME;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HOME_SERVER;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_ORG_ADMIN;
-import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_DEVICES;
@@ -30,11 +29,13 @@ import static de.gematik.tim.test.glue.api.devices.ClientKind.CLIENT;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.INSURANT;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.PRACTITIONER;
+import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.TEST_CASE_ID_HEADER;
 import static de.gematik.tim.test.glue.api.login.LoginGlue.loginSuccess;
 import static de.gematik.tim.test.glue.api.login.LoginGlue.logsIn;
 import static de.gematik.tim.test.glue.api.login.LoginTask.login;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.prepareApiNameForHttp;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTestcaseId;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.registerActor;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.setParallelFlag;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.startTest;
@@ -101,13 +102,6 @@ public class DevicesControllerGlue {
     setAllowParallelClaim(true);
   }
 
-  @When("{word} get all devices")
-  @Wenn("{word} sich alle devices anschaut")
-  public void getDevices(String actor) {
-    theActorCalled(actor).attemptsTo(GET_DEVICES.request());
-    theActorCalled(actor).remember(LAST_RESPONSE, lastResponse());
-  }
-
   @Given("Following clients are claimed:")
   @Angenommen("Es werden folgende Clients reserviert:")
   public void followingClientsWillBeClaimed(DataTable data) {
@@ -139,7 +133,7 @@ public class DevicesControllerGlue {
       case PRACTITIONER -> reserveClient(claimInfo.actor, claimInfo.api, CLIENT, PRACTITIONER);
       case ORG_ADMIN -> reserveClient(claimInfo.actor, claimInfo.api, ORG_ADMIN);
       case CLIENT -> reserveClient(claimInfo.actor, claimInfo.api, CLIENT);
-      case INSURANT -> reserveClient(claimInfo.actor, claimInfo.api, INSURANT);
+      case INSURANT -> reserveClient(claimInfo.actor, claimInfo.api, CLIENT, INSURANT);
     }
   }
 
@@ -186,7 +180,8 @@ public class DevicesControllerGlue {
   @When("get all devices")
   @Wenn("die Liste der Geräte abgerufen wird")
   public void getDevicesCurrentActor() {
-    withCurrentActor(GET_DEVICES.request());
+    withCurrentActor(
+        GET_DEVICES.request().with(res -> res.header(TEST_CASE_ID_HEADER, getTestcaseId())));
   }
 
   @Then("{string} has claimed a device")

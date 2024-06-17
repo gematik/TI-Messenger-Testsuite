@@ -23,6 +23,7 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_LOGGED_IN;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.LOGIN;
+import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.TEST_CASE_ID_HEADER;
 import static de.gematik.tim.test.glue.api.fhir.practitioner.FhirAuthenticateTask.authenticateOnFhirVzd;
 import static de.gematik.tim.test.glue.api.login.IsLoggedInAbility.logOut;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
@@ -33,6 +34,7 @@ import static de.gematik.tim.test.glue.api.threading.ParallelExecutor.saveLastRe
 import static de.gematik.tim.test.glue.api.utils.ParallelUtils.fromJson;
 import static de.gematik.tim.test.glue.api.utils.ParallelUtils.toJson;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTestcaseId;
 import static de.gematik.tim.test.models.AuthStageNameDTO.BASICAUTH;
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,13 +45,12 @@ import de.gematik.tim.test.glue.api.threading.ParallelTaskRunner;
 import de.gematik.tim.test.glue.api.utils.TestsuiteInitializer;
 import de.gematik.tim.test.models.AccountDTO;
 import de.gematik.tim.test.models.LoginDTO;
+import java.util.Optional;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.UnirestInstance;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
-
-import java.util.Optional;
 
 public class LoginTask extends ParallelTaskRunner implements Task {
 
@@ -64,7 +65,6 @@ public class LoginTask extends ParallelTaskRunner implements Task {
     return this;
   }
 
-  //<editor-fold desc="Parallel">
   @Override
   public void runParallel() {
     UnirestInstance client = getParallelClient().get();
@@ -72,9 +72,18 @@ public class LoginTask extends ParallelTaskRunner implements Task {
 
     HttpResponse<JsonNode> resp;
     if (loginDto.isPresent()) {
-      resp = client.post(LOGIN.getResolvedPath(actor)).body(toJson(loginDto.get())).asJson();
+      resp =
+          client
+              .post(LOGIN.getResolvedPath(actor))
+              .header(TEST_CASE_ID_HEADER, getTestcaseId())
+              .body(toJson(loginDto.get()))
+              .asJson();
     } else {
-      resp = client.post(LOGIN.getResolvedPath(actor)).asJson();
+      resp =
+          client
+              .post(LOGIN.getResolvedPath(actor))
+              .header(TEST_CASE_ID_HEADER, getTestcaseId())
+              .asJson();
     }
     AccountDTO account = fromJson(resp.getBody().toString(), AccountDTO.class);
     if (actor.recall(IS_ORG_ADMIN) == null) {
@@ -83,9 +92,7 @@ public class LoginTask extends ParallelTaskRunner implements Task {
     saveLastResponseCode(actor.getName(), resp.getStatus());
     cleanRoomAndSetProperties(actor, account);
   }
-  //</editor-fold ">
 
-  //<editor-fold desc="Sync">
   @Override
   public <T extends Actor> void performAs(T actor) {
     Optional<LoginDTO> loginDto = getLoginDto(actor);
@@ -100,27 +107,30 @@ public class LoginTask extends ParallelTaskRunner implements Task {
     }
     cleanRoomAndSetProperties(actor, account);
   }
-  //</editor-fold>
 
-  //<editor-fold desc="General">
   private <T extends Actor> void cleanRoomAndSetProperties(T actor, AccountDTO account) {
     if (actor.recall(IS_ORG_ADMIN) == null) {
       assertThat(account.getMxid())
-        .as("The client mxid (%s) does not match the home server (%s)", account.getMxid(),
-            actor.recall(HOME_SERVER))
-        .contains(getHomeServerWithoutHttpAndPort(actor));
-    actor.remember(MX_ID, account.getMxid());
-    actor.remember(ACCOUNT_PASSWORD, account.getPassword());
-    actor.remember(DISPLAY_NAME, account.getDisplayName());}
+          .as(
+              "The client mxid (%s) does not match the home server (%s)",
+              account.getMxid(), actor.recall(HOME_SERVER))
+          .contains(getHomeServerWithoutHttpAndPort(actor));
+      actor.remember(MX_ID, account.getMxid());
+      actor.remember(ACCOUNT_PASSWORD, account.getPassword());
+      actor.remember(DISPLAY_NAME, account.getDisplayName());
+    }
     actor.can(logOut());
     actor.remember(IS_LOGGED_IN, true);
 
     if (clearRooms) {
-      ownRooms().withActor(actor).run()
-          .forEach(room -> {
-            leaveRoom().withName(room.getName()).withActor(actor).run();
-            forgetRoom().withName(room.getName()).withActor(actor).run();
-          });
+      ownRooms()
+          .withActor(actor)
+          .run()
+          .forEach(
+              room -> {
+                leaveRoom().withName(room.getName()).withActor(actor).run();
+                forgetRoom().withName(room.getName()).withActor(actor).run();
+              });
     }
     if (nonNull(actor.abilityTo(CanDeleteOwnMxidAbility.class))) {
       actor.attemptsTo(authenticateOnFhirVzd());
@@ -129,10 +139,11 @@ public class LoginTask extends ParallelTaskRunner implements Task {
 
   private <T extends Actor> Optional<LoginDTO> getLoginDto(T actor) {
     if (actor.recall(MX_ID) != null) {
-      return Optional.of(new LoginDTO()
-          .authStage(BASICAUTH)
-          .username(actor.recall(MX_ID))
-          .password(actor.recall(ACCOUNT_PASSWORD)));
+      return Optional.of(
+          new LoginDTO()
+              .authStage(BASICAUTH)
+              .username(actor.recall(MX_ID))
+              .password(actor.recall(ACCOUNT_PASSWORD)));
     }
     return Optional.empty();
   }
@@ -140,6 +151,4 @@ public class LoginTask extends ParallelTaskRunner implements Task {
   private static <T extends Actor> String getHomeServerWithoutHttpAndPort(T actor) {
     return actor.recall(HOME_SERVER).toString().replaceAll("http.?://", "").split(":")[0];
   }
-  //</editor-fold>
-
 }

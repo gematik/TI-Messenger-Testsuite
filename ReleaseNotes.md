@@ -4,6 +4,13 @@
 
 ## Link to TI-Messenger-testsuite [`docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
 
+## Release 1.3.1
+
+### Bugs
+
+- Fixes missing and double transactionIds
+- Removes work in progress tests
+
 ## Release 1.3.0
 
 ### Bugs

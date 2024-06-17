@@ -110,6 +110,7 @@ public class ClaimDeviceTask extends ParallelTaskRunner {
     UnirestInstance client = getParallelClient().get();
     return client
         .post(CLAIM_DEVICE.getResolvedPath(actor))
+        .header(TEST_CASE_ID_HEADER, getTestcaseId())
         .body(toJson(claimRequest))
         .asEmpty()
         .getStatus();
@@ -168,7 +169,6 @@ public class ClaimDeviceTask extends ParallelTaskRunner {
                         .pathParam("deviceId", useDeviceId)
                         .header("Accept", "application/json")
                         .header("Content-Type", "application/json")
-                        .header(TEST_CASE_ID_HEADER, getTestcaseId())
                         .body(claimRequest)));
   }
 
