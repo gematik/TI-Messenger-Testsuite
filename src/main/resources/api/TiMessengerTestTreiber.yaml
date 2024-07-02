@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: TiMessengerTestDriver
   description: REST interface to automate the test of a TI-Messenger client implementation.
-  version: 1.0.0
+  version: 1.1.0
   contact:
     name: gematik GmbH
     email: software-development@gematik.de
@@ -2308,17 +2308,7 @@ components:
 
     AuthorizationMode:
       description: "Information about the client authorization mode"
-      type: object
-
-      required:
-        - AuthorizationType
-      properties:
-        authorizationType:
-          $ref: "#/components/schemas/AuthorizationType"
-
-    AuthorizationType:
       type: string
-      description: "Type of authorization"
       example: "AllowAll"
       enum: [ AllowAll, BlockAll ]
 
@@ -2366,7 +2356,6 @@ components:
           type: integer
           description: "Duration in seconds this device should be exclusively claimed for. Resets after using device."
           minimum: 60
-          maximum: 300
           example: 180
 
     ClientCapabilities:

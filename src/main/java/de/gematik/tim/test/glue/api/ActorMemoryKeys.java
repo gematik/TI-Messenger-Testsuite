@@ -18,8 +18,7 @@ package de.gematik.tim.test.glue.api;
 
 public final class ActorMemoryKeys {
 
-  private ActorMemoryKeys() {
-  }
+  private ActorMemoryKeys() {}
 
   public static final String CLAIMER_NAME = "claimerName";
   public static final String DEVICE_ID = "deviceId";
@@ -37,4 +36,5 @@ public final class ActorMemoryKeys {
   public static final String OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX = "_ownStatusInRoom";
   public static final String HOME_SERVER = "homeServer";
   public static final String MATRIX_CLIENT_VERSION = "matrixClientVersion";
+  public static final String AUTHORIZATION_MODE = "authorizationMode";
 }
