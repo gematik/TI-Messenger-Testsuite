@@ -96,8 +96,6 @@ public class TestsuiteInitializer {
   public static final String FEATURE_ENDING = "feature";
   public static final String KEY_STORE_ENV_VAR = "TIM_KEYSTORE";
   public static final String KEY_STORE_PW_ENV_VAR = "TIM_KEYSTORE_PW";
-  public static final String TRUST_STORE_ENV_VAR = "TIM_TRUSTSTORE";
-  public static final String TRUST_STORE_PW_ENV_VAR = "TIM_TRUSTSTORE_PW";
   public static final String RUN_WITHOUT_CERT = "no configured cert found";
   public static final String MAX_RETRY_CLAIM_REQUEST_NAME = "maxRetryClaimRequest";
   public static final String NO_PARALLEL_TAG = "@Ctl:NoParallel";
@@ -109,40 +107,41 @@ public class TestsuiteInitializer {
   static Long pollInterval;
 
   static {
-    Properties p = new Properties();
+    Properties properties = new Properties();
     try {
-      FileInputStream is = FileUtils.openInputStream(new File(MVN_PROPERTIES_LOCATION));
-      p.load(is);
+      FileInputStream fileStream = FileUtils.openInputStream(new File(MVN_PROPERTIES_LOCATION));
+      properties.load(fileStream);
     } catch (IOException e) {
       log.error("Could not find any maven properties at " + MVN_PROPERTIES_LOCATION);
       throw new IllegalArgumentException(e);
     }
-    String timeoutString = p.getProperty(TIMEOUT_PROPERTY_NAME);
-    String pollIntervalString = p.getProperty(POLL_INTERVAL_PROPERTY_NAME);
-    RUN_WITHOUT_RETRY = Boolean.parseBoolean(p.getProperty(RUN_WITHOUT_RETRY_PROPERTY_NAME));
+    String timeoutString = properties.getProperty(TIMEOUT_PROPERTY_NAME);
+    String pollIntervalString = properties.getProperty(POLL_INTERVAL_PROPERTY_NAME);
+    RUN_WITHOUT_RETRY =
+        Boolean.parseBoolean(properties.getProperty(RUN_WITHOUT_RETRY_PROPERTY_NAME));
     CLAIM_DURATION =
         Integer.parseInt(
-            isBlank(p.getProperty(CLAIM_DURATION_PROPERTY_NAME))
+            isBlank(properties.getProperty(CLAIM_DURATION_PROPERTY_NAME))
                 ? "180"
-                : p.getProperty(CLAIM_DURATION_PROPERTY_NAME));
+                : properties.getProperty(CLAIM_DURATION_PROPERTY_NAME));
     HTTP_TIMEOUT =
         Integer.parseInt(
-            isBlank(p.getProperty(HTTP_TIMEOUT_PROPERTY_NAME))
+            isBlank(properties.getProperty(HTTP_TIMEOUT_PROPERTY_NAME))
                 ? "180"
-                : p.getProperty(HTTP_TIMEOUT_PROPERTY_NAME));
+                : properties.getProperty(HTTP_TIMEOUT_PROPERTY_NAME));
     MAX_RETRY_CLAIM_REQUEST =
         Integer.parseInt(
-            isBlank(p.getProperty(MAX_RETRY_CLAIM_REQUEST_NAME))
+            isBlank(properties.getProperty(MAX_RETRY_CLAIM_REQUEST_NAME))
                 ? "3"
-                : p.getProperty(MAX_RETRY_CLAIM_REQUEST_NAME));
+                : properties.getProperty(MAX_RETRY_CLAIM_REQUEST_NAME));
     CHECK_ROOM_STATE_FAIL =
-        Boolean.parseBoolean(p.getProperty(CHECK_ROOM_STATE_FAIL_PROPERTY_NAME));
+        Boolean.parseBoolean(properties.getProperty(CHECK_ROOM_STATE_FAIL_PROPERTY_NAME));
     CERT_CN = parseCn();
-    CLEAR_ROOMS = Boolean.parseBoolean(p.getProperty(CLEAR_ROOMS_PROPERTY_NAME));
-    CLAIM_PARALLEL = Boolean.parseBoolean(p.getProperty(CLAIM_PARALLEL_PROPERTY_NAME));
-    COMBINE_ITEMS_FILE_URL = p.getProperty(COMBINE_ITEMS_FILE_PROPERTY_NAME);
+    CLEAR_ROOMS = Boolean.parseBoolean(properties.getProperty(CLEAR_ROOMS_PROPERTY_NAME));
+    CLAIM_PARALLEL = Boolean.parseBoolean(properties.getProperty(CLAIM_PARALLEL_PROPERTY_NAME));
+    COMBINE_ITEMS_FILE_URL = properties.getProperty(COMBINE_ITEMS_FILE_PROPERTY_NAME);
     COMBINE_ITEMS_FILE_NAME = new File(COMBINE_ITEMS_FILE_URL).getName();
-    FEATURE_PATH = p.getProperty(FEATURE_PATH_PROPERTY_NAME);
+    FEATURE_PATH = properties.getProperty(FEATURE_PATH_PROPERTY_NAME);
     try {
       TIMEOUT = Long.parseLong(timeoutString);
       pollInterval = Long.parseLong(pollIntervalString);
@@ -160,16 +159,16 @@ public class TestsuiteInitializer {
     RestAssured.config().objectMapperConfig(config);
     addHostsToTigerProxy();
     configRestAssured();
-    saveMavenProperties(p);
+    saveMavenProperties(properties);
   }
 
-  private static void saveMavenProperties(Properties p) {
+  private static void saveMavenProperties(Properties properties) {
     StringBuilder sb = new StringBuilder();
     List<String> secrets = List.of("tim.keystore.pw", "tim.truststore.pw");
-    p.forEach(
-        (k, v) -> {
-          if (secrets.stream().noneMatch(secret -> k.toString().equals(secret))) {
-            sb.append("%s=%s%n".formatted(k, v));
+    properties.forEach(
+        (propertyKey, propertyValue) -> {
+          if (secrets.stream().noneMatch(secret -> propertyKey.toString().equals(secret))) {
+            sb.append("%s=%s%n".formatted(propertyKey, propertyValue));
           }
         });
     try {
@@ -192,7 +191,6 @@ public class TestsuiteInitializer {
   }
 
   private static void configRestAssured() {
-
     HttpClientConfig httpClientFactory =
         HttpClientConfig.httpClientConfig()
             .setParam("http.socket.timeout", HTTP_TIMEOUT * 1000)
@@ -262,7 +260,7 @@ public class TestsuiteInitializer {
       RDN cn = new JcaX509CertificateHolder(cert).getSubject().getRDNs(BCStyle.CN)[0];
       return cn.getFirst().getValue().toString();
     } catch (Exception ex) {
-      log.error("Could not parse certificat" + " KEY_STORE: " + System.getenv(KEY_STORE_ENV_VAR));
+      log.error("Could not parse certificate KEY_STORE: {}", System.getenv(KEY_STORE_ENV_VAR));
     }
     return RUN_WITHOUT_CERT;
   }

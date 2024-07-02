@@ -108,4 +108,7 @@ public final class TestdriverApiPath {
 
   public static final String MEDIA_DOWNLOAD_PATH =
       MEDIA_PATH + "/" + PATH_VARIABLE.formatted(MEDIA_ID_VARIABLE);
+
+  // AUTHORIZATION
+  public static final String AUTHORIZATION_PATH = DEVICE_ID_PATH + "/authorizationMode";
 }

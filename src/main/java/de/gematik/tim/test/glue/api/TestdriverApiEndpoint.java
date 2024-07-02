@@ -21,6 +21,7 @@ import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.HttpMethod.GET;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.HttpMethod.POST;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.HttpMethod.PUT;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ACCOUNT_PATH;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.AUTHORIZATION_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.CLAIM_DEVICE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.CONTACT_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.DELETE_CONTACT_PATH;
@@ -206,7 +207,11 @@ public enum TestdriverApiEndpoint {
   // CONTACT-MANAGEMENT
   GET_CONTACT(GET, CONTACT_PATH, UseDeviceAbility.class),
   ADD_CONTACT(POST, CONTACT_PATH, UseDeviceAbility.class),
-  DELETE_CONTACT(DELETE, DELETE_CONTACT_PATH, UseDeviceAbility.class);
+  DELETE_CONTACT(DELETE, DELETE_CONTACT_PATH, UseDeviceAbility.class),
+
+  // AUTHORIZATION
+  GET_AUTHORIZATION_MODE(GET, AUTHORIZATION_PATH, UseDeviceAbility.class),
+  SET_AUTHORIZATION_MODE(POST, AUTHORIZATION_PATH, UseDeviceAbility.class);
 
   private final HttpMethod httpMethod;
   private final String path;

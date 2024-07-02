@@ -4,6 +4,20 @@
 
 ## Link to TI-Messenger-testsuite [`docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
 
+## Release 1.3.3
+
+### Bugs
+
+- fixes issue with release
+
+## Release 1.3.2
+
+### Changes
+
+- save tiger.yml
+- API change, non-breaking: removes maximum for ClaimDeviceRequest.claimFor
+- API change, breaking only ePa: removes AuthorizationType
+
 ## Release 1.3.1
 
 ### Bugs
