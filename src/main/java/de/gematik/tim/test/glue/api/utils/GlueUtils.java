@@ -373,8 +373,8 @@ public class GlueUtils {
                           () ->
                               new AssertionError(
                                   format(
-                                      "Mxid %s should not be in room %s",
-                                      member.getMxid(), room.getName())));
+                                      "Mxid %s should not be in room %s, or to many rooms for this mxid were found.",
+                                      member.getMxid(), room.getRoomId())));
               RoomMembershipStateDTO status =
                   actorForMember.recall(room.getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX);
               if (!member.getMembershipState().equals(status)) {

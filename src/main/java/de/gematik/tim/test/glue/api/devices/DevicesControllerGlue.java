@@ -49,6 +49,7 @@ import static net.serenitybdd.screenplay.actors.OnStage.withCurrentActor;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.springframework.http.HttpStatus.OK;
 
+import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.glue.api.threading.ParallelExecutor;
 import de.gematik.tim.test.glue.api.utils.IndividualLogger;
@@ -129,11 +130,15 @@ public class DevicesControllerGlue {
   }
 
   private void claimSpecificDevice(ClaimInfo claimInfo) {
-    switch (claimInfo.kind) {
-      case PRACTITIONER -> reserveClient(claimInfo.actor, claimInfo.api, CLIENT, PRACTITIONER);
-      case ORG_ADMIN -> reserveClient(claimInfo.actor, claimInfo.api, ORG_ADMIN);
-      case CLIENT -> reserveClient(claimInfo.actor, claimInfo.api, CLIENT);
-      case INSURANT -> reserveClient(claimInfo.actor, claimInfo.api, CLIENT, INSURANT);
+    try {
+      switch (claimInfo.kind) {
+        case PRACTITIONER -> reserveClient(claimInfo.actor, claimInfo.api, CLIENT, PRACTITIONER);
+        case ORG_ADMIN -> reserveClient(claimInfo.actor, claimInfo.api, ORG_ADMIN);
+        case CLIENT -> reserveClient(claimInfo.actor, claimInfo.api, CLIENT);
+        case INSURANT -> reserveClient(claimInfo.actor, claimInfo.api, CLIENT, INSURANT);
+      }
+    } catch (TestRunException e) {
+      log.error("Error while claiming device", e);
     }
   }
 
