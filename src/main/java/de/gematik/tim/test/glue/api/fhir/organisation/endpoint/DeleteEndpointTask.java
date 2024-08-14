@@ -22,23 +22,34 @@ import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 import io.restassured.response.Response;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
 
+@Slf4j
 public class DeleteEndpointTask extends EndpointSpecificTask {
 
   public static DeleteEndpointTask deleteEndPoint() {
     return new DeleteEndpointTask();
   }
 
+  @SneakyThrows
   @Override
   public <T extends Actor> void performAs(T actor) {
-    super.performAs(actor);
-    actor.attemptsTo(DELETE_ENDPOINT.request());
+    try {
+      super.performAs(actor);
+      actor.attemptsTo(DELETE_ENDPOINT.request());
 
-    Response response = lastResponse();
-    if (response.statusCode() == NO_CONTENT.value()) {
-      UseEndpointAbility useEndpointAbility = actor.abilityTo(UseEndpointAbility.class);
-      removeEndpointFromActor(useEndpointAbility.getActiveKey(), actor);
+      Response response = lastResponse();
+      if (response.statusCode() == NO_CONTENT.value()) {
+        UseEndpointAbility useEndpointAbility = actor.abilityTo(UseEndpointAbility.class);
+        removeEndpointFromActor(useEndpointAbility.getActiveKey(), actor);
+      }
+    } catch (RuntimeException e) {
+      log.error(
+          String.format(
+              "Attempted to remove endpoint %s, but got status code: %d ",
+              DELETE_ENDPOINT.getPath(), lastResponse().statusCode()));
     }
   }
 }

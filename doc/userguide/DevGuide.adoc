@@ -58,14 +58,18 @@ Mit dieser Konfiguration müssen alle Links in der link:{sourcedir}/test/resourc
 
 === Cucumber-Test-Combinations-Maven-Plugin
 
-Das Parameter-Plugin erstellt aus den bereitgestellten Schnittstellen aus dem link:{sourcedir}/test/resources/combine_items.json[combine_items.json] alle nach den Filtern mögliche Kombinationen für jeden einzelnen Testfall. Hierzu werden alle Templates aus dem Testordner in den Buildordner kopiert und mit den jeweiligen Tabellen befüllt. Die so bearbeiteten Files werden beim starten der Testsuite herangezogen.
+Das Parameter-Plugin erstellt aus den bereitgestellten Schnittstellen aus dem link:{sourcedir}/test/resources/combine_items.json[combine_items.json] alle nach den Filtern mögliche Kombinationen für jeden einzelnen Testfall.
+Hierzu werden alle Templates aus dem Testordner in den Buildordner kopiert und mit den jeweiligen Tabellen befüllt.
+Die so bearbeiteten Files werden beim starten der Testsuite herangezogen.
 
-Bei einer geringen Anzahl von Schnittstellen mit zu wenig Variation in ihren Eigenschaften, kann es schnell dazu führen, dass das Plugin den Buildvorgang abbricht. Um dies zu ignorieren können die Schritte konfiguriert werden.
+Bei einer geringen Anzahl von Schnittstellen mit zu wenig Variation in ihren Eigenschaften, kann es schnell dazu führen, dass das Plugin den Buildvorgang abbricht.
+Um dies zu ignorieren können die Schritte konfiguriert werden.
 
 ==== Disable prepare-items (autofill combine_items.json)
 
 Per default fragt das Plugin die Info-Schnittstelle ab und fügt notwendige Tags und Properties hinzu.
-Für eine genauere Steuerung oder sollte die Info-Schnittstelle noch nicht vollständig implementiert sein, kann die `combine_items.json` händisch erstellt und verwendet werden. Hierzu kann maven mit dem Profil `disable-prepare-items` verwendet werden.
+Für eine genauere Steuerung oder sollte die Info-Schnittstelle noch nicht vollständig implementiert sein, kann die `combine_items.json` händisch erstellt und verwendet werden.
+Hierzu kann maven mit dem Profil `disable-prepare-items` verwendet werden.
 
 ----
 maven clean install -P disable-prepare-items
@@ -73,25 +77,43 @@ maven clean install -P disable-prepare-items
 
 ==== Disable break
 
-Mit dem Profil `dont-break-preperation` kann das Plugin so eingestellt werden, dass es bei Fehlern den Buildprozess nicht mehr abbricht. Alle möglichen Informationen und Kombinationen werden erstellt. Ein Fehlerlog kann später `./target/generated-combine/errorLog.txt` eingesehen werden.
+Mit dem Profil `dont-break-preperation` kann das Plugin so eingestellt werden, dass es bei Fehlern den Buildprozess nicht mehr abbricht.
+Alle möglichen Informationen und Kombinationen werden erstellt.
+Ein Fehlerlog kann später `./target/generated-combine/errorLog.txt` eingesehen werden.
 
 === Claimzeit beeinflussen
 
-Über den Parameter `-DclaimDuration=<seconds>` kann die Zeit beeinflusst werden, die ein Device geclaimed bleiben soll. Es sind nur ganzzahlige Sekundenwerte möglich.
+Über den Parameter `-DclaimDuration=<seconds>` kann die Zeit beeinflusst werden, die ein Device geclaimed bleiben soll.
+Es sind nur ganzzahlige Sekundenwerte möglich.
 
 === Parallel claims
 
-Über den Parameter `-DclaimParallel=<true/false>` kann angegeben werden, ob claims parallelisiert ausgeführt werden sollen. Per default ist dies deaktiviert. Parallele claims können für einzelne Testfälle oder Feature Files deaktiviert werden, indem sie mit dem Tag `@NoParallel` versehen werden. Das kann hilfreich sein, wenn es zu Problemen mit dem claiming kommt.
+Über den Parameter `-DclaimParallel=<true/false>` kann angegeben werden, ob claims parallelisiert ausgeführt werden sollen.
+Per default ist dies deaktiviert.
+Parallele claims können für einzelne Testfälle oder Feature Files deaktiviert werden, indem sie mit dem Tag `@NoParallel` versehen werden.
+Das kann hilfreich sein, wenn es zu Problemen mit dem claiming kommt.
 
 === Testcase id
 
-Every testcase run is identified with the testcase name and an id that identifies the specific run. This id is sent in every request in the header `Test-Case-Id`. It is build like `<TestcaseId>/<TestrunUUID>`.
-
+Every testcase run is identified with the testcase name and an id that identifies the specific run.
+This id is sent in every request in the header `Test-Case-Id`.
+It is build like `<TestcaseId>/<TestrunUUID>`.
 
 === Run CI-Pipeline locally
 
 Please keep in mind to start compose-ci-local.yaml bevor running CI-Profile locally!!!
 
+=== Cleanup Trigger
+
+The cleanup trigger is used to avoid data-trash , cause of broken testcases , in the database.
+It is triggered before every testcase by the api call "cleanup" tagged with signalTestStart.
+For more information see the API: link:https://github.com/gematik/TI-Messenger-Testsuite/blob/main/src/main/resources/api/TiMessengerTestTreiber.yaml[testdriver.yaml]
+OrgAdmins will be filtered by using the example datatable from this testcase.
+If the testcase has no OrgAdmins, they will be filtered by the home-servers used in this testcase.
+
 === Known issues
 
-. Es kann beim Generieren des Codes aus der link:https://github.com/gematik/api-ti-messenger/blob/main/src/openapi/TiMessengerTestTreiber.yaml[Testtreiberschnittstelle] passieren, dass zusätzliche `/` in den Requestpath erstellt werden. Diese können zu Inkompatibilitäten führen. Dies kann auf Seiten der Testsuite umgangen werden indem in der Klasse link:{sourcedir}/main/java/de/gematik/tim/test/glue/api/TestdriverApiPath.java[TestdriverApiPath] bei INFO_PATH und DEVICES_PATH der vorgestellte `/` entfernt wird.
+. Es kann beim Generieren des Codes aus der link:https://github.com/gematik/api-ti-messenger/blob/main/src/openapi/TiMessengerTestTreiber.yaml[Testtreiberschnittstelle] passieren, dass zusätzliche `/` in den Requestpath erstellt werden.
+Diese können zu Inkompatibilitäten führen.
+Dies kann auf Seiten der Testsuite umgangen werden indem in der Klasse link:{sourcedir}/main/java/de/gematik/tim/test/glue/api/TestdriverApiPath.java[TestdriverApiPath] bei INFO_PATH und DEVICES_PATH der vorgestellte `/` entfernt wird.
+

@@ -24,7 +24,6 @@ import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.pollInterv
 import static java.lang.String.format;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
 import de.gematik.tim.test.glue.api.exceptions.RequestedResourceNotAvailable;
@@ -146,16 +145,12 @@ public class RequestResponseUtils {
       return lastResponse().as(clazz);
     } catch (Exception e) {
       log.error("Could not parse response: ", e);
-      assertThat(false)
-          .as(
-              "Expected "
-                  + clazz.getSimpleName()
-                  + " but got:\n"
-                  + lastResponse().body().prettyPrint()
-                  + " with status code "
-                  + lastResponse().statusCode())
-          .isTrue();
+      throw new TestRunException("Expected "
+              + clazz.getSimpleName()
+              + " but got:\n"
+              + lastResponse().body().prettyPrint()
+              + " with status code "
+              + lastResponse().statusCode(), e);
     }
-    throw new RequestedResourceNotAvailable("This code should not be reached!");
   }
 }

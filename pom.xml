@@ -6,7 +6,7 @@
 
   <groupId>de.gematik.tim.test</groupId>
   <artifactId>TI-Messenger-Testsuite</artifactId>
-  <version>1.3.3</version>
+  <version>1.3.4</version>
   <packaging>jar</packaging>
   <name>TI-Messenger-Testsuite</name>
   <description>Testsuite to check functionality of TI-Messenger-Clients</description>
@@ -28,7 +28,7 @@
     <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
     <maven.javadoc.plugin.version>3.6.3</maven.javadoc.plugin.version>
     <junit.engine.version>5.8.2</junit.engine.version>
-    <ti.m.mtls.certs.version>1.3.0</ti.m.mtls.certs.version>
+    <ti.m.mtls.certs.version>1.3.1</ti.m.mtls.certs.version>
     <ti.m.sim.version>5.0.2</ti.m.sim.version>
 
     <feature_dir>${project.build.directory}/features/</feature_dir>
@@ -770,6 +770,31 @@
           <version>${ti.m.mtls.certs.version}</version>
         </dependency>
       </dependencies>
+    </profile>
+    <profile>
+      <id>reference-ci</id>
+      <properties>
+        <combine.items.file>
+          ${project.build.directory}/profile-resources/combine_items_prod.json
+        </combine.items.file>
+        <tiger.config.file>
+          ${project.build.directory}/profile-resources/tiger-prod.yml
+        </tiger.config.file>
+        <tim.truststore>
+          ${project.build.directory}/profile-resources/gemRoot/cert/gem/gemTruststore.p12
+        </tim.truststore>
+        <tim.truststore.pw>changeit</tim.truststore.pw>
+        <tim.keystore>
+          ${project.build.directory}/profile-resources/gemRoot/cert/gem/gemKeystore.p12
+        </tim.keystore>
+        <tim.keystore.pw>changeit</tim.keystore.pw>
+        <timeout>240</timeout>
+        <pollInterval>5</pollInterval>
+        <claimDuration>300</claimDuration>
+        <soft-filter.to.hard>true</soft-filter.to.hard>
+        <cutest.count.format>txt,json</cutest.count.format>
+        <skip.saving.reports>true</skip.saving.reports>
+      </properties>
     </profile>
     <profile>
       <id>disable-prepare-items</id>

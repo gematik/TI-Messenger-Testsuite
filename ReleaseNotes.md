@@ -4,11 +4,24 @@
 
 ## Link to TI-Messenger-testsuite [`docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
 
+## Release 1.3.4
+
+### Changes
+
+- new error messages for room-checks
+
+### Bugs
+
+- TiMessengerTestTreiber.yaml: replaced location with endpoint (see GitHub issue: https://github.com/gematik/TI-Messenger-Testsuite/issues/38)
+- TiMessengerTestTreiber.yaml: fixed one operationId to camelCase(see GitHub issue: https://github.com/gematik/TI-Messenger-Testsuite/issues/37)
+
 ## Release 1.3.3
 
 ### Bugs
 
 - fixes issue with release
+- adjusted error handling so error messages are more accurate
+- new error message in case delete endpoint fails
 
 ## Release 1.3.2
 
@@ -29,12 +42,14 @@
 
 ### Bugs
 
-- Fixes Testcase 0.05 which now correctly calls '/.well-known/matrix/client' instead of '/.well-known/matrix/server' to
+- Fixes Testcase 0.05 which now correctly calls '/.well-known/matrix/client' instead of '
+  /.well-known/matrix/server' to
   get the server address (see https://github.com/gematik/TI-Messenger-Testsuite/issues/28)
 
 ### Changes
 
-- Refactors some test to avoid an issue with miscounted tests in the Serenity report, no functional changes
+- Refactors some test to avoid an issue with miscounted tests in the Serenity report, no functional
+  changes
 - Deleted feature files for OrgOnly tests
 - Deleted chapter 9.3 in testsuite.adoc
 - Membership status 'leave' will be treated the same as no status, even after room was forgotten
@@ -50,14 +65,16 @@
 - Additional data will be written into the report directory (additional-data)
 - new serenityReportsFolderPath ${basedir}/reports/${build.time}/report
 - change default test run
-- test driver API: adds missing transactionIds, required name field for FhirHealthcareService and sorts schemas
+- test driver API: adds missing transactionIds, required name field for FhirHealthcareService and
+  sorts schemas
 - new default claim duration 600 sec
 
 ## Release 1.2.0
 
 ### Changes
 
-- Moves test driver API from api-ti-messenger repository into TI-Messenger-Testsuite repository under
+- Moves test driver API from api-ti-messenger repository into TI-Messenger-Testsuite repository
+  under
   src/main/resources/api/TiMessengerTestTreiber.yaml
 - Adds functions required for TI-M ePa into test driver API
 
@@ -71,7 +88,8 @@
 
 - Adds new test step for healthcare service search by name
 - New folder structure in src/test/resources/templates/FeatureFiles
-- New feature files for OrgOnly tests in src/test/resources/templates/FeatureFiles/TI-M_11X/ZusatztestsOrgOnly
+- New feature files for OrgOnly tests in
+  src/test/resources/templates/FeatureFiles/TI-M_11X/ZusatztestsOrgOnly
   Note: For the purpose and usage please read chapter 9.3 in testsuite.adoc
 - New documentation file for TI-Messenger (ePA) (Testsuite_ePA.adoc)
 
@@ -123,7 +141,8 @@
 ### Features
 
 - Rename @NoParallel to @Ctl:NoParallel
-- Change step @Und("{string} reserviert ein Client und meldet sich mit den Daten von {string} an der Schnittstelle
+- Change step @Und("{string} reserviert ein Client und meldet sich mit den Daten von {string} an der
+  Schnittstelle
   {word} an")
 - New directory for saved mvn properties
 
@@ -132,23 +151,27 @@
 ### Bugs
 
 - Adjusted the AllowDoubleLineup Filter (set to ture) in Feature File 14 for TCs 14.02, 14.03, 14.04
-- Regression for parsing FhirResources fixed. The custom mapper is used and therefor won't break if the send data
+- Regression for parsing FhirResources fixed. The custom mapper is used and therefor won't break if
+  the send data
   contains more fields than defined in the TestDriverApi.
 
 ## Release 0.10.4
 
 ### Bugs
 
-- Added https:// for homeserver url in the request to get the server version, if neither http nor https is given in the
+- Added https:// for homeserver url in the request to get the server version, if neither http nor
+  https is given in the
   test-driver info.
-- Error for parsing FhirSearchResultDTO fixed. Now the custom mapper is used and therefor don't break if the send data
+- Error for parsing FhirSearchResultDTO fixed. Now the custom mapper is used and therefor don't
+  break if the send data
   contains unexpected fields.
 
 ## Release 0.10.3
 
 ### Bugs
 
-- Membership-state-check search for roomId and not for roomName. This caused problems because the roomName in direct
+- Membership-state-check search for roomId and not for roomName. This caused problems because the
+  roomName in direct
   chats differ and are not deterministic.
 
 ### Features
@@ -166,7 +189,8 @@
 ## Features
 
 - New Tag @Ctl:BasicTest - Verification of all functions of the Testsuite/ -steps
-- Testcase 00.05 request /.well-known/matrix/server endpoint to get homeserver and request /_matrix/client/versions on
+- Testcase 00.05 request /.well-known/matrix/server endpoint to get homeserver and request /_
+  matrix/client/versions on
   that. If not found, version request still goes to the home-server url from test-driver info
 
 ### Changes
@@ -175,8 +199,10 @@
 
 ### Bugs
 
-- It's no longer expected for an invited member, to get a full member list in the getRooms request for rooms they are
-  invited to. Instead, it is sufficient when only the invited member themself is returned as member of the room they are
+- It's no longer expected for an invited member, to get a full member list in the getRooms request
+  for rooms they are
+  invited to. Instead, it is sufficient when only the invited member themself is returned as member
+  of the room they are
   invited to.
 
 ## Release 0.10.0
@@ -184,12 +210,14 @@
 ## Features
 
 - Updated to new tiger version 2.3.2
-- Fits to TestdriverApi 0.9.4 -> Add room version and check rooms for valid room version in the range 1 to 10
+- Fits to TestdriverApi 0.9.4 -> Add room version and check rooms for valid room version in the
+  range 1 to 10
 - Activates new Testcases 10.20 and 10.21 - User verlässt den Chat-Raum
 - The clean-up before each test will be set as two times the property '
   timeout'  [`read more`](doc/userguide/GettingStarted.adoc)
 - All glue steps now have the German and a translated English version
-- The mxid to be stored in the FHIR VZD is only accepted and expected in its url form (i.e. "matrix:u/name:homeserver"),
+- The mxid to be stored in the FHIR VZD is only accepted and expected in its url form (i.e. "matrix:
+  u/name:homeserver"),
   support for the matrix format was removed.
 - Removed TFs 00.2, 00.5 & 04.2 - before all in status WIP
 - New Testcase 00.07 Abfrage der Matrix-Server-Version. Request Matrix-Homeserver-Api directly
@@ -204,28 +232,33 @@
 ### Features
 
 - Create room request: Access Lvl set to private
-- Check room states in different stages. Hard fail can be switched off. [`read more`](doc/userguide/GettingStarted.adoc)
+- Check room states in different stages. Hard fail can be switched
+  off. [`read more`](doc/userguide/GettingStarted.adoc)
 - New Testcases 10.20 and 10.21 - User verlässt den Chat-Raum
 - Update Combinations-Plugin for better view of used groups in serenity report
 - Reworked claim parallel
 
 ### Bugs
 
-- Matrix url changed to correct schema like defined at https://spec.matrix.org/v1.9/appendices/#matrix-uri-scheme
+- Matrix url changed to correct schema like defined
+  at https://spec.matrix.org/v1.9/appendices/#matrix-uri-scheme
 - Clean step runs with correct client cert (Use tiger proxy)
 
 ## Release 0.9.7
 
 ### Features
 
-- Testsuite checks if the address in endpoint from VZD is in url format. :warning: For this version the testsuite will
+- Testsuite checks if the address in endpoint from VZD is in url format. :warning: For this version
+  the testsuite will
   handle both (url and matrix format). For upcoming versions this will be removed
 - Adjusting Testsuite.adoc for a new Testcase
 - TestCase 03.02 adjusted
 - New Test 03.05 Healthcare-Service durch Org-Admin anlegen und Endpointname aktualisieren
 - Created endpoint get a random name
-- Fits to TestdriverApi 0.9.3 -> New api to clean system implemented. The testsuite triggers the clean-endpoint for each
-  involved home-server on org-admin-api before each test-execution. Continues test as soon as all apis have sent any
+- Fits to TestdriverApi 0.9.3 -> New api to clean system implemented. The testsuite triggers the
+  clean-endpoint for each
+  involved home-server on org-admin-api before each test-execution. Continues test as soon as all
+  apis have sent any
   response. (Could also respond with error 404, so it is not needed to implement)
 - Update Cucumber-Test-Parameter-Plugin for better error-messages and counting
 
@@ -234,20 +267,25 @@
 ### Features
 
 - Tiger version update to 2.2.0
-- Cutest-Combination-Plugin version update to 2.9.13 -> additional report file for all examples that should be executed
+- Cutest-Combination-Plugin version update to 2.9.13 -> additional report file for all examples that
+  should be executed
 - Used testsuite-version is now saved in report directory
-- Improved error messages for not parsable responses, especially errors. Last response and expected value are now shown
+- Improved error messages for not parsable responses, especially errors. Last response and expected
+  value are now shown
   also in serenity-report and do now throw an assertion exception
 - Testsuite sends several cleanup requests
-  for `healthcare services, unclaim device, logouts, leave room and forget room` if no 2XX response delivered. This will
+  for `healthcare services, unclaim device, logouts, leave room and forget room` if no 2XX response
+  delivered. This will
   be tried for 20 seconds. After this time the testsuite continues
 - HttpTimout for serentiy set to 5 minutes. Can be configured by -DhttpTimeout=\<seconds>
-- If a claim device fails, the testsuite will retry to claim up to 3 times (configurable via environment
+- If a claim device fails, the testsuite will retry to claim up to 3 times (configurable via
+  environment
   variable <maxRetryClaimRequest> [`read more (Parameter die das Verhalten der Testsuite anpassen)`](doc/userguide/GettingStarted.adoc)
 
 ### Bugfixes
 
-- Parsing exception for some FHIR-resources do not throw an error anymore when additionally properties delivered
+- Parsing exception for some FHIR-resources do not throw an error anymore when additionally
+  properties delivered
 - "TestcaseId is already used" - Bug is now fixed
 - Failed tear downs do not throw exception and each actor will execute his teardowns
 
@@ -258,7 +296,8 @@
 - HealthcareServiceNames, RoomNames and Messages are generate randomly with timestamps
 - User search for complete HealthcareServiceName. This reduces the search result from FHIR-VZD
 - WIP (future deleted) TC 00.02, 00.05 & 04.02
-- Update cucumber-test-combinations-maven-plugin to version 2.9.12 and take advantage of the SoftFilterFeature
+- Update cucumber-test-combinations-maven-plugin to version 2.9.12 and take advantage of the
+  SoftFilterFeature
 
 ### Bugfixes
 
@@ -272,8 +311,10 @@
 
 ### Bugfixes
 
-- Feature 3.4 -> do not cause error if _get endpoints_ of HealthcareService dos not include HealthcareService resource
-- Feature 7.1, 7.2, 9.1, 9.2 -> does not look for one single address anymore. No error if one displayname comes up twice
+- Feature 3.4 -> do not cause error if _get endpoints_ of HealthcareService dos not include
+  HealthcareService resource
+- Feature 7.1, 7.2, 9.1, 9.2 -> does not look for one single address anymore. No error if one
+  displayname comes up twice
 
 ## Release 0.9.3
 
@@ -281,9 +322,11 @@
 
 - Status for test cases in Feature File 06 is now 'implemented'
 - Make use of the new `breakOnFailedRequest` and `breakOnContextError` parameters of
-  the [test combination plugin](https://github.com/gematik/cucumber-test-combinations-maven-plugin) -> now it's possible
+  the [test combination plugin](https://github.com/gematik/cucumber-test-combinations-maven-plugin) ->
+  now it's possible
   to keep the build running if an API responds with unexpected context or does not respond at all
-- Toggle implemented to clean old rooms of an account. Can be activated via environment variable 'clearRooms'
+- Toggle implemented to clean old rooms of an account. Can be activated via environment variable '
+  clearRooms'
 
 ### Bugfixes
 
@@ -298,7 +341,8 @@
 ### Features
 
 - Feature File 14 does check for TIM custom event and TIM custom roomType in create event
-- Check expression of goal `check` have been edited. For apis that provide an orgAdmin and client simultaneously the
+- Check expression of goal `check` have been edited. For apis that provide an orgAdmin and client
+  simultaneously the
   amount of needed devices will be checked to be greater than four.
 - Names of healthcare-services now get generated with timestamp to be unique and shrink
 - TestCases in Feature File 13 adjusted. New steps for export/import of session keys
@@ -306,13 +350,16 @@
 
 ### Bugfixes
 
-- Join room will be performed multiple times till success or set timeout. This is needed to avoid false negative because
+- Join room will be performed multiple times till success or set timeout. This is needed to avoid
+  false negative because
   of sync issues between homeservers
-- Checks belonging the membership status of room members will be performed multiple times, till success or set timeout.
+- Checks belonging the membership status of room members will be performed multiple times, till
+  success or set timeout.
   This is needed to avoid false negative because of sync issues between homeservers
 - Error in GlueUtils, could not find File, resolved
 - An empty searchResult does not throw a NPE anymore
-- Feature File 03 - .json files edit to fit to FHIR-datastructures. OrganizationId will be requested and replaced in
+- Feature File 03 - .json files edit to fit to FHIR-datastructures. OrganizationId will be requested
+  and replaced in
   request (body ca be sent directly to FhirVZD)
 
 ## Release 0.9.0
@@ -383,9 +430,12 @@
 - Documentation of Pooling in Testsuite.adoc
 - Documentation of version filter in Testsuite.adoc
 - TestCases 12.1, 12.2, 12.3 adjusted to 3 different participants/homeservers
-- New Feature File 14 for group chat (IOP) with 5 participants (incl. documentation in Testsuite.adoc)
-- New Feature File 15 for group chat (IOP) with 3 participants. Tests are excluded from Feature File 12
-- Flag `saveConnections` implemented. Set to true and testsuite will unclaim devices only at the end of run
+- New Feature File 14 for group chat (IOP) with 5 participants (incl. documentation in
+  Testsuite.adoc)
+- New Feature File 15 for group chat (IOP) with 3 participants. Tests are excluded from Feature File
+  12
+- Flag `saveConnections` implemented. Set to true and testsuite will unclaim devices only at the end
+  of run
 - New version `2.9.1` of parameter plugin allows usage
   of [pooling](https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc#pooling)
   and [check](https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc#check-goal)
@@ -407,18 +457,22 @@
 ### Features
 
 - This release makes use
-  of [cucumber-test-combinations-maven-plugin](https://github.com/gematik/cucumber-test-combinations-maven-plugin) v
+  of [cucumber-test-combinations-maven-plugin](https://github.com/gematik/cucumber-test-combinations-maven-plugin)
+  v
   2.6.0 features
     - Control runs for specific version (see
       specifics [here](https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc#project-filters))
 - Remove/Comment Test Cases for editing messages in Feature Files 8 & 10
-- To every request a header is attached. This header identifies the current testcase and can be used for debugging
+- To every request a header is attached. This header identifies the current testcase and can be used
+  for debugging
   purpose
     - The depending id can also be found in the serenity report
-- The certificate of the tiger proxy get updated automatically. It is no longer necessary to name every host
+- The certificate of the tiger proxy get updated automatically. It is no longer necessary to name
+  every host
   under `alterenativeNames` in `tiger.yml`
 - TestCase 3.3 splitted into two TestCases (new 3.3 & 3.4)
-- New Testcases for pipe data acquisition Group Chat inside and outside a homeserver (TF 12.09, 12.10)
+- New Testcases for pipe data acquisition Group Chat inside and outside a homeserver (TF 12.09,
+  12.10)
 
 ## Release 0.4.1
 
