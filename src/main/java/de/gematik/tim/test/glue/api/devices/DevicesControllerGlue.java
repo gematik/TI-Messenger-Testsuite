@@ -30,7 +30,6 @@ import static de.gematik.tim.test.glue.api.devices.ClientKind.INSURANT;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.PRACTITIONER;
 import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.TEST_CASE_ID_HEADER;
-import static de.gematik.tim.test.glue.api.login.LoginGlue.loginSuccess;
 import static de.gematik.tim.test.glue.api.login.LoginGlue.logsIn;
 import static de.gematik.tim.test.glue.api.login.LoginTask.login;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomsQuestion.ownRooms;
@@ -149,7 +148,6 @@ public class DevicesControllerGlue {
       actor.remember(IS_ORG_ADMIN, true);
     }
     logsIn(actor);
-    loginSuccess(actor);
   }
 
   @And("{string} claims a client and uses the data of {string} to log into api {word}")

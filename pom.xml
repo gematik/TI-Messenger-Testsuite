@@ -6,7 +6,7 @@
 
   <groupId>de.gematik.tim.test</groupId>
   <artifactId>TI-Messenger-Testsuite</artifactId>
-  <version>1.3.4</version>
+  <version>1.3.5</version>
   <packaging>jar</packaging>
   <name>TI-Messenger-Testsuite</name>
   <description>Testsuite to check functionality of TI-Messenger-Clients</description>
@@ -20,7 +20,7 @@
 
     <jacoco.version>0.8.8</jacoco.version>
     <cucumber-test-combinations-maven-plugin.version>
-      2.9.21
+      2.10.0
     </cucumber-test-combinations-maven-plugin.version>
     <tiger.version>3.0.1</tiger.version>
     <serenity.core.version>4.1.0</serenity.core.version>
@@ -29,7 +29,7 @@
     <maven.javadoc.plugin.version>3.6.3</maven.javadoc.plugin.version>
     <junit.engine.version>5.8.2</junit.engine.version>
     <ti.m.mtls.certs.version>1.3.1</ti.m.mtls.certs.version>
-    <ti.m.sim.version>5.0.2</ti.m.sim.version>
+    <ti.m.sim.version>6.0.1</ti.m.sim.version>
 
     <feature_dir>${project.build.directory}/features/</feature_dir>
     <feature.template.dir>
@@ -53,10 +53,9 @@
     <cutest.prepare.skipPrepare>false</cutest.prepare.skipPrepare>
     <cutest.prepare.skipCombine>false</cutest.prepare.skipCombine>
     <cutest.prepare.skipCheck>false</cutest.prepare.skipCheck>
-    <cutest.prepare.break>true</cutest.prepare.break>
-    <cutest.break.context>${cutest.prepare.break}</cutest.break.context>
-    <cutest.break.request>${cutest.prepare.break}</cutest.break.request>
-    <cutest.break.tablesize>${cutest.prepare.break}</cutest.break.tablesize>
+    <cutest.break.context>true</cutest.break.context>
+    <cutest.break.request>true</cutest.break.request>
+    <cutest.break.tablesize>true</cutest.break.tablesize>
     <soft-filter.to.hard>false</soft-filter.to.hard>
     <custom.plugin>de.gematik.tim.test.glue.api.utils.cleaning.CucumberListener</custom.plugin>
     <maxRetryClaimRequest/>
@@ -218,6 +217,7 @@
           <skipPrep>${cutest.prepare.skipPrepare}</skipPrep>
           <skipComb>${cutest.prepare.skipCombine}</skipComb>
           <skipCheck>${cutest.prepare.skipCheck}</skipCheck>
+          <acceptUnknownInfo>true</acceptUnknownInfo>
           <!--          Global Config-->
           <combineItemsFile>${combine.items.file}</combineItemsFile>
           <breakOnContextError>${cutest.break.context}</breakOnContextError>
@@ -234,6 +234,10 @@
           <tagExpressions>
             <tagExpression>
               <tag>client</tag>
+              <expression>$.clientInfo.canSendMessages and not($.clientInfo.isInsurance)</expression>
+            </tagExpression>
+            <tagExpression>
+              <tag>canSendMessages</tag>
               <expression>$.clientInfo.canSendMessages</expression>
             </tagExpression>
             <tagExpression>
@@ -730,7 +734,8 @@
                       <version>${ti.m.mtls.certs.version}</version>
                       <type>jar</type>
                       <overWrite>true</overWrite>
-                      <outputDirectory>${project.build.directory}/profile-resources
+                      <outputDirectory>
+                        ${project.build.directory}/profile-resources
                       </outputDirectory>
                       <includes>**/*.yml,**/*.json,gemRoot/cert/gem/*.p12</includes>
                       <excludes>META-INF/**</excludes>
@@ -747,16 +752,17 @@
         <combine.items.file>
           ${project.build.directory}/profile-resources/combine_items_prod.json
         </combine.items.file>
-        <tiger.config.file>${project.build.directory}/profile-resources/tiger-prod.yml
+        <tiger.config.file>
+          ${project.build.directory}/profile-resources/tiger-prod.yml
         </tiger.config.file>
         <tim.truststore>
           ${project.build.directory}/profile-resources/gemRoot/cert/gem/gemTruststore.p12
         </tim.truststore>
-        <tim.truststore.pw>changeit</tim.truststore.pw>
+        <tim.truststore.pw>${env.PROD_TRUSTSTORE_PW}</tim.truststore.pw>
         <tim.keystore>
           ${project.build.directory}/profile-resources/gemRoot/cert/gem/gemKeystore.p12
         </tim.keystore>
-        <tim.keystore.pw>changeit</tim.keystore.pw>
+        <tim.keystore.pw>${env.PROD_KEYSTORE_PW}</tim.keystore.pw>
         <timeout>240</timeout>
         <pollInterval>5</pollInterval>
         <claimDuration>600</claimDuration>

@@ -22,12 +22,14 @@ import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTe
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.COMBINE_ITEMS_FILE_NAME;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.COMBINE_ITEMS_FILE_URL;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.xstream.InitializationException;
 import de.gematik.tim.test.glue.api.threading.ClientFactory;
+import de.gematik.tim.test.glue.api.utils.GlueUtils;
 import io.cucumber.core.gherkin.DataTableArgument;
 import io.cucumber.plugin.event.PickleStepTestStep;
 import io.cucumber.plugin.event.TestStep;
@@ -44,7 +46,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 import kong.unirest.UnirestInstance;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -64,7 +65,7 @@ public class CleanupTrigger {
   private static final ThreadLocal<UnirestInstance> cleanUpClient =
       ThreadLocal.withInitial(ClientFactory::getCleanUpClient);
   private static final ExecutorService executorService = Executors.newFixedThreadPool(5);
-  private static final String CLAIMING_STEP_TEXT = "Es werden folgende Clients reserviert:";
+  private static final String CLAIMING_STEP_TEXT = "The following clients will be reserved:";
 
   static {
     try {
@@ -88,7 +89,7 @@ public class CleanupTrigger {
   @SneakyThrows
   @SuppressWarnings("java:S2142")
   public static void sendCleanupRequest(List<TestStep> testSteps) {
-    Set<String> urlsToTrigger = getOrgAdminApisForApisUsedInTestSteps(testSteps);
+    Set<String> urlsToTrigger = getAllUrlsUsedInTestSteps(testSteps);
     List<Callable<Integer>> calls = createCalls(urlsToTrigger);
     for (Future<Integer> future : executorService.invokeAll(calls)) {
       try {
@@ -119,19 +120,8 @@ public class CleanupTrigger {
   }
 
   @SneakyThrows
-  private static Set<String> getOrgAdminApisForApisUsedInTestSteps(List<TestStep> testSteps) {
-    Optional<DataTableArgument> dataTable =
-        testSteps.stream()
-            .filter(PickleStepTestStep.class::isInstance)
-            .map(PickleStepTestStep.class::cast)
-            .filter(pickleStepTestStep -> pickleStepTestStep.getStep().getArgument() != null)
-            .filter(
-                pickleStepTestStep ->
-                    pickleStepTestStep.getStep().getText().equals(CLAIMING_STEP_TEXT))
-            .map(pickleStepTestStep -> pickleStepTestStep.getStep().getArgument())
-            .filter(DataTableArgument.class::isInstance)
-            .map(DataTableArgument.class::cast)
-            .findFirst();
+  private static Set<String> getAllUrlsUsedInTestSteps(List<TestStep> testSteps) {
+    Optional<DataTableArgument> dataTable = getDataTable(testSteps);
     if (dataTable.isEmpty()) {
       return Set.of();
     }
@@ -139,11 +129,31 @@ public class CleanupTrigger {
     assertThat(values)
         .as("Unknown api. You tried to call an api that is not included in combine_item.json.")
         .containsAll(apiUrls);
+    List<String> httpReadyUrls = apiUrls.stream().map(GlueUtils::prepareApiNameForHttp).toList();
+    Set<String> allUrlsForTestSteps = new HashSet<>(httpReadyUrls);
+    allUrlsForTestSteps.addAll(getOrgAdminApis(apiUrls));
+    return allUrlsForTestSteps;
+  }
+
+  private static @NotNull Set<String> getOrgAdminApis(List<String> apiUrls) {
     return apiUrls.stream()
         .map(CleanupTrigger::toItem)
         .map(item -> item.getProperties().get(HOME_SERVER_PROPERTY))
         .map(CleanupTrigger::getOrgAdminForHomeServer)
-        .collect(Collectors.toSet());
+        .collect(toSet());
+  }
+
+  private static Optional<DataTableArgument> getDataTable(List<TestStep> testSteps) {
+    return testSteps.stream()
+        .filter(PickleStepTestStep.class::isInstance)
+        .map(PickleStepTestStep.class::cast)
+        .filter(pickleStepTestStep -> pickleStepTestStep.getStep().getArgument() != null)
+        .filter(
+            pickleStepTestStep -> pickleStepTestStep.getStep().getText().equals(CLAIMING_STEP_TEXT))
+        .map(pickleStepTestStep -> pickleStepTestStep.getStep().getArgument())
+        .filter(DataTableArgument.class::isInstance)
+        .map(DataTableArgument.class::cast)
+        .findFirst();
   }
 
   @NotNull

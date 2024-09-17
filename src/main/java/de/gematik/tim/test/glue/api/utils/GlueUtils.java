@@ -18,6 +18,7 @@ package de.gematik.tim.test.glue.api.utils;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DIRECT_CHAT_NAME;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DISPLAY_NAME;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HOME_SERVER;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX;
@@ -297,7 +298,12 @@ public class GlueUtils {
 
   public static void assertMxIdsInEndpoint(List<FhirEndpointDTO> endpoint, List<String> mxids) {
     List<String> mxidsInEndpoints = endpoint.stream().map(FhirEndpointDTO::getAddress).toList();
-    assertThat(mxidsInEndpoints).hasSize(mxids.size());
+    assertThat(mxidsInEndpoints)
+        .as(
+            format(
+                "Could not find mxids %s. Expected to find %s but found %s",
+                mxids, mxids.size(), mxidsInEndpoints.size()))
+        .hasSize(mxids.size());
     for (String mxid : mxids) {
       assertThat(mxidsInEndpoints).contains(mxidToUri(mxid));
     }
@@ -399,5 +405,9 @@ public class GlueUtils {
   @ParameterType(value = "(?:.*)", preferForRegexMatch = true)
   public List<String> listOfStrings(String arg) {
     return stream(arg.split(",\\s?")).map(str -> str.replace("\"", "")).toList();
+  }
+
+  public static <T extends Actor> String getHomeServerWithoutHttpAndPort(T actor) {
+    return actor.recall(HOME_SERVER).toString().replaceAll("http.?://", "").split(":")[0];
   }
 }

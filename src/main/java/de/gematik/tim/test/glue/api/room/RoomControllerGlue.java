@@ -80,29 +80,33 @@ public class RoomControllerGlue {
   @Und("{string} lädt {listOfStrings} in Chat-Raum {string} ein")
   public void inviteUserToChatRoomSuccessfully(
       String actorName, List<String> inviteActors, String roomName) {
-    inviteUserToChatRoom(actorName, inviteActors, roomName);
+    inviteUserToChatRoom(actorName, inviteActors, roomName, true);
     checkResponseCode(actorName, OK.value());
     checkRoomMembershipState();
   }
 
-  @And("{string} tries to invites {listOfStrings} into room {string}")
+  @And("{string} tries to invite {listOfStrings} into room {string}")
   @Und("{string} versucht {listOfStrings} in Chat-Raum {string} einzuladen")
   public void triesToInviteUserToChatRoom(
       String actorName, List<String> inviteActors, String roomName) {
-    inviteUserToChatRoom(actorName, inviteActors, roomName);
+    inviteUserToChatRoom(actorName, inviteActors, roomName, false);
     checkResponseCode(actorName, FORBIDDEN.value());
   }
 
-  private void inviteUserToChatRoom(String actorName, List<String> inviteActors, String roomName) {
+  private void inviteUserToChatRoom(
+      String actorName, List<String> invitedActors, String roomName, boolean canBeInvited) {
     Actor actor = theActorCalled(actorName);
     List<String> inviteMxids =
-        inviteActors.stream().map(e -> (String) theActorCalled(e).recall(MX_ID)).toList();
+        invitedActors.stream()
+            .map(invitedActor -> (String) theActorCalled(invitedActor).recall(MX_ID))
+            .toList();
 
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
     RoomDTO room = actor.abilityTo(UseRoomAbility.class).getActiveValue();
-    inviteActors.forEach(e -> addRoomToActor(roomName, room, theActorCalled(e)));
+    invitedActors.forEach(
+        invitedActor -> addRoomToActor(roomName, room, theActorCalled(invitedActor)));
 
-    actor.attemptsTo(invite(inviteMxids).toRoom(room.getRoomId()));
+    actor.attemptsTo(invite(inviteMxids).toRoom(room.getRoomId()).actorCanBeInvited(canBeInvited));
   }
 
   @And("{string} invites {string} into chat with {string}")
@@ -138,7 +142,7 @@ public class RoomControllerGlue {
   public void invitesUserToRoomViaHealthcareService(
       String actorName, String username, String hsName, String roomName) {
     findsAddressInHealthcareService(actorName, username, hsName);
-    inviteUserToChatRoom(actorName, List.of(username), roomName);
+    inviteUserToChatRoom(actorName, List.of(username), roomName, true);
     checkRoomMembershipState();
   }
 

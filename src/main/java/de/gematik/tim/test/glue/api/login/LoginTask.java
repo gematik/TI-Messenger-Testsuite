@@ -31,6 +31,7 @@ import static de.gematik.tim.test.glue.api.room.tasks.ForgetRoomTask.forgetRoom;
 import static de.gematik.tim.test.glue.api.room.tasks.LeaveRoomTask.leaveRoom;
 import static de.gematik.tim.test.glue.api.threading.ParallelExecutor.getParallelClient;
 import static de.gematik.tim.test.glue.api.threading.ParallelExecutor.saveLastResponseCode;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.getHomeServerWithoutHttpAndPort;
 import static de.gematik.tim.test.glue.api.utils.ParallelUtils.fromJson;
 import static de.gematik.tim.test.glue.api.utils.ParallelUtils.toJson;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
@@ -146,9 +147,5 @@ public class LoginTask extends ParallelTaskRunner implements Task {
               .password(actor.recall(ACCOUNT_PASSWORD)));
     }
     return Optional.empty();
-  }
-
-  private static <T extends Actor> String getHomeServerWithoutHttpAndPort(T actor) {
-    return actor.recall(HOME_SERVER).toString().replaceAll("http.?://", "").split(":")[0];
   }
 }

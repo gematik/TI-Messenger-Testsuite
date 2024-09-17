@@ -36,6 +36,7 @@ public class InviteToRoomTask implements Task {
   private final List<MxIdDTO> invitees;
   private String roomId;
   private boolean shouldFindMxid = true;
+  private boolean canBeInvited = true;
 
   public static InviteToRoomTask invite(List<String> mxIds) {
     List<MxIdDTO> mxIdDTOS = mxIds.stream().map(mxId -> new MxIdDTO().mxid(mxId)).toList();
@@ -52,14 +53,20 @@ public class InviteToRoomTask implements Task {
     return this;
   }
 
+  public InviteToRoomTask actorCanBeInvited(boolean canBeInvited) {
+    this.canBeInvited = canBeInvited;
+    return this;
+  }
+
   @Override
   public <T extends Actor> void performAs(T actor) {
     actor.attemptsTo(INVITE_TO_ROOM.request().with(req -> req.body(invitees)));
 
-    getAllActiveActorsByMxIds(invitees.stream().map(MxIdDTO::getMxid).toList(), shouldFindMxid)
-        .forEach(a -> a.remember(roomId + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX, INVITE));
-
-    sendRawDataEvent(actor.recall(MX_ID));
+    if (canBeInvited) {
+      getAllActiveActorsByMxIds(invitees.stream().map(MxIdDTO::getMxid).toList(), shouldFindMxid)
+          .forEach(a -> a.remember(roomId + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX, INVITE));
+      sendRawDataEvent(actor.recall(MX_ID));
+    }
   }
 
   @SuppressWarnings("java:S5411")

@@ -20,20 +20,12 @@ import static lombok.AccessLevel.PRIVATE;
 
 import io.cucumber.java.de.Dann;
 import java.util.List;
+
+import io.cucumber.java.de.Wenn;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor(access = PRIVATE)
 public class TransferGlue {
-
-  @Dann("{string} hinterlegt {listOfStrings} in der Blockliste")
-  public void putUserInBlockList(String actorNames, List<String> blockedUsers) {
-    // implement me
-  }
-
-  @Dann("{string} entfernt {listOfStrings} in der Blockliste")
-  public void deleteUserInBlockList(String actorNames, List<String> blockedUsers) {
-    // implement me
-  }
 
   @Dann("{string} hinterlegt die Domain von {listOfStrings} in der Blockliste")
   public void putDomainInBlockList(String actorNames, List<String> blockedUsers) {
@@ -45,17 +37,6 @@ public class TransferGlue {
     // implement me
   }
 
-  @Dann("{string} hinterlegt {listOfStrings} in der Allowliste")
-  public void putUserInAllowList(String actorNames, List<String> blockedUsers) {
-    // implement me
-  }
-
-  // Noch nicht in gebrauch, wird aber kommen :)
-  @Dann("{string} entfernt {listOfStrings} in der Allowliste")
-  public void deleteUserInAllowList(String actorNames, List<String> blockedUsers) {
-    // implement me
-  }
-
   @Dann("{string} hinterlegt die Domain von {listOfStrings} in der Allowliste")
   public void putDomainInAllowList(String actorNames, List<String> blockedUsers) {
     // implement me
@@ -64,6 +45,16 @@ public class TransferGlue {
   // Noch nicht in gebrauch, wird aber kommen :)
   @Dann("{string} entfernt die Domain von {listOfStrings} in der Allowliste")
   public void deleteDomainInAllowList(String actorNames, List<String> blockedUsers) {
+    // implement me
+  }
+
+  @Wenn("{string} sendet ein Attachment {string} an den Raum {string} über Matrix-Protokoll v1.11")
+  public void sendetEinAttachmentAnDenRaumÜberMatrixProtokollV(String arg0, String arg1, String arg2, int arg3) {
+    // implement me
+  }
+
+  @Dann("{string} empfängt das Attachment {string} von {string} im Raum {string} über Matrix-Protokoll v1.11")
+  public void empfängtDasAttachmentVonImRaumÜberMatrixProtokollV(String arg0, String arg1, String arg2, String arg3, int arg4) {
     // implement me
   }
 }

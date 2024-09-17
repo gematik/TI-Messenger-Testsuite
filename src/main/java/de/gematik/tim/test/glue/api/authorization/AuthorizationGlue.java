@@ -16,7 +16,12 @@
 
 package de.gematik.tim.test.glue.api.authorization;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
+import static de.gematik.tim.test.glue.api.authorization.AddAllowedUsersTask.addAllowedUsers;
+import static de.gematik.tim.test.glue.api.authorization.AddBlockedUsersTask.addBlockedUsers;
+import static de.gematik.tim.test.glue.api.authorization.DeleteAllowedUsersTask.deleteAllowedUsers;
+import static de.gematik.tim.test.glue.api.authorization.DeleteBlockedUsersTask.deleteBlockedUsers;
 import static de.gematik.tim.test.glue.api.authorization.GetAuthorizationModeQuestion.getAuthorizationMode;
 import static de.gematik.tim.test.glue.api.authorization.SetAuthorizationModeTask.setAuthorizationMode;
 import static de.gematik.tim.test.glue.api.authorization.UseAuthorizationAbility.resetOwnAuthorization;
@@ -27,6 +32,7 @@ import static org.springframework.http.HttpStatus.OK;
 import de.gematik.tim.test.models.AuthorizationModeDTO;
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.en.Then;
+import java.util.ArrayList;
 import java.util.List;
 import net.serenitybdd.screenplay.Actor;
 
@@ -54,5 +60,57 @@ public class AuthorizationGlue {
           actor.attemptsTo(setAuthorizationMode(authorizationMode));
           checkResponseCode(actorName, OK.value());
         });
+  }
+
+  @Then("{string} puts {listOfStrings} on the block list")
+  @Dann("{string} hinterlegt {listOfStrings} in der Blockliste")
+  public void putUserOnBlockList(String actorName, List<String> blockedUserNames) {
+    Actor actor = theActorCalled(actorName);
+    List<String> blockedUsersMxids = new ArrayList<>();
+    for (String blockedUserName : blockedUserNames) {
+      Actor blockedUser = theActorCalled(blockedUserName);
+      blockedUsersMxids.add(blockedUser.recall(MX_ID));
+    }
+    actor.attemptsTo(addBlockedUsers(blockedUsersMxids));
+    checkResponseCode(actorName, OK.value());
+  }
+
+  @Then("{string} removes {listOfStrings} from the block list")
+  @Dann("{string} entfernt {listOfStrings} in der Blockliste")
+  public void deleteUserFromBlockList(String actorName, List<String> blockedUserNames) {
+    Actor actor = theActorCalled(actorName);
+    List<String> blockedUsersMxids = new ArrayList<>();
+    for (String blockedUserName : blockedUserNames) {
+      Actor blockedUser = theActorCalled(blockedUserName);
+      blockedUsersMxids.add(blockedUser.recall(MX_ID));
+    }
+    actor.attemptsTo(deleteBlockedUsers(blockedUsersMxids));
+    checkResponseCode(actorName, OK.value());
+  }
+
+  @Then("{string} puts {listOfStrings} on the allow list")
+  @Dann("{string} hinterlegt {listOfStrings} in der Allowliste")
+  public void putUserOnAllowList(String actorName, List<String> allowedUserNames) {
+    Actor actor = theActorCalled(actorName);
+    List<String> allowedUsersMxids = new ArrayList<>();
+    for (String allowedUserName : allowedUserNames) {
+      Actor allowedUser = theActorCalled(allowedUserName);
+      allowedUsersMxids.add(allowedUser.recall(MX_ID));
+    }
+    actor.attemptsTo(addAllowedUsers(allowedUsersMxids));
+    checkResponseCode(actorName, OK.value());
+  }
+
+  @Then("{string} removes {listOfStrings} from the allow list")
+  @Dann("{string} entfernt {listOfStrings} in der Allowliste")
+  public void deleteUserFromAllowList(String actorName, List<String> allowedUserNames) {
+    Actor actor = theActorCalled(actorName);
+    List<String> allowedUsersMxids = new ArrayList<>();
+    for (String blockedUserName : allowedUserNames) {
+      Actor blockedUser = theActorCalled(blockedUserName);
+      allowedUsersMxids.add(blockedUser.recall(MX_ID));
+    }
+    actor.attemptsTo(deleteAllowedUsers(allowedUsersMxids));
+    checkResponseCode(actorName, OK.value());
   }
 }
