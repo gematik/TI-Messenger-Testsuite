@@ -4,6 +4,21 @@
 
 ## Link to TI-Messenger-testsuite [`docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
 
+## Release 1.3.5
+
+### Changes
+
+- TiMessengerTestTreiber.yaml, non-breaking only ePa: adds required to parameters
+- cleanup trigger works for both, normal clients and OrgAdmins
+- integrated new bdd plugin version, unknown info API fields will now be evaluated as false
+
+### Bugs
+
+- TiMessengerTestTreiber.yaml: adjusted several semantic details, see Github issues #41, #42, #43
+- TiMessengerTestTreiber.yaml: changes FhirMeta.versionId type from integer to string, see Github
+  issue https://github.com/gematik/TI-Messenger-Testsuite/issues/40
+- Testcase 3.3 will now change the endpoint with the correct mxid on the own homeserver
+
 ## Release 1.3.4
 
 ### Changes
@@ -12,8 +27,10 @@
 
 ### Bugs
 
-- TiMessengerTestTreiber.yaml: replaced location with endpoint (see GitHub issue: https://github.com/gematik/TI-Messenger-Testsuite/issues/38)
-- TiMessengerTestTreiber.yaml: fixed one operationId to camelCase(see GitHub issue: https://github.com/gematik/TI-Messenger-Testsuite/issues/37)
+- TiMessengerTestTreiber.yaml: replaced location with endpoint (see GitHub
+  issue: https://github.com/gematik/TI-Messenger-Testsuite/issues/38)
+- TiMessengerTestTreiber.yaml: fixed one operationId to camelCase(see GitHub
+  issue: https://github.com/gematik/TI-Messenger-Testsuite/issues/37)
 
 ## Release 1.3.3
 

@@ -21,7 +21,9 @@ import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.HttpMethod.GET;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.HttpMethod.POST;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.HttpMethod.PUT;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ACCOUNT_PATH;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.ALLOWED_USERS_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.AUTHORIZATION_PATH;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.BLOCKED_USERS_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.CLAIM_DEVICE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.CONTACT_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.DELETE_CONTACT_PATH;
@@ -211,7 +213,12 @@ public enum TestdriverApiEndpoint {
 
   // AUTHORIZATION
   GET_AUTHORIZATION_MODE(GET, AUTHORIZATION_PATH, UseDeviceAbility.class),
-  SET_AUTHORIZATION_MODE(POST, AUTHORIZATION_PATH, UseDeviceAbility.class);
+  SET_AUTHORIZATION_MODE(POST, AUTHORIZATION_PATH, UseDeviceAbility.class),
+
+  ADD_BLOCKED_USERS(POST, BLOCKED_USERS_PATH, UseDeviceAbility.class),
+  ADD_ALLOWED_USERS(POST, ALLOWED_USERS_PATH, UseDeviceAbility.class),
+  DELETE_BLOCKED_USERS(DELETE, BLOCKED_USERS_PATH, UseDeviceAbility.class),
+  DELETE_ALLOWED_USERS(DELETE, ALLOWED_USERS_PATH, UseDeviceAbility.class);
 
   private final HttpMethod httpMethod;
   private final String path;

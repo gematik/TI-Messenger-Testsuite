@@ -111,4 +111,6 @@ public final class TestdriverApiPath {
 
   // AUTHORIZATION
   public static final String AUTHORIZATION_PATH = DEVICE_ID_PATH + "/authorizationMode";
+  public static final String BLOCKED_USERS_PATH = DEVICE_ID_PATH + "/blockedUsers";
+  public static final String ALLOWED_USERS_PATH = DEVICE_ID_PATH + "/allowedUsers";
 }

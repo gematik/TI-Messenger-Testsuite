@@ -40,6 +40,12 @@ public class UpdateEndpointTask extends EndpointSpecificTask {
     return new UpdateEndpointTask(readJsonFile(jsonFileName, FhirEndpointDTO.class));
   }
 
+  public UpdateEndpointTask withHomeserver(String homeserver) {
+    String fullAddress = this.endpoint.getAddress();
+    this.endpoint.setAddress(fullAddress + homeserver);
+    return this;
+  }
+
   public UpdateEndpointTask withAddress(String address) {
     this.endpoint.setAddress(address);
     return this;
@@ -50,7 +56,8 @@ public class UpdateEndpointTask extends EndpointSpecificTask {
   public <T extends Actor> void performAs(T actor) {
     super.performAs(actor);
     endpoint.setMeta(defaultEndpointMeta());
-    endpoint.setId(actor.abilityTo(UseEndpointAbility.class).getTarget(getEndpointName()).endpointId());
+    endpoint.setId(
+        actor.abilityTo(UseEndpointAbility.class).getTarget(getEndpointName()).endpointId());
     actor.attemptsTo(UPDATE_ENDPOINT.request().with(req -> req.body(endpoint)));
   }
 }

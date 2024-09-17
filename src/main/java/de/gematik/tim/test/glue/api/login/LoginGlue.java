@@ -25,7 +25,6 @@ import static de.gematik.tim.test.glue.api.login.LogoutTask.logout;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.CLAIM_PARALLEL;
 import static java.lang.Boolean.FALSE;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
 import de.gematik.tim.test.glue.api.devices.DevicesControllerGlue;
@@ -56,16 +55,6 @@ public class LoginGlue {
     if (FALSE.equals(CLAIM_PARALLEL) || !DevicesControllerGlue.isAllowParallelClaim()) {
       checkResponseCode(actorName, OK.value());
     }
-  }
-
-  public static void loginSuccess(Actor actor) {
-    checkResponseCode(actor.getName(), OK.value());
-  }
-
-  @Then("registration failed for {string}")
-  @Dann("schlägt das Login für {string} fehl")
-  public static void loginFailure(String actorName) {
-    checkResponseCode(actorName, BAD_REQUEST.value());
   }
 
   @When("{string} logs out")

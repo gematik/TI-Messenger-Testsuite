@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: TiMessengerTestDriver
   description: REST interface to automate the test of a TI-Messenger client implementation.
-  version: 1.1.1
+  version: 1.1.2
   contact:
     name: gematik GmbH
     email: software-development@gematik.de
@@ -105,7 +105,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: Implementation is optional! Testsuite sends a request to the org-admin endpoint of each involved homeserver (even if the org-admin is not named in the feature-file). There will be no claiming attempt before triggering this endpoint. After getting any response the testcase starts. This is an opportunity for the org-admin to clean user/rooms/FHIR-VZD etc. Even if an error code is returned the testsuite will start the test.
+      description: Implementation is optional! Testsuite sends a request to the involved endpoints (even to the org-admin who is not named in the feature-file). There will be no claiming attempt before triggering these endpoints. After getting any response the testcase starts. This is an opportunity to clean user/rooms/FHIR-VZD etc. Even if an error code is returned the testsuite will start the test.
       operationId: cleanUp
       responses:
         "200":
@@ -2293,6 +2293,9 @@ components:
 
     AuthorizationList:
       description: "The list of entries in authorization list"
+      required:
+        - mxids
+        - domains
       type: object
       properties:
         mxids:
@@ -2803,9 +2806,9 @@ components:
           description: "Time when the depending resource was last updated"
           example: 2022-04-01T08:30:00Z
         versionId:
-          type: integer
-          description: "How many times this resource have been updated"
-          example: 2
+          type: string
+          description: "How many times this resource has been updated"
+          example: "2"
         source:
           type: string
         profile:
@@ -2939,7 +2942,6 @@ components:
       type: object
       required:
         - total
-        - entry
       properties:
         resourceType:
           type: string
@@ -3127,7 +3129,6 @@ components:
       type: object
       required:
         - author
-        - MessageContent
       properties:
         messageId:
           type: string
@@ -3217,9 +3218,6 @@ components:
 
     Room:
       description: "Information about a room and its members"
-      required:
-        - RoomMembers
-        - RoomProperties
       allOf:
         - $ref: "#/components/schemas/RoomProperties"
         - $ref: "#/components/schemas/RoomMembers"

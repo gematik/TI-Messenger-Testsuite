@@ -38,14 +38,13 @@ import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Wenn;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import lombok.SneakyThrows;
-import net.serenitybdd.screenplay.Actor;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import lombok.SneakyThrows;
+import net.serenitybdd.screenplay.Actor;
 
 public class MediaGlue {
 
@@ -59,11 +58,12 @@ public class MediaGlue {
     Path path = new File(RESOURCES_PATH + fileName).toPath();
     Actor actor = theActorCalled(actorName);
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
-    actor.attemptsTo(sendMessage(fileName)
-        .withFileId(actor.recall(MEDIA_ID))
-        .withMimetype(Files.probeContentType(path))
-        .withSize((int) Files.size(path))
-        .withMsgType("m.file"));
+    actor.attemptsTo(
+        sendMessage(fileName)
+            .withFileId(actor.recall(MEDIA_ID))
+            .withMimetype(Files.probeContentType(path))
+            .withSize((int) Files.size(path))
+            .withMsgType("m.file"));
     checkResponseCode(actorName, OK.value());
     checkRoomMembershipState(actor, roomName);
   }
@@ -72,8 +72,7 @@ public class MediaGlue {
   private void uploadsAMediaFile(String actorName, String media) {
     Path path = Path.of(RESOURCES_PATH + media);
     try (FileInputStream fis = new FileInputStream(path.toFile())) {
-      theActorCalled(actorName).attemptsTo(
-          uploadMedia().withMedia(fis.readAllBytes()));
+      theActorCalled(actorName).attemptsTo(uploadMedia().withMedia(fis.readAllBytes()));
     }
     checkResponseCode(actorName, CREATED.value());
   }
@@ -81,16 +80,17 @@ public class MediaGlue {
   @SneakyThrows
   @Then("{string} receives the attachment {string} from {string} in the room {string}")
   @Dann("{string} empfängt das Attachment {string} von {string} im Raum {string}")
-  public void receiveAttachmentInRoom(String actorName, String fileName, String userName,
-      String roomName) {
+  public void receiveAttachmentInRoom(
+      String actorName, String fileName, String userName, String roomName) {
     Actor actor = theActorCalled(actorName);
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
     String senderMxId = theActorCalled(userName).recall(MX_ID);
-    Optional<MessageDTO> message = actor
-        .asksFor(messageFromSenderWithTextInActiveRoom(fileName, senderMxId));
+    Optional<MessageDTO> message =
+        actor.asksFor(messageFromSenderWithTextInActiveRoom(fileName, senderMxId));
 
     if (message.isEmpty()) {
-      throw new TestRunException(format("Could not find message %s from sender %s", fileName, senderMxId));
+      throw new TestRunException(
+          format("Could not find message %s from sender %s", fileName, senderMxId));
     }
     byte[] receivedMedia = actor.asksFor(downloadMedia().withFileId(message.get().getFileId()));
 
@@ -101,5 +101,4 @@ public class MediaGlue {
     assertThat(message.get().getBody()).isEqualTo(getCreatedMessage(fileName).getBody());
     checkRoomMembershipState(actor, roomName);
   }
-
 }

@@ -39,6 +39,7 @@ import static de.gematik.tim.test.glue.api.fhir.organisation.location.UpdateLoca
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.assertCorrectEndpointNameAndMxid;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.assertMxIdsInEndpoint;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueEndpointName;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.getHomeServerWithoutHttpAndPort;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.mxidToUri;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.readJsonFile;
@@ -215,6 +216,9 @@ public class FhirOrgAdminGlue {
     Actor admin = theActorCalled(adminName);
     String hsId = admin.abilityTo(UseHealthcareServiceAbility.class).getTarget(hcsName).id();
     List<FhirEndpointDTO> results = getEndpointList().withHsId(hsId).answeredBy(admin);
+    if (results.isEmpty()) {
+      throw new TestRunException("No matching endpoints found for healthcare service " + hcsName);
+    }
     assertMxIdsInEndpoint(results, actorMxids);
   }
 
@@ -264,7 +268,8 @@ public class FhirOrgAdminGlue {
     Actor admin = theActorCalled(orgAdmin);
     admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hsName);
     admin.abilityTo(UseEndpointAbility.class).setActive(endpointName);
-    admin.attemptsTo(updateEndpointFromFile(fileName));
+    admin.attemptsTo(
+        updateEndpointFromFile(fileName).withHomeserver(getHomeServerWithoutHttpAndPort(admin)));
     checkResponseCode(orgAdmin, OK.value());
   }
 
@@ -415,6 +420,8 @@ public class FhirOrgAdminGlue {
     admin.abilityTo(UseEndpointAbility.class).setActive(theActorCalled(user).recall(DISPLAY_NAME));
     FhirEndpointDTO endpoint = admin.asksFor(getEndpoint());
     FhirEndpointDTO jsonEndpoint = readJsonFile(fileName, FhirEndpointDTO.class);
+    String actualAddress = jsonEndpoint.getAddress() + getHomeServerWithoutHttpAndPort(admin);
+    jsonEndpoint.setAddress(actualAddress);
     assertThat(endpoint)
         .usingRecursiveComparison()
         .ignoringFields("identifier", "meta", "resourceType", "text")
