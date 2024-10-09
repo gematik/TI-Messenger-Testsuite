@@ -60,12 +60,12 @@ public class CleanupTrigger {
 
   public static final String HOME_SERVER_PROPERTY = "homeserver";
   public static final String ORG_ADMIN_TAG = "orgAdmin";
-  private static final List<CombineItem> items;
-  private static final Set<String> values;
+  private static final List<CombineItem> combineItems;
+  private static final Set<String> combineItemsUrls;
   private static final ThreadLocal<UnirestInstance> cleanUpClient =
       ThreadLocal.withInitial(ClientFactory::getCleanUpClient);
-  private static final ExecutorService executorService = Executors.newFixedThreadPool(5);
-  private static final String CLAIMING_STEP_TEXT = "The following clients will be reserved:";
+  private static final ExecutorService executorService = Executors.newFixedThreadPool(10);
+  private static final String CLAIMING_STEP_TEXT = "Es werden folgende Clients reserviert:";
 
   static {
     try {
@@ -76,11 +76,14 @@ public class CleanupTrigger {
       String combineItemsString = FileUtils.readFileToString(combinedItemsFile, UTF_8);
       ObjectMapper mapper =
           new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-      items = Arrays.stream(mapper.readValue(combineItemsString, CombineItem[].class)).toList();
+      combineItems =
+          Arrays.stream(mapper.readValue(combineItemsString, CombineItem[].class)).toList();
 
-      values = new HashSet<>();
-      values.addAll(items.stream().map(CombineItem::getValue).filter(Objects::nonNull).toList());
-      values.addAll(items.stream().map(CombineItem::getUrl).filter(Objects::nonNull).toList());
+      combineItemsUrls = new HashSet<>();
+      combineItemsUrls.addAll(
+          combineItems.stream().map(CombineItem::getValue).filter(Objects::nonNull).toList());
+      combineItemsUrls.addAll(
+          combineItems.stream().map(CombineItem::getUrl).filter(Objects::nonNull).toList());
     } catch (IOException e) {
       throw new InitializationException(e.getMessage());
     }
@@ -89,7 +92,7 @@ public class CleanupTrigger {
   @SneakyThrows
   @SuppressWarnings("java:S2142")
   public static void sendCleanupRequest(List<TestStep> testSteps) {
-    Set<String> urlsToTrigger = getAllUrlsUsedInTestSteps(testSteps);
+    Set<String> urlsToTrigger = getAllApisUsedInTestSteps(testSteps);
     List<Callable<Integer>> calls = createCalls(urlsToTrigger);
     for (Future<Integer> future : executorService.invokeAll(calls)) {
       try {
@@ -120,13 +123,13 @@ public class CleanupTrigger {
   }
 
   @SneakyThrows
-  private static Set<String> getAllUrlsUsedInTestSteps(List<TestStep> testSteps) {
+  private static Set<String> getAllApisUsedInTestSteps(List<TestStep> testSteps) {
     Optional<DataTableArgument> dataTable = getDataTable(testSteps);
     if (dataTable.isEmpty()) {
       return Set.of();
     }
     List<String> apiUrls = getApiFromDataTable(dataTable.get());
-    assertThat(values)
+    assertThat(combineItemsUrls)
         .as("Unknown api. You tried to call an api that is not included in combine_item.json.")
         .containsAll(apiUrls);
     List<String> httpReadyUrls = apiUrls.stream().map(GlueUtils::prepareApiNameForHttp).toList();
@@ -137,8 +140,8 @@ public class CleanupTrigger {
 
   private static @NotNull Set<String> getOrgAdminApis(List<String> apiUrls) {
     return apiUrls.stream()
-        .map(CleanupTrigger::toItem)
-        .map(item -> item.getProperties().get(HOME_SERVER_PROPERTY))
+        .map(CleanupTrigger::toCombineItem)
+        .map(combineItem -> combineItem.getProperties().get(HOME_SERVER_PROPERTY))
         .map(CleanupTrigger::getOrgAdminForHomeServer)
         .collect(toSet());
   }
@@ -161,20 +164,20 @@ public class CleanupTrigger {
     return dataTable.cells().stream().map(cell -> cell.get(2)).toList();
   }
 
-  private static String getOrgAdminForHomeServer(String homeserver) {
-    CombineItem orgadmin =
-        items.stream()
+  private static String getOrgAdminForHomeServer(String homeServer) {
+    CombineItem orgAdmin =
+        combineItems.stream()
             .filter(
                 item ->
-                    item.getProperties().get(HOME_SERVER_PROPERTY).equals(homeserver)
+                    item.getProperties().get(HOME_SERVER_PROPERTY).equals(homeServer)
                         && item.getTags().contains(ORG_ADMIN_TAG))
             .findFirst()
             .orElseThrow(
-                () -> new InitializationException("Did not find any Orgadmin for " + homeserver));
-    return prepareApiNameForHttp(orgadmin.getValue());
+                () -> new InitializationException("Did not find any OrgAdmin for " + homeServer));
+    return prepareApiNameForHttp(orgAdmin.getValue());
   }
 
-  private static CombineItem toItem(String apiUrl) {
-    return items.stream().filter(item -> item.isSameAs(apiUrl)).findAny().orElseThrow();
+  private static CombineItem toCombineItem(String apiUrl) {
+    return combineItems.stream().filter(item -> item.isSameAs(apiUrl)).findAny().orElseThrow();
   }
 }
