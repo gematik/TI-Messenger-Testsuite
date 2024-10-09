@@ -54,14 +54,14 @@ public class ClientFactory {
         .sslContext(proxy.buildSslContext());
   }
 
-  public static UnirestInstance getClient() {
+  public static synchronized UnirestInstance getClient() {
     if (instance == null) {
       instance = new ClientFactory();
     }
     return ClientFactory.client;
   }
 
-  public static UnirestInstance getCleanUpClient() {
+  public static synchronized UnirestInstance getCleanUpClient() {
     if (instance == null) {
       instance = new ClientFactory();
     }

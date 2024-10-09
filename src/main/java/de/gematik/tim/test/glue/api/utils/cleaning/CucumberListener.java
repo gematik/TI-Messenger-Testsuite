@@ -30,7 +30,6 @@ public class CucumberListener extends SerenityReporterParallel {
 
   @Override
   public void setEventPublisher(EventPublisher publisher) {
-
     publisher.registerHandlerFor(TestCaseStarted.class, this::startTest);
     publisher.registerHandlerFor(TestRunFinished.class, this::endTest);
   }

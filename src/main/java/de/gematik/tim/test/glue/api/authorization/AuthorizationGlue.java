@@ -52,6 +52,7 @@ public class AuthorizationGlue {
 
   @Then("{listOfStrings} sets the authorization mode to {string}")
   @Dann("{listOfStrings} setzt den eigenen Authorization Mode auf {string}")
+  @Dann("{listOfStrings} setzten den eigenen Authorization Mode auf {string}")
   public void setAuthMode(List<String> actorNames, String authorizationMode) {
     actorNames.forEach(
         actorName -> {

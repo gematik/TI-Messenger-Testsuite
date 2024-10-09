@@ -4,6 +4,18 @@
 
 ## Link to TI-Messenger-testsuite [`docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
 
+## Release 1.3.7
+
+### Bugs
+
+- fixes release issue
+
+## Release 1.3.6
+
+### Bugs
+
+- fixes cleanup trigger, regression from 1.3.5
+
 ## Release 1.3.5
 
 ### Changes
