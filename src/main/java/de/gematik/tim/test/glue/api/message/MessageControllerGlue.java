@@ -155,13 +155,6 @@ public class MessageControllerGlue {
     checkRoomMembershipState(actor, roomName);
   }
 
-  @Then("{string} could not see message {string} from {string} in the chat with {string}")
-  @Dann("{string} kann die Nachricht {string} von {string} im Chat mit {string} nicht sehen")
-  public void canNotSeeChatMessage(
-      String actorName, String message, String messageAuthor, String chatPartner) {
-    canNotSeeChatMessage(actorName, message, messageAuthor, chatPartner, null, null);
-  }
-
   @Wenn(
       "{string} could not see message {string} from {string} in the chat with {string} [Retry {long} - {long}]")
   @Dann(
@@ -176,38 +169,6 @@ public class MessageControllerGlue {
     Actor actor = theActorCalled(actorName);
     String roomName = actor.recall(DIRECT_CHAT_NAME + theActorCalled(chatPartner).recall(MX_ID));
     cantFindMessageInRoom(actorName, messageText, messageAuthor, roomName, timeout, pollInterval);
-  }
-
-  @Then("{string} could not find message {string} from {string} in room {string}")
-  @Dann("{string} kann die Nachricht {string} von {string} im Raum {string} nicht sehen")
-  public void cantFindMessageInRoom(
-      String actorName, String messageText, String messageAuthor, String roomName) {
-    cantFindMessageInRoom(actorName, messageText, messageAuthor, roomName, null, null);
-  }
-
-  @Then(
-      "{string} could not find message {string} from {string} in room {string} [Retry {long} - {long}]")
-  @Dann(
-      "{string} kann die Nachricht {string} von {string} im Raum {string} nicht sehen [Retry {long} - {long}]")
-  public void cantFindMessageInRoom(
-      String actorName,
-      String messageText,
-      String userName,
-      String roomName,
-      Long timeout,
-      Long pollInterval) {
-    Actor actor = theActorCalled(actorName);
-    actor.abilityTo(UseRoomAbility.class).setActive(roomName);
-    actor.asksFor(
-        noMessageFromSenderWithTextInActiveRoom(messageText, theActorCalled(userName).recall(MX_ID))
-            .withCustomInterval(timeout, pollInterval));
-  }
-
-  @Then("{string} could not see more message {string} from {string} in chat with {string}")
-  @Dann("{string} kann die Nachricht {string} von {string} im Chat mit {string} nicht mehr sehen")
-  public void canNotSeeChatMessageAnymore(
-      String actorName, String messageText, String messageAuthor, String chatPartner) {
-    canNotSeeChatMessageAnymore(actorName, messageText, messageAuthor, chatPartner, null, null);
   }
 
   @Then(
@@ -227,11 +188,22 @@ public class MessageControllerGlue {
     canNotFindMessageAnymore(messageText, messageAuthor, timeout, pollInterval, actor);
   }
 
-  @Then("{string} could not find message {string} from {string} in room {string} anymore")
-  @Dann("{string} kann die Nachricht {string} von {string} im Raum {string} nicht mehr sehen")
-  public void cantFindMessageInRoomAnymore(
-      String actorName, String messageText, String messageAuthor, String roomName) {
-    cantFindMessageInRoomAnymore(actorName, messageText, messageAuthor, roomName, null, null);
+  @Then(
+      "{string} could not find message {string} from {string} in room {string} [Retry {long} - {long}]")
+  @Dann(
+      "{string} kann die Nachricht {string} von {string} im Raum {string} nicht sehen [Retry {long} - {long}]")
+  public void cantFindMessageInRoom(
+      String actorName,
+      String messageText,
+      String userName,
+      String roomName,
+      Long timeout,
+      Long pollInterval) {
+    Actor actor = theActorCalled(actorName);
+    actor.abilityTo(UseRoomAbility.class).setActive(roomName);
+    actor.asksFor(
+        noMessageFromSenderWithTextInActiveRoom(messageText, theActorCalled(userName).recall(MX_ID))
+            .withCustomInterval(timeout, pollInterval));
   }
 
   @Then(
@@ -258,16 +230,6 @@ public class MessageControllerGlue {
             .withCustomInterval(timeout, pollInterval));
   }
 
-  @When("{string} edits her last sent message in room {string} to {string}")
-  @Wenn("{string} ändert seine letzte Nachricht im Raum {string} in {string}")
-  public void editsHerLastSentMessageTo(String actorName, String roomName, String messageText) {
-    Actor actor = theActorCalled(actorName);
-    actor.abilityTo(UseRoomAbility.class).setActive(roomName);
-    MessageDTO message = actor.asksFor(lastOwnMessage());
-    actor.attemptsTo(editMessage().withMessage(messageText).withMessageId(message.getMessageId()));
-    checkResponseCode(actorName, OK.value());
-  }
-
   @When("{string} deletes their message {string} in chat with {string}")
   @Wenn("{string} löscht seine Nachricht {string} im Chat mit {string}")
   public void deleteMessageInChat(String actorName, String messageText, String userName) {
@@ -286,5 +248,15 @@ public class MessageControllerGlue {
             getCreatedMessage(messageName).getBody(), actorName, messages);
     actor.attemptsTo(deleteMessageWithId(message.getMessageId()));
     checkResponseCode(actorName, NO_CONTENT.value());
+  }
+
+  @When("{string} edits her last sent message in room {string} to {string}")
+  @Wenn("{string} ändert seine letzte Nachricht im Raum {string} in {string}")
+  public void editsHerLastSentMessageTo(String actorName, String roomName, String messageText) {
+    Actor actor = theActorCalled(actorName);
+    actor.abilityTo(UseRoomAbility.class).setActive(roomName);
+    MessageDTO message = actor.asksFor(lastOwnMessage());
+    actor.attemptsTo(editMessage().withMessage(messageText).withMessageId(message.getMessageId()));
+    checkResponseCode(actorName, OK.value());
   }
 }

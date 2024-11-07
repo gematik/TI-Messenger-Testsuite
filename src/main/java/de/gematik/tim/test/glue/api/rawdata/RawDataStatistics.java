@@ -23,6 +23,12 @@ import static org.apache.commons.lang3.StringUtils.join;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import io.restassured.response.Response;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
@@ -38,43 +44,48 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RawDataStatistics {
 
   private static final RawDataEventCounter login = new RawDataEventCounter();
   private static final RawDataEventCounter search = new RawDataEventCounter();
   private static final RawDataEventCounter inviteToRoomSameHomeserver = new RawDataEventCounter();
-  private static final RawDataEventCounter exchangeMessageSameHomeserver = new RawDataEventCounter();
+  private static final RawDataEventCounter exchangeMessageSameHomeserver =
+      new RawDataEventCounter();
   private static final RawDataEventCounter editContactManagement = new RawDataEventCounter();
   private static final RawDataEventCounter inviteToRoomMultiHomeserver = new RawDataEventCounter();
-  private static final RawDataEventCounter exchangeMessageMultiHomeserver = new RawDataEventCounter();
+  private static final RawDataEventCounter exchangeMessageMultiHomeserver =
+      new RawDataEventCounter();
   private static final RawDataEventCounter getRegTokenForVZDEvent = new RawDataEventCounter();
 
   private static final String YML_PATHNAME = "./target/generated-raw-data/rohdaten.yml";
   private static final String JSON_PATHNAME = "./target/generated-raw-data/rohdaten.json";
   private static final String CSV_PATHNAME = "./target/generated-raw-data/rohdaten.csv";
 
-  private static final String TIM_UC_10057_01 = "TIM.UC_10057_01 (Client-Login, Auswahl Authentifizierungsverfahren):";
+  private static final String TIM_UC_10057_01 =
+      "TIM.UC_10057_01 (Client-Login, Auswahl Authentifizierungsverfahren):";
   private static final String TIM_UC_10057_02 = "TIM.UC_10057_02 (Erstellung Matrix-ACCESS_TOKEN):";
   private static final String TIM_UC_10057_03 = "TIM.UC_10057_03 (Erstellung Matrix-OpenID-Token):";
   private static final String TIM_UC_10104_01_01 = "TIM.UC_10104-01_01 (Akteur suchen):";
-  private static final String TIM_UC_10104_01_02 = "TIM.UC_10104-01_02 (Akteur einladen, gleicher Homeserver):";
-  private static final String TIM_UC_10063_01 = "TIM.UC_10063_01 (Austausch von Events innerhalb einer Organisation, gleicher Homeserver):";
-  private static final String TIM_UC_10061_01_01 = "TIM.UC_10061-01_01 (Eintrag in Freigabeliste erzeugen):";
-  private static final String TIM_UC_10061_01_02 = "TIM.UC_10061-01_02 (Einladung Sendersystem, unterschiedliche Homeserver):";
-  private static final String TIM_UC_10061_01_03 = "TIM.UC_10061-01_03 (Einladung Empfangssystem, unterschiedliche Homeserver):";
-  private static final String TIM_UC_10062_01_01 = "TIM.UC_10062-01_01 (Event Sendersystem, unterschiedliche Homeserver):";
-  private static final String TIM_UC_10062_01_02 = "TIM.UC_10062-01_02 (Event Empfangssystem, unterschiedliche Homeserver):";
-  private static final String TIM_UC_10059_01_02 = "TIM.UC_10059-01_02 (Organisationsressourcen im Verzeichnisdienst hinzufügen):";
+  private static final String TIM_UC_10104_01_02 =
+      "TIM.UC_10104-01_02 (Akteur einladen, gleicher Homeserver):";
+  private static final String TIM_UC_10063_01 =
+      "TIM.UC_10063_01 (Austausch von Events innerhalb einer Organisation, gleicher Homeserver):";
+  private static final String TIM_UC_10061_01_01 =
+      "TIM.UC_10061-01_01 (Eintrag in Freigabeliste erzeugen):";
+  private static final String TIM_UC_10061_01_02 =
+      "TIM.UC_10061-01_02 (Einladung Sendersystem, unterschiedliche Homeserver):";
+  private static final String TIM_UC_10061_01_03 =
+      "TIM.UC_10061-01_03 (Einladung Empfangssystem, unterschiedliche Homeserver):";
+  private static final String TIM_UC_10062_01_01 =
+      "TIM.UC_10062-01_01 (Event Sendersystem, unterschiedliche Homeserver):";
+  private static final String TIM_UC_10062_01_02 =
+      "TIM.UC_10062-01_02 (Event Empfangssystem, unterschiedliche Homeserver):";
+  private static final String TIM_UC_10059_01_02 =
+      "TIM.UC_10059-01_02 (Organisationsressourcen im Verzeichnisdienst hinzufügen):";
 
-  private static final String[] HEADERS = new String[]{"description", "success", "error", "errors"};
+  private static final String[] HEADERS =
+      new String[] {"description", "success", "error", "errors"};
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
   private static final Yaml YAML_MAPPER;
 
@@ -100,12 +111,14 @@ public class RawDataStatistics {
 
   /**
    * Count method for these events:
+   *
    * <ul>
-   *   <li>6.4 AF - Anmeldung eines Akteurs am Messenger-Service: Client-Login, Auswahl Authentifizierungsverfahren</li>
-   *   <li>6.4 AF - Anmeldung eines Akteurs am Messenger-Service: Erstellung Matrix-ACCESS_TOKEN</li>
-   *   <li>6.4 AF - Anmeldung eines Akteurs am Messenger-Service: Erstellung Matrix-OpenID-Token</li>
+   *   <li>6.4 AF - Anmeldung eines Akteurs am Messenger-Service: Client-Login, Auswahl
+   *       Authentifizierungsverfahren
+   *   <li>6.4 AF - Anmeldung eines Akteurs am Messenger-Service: Erstellung Matrix-ACCESS_TOKEN
+   *   <li>6.4 AF - Anmeldung eines Akteurs am Messenger-Service: Erstellung Matrix-OpenID-Token
    * </ul>
-   **/
+   */
   public static void login() {
     countEventFor(login);
   }
@@ -116,72 +129,83 @@ public class RawDataStatistics {
 
   /**
    * Count method for this event:
+   *
    * <ul>
-   *   <li>6.7 AF - Einladung von Akteuren innerhalb einer Organisation: Akteur suchen</li>
+   *   <li>6.7 AF - Einladung von Akteuren innerhalb einer Organisation: Akteur suchen
    * </ul>
-   **/
+   */
   public static void search() {
     countEventFor(search);
   }
 
   /**
    * Count method for this event:
+   *
    * <ul>
-   *   <li>6.7 AF - Einladung von Akteuren innerhalb einer Organisation: Akteur einladen</li>
+   *   <li>6.7 AF - Einladung von Akteuren innerhalb einer Organisation: Akteur einladen
    * </ul>
-   **/
+   */
   public static void inviteToRoomSameHomeserver() {
     countEventFor(inviteToRoomSameHomeserver);
   }
 
   /**
    * Count method for this event:
+   *
    * <ul>
-   *   <li>6.8 AF - Austausch von Events innerhalb einer Organisation</li>
+   *   <li>6.8 AF - Austausch von Events innerhalb einer Organisation
    * </ul>
-   **/
+   */
   public static void exchangeMessageSameHomeserver() {
     countEventFor(exchangeMessageSameHomeserver);
   }
 
   /**
    * Count method for this event:
+   *
    * <ul>
-   *   <li>6.9 AF - Einladung von Akteuren außerhalb einer Organisation: Eintrag in Freigabeliste erzeugen</li>
+   *   <li>6.9 AF - Einladung von Akteuren außerhalb einer Organisation: Eintrag in Freigabeliste
+   *       erzeugen
    * </ul>
-   **/
+   */
   public static void editContactManagement() {
     countEventFor(editContactManagement);
   }
 
   /**
    * Count method for these events:
+   *
    * <ul>
-   *   <li>6.9 AF - Einladung von Akteuren außerhalb einer Organisation: Einladung Sendersystem</li>
-   *   <li>6.9 AF - Einladung von Akteuren außerhalb einer Organisation: Einladung Empfangssystem(e)</li>
+   *   <li>6.9 AF - Einladung von Akteuren außerhalb einer Organisation: Einladung Sendersystem
+   *   <li>6.9 AF - Einladung von Akteuren außerhalb einer Organisation: Einladung Empfangssystem(e)
    * </ul>
-   **/
+   */
   public static void inviteToRoomMultiHomeserver() {
     countEventFor(inviteToRoomMultiHomeserver);
   }
 
   /**
    * Count method for these events:
+   *
    * <ul>
-   *   <li>6.10 AF - Austausch von Events zwischen Akteuren außerhalb einer Organisation: Event Sendersystem</li>
-   *   <li>6.10 AF - Austausch von Events zwischen Akteuren außerhalb einer Organisation Event Empfangssystem(e)</li>
+   *   <li>6.10 AF - Austausch von Events zwischen Akteuren außerhalb einer Organisation: Event
+   *       Sendersystem
+   *   <li>6.10 AF - Austausch von Events zwischen Akteuren außerhalb einer Organisation Event
+   *       Empfangssystem(e)
    * </ul>
-   **/
+   */
   public static void exchangeMessageMultiHomeserver() {
     countEventFor(exchangeMessageMultiHomeserver);
   }
 
   /**
    * Count method for these events:
+   *
    * <ul>
-   *  <li> 6.3 AF - Organisationsressourcen im Verzeichnisdienst hinzufügen: Get RegService-OpenID-Token</li>
+   *   <li>6.3 AF - Organisationsressourcen im Verzeichnisdienst hinzufügen: Get
+   *       RegService-OpenID-Token
    * </ul>
-   **/
+   */
   public static void getRegTokenForVZDEvent() {
     countEventFor(getRegTokenForVZDEvent);
   }
@@ -234,22 +258,24 @@ public class RawDataStatistics {
         new RawDataObject(TIM_UC_10057_02, login.getDiff(copiedCounter.get(LOGIN_KEY))),
         new RawDataObject(TIM_UC_10057_03, login.getDiff(copiedCounter.get(LOGIN_KEY))),
         new RawDataObject(TIM_UC_10104_01_01, search.getDiff(copiedCounter.get(SEARCH_KEY))),
-        new RawDataObject(TIM_UC_10104_01_02,
-            inviteToRoomSameHomeserver.getDiff(copiedCounter.get(ITRSH_KEY))),
-        new RawDataObject(TIM_UC_10063_01,
-            exchangeMessageSameHomeserver.getDiff(copiedCounter.get(EMSH_KEY))),
-        new RawDataObject(TIM_UC_10061_01_01,
-            editContactManagement.getDiff(copiedCounter.get(ECM_KEY))),
-        new RawDataObject(TIM_UC_10061_01_02,
-            inviteToRoomMultiHomeserver.getDiff(copiedCounter.get(ITRMH_KEY))),
-        new RawDataObject(TIM_UC_10061_01_03,
-            inviteToRoomMultiHomeserver.getDiff(copiedCounter.get(ITRMH_KEY))),
-        new RawDataObject(TIM_UC_10062_01_01,
+        new RawDataObject(
+            TIM_UC_10104_01_02, inviteToRoomSameHomeserver.getDiff(copiedCounter.get(ITRSH_KEY))),
+        new RawDataObject(
+            TIM_UC_10063_01, exchangeMessageSameHomeserver.getDiff(copiedCounter.get(EMSH_KEY))),
+        new RawDataObject(
+            TIM_UC_10061_01_01, editContactManagement.getDiff(copiedCounter.get(ECM_KEY))),
+        new RawDataObject(
+            TIM_UC_10061_01_02, inviteToRoomMultiHomeserver.getDiff(copiedCounter.get(ITRMH_KEY))),
+        new RawDataObject(
+            TIM_UC_10061_01_03, inviteToRoomMultiHomeserver.getDiff(copiedCounter.get(ITRMH_KEY))),
+        new RawDataObject(
+            TIM_UC_10062_01_01,
             exchangeMessageMultiHomeserver.getDiff(copiedCounter.get(EMMH_KEY))),
-        new RawDataObject(TIM_UC_10062_01_02,
+        new RawDataObject(
+            TIM_UC_10062_01_02,
             exchangeMessageMultiHomeserver.getDiff(copiedCounter.get(EMMH_KEY))),
-        new RawDataObject(TIM_UC_10059_01_02, getRegTokenForVZDEvent.getDiff(copiedCounter.get(
-            GRTFVE_KEY))));
+        new RawDataObject(
+            TIM_UC_10059_01_02, getRegTokenForVZDEvent.getDiff(copiedCounter.get(GRTFVE_KEY))));
   }
 
   @SneakyThrows
@@ -268,16 +294,18 @@ public class RawDataStatistics {
   @SneakyThrows
   private static void rawToCSV(List<RawDataObject> dataObjectList) {
     File csvFile = new File(CSV_PATHNAME);
-    try (ICsvBeanWriter csvBeanWriter = new CsvBeanWriter(new FileWriter(csvFile),
-        CsvPreference.STANDARD_PREFERENCE)) {
+    try (ICsvBeanWriter csvBeanWriter =
+        new CsvBeanWriter(new FileWriter(csvFile), CsvPreference.STANDARD_PREFERENCE)) {
       csvBeanWriter.writeHeader(HEADERS);
-      dataObjectList.forEach(e -> {
-        try {
-          csvBeanWriter.write(e, HEADERS);
-        } catch (IOException ex) {
-          throw new CsvParsingException("Can't build up correct CSV schema from given objects.");
-        }
-      });
+      dataObjectList.forEach(
+          e -> {
+            try {
+              csvBeanWriter.write(e, HEADERS);
+            } catch (IOException ex) {
+              throw new CsvParsingException(
+                  "Can't build up correct CSV schema from given objects.");
+            }
+          });
     }
   }
 
@@ -297,5 +325,4 @@ public class RawDataStatistics {
     }
     login.addError(statusLine);
   }
-
 }

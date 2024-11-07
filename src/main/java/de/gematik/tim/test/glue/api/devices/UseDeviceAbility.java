@@ -21,9 +21,9 @@ import static de.gematik.tim.test.glue.api.TestdriverApiPath.DEVICE_ID_VARIABLE;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTestcaseId;
 import static java.util.Objects.nonNull;
 
-import de.gematik.tim.test.glue.api.teardown.TeardownAbility;
 import de.gematik.tim.test.glue.api.TestdriverApiAbility;
 import de.gematik.tim.test.glue.api.login.IsLoggedInAbility;
+import de.gematik.tim.test.glue.api.teardown.TeardownAbility;
 import io.restassured.specification.RequestSpecification;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

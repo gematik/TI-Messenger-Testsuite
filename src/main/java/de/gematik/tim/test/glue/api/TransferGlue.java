@@ -19,9 +19,8 @@ package de.gematik.tim.test.glue.api;
 import static lombok.AccessLevel.PRIVATE;
 
 import io.cucumber.java.de.Dann;
-import java.util.List;
-
 import io.cucumber.java.de.Wenn;
+import java.util.List;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor(access = PRIVATE)
@@ -49,12 +48,50 @@ public class TransferGlue {
   }
 
   @Wenn("{string} sendet ein Attachment {string} an den Raum {string} über Matrix-Protokoll v1.11")
-  public void sendetEinAttachmentAnDenRaumÜberMatrixProtokollV(String arg0, String arg1, String arg2, int arg3) {
+  public void sendetEinAttachmentAnDenRaumÜberMatrixProtokollV(
+      String arg0, String arg1, String arg2, int arg3) {
     // implement me
   }
 
-  @Dann("{string} empfängt das Attachment {string} von {string} im Raum {string} über Matrix-Protokoll v1.11")
-  public void empfängtDasAttachmentVonImRaumÜberMatrixProtokollV(String arg0, String arg1, String arg2, String arg3, int arg4) {
+  @Dann(
+      "{string} empfängt das Attachment {string} von {string} im Raum {string} über Matrix-Protokoll v1.11")
+  public void empfängtDasAttachmentVonImRaumÜberMatrixProtokollV(
+      String arg0, String arg1, String arg2, String arg3, int arg4) {
+    // implement me
+  }
+
+  @Dann(
+      "{listOfStrings} hinterlegt auf dem HomeServer sein Dehydrated Device inkl speichern des Schlüsselmaterials")
+  @Dann(
+      "{listOfStrings} hinterlegen auf dem HomeServer ihre Dehydrated Device inkl speichern des Schlüsselmaterials")
+  public void postDehydratedDevice(List<String> actorNames) {
+    // implement me
+  }
+
+  @Dann("{listOfStrings} haben {string} Dehydrated Device auf dem HomeServer hinterlegt")
+  @Dann("{listOfStrings} hat {string} Dehydrated Device auf dem HomeServer hinterlegt")
+  public void getDehydratedDevices(List<String> actorNames, String keineODERein) {
+    // implement me
+  }
+
+  @Dann("{listOfStrings} holt sich entschlüsselt sein Dehydrated Device vom HomeServer ab")
+  @Dann("{listOfStrings} holen sich entschlüsselt ihre Dehydrated Device vom HomeServer ab")
+  public void getBackDehydratedDevices(List<String> actorNames) {
+    // implement me
+  }
+
+  @Dann("{string} findet {listOfStrings} in FHIR über die FDV-Schnittstelle")
+  public void findPractitionFromEpaClient(String actor, List<String> actorNames) {
+    // implement me
+  }
+
+  @Dann("{string} findet {string} im Healthcare-Service {string} über die FDV-Schnittstelle")
+  public void findHCSFromEpaClient(String actor, List<String> endpointUser, String hcsName) {
+    // implement me
+  }
+
+  @Dann("{string} ändert seine letzte Nachricht im Chat mit {string} in {string}")
+  public void findHCSFromEpaClient(String actor, String chatUser, String message) {
     // implement me
   }
 }

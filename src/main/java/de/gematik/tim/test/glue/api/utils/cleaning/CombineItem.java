@@ -16,17 +16,15 @@
 
 package de.gematik.tim.test.glue.api.utils.cleaning;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 
 @Data
 @Builder(toBuilder = true)
@@ -34,12 +32,10 @@ import java.util.Set;
 @AllArgsConstructor
 public class CombineItem {
 
-
   private String value;
   private String url;
   private Set<String> tags = new HashSet<>();
   private Map<String, String> properties = new HashMap<>();
-
 
   public boolean isSameAs(@NotNull String s) {
     return s.equals(value) || s.equals(url);

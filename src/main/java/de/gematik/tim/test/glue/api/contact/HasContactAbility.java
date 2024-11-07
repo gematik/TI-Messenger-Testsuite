@@ -30,7 +30,8 @@ public class HasContactAbility extends MultiTargetAbility<String, ContactDTO> {
     addAndSetActive(contactId, contact);
   }
 
-  public static <T extends Actor> void addContactToActor(String contactId, ContactDTO contact, T actor) {
+  public static <T extends Actor> void addContactToActor(
+      String contactId, ContactDTO contact, T actor) {
     HasContactAbility ability = actor.abilityTo(HasContactAbility.class);
     if (isNull(ability)) {
       ability = new HasContactAbility(contactId, contact);

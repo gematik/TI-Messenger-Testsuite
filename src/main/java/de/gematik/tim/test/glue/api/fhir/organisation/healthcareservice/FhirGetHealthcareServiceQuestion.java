@@ -25,8 +25,8 @@ import de.gematik.tim.test.models.FhirHealthcareServiceDTO;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 
-public class FhirGetHealthcareServiceQuestion extends HealthcareSpecificTask implements
-    Question<FhirHealthcareServiceDTO> {
+public class FhirGetHealthcareServiceQuestion extends HealthcareSpecificTask
+    implements Question<FhirHealthcareServiceDTO> {
 
   public static FhirGetHealthcareServiceQuestion getHealthcareService() {
     return new FhirGetHealthcareServiceQuestion();

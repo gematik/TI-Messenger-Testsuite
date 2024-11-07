@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: TiMessengerTestDriver
   description: REST interface to automate the test of a TI-Messenger client implementation.
-  version: 1.1.2
+  version: 1.1.3
   contact:
     name: gematik GmbH
     email: software-development@gematik.de
@@ -85,11 +85,11 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: Returns the meta data of this interface.
+      summary: "Returns the meta data of this interface."
       operationId: getInfo
       responses:
         "200":
-          description: OK
+          description: "Metadata and capabilities of the software"
           content:
             application/json:
               schema:
@@ -105,11 +105,17 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: Implementation is optional! Testsuite sends a request to the involved endpoints (even to the org-admin who is not named in the feature-file). There will be no claiming attempt before triggering these endpoints. After getting any response the testcase starts. This is an opportunity to clean user/rooms/FHIR-VZD etc. Even if an error code is returned the testsuite will start the test.
+      summary: "Indicates a test start, can be used for clean up"
+      description: "Implementation is optional! Testsuite sends a request to the involved endpoints
+      (even to the org-admin who is not named in the feature-file).
+      There will be no claiming attempt before triggering these endpoints.
+      After getting any response the testcase starts.
+      This is an opportunity to clean user/rooms/FHIR-VZD etc.
+      Even if an error code is returned the testsuite will start the test."
       operationId: cleanUp
       responses:
         "200":
-          description: System clean
+          description: "System clean"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
@@ -127,7 +133,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Returns the connected devices and the information of the deposited HBA/SMC-B if existing"
+      summary: "Returns the connected devices and the information of the deposited HBA/SMC-B if existing"
       operationId: getDevices
       responses:
         "200":
@@ -150,7 +156,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Claims a device for exclusive use."
+      summary: "Claims a device for exclusive use."
       operationId: claimDevice
       requestBody:
         required: true
@@ -183,7 +189,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Unclaims a previously claimed device."
+      summary: "Unclaims a previously claimed device."
       operationId: unclaimDevice
       responses:
         "200":
@@ -212,7 +218,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Returns the account data or if no account is registered returns the authentication flows supported by the homeserver."
+      summary: "Returns the account data or if no account is registered returns the authentication flows supported by the homeserver."
       operationId: readAccount
       responses:
         "200":
@@ -238,7 +244,7 @@ paths:
       - $ref: "#/components/parameters/transactionIdHeader"
 
     get:
-      description: "Retrieve list of possible authentication flows"
+      summary: "Retrieve list of possible authentication flows"
       tags:
         - login/logout
         - TI-M_1.1.x
@@ -264,7 +270,7 @@ paths:
           $ref: "#/components/responses/DefaultResponse"
 
     post:
-      description: "Login to an account. If no login data is provided, a preconfigured account should be used. In case the device has a HBA/SMC-B its data should be used"
+      summary: "Login to an account. If no login data is provided, a preconfigured account should be used. In case the device has a HBA/SMC-B its data should be used"
       tags:
         - login/logout
         - TI-M_1.1.x
@@ -300,7 +306,7 @@ paths:
       - $ref: "#/components/parameters/transactionIdHeader"
 
     post:
-      description: "Logout of account"
+      summary: "Logout of account"
       tags:
         - login/logout
         - TI-M_1.1.x
@@ -330,7 +336,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Exports secret key for device synchronization. The key could be in any format but has to be understood by every provided test-driver-api per distributor!"
+      summary: "Exports secret key for device synchronization. The key could be in any format but has to be understood by every provided test-driver-api per distributor!"
       operationId: keyExport
       responses:
         "200":
@@ -352,7 +358,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Imports secret key and executes synchronization"
+      summary: "Imports secret key and executes synchronization"
       operationId: keyImport
       requestBody:
         content:
@@ -379,7 +385,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Get organization from the selected device"
+      summary: "Get organization from the selected device"
       operationId: getOrganization
       responses:
         "200":
@@ -401,6 +407,7 @@ paths:
         - orgAdminFhirHealthcareService
         - TI-M_1.1.x
         - TI-M_Pro
+      summary: "Get associated healthcareService"
       description: "Get healthcareServices regarding the organization that belongs to the claimed device 
       (the search result could also contain all other resources that are related with it.
       Please ensure that the searched resources are included at any time!)"
@@ -420,7 +427,7 @@ paths:
         - orgAdminFhirHealthcareService
         - TI-M_1.1.x
         - TI-M_Pro
-      description: "Creates new healthcare-service and returns the resource of the created healthcareService"
+      summary: "Creates new healthcare-service and returns the resource of the created healthcareService"
       operationId: createHealthcareService
       requestBody:
         content:
@@ -450,7 +457,7 @@ paths:
         - orgAdminFhirHealthcareService
         - TI-M_1.1.x
         - TI-M_Pro
-      description: "Get healthcareService for this id"
+      summary: "Get healthcareService for this id"
       operationId: getHealthcareService
       responses:
         "200":
@@ -469,7 +476,7 @@ paths:
         - orgAdminFhirHealthcareService
         - TI-M_1.1.x
         - TI-M_Pro
-      description: "Changes healthcareService accordingly"
+      summary: "Changes healthcareService accordingly"
       operationId: updateHealthcareService
       requestBody:
         content:
@@ -495,7 +502,7 @@ paths:
         - orgAdminFhirHealthcareService
         - TI-M_1.1.x
         - TI-M_Pro
-      description: "Delete healthcareService with this id"
+      summary: "Delete healthcareService with this id"
       operationId: deleteHealthcareService
       responses:
         "204":
@@ -516,6 +523,7 @@ paths:
         - orgAdminFhirEndpoints
         - TI-M_1.1.x
         - TI-M_Pro
+      summary: "Get all endpoints for the healthcareService"
       description: "Get all endpoints for healthcare-service.
       (the search result could also contain all other resources that are related with it.
       Please ensure that the searched resources are included at any time!)"
@@ -537,7 +545,7 @@ paths:
         - orgAdminFhirEndpoints
         - TI-M_1.1.x
         - TI-M_Pro
-      description: "Create endpoint"
+      summary: "Create endpoint"
       operationId: createEndpoint
       requestBody:
         content:
@@ -566,7 +574,7 @@ paths:
       - $ref: "#/components/parameters/endpointId"
 
     get:
-      description: "Returns information about the requested endpoint"
+      summary: "Returns information about the requested endpoint"
       tags:
         - orgAdminFhirEndpoints
         - TI-M_1.1.x
@@ -589,7 +597,7 @@ paths:
         - orgAdminFhirEndpoints
         - TI-M_1.1.x
         - TI-M_Pro
-      description: "Updates an endpoint"
+      summary: "Updates an endpoint"
       operationId: updateEndpoint
       requestBody:
         content:
@@ -615,133 +623,11 @@ paths:
         - orgAdminFhirEndpoints
         - TI-M_1.1.x
         - TI-M_Pro
-      description: "Deletes an endpoint"
+      summary: "Deletes an endpoint"
       operationId: deleteEndpoint
       responses:
         "204":
           description: "Successfully deleted endpoint"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        default:
-          $ref: "#/components/responses/DefaultResponse"
-
-  /devices/{deviceId}/fhir/org/healthcareService/{hsId}/location:
-    parameters:
-      - $ref: "#/components/parameters/deviceId"
-      - $ref: "#/components/parameters/transactionIdHeader"
-      - $ref: "#/components/parameters/healthcareServiceId"
-
-    get:
-      tags:
-        - orgAdminFhirLocations
-        - TI-M_1.1.x
-        - TI-M_Pro
-      description: "Get all locations for healthcare service 
-      (the search result could also contain all other resources that are related with it.
-      Please ensure that the searched resources are included at any time!)"
-      operationId: getLocations
-      responses:
-        "200":
-          description: "Successfully got all locations for healthcare service"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FhirSearchResult"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        default:
-          $ref: "#/components/responses/DefaultResponse"
-
-    post:
-      tags:
-        - orgAdminFhirLocations
-        - TI-M_1.1.x
-        - TI-M_Pro
-      description: "Create location and return the created resource"
-      operationId: createLocation
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/FhirLocation"
-      responses:
-        "201":
-          description: "Successfully created"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FhirLocation"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        default:
-          $ref: "#/components/responses/DefaultResponse"
-
-  /devices/{deviceId}/fhir/org/healthcareService/{hsId}/location/{locId}:
-    parameters:
-      - $ref: "#/components/parameters/deviceId"
-      - $ref: "#/components/parameters/transactionIdHeader"
-      - $ref: "#/components/parameters/healthcareServiceId"
-      - $ref: "#/components/parameters/locationId"
-
-    get:
-      description: "Returns information about the requested location"
-      tags:
-        - orgAdminFhirLocations
-        - TI-M_1.1.x
-        - TI-M_Pro
-      operationId: getLocation
-      responses:
-        "200":
-          description: "Successfully got Location"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FhirLocation"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        default:
-          $ref: "#/components/responses/DefaultResponse"
-
-    put:
-      tags:
-        - orgAdminFhirLocations
-        - TI-M_1.1.x
-        - TI-M_Pro
-      description: "Updates a Location"
-      operationId: updateLocation
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/FhirLocation"
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FhirLocation"
-          description: "Successfully updated location"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        default:
-          $ref: "#/components/responses/DefaultResponse"
-
-    delete:
-      tags:
-        - orgAdminFhirLocations
-        - TI-M_1.1.x
-        - TI-M_Pro
-      description: "Deletes a location"
-      operationId: deleteLocation
-      responses:
-        "204":
-          description: "Successfully deleted location"
-        "400":
-          $ref: "#/components/responses/BadRequest"
         "404":
           $ref: "#/components/responses/NotFound"
         default:
@@ -757,7 +643,7 @@ paths:
         - practitionerFhirAdministration
         - TI-M_1.1.x
         - TI-M_Pro
-      description: "This request starts the OIDC authentication for getting access to change the own FHIR entry."
+      summary: "This request starts the OIDC authentication for getting access to change the own FHIR entry."
       operationId: authenticateOnFhirDirectory
       responses:
         "200":
@@ -783,7 +669,7 @@ paths:
         - practitionerFhirAdministration
         - TI-M_1.1.x
         - TI-M_Pro
-      description: "Set the MXID in the own practitioner FHIR resource and the created endpoint"
+      summary: "Set the MXID in the own practitioner FHIR resource and the created endpoint"
       operationId: setMxidInFhirDirectory
       responses:
         "201":
@@ -810,7 +696,7 @@ paths:
         - practitionerFhirAdministration
         - TI-M_1.1.x
         - TI-M_Pro
-      description: "Returns the own practitioner entry with belonging resources from the FHIR Directory."
+      summary: "Returns the own practitioner entry with belonging resources from the FHIR Directory."
       operationId: readMxidInFhirDirectory
       responses:
         "200":
@@ -835,7 +721,7 @@ paths:
         - practitionerFhirAdministration
         - TI-M_1.1.x
         - TI-M_Pro
-      description: "Remove the MXID in the own Practitioner FHIR resource."
+      summary: "Remove the MXID in the own Practitioner FHIR resource."
       operationId: removeMxidInFhirDirectory
       responses:
         "204":
@@ -861,7 +747,7 @@ paths:
         - searchOnHomeserver
         - TI-M_1.1.x
         - TI-M_Pro
-      description: "Returns a list of users on same homeserver that matches search parameters"
+      summary: "Returns a list of users on same homeserver that matches search parameters"
       operationId: searchOnHomeserver
       parameters:
         - name: displayName
@@ -878,7 +764,7 @@ paths:
 
       responses:
         "200":
-          description: "Search result for given parameters"
+          description: "List of users for given parameters"
           content:
             application/json:
               schema:
@@ -901,7 +787,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Returns all belonging resources of an organization"
+      summary: "Returns all belonging resources of an organization"
       operationId: searchOrganizationInFhirDirectory
       parameters:
         - name: healthcareServiceName
@@ -953,7 +839,7 @@ paths:
 
       responses:
         "200":
-          description: "Search result for given parameters"
+          description: "Resources for given parameters"
           content:
             application/json:
               schema:
@@ -976,7 +862,8 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Returns the found endpoints of the healthcare-services matching the query.
+      summary: "Returns the found endpoints of the healthcare services matching the query"
+      description: "Returns the found endpoints of the healthcare services matching the query.
       (the search result could also contain all other resources that are related with it.
       Please ensure that the searched resources are included at any time!)"
       operationId: searchHsEndpointInFhirDirectory
@@ -995,7 +882,7 @@ paths:
 
       responses:
         "200":
-          description: "Search result for given parameters"
+          description: "Found endpoints and related resources for given parameters"
           content:
             application/json:
               schema:
@@ -1018,7 +905,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Returns the found Practitioner entries and its belonging location, endpoints and practitioner roles"
+      summary: "Returns the found Practitioner entries and its belonging location, endpoints and practitioner roles"
       operationId: searchPractitionerInFhirDirectory
       parameters:
         - name: name
@@ -1055,7 +942,7 @@ paths:
 
       responses:
         "200":
-          description: "Search result for given parameters"
+          description: "Practitioner entries for given parameters"
           content:
             application/json:
               schema:
@@ -1078,7 +965,10 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Send a direct message to another user. Should work without creating a dedicated room first. The recipients MxId is received through a searchInFhirDirectory-Request."
+      summary: "Send a direct message"
+      description: "Send a direct message to another user.
+      Should work without creating a dedicated room first.
+      The recipients MxId is received through a searchInFhirDirectory-Request."
       operationId: sendDirectMessage
       requestBody:
         content:
@@ -1115,7 +1005,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Lists messages in room"
+      summary: "Lists messages in room"
       operationId: getMessages
       responses:
         "200":
@@ -1139,7 +1029,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Sends a new message"
+      summary: "Sends a new message"
       operationId: sendMessage
       requestBody:
         content:
@@ -1172,7 +1062,7 @@ paths:
       - $ref: "#/components/parameters/messageId"
 
     get:
-      description: "Get single message"
+      summary: "Get single message"
       tags:
         - message
         - TI-M_1.1.x
@@ -1194,9 +1084,8 @@ paths:
           $ref: "#/components/responses/NotFound"
         default:
           $ref: "#/components/responses/DefaultResponse"
-
     put:
-      description: "Edit an existing message"
+      summary: "Edit an existing message"
       tags:
         - message
         - TI-M_1.1.x
@@ -1227,7 +1116,7 @@ paths:
           $ref: "#/components/responses/DefaultResponse"
 
     delete:
-      description: "Deletes a message"
+      summary: "Deletes a message"
       tags:
         - message
         - TI-M_1.1.x
@@ -1260,7 +1149,7 @@ paths:
         - TI-M_Pro
         - TI-M_ePA
       operationId: getRooms
-      description: "Get list of all rooms your account is associated with"
+      summary: "Get list of all rooms your account is associated with"
       responses:
         "200":
           description: "All associated rooms of the logged in account"
@@ -1283,7 +1172,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Create a room."
+      summary: "Create a room."
       operationId: createRoom
       requestBody:
         content:
@@ -1319,7 +1208,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Get public rooms matching params"
+      summary: "Get public rooms matching params"
       operationId: getPublicRooms
       parameters:
         - name: name
@@ -1330,7 +1219,7 @@ paths:
 
       responses:
         "200":
-          description: "All associated rooms of the logged in account"
+          description: "All associated public rooms of the logged in account"
           content:
             application/json:
               schema:
@@ -1355,11 +1244,11 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Get the room settings"
+      summary: "Get the room settings"
       operationId: getRoomSettings
       responses:
         "200":
-          description: OK
+          description: "Settings for the requested roomId"
           content:
             application/json:
               schema:
@@ -1379,7 +1268,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Changes the room settings"
+      summary: "Changes the room settings"
       operationId: changeRoomSettings
       requestBody:
         content:
@@ -1410,7 +1299,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Forget this room"
+      summary: "Forget this room"
       operationId: forgetRoom
       responses:
         "204":
@@ -1436,7 +1325,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Invite a user into the room"
+      summary: "Invite a user into the room"
       operationId: inviteIntoRoom
       requestBody:
         content:
@@ -1473,7 +1362,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Join the room"
+      summary: "Join the room"
       operationId: joinRoom
       responses:
         "200":
@@ -1503,7 +1392,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Leave the room"
+      summary: "Leave the room"
       operationId: leaveRoom
       responses:
         "200":
@@ -1533,7 +1422,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Returns all state events of the room"
+      summary: "Returns all state events of the room"
       operationId: getStateEvents
       responses:
         "200":
@@ -1560,10 +1449,10 @@ paths:
       tags:
         - contactManagement
 
-      description: "Returns the contacts with invite settings"
+      summary: "Returns the contacts with invite settings"
       operationId: getContacts
       responses:
-        200:
+        "200":
           description: "List of all contact settings of the user"
           content:
             application/json:
@@ -1577,7 +1466,7 @@ paths:
         - contactManagement
         - TI-M_1.1.x
 
-      description: "Creates the setting for the contact"
+      summary: "Creates the setting for the contact"
       operationId: createContactSetting
       requestBody:
         required: true
@@ -1604,7 +1493,7 @@ paths:
         - contactManagement
         - TI-M_1.1.x
 
-      description: "Updates the setting for the contact"
+      summary: "Updates the setting for the contact"
       operationId: updateContactSetting
       requestBody:
         required: true
@@ -1637,7 +1526,7 @@ paths:
         - contactManagement
         - TI-M_1.1.x
 
-      description: "Returns the contacts with invite settings"
+      summary: "Returns the contact with invite setting"
       operationId: getContact
       responses:
         "200":
@@ -1654,7 +1543,7 @@ paths:
         - contactManagement
         - TI-M_1.1.x
 
-      description: "Deletes the setting for the contact {mxid}"
+      summary: "Deletes the setting for the contact {mxid}"
       operationId: deleteContactSetting
       responses:
         "204":
@@ -1662,7 +1551,7 @@ paths:
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
-          description: Unauthorized
+          $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
         default:
@@ -1678,7 +1567,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Uploads a file and returns its file-id"
+      summary: "Uploads a file and returns its file-id"
       operationId: postMediaFile
       parameters:
         - in: header
@@ -1696,7 +1585,7 @@ paths:
               format: binary
       responses:
         "201":
-          description: ""
+          description: "Upload successful"
           content:
             application/json:
               schema:
@@ -1713,7 +1602,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Returns a previously uploaded file with given id"
+      summary: "Returns a previously uploaded file with given id"
       operationId: getMediaFile
       responses:
         "200":
@@ -1734,7 +1623,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      description: "Deletes a previously uploaded file with given id"
+      summary: "Deletes a previously uploaded file with given id"
       operationId: deleteMediaFile
       responses:
         "204":
@@ -1751,7 +1640,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      description: "Returns the currently active authorization mode"
+      summary: "Returns the currently active authorization mode"
       operationId: getAuthorizationMode
       responses:
         "200":
@@ -1768,7 +1657,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      description: "Selects the authorization mode"
+      summary: "Selects the authorization mode"
       operationId: setAuthorizationMode
       requestBody:
         required: true
@@ -1799,7 +1688,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      description: "Returns a list of all users and domains, which are allowed to contact the client"
+      summary: "Returns a list of all users and domains, which are allowed to contact the client"
       operationId: getAllowedUsersList
       responses:
         "200":
@@ -1816,7 +1705,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      description: "Adds the users and/or domains in the provided list to the list of allowed users and domains"
+      summary: "Adds the users and/or domains in the provided list to the list of allowed users and domains"
       operationId: addAllowedUsersList
       requestBody:
         required: true
@@ -1843,7 +1732,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      description: "Deletes all users and domains allowed to contact the client"
+      summary: "Deletes all users and domains allowed to contact the client"
       operationId: deleteAllowedUsersList
       responses:
         "204":
@@ -1851,7 +1740,7 @@ paths:
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
-          description: Unauthorized
+          $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
         default:
@@ -1866,7 +1755,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      description: "Returns a list of all users and domains, which are not allowed to contact the client"
+      summary: "Returns a list of all users and domains, which are not allowed to contact the client"
       operationId: getBlockedUsersList
       responses:
         "200":
@@ -1883,7 +1772,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      description: "Adds the users and/or domains in the provided list to the list of blocked users and domains"
+      summary: "Adds the users and/or domains in the provided list to the list of blocked users and domains"
       operationId: addBlockedUsersList
       requestBody:
         required: true
@@ -1910,7 +1799,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      description: "Deletes all users and domains not allowed to contact the client"
+      summary: "Deletes all users and domains not allowed to contact the client"
       operationId: deleteBlockedUsersList
       responses:
         "204":
@@ -1918,13 +1807,13 @@ paths:
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
-          description: Unauthorized
+          $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
         default:
           $ref: "#/components/responses/DefaultResponse"
 
-  /devices/{deviceId}/allowedUser/{mxid}:
+  /devices/{deviceId}/allowedUsers/{mxid}:
     parameters:
       - $ref: "#/components/parameters/deviceId"
       - $ref: "#/components/parameters/transactionIdHeader"
@@ -1934,7 +1823,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      description: "Returns the mxid of the user, if this user is allowed to contact the client"
+      summary: "Returns the mxid of the user, if this user is allowed to contact the client"
       operationId: getAllowedUserMxid
       responses:
         "200":
@@ -1951,7 +1840,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      description: "Deletes the user with this mxid from the list of users allowed to contact the client"
+      summary: "Deletes the user with this mxid from the list of users allowed to contact the client"
       operationId: deleteAllowedUserMxid
       responses:
         "204":
@@ -1959,13 +1848,13 @@ paths:
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
-          description: Unauthorized
+          $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
         default:
           $ref: "#/components/responses/DefaultResponse"
 
-  /devices/{deviceId}/allowedUser/{domain}:
+  /devices/{deviceId}/allowedUsers/domain/{domain}:
     parameters:
       - $ref: "#/components/parameters/deviceId"
       - $ref: "#/components/parameters/transactionIdHeader"
@@ -1975,7 +1864,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      description: "Returns the domain, if users from this domain are allowed to contact the client"
+      summary: "Returns the domain, if users from this domain are allowed to contact the client"
       operationId: getAllowedUserDomain
       responses:
         "200":
@@ -1992,7 +1881,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      description: "Deletes the domain from the list of users and domains allowed to contact the client"
+      summary: "Deletes the domain from the list of users and domains allowed to contact the client"
       operationId: deleteAllowedUserDomain
       responses:
         "204":
@@ -2000,14 +1889,14 @@ paths:
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
-          description: Unauthorized
+          $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
         default:
           $ref: "#/components/responses/DefaultResponse"
 
 
-  /devices/{deviceId}/blockedUser/{mxid}:
+  /devices/{deviceId}/blockedUsers/{mxid}:
     parameters:
       - $ref: "#/components/parameters/deviceId"
       - $ref: "#/components/parameters/transactionIdHeader"
@@ -2017,7 +1906,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      description: "Returns the mxid of the user, if this user is not allowed to contact the client"
+      summary: "Returns the mxid of the user, if this user is not allowed to contact the client"
       operationId: getBlockedUserMxid
       responses:
         "200":
@@ -2034,7 +1923,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      description: "Deletes the user with this mxid from the list of users not allowed to contact the client"
+      summary: "Deletes the user with this mxid from the list of users not allowed to contact the client"
       operationId: deleteBlockedUserMxid
       responses:
         "204":
@@ -2042,13 +1931,13 @@ paths:
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
-          description: Unauthorized
+          $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
         default:
           $ref: "#/components/responses/DefaultResponse"
 
-  /devices/{deviceId}/blockedUser/{domain}:
+  /devices/{deviceId}/blockedUsers/domain/{domain}:
     parameters:
       - $ref: "#/components/parameters/deviceId"
       - $ref: "#/components/parameters/transactionIdHeader"
@@ -2058,7 +1947,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      description: "Returns the domain, if users from this domain are not allowed to contact the client"
+      summary: "Returns the domain, if users from this domain are not allowed to contact the client"
       operationId: getBlockedUserDomain
       responses:
         "200":
@@ -2075,7 +1964,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      description: "Deletes the domain from the list of users and domains not allowed to contact the client"
+      summary: "Deletes the domain from the list of users and domains not allowed to contact the client"
       operationId: deleteBlockedDomain
       responses:
         "204":
@@ -2083,7 +1972,7 @@ paths:
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
-          description: Unauthorized
+          $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
         default:
@@ -2310,7 +2199,7 @@ components:
             $ref: "#/components/schemas/Domain"
 
     AuthorizationMode:
-      description: "Information about the client authorization mode"
+      description: "Client authorization mode"
       type: string
       example: "AllowAll"
       enum: [ AllowAll, BlockAll ]
@@ -2376,7 +2265,10 @@ components:
           description: "Whether this client has basic messaging capabilities"
         isInsurance:
           type: boolean
-          description: "Whether this client is part of an insurance domain and therefore belongs to an insured person"
+          description: "Whether this client runs the TI-Messenger version ePA"
+        isPro:
+          type: boolean
+          description: "Whether this client runs the TI-Messenger version Pro"
 
     ClientSoftwareInfo:
       description: "General information about the client software"
@@ -2610,7 +2502,7 @@ components:
           example: "08:00:00"
         availableEndTime:
           type: string
-          description: "Start time"
+          description: "End time"
           example: "18:00:00"
 
     FhirBaseResource:
@@ -2670,6 +2562,7 @@ components:
           example: "TI-Messenger chat"
 
     FhirConnectionType:
+      description: "Connection type for this endpoint"
       type: object
       properties:
         system:
@@ -2680,6 +2573,7 @@ components:
           example: "tim"
 
     FhirEndpoint:
+      description: "Information about this endpoint"
       allOf:
         - $ref: "#/components/schemas/FhirBaseResource"
       type: object
@@ -2727,6 +2621,7 @@ components:
           $ref: "#/components/schemas/FhirSearch"
 
     FhirHealthcareService:
+      description: "Information about this healthcareService"
       allOf:
         - $ref: "#/components/schemas/FhirBaseResource"
       type: object
@@ -2735,7 +2630,7 @@ components:
       properties:
         name:
           type: string
-          description: "Name of the resource"
+          description: "Name of the healthcareService"
           example: "Surgery station"
         providedBy:
           $ref: "#/components/schemas/FhirReference"
@@ -2772,7 +2667,7 @@ components:
           example: "Closed on Friday 3.14.15926"
 
     FhirIdentifier:
-      description: "Object of text"
+      description: "Identifier for this object"
       type: object
       properties:
         system:
@@ -2785,13 +2680,14 @@ components:
           $ref: "#/components/schemas/FhirType"
 
     FhirLocation:
+      description: "FhirLocation"
       allOf:
         - $ref: "#/components/schemas/FhirBaseResource"
       type: object
       properties:
         name:
           type: string
-          description: "Name of the resource"
+          description: "Name of the location"
           example: "Surgery station"
         address:
           $ref: "#/components/schemas/FhirAddress"
@@ -2852,13 +2748,14 @@ components:
           example: [ "Dr.", "Prof." ]
 
     FhirOrganization:
+      description: "Information about the organisation"
       allOf:
         - $ref: "#/components/schemas/FhirBaseResource"
       type: object
       properties:
         name:
           type: string
-          description: "Name of the resource"
+          description: "Name of the organization"
           example: "Surgery station"
         active:
           type: boolean
@@ -2873,6 +2770,7 @@ components:
             type: string
 
     FhirPractitioner:
+      description: "Information about the practitioner"
       allOf:
         - $ref: "#/components/schemas/FhirBaseResource"
       type: object
@@ -2890,6 +2788,7 @@ components:
             $ref: '#/components/schemas/FhirTelecom'
 
     FhirPractitionerRole:
+      description: "Information about the practitioner, location and endpoint"
       allOf:
         - $ref: "#/components/schemas/FhirBaseResource"
       type: object
@@ -2984,7 +2883,7 @@ components:
           example: true
 
     FhirTelecom:
-      description: "Coding object"
+      description: "Alternative communication connection"
       type: object
       properties:
         system:
@@ -3012,6 +2911,7 @@ components:
           example: "This is a sync generated HealthcareService"
 
     FhirType:
+      description: "FhirType"
       type: object
       properties:
         coding:
@@ -3054,7 +2954,7 @@ components:
             $ref: "#/components/schemas/HomeserverSearchResult"
 
     InfoObject:
-      description: ""
+      description: "Additional information about the connected software"
       required:
         - title
         - clientInfo
@@ -3229,7 +3129,7 @@ components:
         $ref: "#/components/schemas/MxId"
 
     RoomMember:
-      description: ""
+      description: "Accounts related to this room"
       type: object
       required:
         - mxid

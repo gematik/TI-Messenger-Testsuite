@@ -145,12 +145,14 @@ public class RequestResponseUtils {
       return lastResponse().as(clazz);
     } catch (Exception e) {
       log.error("Could not parse response: ", e);
-      throw new TestRunException("Expected "
+      throw new TestRunException(
+          "Expected "
               + clazz.getSimpleName()
               + " but got:\n"
               + lastResponse().body().prettyPrint()
               + " with status code "
-              + lastResponse().statusCode(), e);
+              + lastResponse().statusCode(),
+          e);
     }
   }
 }

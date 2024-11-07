@@ -1,4 +1,4 @@
-:toc-title: Inhaltsverzeichnis
+:toc-title: Table of contents
 :toc:
 :toclevels: 4
 
@@ -16,75 +16,74 @@
 :sourcedir: ../../src
 :plantumldir: ../plantuml
 :rootdir: ../../
-== Erste Schritte
+== First Steps
 
-=== Zertifikate einrichten
+=== Set up certificates
 
-Die Testtreiberschnittstelle ist über mTls abgesichert.
-Da jegliche Kommunikation über den Tiger-Proxy läuft muss dem Tiger-Proxy ein Client-Zertifikat mitgegeben werden.
-Außerdem muss der Testtreiber mit den entsprechenden Zertifikaten versehen werden.
-In diesem Kapitel wird beschrieben wie der Proxy richtig konfiguriert werden kann und eine unterstützende Anleitung gegeben, wie das Server-Zertifikat installiert wird.
+The test driver interface is secured via mTLS.
+Since all communication runs through the Tiger Proxy, a client certificate must be provided to the Tiger Proxy.
+Additionally, the test driver must be equipped with the corresponding certificates.
+This chapter describes how to properly configure the proxy and provides supporting guidance on how to install the server certificate.
 
-Nach Beantragen einer Zulassung werden Sie aufgefordert Ihre URL's der von Ihnen bereitgestellten Schnittstellen zu liefern.
-Für diese URL's erstellt die gematik ein Server-Zertifikat, ein Client-Zertifikat und alle dazugehörigen Keys.
+After applying for approval, you will be asked to provide the URLs of the interfaces you have supplied.
+For these URLs, gematik will create a server certificate, a client certificate, and all associated keys.
 
-==== Zertifikate extrahieren
+==== Extract certificates
 
-Die Zertifikate bzw.
-Keys können wie folgt aus dem `.p12`-File extrahiert werden (benötigte Passwörter stehen in der mitgelieferten `password`-Datei):
+The certificates and keys can be extracted from the `.p12`-File as follows (required passwords are provided in the accompanying `password` file):
 
-.Trusted-Zertifikat
+.Trusted-Certificate
 [source,bash]
 ----
 openssl pkcs12 -info --in gemTruststore.p12 -nokeys > trustedCert.pem
 ----
 
-.Server-Zertifikat
+.Server Certificate
 [source,bash]
 ----
 openssl pkcs12 -info --in <yourName>ServerKeystore.p12 -nokeys > serverCert.pem
 ----
 
-.Server-Key
+.Server Key
 [source,bash]
 ----
 openssl pkcs12 -info --in <yourName>ServerKeystore.p12 -nocerts > serverKey.pem
 ----
 
-.Client-Zertifikat
+.Client Certificate
 [source,bash]
 ----
 openssl pkcs12 -info --in <yourName>ClientKeystore.p12 -nokeys > clientCert.pem
 ----
 
-.Client-Key
+.Client Key
 [source,bash]
 ----
 openssl pkcs12 -info --in <yourName>ClientKeystore.p12 -nocerts > clientKey.pem
 ----
 
 [IMPORTANT]
-[red]#Wenn ein Key aus einer .p12 geladen wird, wird ein neues Passwort gesetzt.
-Dieses muss nicht dem in der mitgelieferten `passwort`-Datei entsprechen.#
+[red]#When a key is loaded from a .p12 file, a new password is set.
+This does not have to match the password in the provided `password`file.#
 
-==== Server-Zertifikat einrichten
+==== Set up a server certificate
 
-Eine genaue Anleitung ist hier nicht möglich.
-Je nach verwendeter Technologie kann sich das Einrichten anders gestalten.
-Das Zertifikat und die damit einhergehende Prüfung kann in der Anwendung direkt oder in einen vorgeschalteten Proxy geschehen.
-
+A precise guide is not possible here.
+The setup may vary depending on the technology used.
+The certificate and its verification can be handled directly in the application or through a proxy server placed in front.
 [IMPORTANT]
-[red]#*Die Schnittstelle muss TLSv1.2 unterstützen!*#
+[red]#*The interface must support TLSv1.2!*#
 
-Beispielhaft ist hier eine Konfiguration mit einem nginx-proxy wie sie unter `_/etc/nginx/default.conf_` liegen könnte.
-Gleichzeitig müssen die oben extrahierten
+An example configuration with a nginx proxy as it might appear under `_/etc/nginx/default.conf_` is provided here.
+At the same time, the extracted
 
-* Server-Key
-* Server-Zertifikat
-* Trusted-Zertifikate
 
-unter `_etc/nginx/conf.d/certs/*_` abgelegt werden.
-Außerdem muss eine `.txt`-Datei erstellt werden, die nur das ServerKey Passwort enthält (entweder das selbstgewählte, wenn das extrahierte Zertifikat aus dem Keystore genommen wird, oder das Passwort aus der passwort.txt Datei, wenn dieses nicht geändert wurde).
+* Server Key
+* Server Certificate
+* Trusted Certificate
+
+must be placed under `_etc/nginx/conf.d/certs/*_` .
+In addition, a `.txt` file must be created that contains only the server key password (either the user-defined password if the extracted certificate is taken from the keystore, or the password from the password.txt file if it has not been changed).
 
 ----
 access_log   /dev/stdout;
@@ -111,36 +110,36 @@ server {
 }
 ----
 
-==== Client-Zertifikat für mTLS einrichten
+==== Set up a client certificate for mTLS
 
-Die Testtreiberschnittstelle verwendet mTLS.
-Daher muss ein Client-Zertifikat bereitgestellt und dem Tiger Proxy übergeben werden.
-Die Testsuite ist so vorbereitet, dass Sie den Path und das Passwort unter folgenden Umgebungsvariablen erwartet:
+The test driver interface uses mTLS.
+Therefore, a client certificate must be provided and passed to the Tiger Proxy.
+The test suite is set up to expect the path and password under the following environment variables:
 
 * TIM_KEYSTORE
 * TIM_KEYSTORE_PW
 
-Sollte für Testzwecke ein selbstsigniertes Zertifikat verwendet werden muss zusätzlich noch ein Truststore konfiguriert werden.
-Dies geschieht über die Angabe der 2 Umgebungsvariablen:
+If a self-signed certificate is used for testing purposes, a truststore must also be configured.
+This is done by specifying the following two environment variables:
 
 * TIM_TRUSTSTORE
 * TIM_TRUSTSTORE_PW
 
-Die jeweiligen Stores sollten im .p12-Format sein.
+The respective stores should be in .p12 format.
 
-Für lokale/interne Entwicklung kann das Verwenden von TLS umgangen werden.
-Eine Anleitung hierzu ist link:DevGuide.adoc#Disable-TLS[hier] zu finden.
+For local/internal development, the use of TLS can be bypassed.
+Instructions for this can be found link:DevGuide.adoc#Disable-TLS[here].
 
-=== Testtreiberschnittstelle hinzufügen
+=== Add test driver interface
 
-Alle zu testenden Testtreiberschnittstellen werden in der Datei link:{sourcedir}/test/resources/combine_items.json[combine_items.json] verwaltet.
-Um eine neue Testtreiberschnittstelle zur Testsuite hinzuzufügen, muss ein entsprechender Eintrag in dieser Datei ergänzt werden.
+The test driver interfaces that need to be tested are managed in the file link:{sourcedir}/test/resources/combine_items.json[combine_items.json].
+To add a new test driver interface to the test suite, a corresponding entry must be added to this file.
 
-Der `value` in der link:{sourcedir}/test/resources/combine_items.json[combine_items.json] kann entweder direkt die vollständige URL oder für die bessere Zuordnung einen Alias darstellen.
-Der Alias kann freie gewählt werden.
-Sollte ein Alias verwendet werden muss die entsprechende URL unter `url` eingetragen werden.
+The `value` in link:{sourcedir}/test/resources/combine_items.json[combine_items.json] can either represent the complete URL or an alias for better reference.
+The alias can be chosen freely.
+If an alias is used, the corresponding URL must be entered under `url`.
 
-.Ein Beispiel-Item mit Alias und URL
+.Here’s an example item with alias and URL:
 [source,json]
 ----
 [
@@ -159,7 +158,7 @@ Sollte ein Alias verwendet werden muss die entsprechende URL unter `url` eingetr
 ]
 ----
 
-IMPORTANT: Für die Verwendung eines `alias` ist es ebenfalls nötig diesen in die link:{rootdir}tiger.yml[tiger.yml] nach folgendem Schema einzutragen!
+IMPORTANT: For the use of an `alias`, it is also necessary to enter it in the link:{rootdir}tiger.yml[tiger.yml] according to the following schema!
 
 [source,yml]
 ----
@@ -171,48 +170,57 @@ tigerProxy:
     - from: http://API1 <2>
       to: https://<HOST_NAME>:<PORT>
     - from: http://API2
-      to: https://<HOST_NAME>:<PORT>/rest <3>
+      to: https://<HOST_NAME>:<PORT>/rest/ <3>
     - from: http://API3
-      to: https://<HOST_NAME>:<PORT>/ti-m-testtreiber
+      to: https://<HOST_NAME>:<PORT>/ti-m-testtreiber/
 ----
 
-<1> Default local Tiger muss bestehen bleiben.
-<2> Unter `proxyRoutes` können die einzelnen Routen dem Proxy bekannt gemacht werden.
-From muss mit http:// beginnen und mit dem Value in link:{sourcedir}/test/resources/combine_items.json[combine_items.json] übereinstimmen.
-<3> Weitere Ressourcen im Pfad müssen genannt werden
+<1> The default local Tiger Proxy must remain.
+<2> Under `proxyRoutes`, the individual routes can be specified for the proxy.
+From must start with http:// and match the value in link:{sourcedir}/test/resources/combine_items.json[combine_items.json].
+Make sure that the specified URL ends with a trailing '/', otherwise the connection will fail.
+<3> Additional resources in the path must be specified.
 
-=== Starten der Testfälle
+=== Starting the test cases
 
-Die Testsuite führt die Tests als Maven-Integrationstests aus.
-Gestartet wird die Testsuite mit diesem Befehl:
+The test suite executes the tests as Maven integration tests.
+The test suite is started with this command:
 
 ----
 mvn verify
 ----
 
 [[parameter_controll_testsuite,Parameter für die Steuerung der Testsuite]]
-==== Parameter die das Verhalten der Testsuite anpassen
+==== Parameters that adjust the behavior of the test suite
 
-Um für einige Gegebenheiten vorbereitet zu sein, kann die Testsuite ihr Verhalten leicht anpassen.
-Im Folgenden sind Parameter aufgezählt die alle mittels -D<parameterName>(=<parameterValue>) mit beim Aufruf angegeben werden können
+To be prepared for certain circumstances, the test suite can slightly adjust its behavior.
+Below are parameters that can all be specified using -D<parameterName>(=<parameterValue>) during invocation.
 
-.Parameter zum Anpassen der Testsuite
+.Parameters for adjusting the test suite
 [%header,cols='2,4,1']
 |===
-|Parametername|Wirkung|defaultValue
-|maxRetryClaimRequest|Legt fest wie häufig ein Claimen eines Devices fehlschlagen darf bevor es zum Abbruch kommt|3
-|timeout|Legt fest wie lange auf nach eine Request erneut gesendet wird bis die erwartete Antwort erscheint|10 Sek
-|pollInterval|Legt fest, in welchen Abständen eine erneute Anfrage gesendet wird bis die erwartete Antwort erscheint|1 Sek
-|httpTimeout|Legt fest wie lange die Testsuite auf eine Antwort der Testtreiberschnittstelle wartet|180 Sek
-|claimDuration|Ist der Wert der bei einer Claim-Request mitgesendet wird|180
-|runWithoutRetry|Sendet eine Anfrage nur einmal aus und geht davon aus, dass es keine Synchronisationsprobleme gibt|false
-|clearRooms|Jeder User fragt am Anfang seine Räume ab und verlässt alle. Dies bedeutet Einbußen in der Performance und ist nur zum Säubern des Setups gedacht|false
-|skipRoomStateCheck|Das failen der Prüfung ob jeder Room Member den richtigen MemberShipState hat, lässt die Testsuite nicht fehlschlagen, sondern führt nur zu einem individuellem Logeintrag wenn Wert auf `true`  gesetzt wird|false
+|Parameter name|
+Effect|defaultValue
+|maxRetryClaimRequest|Specifies how many times claiming a device can fail before it is terminated|3
+|timeout|Specifies how long to wait after a request is sent until the expected response appears|10 sec
+|pollInterval|Specifies the intervals at which a request is sent again until the expected response appears|1 sec
+|httpTimeout|Specifies how long the test suite waits for a response from the test driver interface|180 sec
+|claimDuration|The value sent with a claim request link:https://github.com/gematik/TI-Messenger-Testsuite/blob/main/src/main/resources/api/TiMessengerTestTreiber.yaml#L2358[testdriver.yaml]|180
+|runWithoutRetry|Sends a request only once and assumes that there are no synchronization issues|false
+|clearRooms|Each user queries their rooms at the beginning and leaves all of them. This results in a performance loss and is intended only for cleaning up the setup.|false
+|skipRoomStateCheck|The test suite does not fail when the check that tests whether each room member has the correct membership state fails. Instead, an individual log entry is made if the value is set to `true`.|false
 |===
 
-=== Auswerten der Testergebnisse
+=== Evaluating the test results
 
-Nach der Testausführung liegt der aktuelle Report im Build-Verzeichnis unter link:{rootdir}target/site/serenity/index.html[target/site/serenity/index.html].
-Wiederholte Ausführungen werden in einem gemeinsamen Report zusammengefasst.
 
-Zusätzlich wird jeder Durchlauf mit seinem Report und den genutzten Feature-Dateien im Root-Verzeichnis im Ordner link:{rootdir}reports[reports] gespeichert.
+After the test execution, the current report is located in the build directory under link:{rootdir}target/site/serenity/index.html[target/site/serenity/index.html].
+Repeated executions are summarized in a common report.
+
+Additionally, each run is saved in the root directory in the link:{rootdir}reports[reports] folder along with its report and the feature files used.
+
+
+
+
+
+

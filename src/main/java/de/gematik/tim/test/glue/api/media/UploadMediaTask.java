@@ -41,13 +41,12 @@ public class UploadMediaTask implements Task {
 
   @Override
   public <T extends Actor> void performAs(T actor) {
-    actor.attemptsTo(UPLOAD_MEDIA.request()
-        .with(req -> req.contentType(ContentType.BINARY).body(media)));
+    actor.attemptsTo(
+        UPLOAD_MEDIA.request().with(req -> req.contentType(ContentType.BINARY).body(media)));
 
     Response response = lastResponse();
     assert (response.statusCode() / 100 == 2);
     String mediaId = response.body().as(MediaFileIdDTO.class).getFileId();
     actor.remember(MEDIA_ID, mediaId);
-
   }
 }

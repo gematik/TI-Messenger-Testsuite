@@ -365,12 +365,6 @@ public class RoomControllerGlue {
     checkRoomMembershipState(room);
   }
 
-  @And("{string} has not joined the room {string}")
-  @Und("{string} ist dem Raum {string} nicht beigetreten")
-  public void userNotInRoom(String actorName, String roomName) {
-    userNotInRoom(actorName, roomName, null, null);
-  }
-
   @And("{string} has not joined the room {string} [Retry {long} - {long}]")
   @Und("{string} ist dem Raum {string} nicht beigetreten [Retry {long} - {long}]")
   public void userNotInRoom(String actorName, String roomName, Long timeout, Long pollInterval) {
@@ -380,13 +374,6 @@ public class RoomControllerGlue {
             .withRoomId(getRoomByInternalName(roomName).getRoomId())
             .withMemberHasStatus(actor.recall(MX_ID), JOIN)
             .withCustomInterval(timeout, pollInterval));
-  }
-
-  @Then("{string} did not joined chat with {string}")
-  @Dann("{string} ist dem Chat mit {string} nicht beigetreten")
-  @Dann("{string} erhält KEINE Einladung von {string}")
-  public void userDidNotEnterChat(String actorName, String userName) {
-    userDidNotEnterChat(actorName, userName, null, null);
   }
 
   @Then("{string} did not joined chat with {string} [Retry {long} - {long}]")
@@ -418,12 +405,6 @@ public class RoomControllerGlue {
         .isNotNull();
     checkRoomMembershipState(room);
     checkRoomVersion(room);
-  }
-
-  @And("{string} gets no invitation from {string} for the room {string}")
-  @Und("{string} erhält KEINE Einladung von {string} für den Raum {string}")
-  public void noInvitationForRoomReceived(String actorName, String clientName, String roomName) {
-    noInvitationForRoomReceived(actorName, clientName, roomName, null, null);
   }
 
   @And("{string} gets no invitation from {string} for the room {string} [Retry {long} - {long}]")

@@ -42,5 +42,4 @@ public abstract class ParallelQuestionRunner<T> implements Question<T> {
     this.actor = actor;
     return this;
   }
-
 }

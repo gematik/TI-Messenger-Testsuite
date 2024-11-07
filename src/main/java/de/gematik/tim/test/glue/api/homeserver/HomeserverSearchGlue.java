@@ -82,12 +82,6 @@ public class HomeserverSearchGlue {
     assertThat(searchResult.getDisplayName()).isEqualTo(displayName);
   }
 
-  @Then("{string} cannot find TI-Messenger user {string} when searching in the homeserver")
-  @Dann("{string} findet TI-Messenger-Nutzer {string} bei der Suche im HomeServer nicht")
-  public void doesNotFindTIMUserWhenSearchingOnHomeserver(String actorName, String userName) {
-    doesNotFindTIMUserWhenSearchingOnHomeserver(actorName, userName, null, null);
-  }
-
   @Then(
       "{string} cannot find TI-Messenger user {string} when searching in the homeserver [retry {long} - {long}]")
   @Dann(

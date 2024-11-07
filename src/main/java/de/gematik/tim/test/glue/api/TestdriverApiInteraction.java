@@ -21,14 +21,13 @@ import static java.util.Objects.requireNonNull;
 import de.gematik.test.tiger.lib.TigerDirector;
 import de.gematik.test.tiger.proxy.TigerProxy;
 import io.restassured.RestAssured;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.rest.interactions.RestInteraction;
 import net.serenitybdd.screenplay.rest.questions.RestQueryFunction;
-
-import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 public class TestdriverApiInteraction implements Performable {
@@ -48,12 +47,15 @@ public class TestdriverApiInteraction implements Performable {
 
   @Override
   public <T extends Actor> void performAs(T actor) {
-    neededAbilities.forEach(abilityClass -> {
-      TestdriverApiAbility ability = actor.abilityTo(abilityClass);
-      requireNonNull(ability, "Actor '%s' needs the '%s' to perform this request!"
-          .formatted(actor.getName(), abilityClass.getSimpleName()));
-      restInteraction.with(ability);
-    });
+    neededAbilities.forEach(
+        abilityClass -> {
+          TestdriverApiAbility ability = actor.abilityTo(abilityClass);
+          requireNonNull(
+              ability,
+              "Actor '%s' needs the '%s' to perform this request!"
+                  .formatted(actor.getName(), abilityClass.getSimpleName()));
+          restInteraction.with(ability);
+        });
     restInteraction.performAs(actor);
   }
 }

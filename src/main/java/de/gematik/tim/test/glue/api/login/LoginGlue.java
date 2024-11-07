@@ -17,9 +17,6 @@
 package de.gematik.tim.test.glue.api.login;
 
 import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
-import static de.gematik.tim.test.glue.api.devices.CheckClientKindTask.checkIs;
-import static de.gematik.tim.test.glue.api.devices.ClientKind.CLIENT;
-import static de.gematik.tim.test.glue.api.devices.ClientKind.PRACTITIONER;
 import static de.gematik.tim.test.glue.api.login.LoginTask.login;
 import static de.gematik.tim.test.glue.api.login.LogoutTask.logout;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.CLAIM_PARALLEL;
@@ -32,7 +29,6 @@ import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Wenn;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import java.util.List;
 import net.serenitybdd.screenplay.Actor;
 
 public class LoginGlue {
@@ -62,21 +58,5 @@ public class LoginGlue {
   public void logsOut(String actorName) {
     theActorCalled(actorName).attemptsTo(logout());
     checkResponseCode(actorName, OK.value());
-  }
-
-  @When("{string} logs in as HBA-User")
-  @Wenn("{string} sich als HBA-User einloggt")
-  public void logsInAsHbaUser(String actorName) {
-    Actor actor = theActorCalled(actorName);
-    logsIn(actor);
-    checkIs(List.of(CLIENT, PRACTITIONER)).withActor(actor).run();
-  }
-
-  @When("{string} logs in as Org-User")
-  @Wenn("{string} sich als Org-User einloggt")
-  public void logsInAsOrgUser(String actorName) {
-    Actor actor = theActorCalled(actorName);
-    logsIn(actor);
-    checkIs(List.of(CLIENT)).withActor(actor).run();
   }
 }

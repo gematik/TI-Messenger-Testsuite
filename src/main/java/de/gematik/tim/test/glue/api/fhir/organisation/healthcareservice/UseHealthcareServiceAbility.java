@@ -27,14 +27,15 @@ import io.restassured.specification.RequestSpecification;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 
-public class UseHealthcareServiceAbility extends MultiTargetAbility<String, HealthcareServiceInfo> implements
-    TestdriverApiAbility {
+public class UseHealthcareServiceAbility extends MultiTargetAbility<String, HealthcareServiceInfo>
+    implements TestdriverApiAbility {
 
   private UseHealthcareServiceAbility(String hsName, HealthcareServiceInfo hsInfo) {
     addAndSetActive(hsName, hsInfo);
   }
 
-  public static <T extends Actor> void addHsToActor(String hsName, HealthcareServiceInfo hsInfo, T actor) {
+  public static <T extends Actor> void addHsToActor(
+      String hsName, HealthcareServiceInfo hsInfo, T actor) {
     UseHealthcareServiceAbility ability = actor.abilityTo(UseHealthcareServiceAbility.class);
     if (isNull(ability)) {
       actor.can(useHs(hsName, hsInfo));

@@ -23,8 +23,8 @@ import de.gematik.tim.test.models.FhirEndpointDTO;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 
-public class FhirGetEndpointQuestion extends EndpointSpecificTask implements
-    Question<FhirEndpointDTO> {
+public class FhirGetEndpointQuestion extends EndpointSpecificTask
+    implements Question<FhirEndpointDTO> {
 
   public static FhirGetEndpointQuestion getEndpoint() {
     return new FhirGetEndpointQuestion();

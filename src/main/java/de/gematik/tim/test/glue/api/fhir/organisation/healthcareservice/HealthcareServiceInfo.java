@@ -16,6 +16,4 @@
 
 package de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice;
 
-public record HealthcareServiceInfo(String name, String id) {
-
-}
+public record HealthcareServiceInfo(String name, String id) {}

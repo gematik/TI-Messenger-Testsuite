@@ -99,16 +99,6 @@ public class FhirAdministrationGlue {
     assertCorrectEndpointNameAndMxid(endpoints, actor);
   }
 
-  @Then("{string} has no MXID in Fhir")
-  @Dann("{string} hat keine MXID im Fhir")
-  public void getsOwnNullMXID(String actorName) {
-    Actor actor = theActorCalled(actorName);
-    FhirSearchResultDTO result = theActorCalled(actorName).asksFor(ownFhirResource());
-    List<FhirEndpointDTO> endpoints =
-        getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
-    assertThat(endpoints).extracting("address").doesNotContain(actor.recall(MX_ID));
-  }
-
   @Then("{string} is not authorized on Vzd")
   @Dann("{string} ist nicht berechtigt im Verzeichnis Dienst")
   @Und("{string} versucht seine MXID im Verzeichnis Dienst ohne Authentication zu hinterlegen")

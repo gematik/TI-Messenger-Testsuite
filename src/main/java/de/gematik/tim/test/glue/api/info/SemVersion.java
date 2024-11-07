@@ -17,7 +17,6 @@
 package de.gematik.tim.test.glue.api.info;
 
 import static java.lang.Integer.compare;
-import static java.lang.Integer.parseInt;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -64,5 +63,4 @@ public class SemVersion implements Comparable<SemVersion> {
   public String toString() {
     return versionString;
   }
-
 }

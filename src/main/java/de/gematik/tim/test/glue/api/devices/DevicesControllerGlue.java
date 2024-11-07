@@ -29,6 +29,8 @@ import static de.gematik.tim.test.glue.api.devices.ClientKind.CLIENT;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.INSURANT;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.PRACTITIONER;
+import static de.gematik.tim.test.glue.api.devices.ClientKind.PRO_CLIENT;
+import static de.gematik.tim.test.glue.api.devices.ClientKind.PRO_PRACTITIONER;
 import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.TEST_CASE_ID_HEADER;
 import static de.gematik.tim.test.glue.api.login.LoginGlue.logsIn;
 import static de.gematik.tim.test.glue.api.login.LoginTask.login;
@@ -135,6 +137,9 @@ public class DevicesControllerGlue {
         case ORG_ADMIN -> reserveClient(claimInfo.actor, claimInfo.api, ORG_ADMIN);
         case CLIENT -> reserveClient(claimInfo.actor, claimInfo.api, CLIENT);
         case INSURANT -> reserveClient(claimInfo.actor, claimInfo.api, CLIENT, INSURANT);
+        case PRO_CLIENT -> reserveClient(claimInfo.actor, claimInfo.api, CLIENT, PRO_CLIENT);
+        case PRO_PRACTITIONER ->
+            reserveClient(claimInfo.actor, claimInfo.api, CLIENT, PRACTITIONER, PRO_PRACTITIONER);
       }
     } catch (TestRunException e) {
       log.error("Error while claiming device", e);

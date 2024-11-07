@@ -23,8 +23,7 @@ import io.restassured.specification.RequestSpecification;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class LookForDeletedHealthcareServiceAbility implements
-    TestdriverApiAbility {
+public class LookForDeletedHealthcareServiceAbility implements TestdriverApiAbility {
 
   private final String hsId;
 

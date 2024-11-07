@@ -20,6 +20,8 @@ import static de.gematik.tim.test.glue.api.devices.ClientKind.CLIENT;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.INSURANT;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.PRACTITIONER;
+import static de.gematik.tim.test.glue.api.devices.ClientKind.PRO_CLIENT;
+import static de.gematik.tim.test.glue.api.devices.ClientKind.PRO_PRACTITIONER;
 import static de.gematik.tim.test.glue.api.info.ApiInfoQuestion.apiInfo;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -55,28 +57,44 @@ public class CheckClientKindTask extends ParallelTaskRunner {
     if (kind.contains(ORG_ADMIN)) {
       assertThat(info.getClientInfo().getCanAdministrateFhirOrganization())
           .as(
-              "Claimed device failed for actor %s on api %s because api have no org admin privileges! This information is got from the info endpoint."
+              "Claimed device failed for actor %s on api %s because api have no org admin privileges! This information was received from the info endpoint."
                   .formatted(actor.getName(), actor.abilityTo(CallAnApi.class).resolve("")))
           .isTrue();
     }
     if (kind.contains(CLIENT)) {
       assertThat(info.getClientInfo().getCanSendMessages())
           .as(
-              "Claimed device failed for actor %s on api %s because api have no write messages privileges! This information is got from the info endpoint."
+              "Claimed device failed for actor %s on api %s because api have no write messages privileges! This information was received from the info endpoint."
                   .formatted(actor.getName(), actor.abilityTo(CallAnApi.class).resolve("")))
           .isTrue();
     }
     if (kind.contains(PRACTITIONER)) {
       assertThat(info.getClientInfo().getCanAdministrateFhirPractitioner())
           .as(
-              "Claimed device failed for actor %s on api %s because api have no practitioner privileges! This information is got from the info endpoint."
+              "Claimed device failed for actor %s on api %s because api have no practitioner privileges! This information was received from the info endpoint."
                   .formatted(actor.getName(), actor.abilityTo(CallAnApi.class).resolve("")))
           .isTrue();
     }
     if (kind.contains(INSURANT)) {
       assertThat(info.getClientInfo().getIsInsurance())
           .as(
-              "Claimed device failed for actor %s on api %s because api have no insurant privileges! This information is got from the info endpoint."
+              "Claimed device failed for actor %s on api %s because api have no insurant privileges! This information was received from the info endpoint."
+                  .formatted(actor.getName(), actor.abilityTo(CallAnApi.class).resolve("")))
+          .isTrue();
+    }
+    if (kind.contains(PRO_CLIENT)) {
+      assertThat(info.getClientInfo().getIsPro())
+          .as(
+              "Claimed device failed for actor %s on api %s because api have no pro version privileges! This information was received from the info endpoint."
+                  .formatted(actor.getName(), actor.abilityTo(CallAnApi.class).resolve("")))
+          .isTrue();
+    }
+    if (kind.contains(PRO_PRACTITIONER)) {
+      assertThat(
+              Boolean.TRUE.equals(info.getClientInfo().getIsPro())
+                  && Boolean.TRUE.equals(info.getClientInfo().getCanAdministrateFhirPractitioner()))
+          .as(
+              "Claimed device failed for actor %s on api %s because api have no practitioner and pro version privileges! This information was received from the info endpoint."
                   .formatted(actor.getName(), actor.abilityTo(CallAnApi.class).resolve("")))
           .isTrue();
     }

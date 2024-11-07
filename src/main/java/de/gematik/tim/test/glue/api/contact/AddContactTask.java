@@ -23,11 +23,10 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.ContactDTO;
 import de.gematik.tim.test.models.ContactInviteSettingsDTO;
+import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
-
-import java.time.Instant;
 
 @RequiredArgsConstructor
 public class AddContactTask implements Task {
@@ -40,8 +39,10 @@ public class AddContactTask implements Task {
 
   @Override
   public <T extends Actor> void performAs(T actor) {
-    ContactInviteSettingsDTO settings = new ContactInviteSettingsDTO().start(Instant.now()
-        .getEpochSecond()).end(Instant.now().plus(1, DAYS).getEpochSecond());
+    ContactInviteSettingsDTO settings =
+        new ContactInviteSettingsDTO()
+            .start(Instant.now().getEpochSecond())
+            .end(Instant.now().plus(1, DAYS).getEpochSecond());
     ContactDTO contact = new ContactDTO().mxid(this.contactId).inviteSettings(settings);
 
     actor.attemptsTo(ADD_CONTACT.request().with(req -> req.body(contact)));

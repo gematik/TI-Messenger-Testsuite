@@ -19,5 +19,5 @@ package de.gematik.tim.test.glue.api.info;
 import java.util.List;
 import java.util.Map;
 
-public record SupportedMatrixVersionInfo(List<String> versions, Map<String, Boolean> unstable_features) {
-}
+public record SupportedMatrixVersionInfo(
+    List<String> versions, Map<String, Boolean> unstable_features) {}

@@ -40,7 +40,5 @@ public class DenyRoomInvitationTask implements Task {
   public <T extends Actor> void performAs(T actor) {
     Objects.requireNonNull(roomId);
     actor.attemptsTo(DENY_ROOM.request().with(req -> req.pathParam(ROOM_ID_VARIABLE, roomId)));
-
   }
-
 }

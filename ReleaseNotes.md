@@ -4,6 +4,19 @@
 
 ## Link to TI-Messenger-testsuite [`docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
 
+## Release 1.3.8
+
+### Changes
+
+- Two unused endpoints were removed from the test driver API: getLocations, getLocation
+- Adjusts the blockedUsers and allowedUsers endpoints to allow code generation
+- Three unused endpoints were removed from the test driver API: createLocation, updateLocation, deleteLocation
+
+### Bugs
+
+- pom.xml: replaced `*` with `.` in line 637, see Github
+  issue: https://github.com/gematik/TI-Messenger-Testsuite/issues/46
+
 ## Release 1.3.7
 
 ### Bugs

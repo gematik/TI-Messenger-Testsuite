@@ -32,16 +32,6 @@ import net.serenitybdd.screenplay.Actor;
 public class FhirOrganizationSearchGlue {
 
   @Then(
-      "{string} does NOT find TI-Messenger user {string} in the Organisations-Verzeichnis of the VZD")
-  @Dann(
-      "{string} findet TI-Messenger-Nutzer {string} bei Suche im Organisations-Verzeichnis im VZD NICHT")
-  public static void dontFindUserWithNameInOrgVzd(String actorName, String userName) {
-    Actor actor = theActorCalled(actorName);
-    Actor user = theActorCalled(userName);
-    dontFindUserWithNameInOrgVzd(actor, user, null, null);
-  }
-
-  @Then(
       "{string} does NOT find TI-Messenger user {string} in the Organisations-Verzeichnis of the VZD [Retry {long} - {long}]")
   @Dann(
       "{string} findet TI-Messenger-Nutzer {string} bei Suche im Organisations-Verzeichnis im VZD NICHT [Retry {long} - {long}]")

@@ -23,10 +23,9 @@ import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
+import java.util.Optional;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
-
-import java.util.Optional;
 
 public class FhirIsHealthcareServiceDeletedQuestion implements Question<Boolean> {
 
@@ -37,8 +36,8 @@ public class FhirIsHealthcareServiceDeletedQuestion implements Question<Boolean>
     return new FhirIsHealthcareServiceDeletedQuestion();
   }
 
-  public FhirIsHealthcareServiceDeletedQuestion withCustomInterval(Long pollInterval,
-      Long timeout) {
+  public FhirIsHealthcareServiceDeletedQuestion withCustomInterval(
+      Long pollInterval, Long timeout) {
     this.customPollInterval = pollInterval;
     this.customTimeout = timeout;
     return this;
@@ -46,8 +45,11 @@ public class FhirIsHealthcareServiceDeletedQuestion implements Question<Boolean>
 
   @Override
   public Boolean answeredBy(Actor actor) {
-    return repeatedRequest(() -> requestIsFhirHealthcareServiceDeleted(actor),
-        "already-deleted-healthcare-service", customTimeout, customPollInterval);
+    return repeatedRequest(
+        () -> requestIsFhirHealthcareServiceDeleted(actor),
+        "already-deleted-healthcare-service",
+        customTimeout,
+        customPollInterval);
   }
 
   private Optional<Boolean> requestIsFhirHealthcareServiceDeleted(Actor actor) {
@@ -56,9 +58,8 @@ public class FhirIsHealthcareServiceDeletedQuestion implements Question<Boolean>
       RawDataStatistics.getRegTokenForVZDEvent();
       actor.remember(HAS_REG_SERVICE_TOKEN, true);
     }
-    return
-        lastResponse().getStatusCode() == NOT_FOUND.value()
-            ? Optional.of(true)
-            : Optional.empty();
+    return lastResponse().getStatusCode() == NOT_FOUND.value()
+        ? Optional.of(true)
+        : Optional.empty();
   }
 }

@@ -34,7 +34,7 @@ public class DeleteMessageTask implements Task {
 
   @Override
   public <T extends Actor> void performAs(T actor) {
-    actor.attemptsTo(DELETE_MESSAGE.request()
-        .with(req -> req.pathParam(MESSAGE_ID_VARIABLE, this.messageId)));
+    actor.attemptsTo(
+        DELETE_MESSAGE.request().with(req -> req.pathParam(MESSAGE_ID_VARIABLE, this.messageId)));
   }
 }

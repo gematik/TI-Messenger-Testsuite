@@ -61,12 +61,6 @@ public class FhirPractitionerSearchGlue {
             .withCustomInterval(timeout, pollInterval));
   }
 
-  @Then("{string} can not find {string} in FHIR anymore")
-  @Dann("{string} kann {string} nicht mehr finden in FHIR")
-  public void cantFindPractitionerInFhirAnymore(String actorName, String userName) {
-    cantFindPractitionerInFhirAnymore(actorName, userName, null, null);
-  }
-
   @Then("{string} can not find {string} in FHIR anymore [Retry {long} - {long}]")
   @Dann("{string} kann {string} nicht mehr finden in FHIR [Retry {long} - {long}]")
   public void cantFindPractitionerInFhirAnymore(

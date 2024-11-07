@@ -62,7 +62,10 @@ public class HomeserverSearchQuestion implements Question<HomeserverSearchResult
           () -> requestSearchOnHomeserver(actor), "homeserverSearch", timeout, pollIntervall);
     } catch (ConditionTimeoutException e) {
       log.error("Could not find homeserver", e);
-      throw new AssertionFailed(format("HomeserverSearch found zero results, expects one though. Expected: displayName: %s or mxid: %s", displayName, mxid));
+      throw new AssertionFailed(
+          format(
+              "HomeserverSearch found zero results, expects one though. Expected: displayName: %s or mxid: %s",
+              displayName, mxid));
     }
   }
 

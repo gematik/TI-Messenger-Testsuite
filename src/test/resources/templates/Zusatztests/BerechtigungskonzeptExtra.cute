@@ -1,0 +1,26 @@
+@BP:O2O @Ctl:SeachPart
+@TCID:TIM_V2_BASIS_AF_050107 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+Szenariogrundriss: 05.01.07 Einladung außerhalb einer Organisation - Chat - AllowAll - User AllowAll (2 User blockt/entblockt)
+Angenommen Es werden folgende Clients reserviert:
+| A | ORG_ADMIN  | <ApiName1A> |
+| B | PRO_CLIENT  | <ApiName1B> |
+| C | PRO_CLIENT  | <ApiName1C> |
+| D | PRO_CLIENT  | <ApiName1D> |
+Und        "B", "C", "D" setzen den eigenen Authorization Mode auf "AllowAll"
+Und        "B" hinterlegt die User "C", "D" in der Blockliste
+Wenn       "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+Dann       "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+Und        "C" schreibt "B" über den Healthcare-Service "HealthcareServiceName" direkt "Testnachricht 1"
+Dann       erhält "C" einen Responsecode 403
+Und        "B" erhält KEINE Einladung von "C" [Retry 10 - 3]
+Wenn       "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "D"
+Dann       "B" findet "D" im Healthcare-Service "HealthcareServiceName1"
+Und        "B" schreibt "D" über den Healthcare-Service "HealthcareServiceName" direkt "Testnachricht 2"
+Und        "D" bestätigt eine Einladung von "B"
+Und        "D" empfängt eine Nachricht "Testnachricht 2" von "B"
+Und        "B" entfernt die User "C", "D" in der Blockliste
+Und        "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+Und        "C" schreibt "B" über den Healthcare-Service "HealthcareServiceName" direkt "Testnachricht 1"
+Dann       "B" erhält eine Einladung von "C"
+Und        "B" bestätigt eine Einladung von "C"
+Und        "B" empfängt eine Nachricht "Testnachricht 1" von "C"
