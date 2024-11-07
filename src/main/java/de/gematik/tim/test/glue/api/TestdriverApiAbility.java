@@ -19,6 +19,4 @@ package de.gematik.tim.test.glue.api;
 import net.serenitybdd.screenplay.Ability;
 import net.serenitybdd.screenplay.rest.questions.RestQueryFunction;
 
-public interface TestdriverApiAbility extends Ability, RestQueryFunction {
-
-}
+public interface TestdriverApiAbility extends Ability, RestQueryFunction {}

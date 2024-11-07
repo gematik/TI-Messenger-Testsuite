@@ -37,11 +37,12 @@ public class RawDataObject {
   }
 
   @Override
-  public String toString(){
+  public String toString() {
     return description
-        + "\n\t   Erfolgreich:\t" + leftPad("" + success, 5)
-        + "\n\tFehlgeschlagen:\t" + leftPad("" + error, 5)
+        + "\n\t   Erfolgreich:\t"
+        + leftPad("" + success, 5)
+        + "\n\tFehlgeschlagen:\t"
+        + leftPad("" + error, 5)
         + (!errors.isEmpty() ? "\n\t" + errors + "\n\n" : "\n\n");
   }
-
 }

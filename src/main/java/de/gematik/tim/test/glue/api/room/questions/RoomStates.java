@@ -31,7 +31,5 @@ public enum RoomStates {
     this.content = content;
   }
 
-  public record Content(String jsonPath, String value) {
-
-  }
+  public record Content(String jsonPath, String value) {}
 }

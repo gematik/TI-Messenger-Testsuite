@@ -94,9 +94,6 @@ public final class TestdriverApiPath {
   public static final String FHIR_ENDPOINT_PATH = FHIR_HS_ADMIN_PATH + "/endpoint";
   public static final String FHIR_ENDPOINT_ADMIN_PATH =
       FHIR_ENDPOINT_PATH + "/" + PATH_VARIABLE.formatted(ENDPOINT_ID_VARIABLE);
-  public static final String FHIR_LOCATION_PATH = FHIR_HS_ADMIN_PATH + "/location";
-  public static final String FHIR_LOCATION_ADMIN_PATH =
-      FHIR_LOCATION_PATH + "/" + PATH_VARIABLE.formatted(LOCATION_ID_VARIABLE);
 
   // CONTACT-MANAGEMENT
   public static final String CONTACT_PATH = DEVICE_ID_PATH + "/contacts";

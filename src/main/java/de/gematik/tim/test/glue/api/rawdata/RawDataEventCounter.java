@@ -19,14 +19,12 @@ package de.gematik.tim.test.glue.api.rawdata;
 import java.util.Collection;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.IntStream;
 import lombok.Getter;
 
 public class RawDataEventCounter {
 
   private final AtomicInteger success = new AtomicInteger();
-  @Getter
-  private final Collection<String> errors = new LinkedBlockingQueue<>();
+  @Getter private final Collection<String> errors = new LinkedBlockingQueue<>();
 
   public void countSuccess() {
     success.incrementAndGet();

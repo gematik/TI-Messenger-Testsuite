@@ -42,5 +42,4 @@ public abstract class ParallelTaskRunner implements Task {
     this.actor = actor;
     return this;
   }
-
 }

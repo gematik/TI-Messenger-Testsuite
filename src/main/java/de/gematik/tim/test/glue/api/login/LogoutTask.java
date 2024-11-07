@@ -35,5 +35,4 @@ public class LogoutTask implements Task {
       actor.remember(IS_LOGGED_IN, false);
     }
   }
-
 }

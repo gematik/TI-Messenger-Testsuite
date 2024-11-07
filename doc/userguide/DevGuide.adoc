@@ -1,4 +1,4 @@
-:toc-title: Inhaltsverzeichnis
+:toc-title: Table of contents
 :toc:
 :toclevels: 4
 
@@ -16,15 +16,15 @@
 :sourcedir: ../../src
 :plantumldir: ../plantuml
 :rootdir: ../../
-== Entwickler-Guide
+== Developer-Guide
 
-=== Starte Cucumber-Scenario innerhalb der IDE (IntelliJ IDEA)
+=== Start Cucumber scenario within the IDE (IntelliJ IDEA)
 
-In den "run configuration":
+In "run configuration":
 
-* setze "main class" auf `io.cucumber.junit.TigerCucumberRunner`
+* set "main class" on `io.cucumber.junit.TigerCucumberRunner`
 
-* setze folgende "glue code packages"
+* set the following "glue code packages"
 
 [source]
 ----
@@ -34,18 +34,19 @@ de.gematik.test.tiger.glue
 de.gematik.tim.test.glue
 ----
 
-Für die Entwicklung dieser Testsuite wurde das Tiger-Framework benutzt.
-Im folgenden Link finden sie das link:https://gematik.github.io/app-Tiger/Tiger-User-Manual.html#_intellij[Tiger-Manual]
-für weitere Informationen.
+The Tiger-Framework was used for the development of this testsuite.
+In the following link, you will find the link:https://gematik.github.io/app-Tiger/Tiger-User-Manual.html#_intellij[Tiger-Manual]
+for more information.
 
-Wenn die Clean-Endpunkte auch aus Intellij getriggert werden sollen muss der Runconfiguration außerdem noch
-`-Dcucumber.plugin=de.gematik.tim.test.glue.api.utils.cleaning.CucumberListener` als VM Options mitgegeben werden.
+If the clean endpoints should also be triggered from IntelliJ, the run configuration must also include
+`-Dcucumber.plugin=de.gematik.tim.test.glue.api.utils.cleaning.CucumberListener` as a VM option.
 
+[[Disable-TLS]]
 === Disable TLS
 
-Um TLS zu deaktivieren dürfen die Umgebungsvariablen nicht gesetzt werden und in der link:{rootdir}tiger.yml[tiger.yml] müssen Zeile 2 und 3. gelöscht werden
+To disable TLS, do not set the environment variables, and delete lines 2 and 3 in  link:{rootdir}tiger.yml[tiger.yml].
 
-IMPORTANT: Zeile 1 "tigerProxy:" muss weiterhin stehen bleiben
+IMPORTANT: Line 1 "tigerProxy:" must remain.
 
 [source,yml,linenums]
 ----
@@ -54,22 +55,22 @@ tigerProxy:
     forwardMutualTlsIdentity: "${TIM_KEYSTORE};${TIM_KEYSTORE_PW};pkcs12"
 ----
 
-Mit dieser Konfiguration müssen alle Links in der link:{sourcedir}/test/resources/combine_items.json[combine_items.json] auf `http` gesetzt werden.
+With this configuration, all links in link:{sourcedir}/test/resources/combine_items.json[combine_items.json] must be set to  `http`.
 
 === Cucumber-Test-Combinations-Maven-Plugin
 
-Das Parameter-Plugin erstellt aus den bereitgestellten Schnittstellen aus dem link:{sourcedir}/test/resources/combine_items.json[combine_items.json] alle nach den Filtern mögliche Kombinationen für jeden einzelnen Testfall.
-Hierzu werden alle Templates aus dem Testordner in den Buildordner kopiert und mit den jeweiligen Tabellen befüllt.
-Die so bearbeiteten Files werden beim starten der Testsuite herangezogen.
+The parameter plugin generates all possible combinations for each individual test case from the provided interfaces in link:{sourcedir}/test/resources/combine_items.json[combine_items.json] ,based on the filters.
+For this, all templates from the test folder are copied to the build folder and filled with the respective tables.
+The processed files are used when the test suite is started.
 
-Bei einer geringen Anzahl von Schnittstellen mit zu wenig Variation in ihren Eigenschaften, kann es schnell dazu führen, dass das Plugin den Buildvorgang abbricht.
-Um dies zu ignorieren können die Schritte konfiguriert werden.
+With a small number of interfaces that lack sufficient variation in their properties, the plugin may quickly cause the build process to fail.
+To ignore this, the following steps can be configured.
 
 ==== Disable prepare-items (autofill combine_items.json)
 
-Per default fragt das Plugin die Info-Schnittstelle ab und fügt notwendige Tags und Properties hinzu.
-Für eine genauere Steuerung oder sollte die Info-Schnittstelle noch nicht vollständig implementiert sein, kann die `combine_items.json` händisch erstellt und verwendet werden.
-Hierzu kann maven mit dem Profil `disable-prepare-items` verwendet werden.
+By default, the plugin queries the info interface and adds necessary tags and properties.
+For more precise control, or if the info interface has not been fully implemented yet, the `combine_items.json` can be manually created and used.
+For this, Maven can be run with the `disable-prepare-items` profile.
 
 ----
 maven clean install -P disable-prepare-items
@@ -77,21 +78,21 @@ maven clean install -P disable-prepare-items
 
 ==== Disable break
 
-Mit dem Profil `dont-break-preperation` kann das Plugin so eingestellt werden, dass es bei Fehlern den Buildprozess nicht mehr abbricht.
-Alle möglichen Informationen und Kombinationen werden erstellt.
-Ein Fehlerlog kann später `./target/generated-combine/errorLog.txt` eingesehen werden.
+With the `dont-break-preperation` profile, the plugin can be configured to no longer stop the build process in case of errors.
+All possible information and combinations are generated.
+An error log can later be viewed at `./target/generated-combine/errorLog.txt` .
 
-=== Claimzeit beeinflussen
+=== Influence claim time
 
-Über den Parameter `-DclaimDuration=<seconds>` kann die Zeit beeinflusst werden, die ein Device geclaimed bleiben soll.
-Es sind nur ganzzahlige Sekundenwerte möglich.
+The parameter `-DclaimDuration=<seconds>` can be used to influence the duration for which a device should remain claimed.
+Only integer second values are allowed.
 
 === Parallel claims
 
-Über den Parameter `-DclaimParallel=<true/false>` kann angegeben werden, ob claims parallelisiert ausgeführt werden sollen.
-Per default ist dies deaktiviert.
-Parallele claims können für einzelne Testfälle oder Feature Files deaktiviert werden, indem sie mit dem Tag `@NoParallel` versehen werden.
-Das kann hilfreich sein, wenn es zu Problemen mit dem claiming kommt.
+The parameter `-DclaimParallel=<true/false>` can be used to specify whether claims should be executed in parallel.
+By default, this is disabled.
+Parallel claims can be disabled for individual test cases or feature files by tagging them with `@NoParallel`.
+This can be helpful if there are issues with claiming.
 
 === Testcase id
 
@@ -107,13 +108,12 @@ Please keep in mind to start compose-ci-local.yaml bevor running CI-Profile loca
 
 The cleanup trigger is used to avoid data-trash , cause of broken testcases , in the database.
 It is triggered before every testcase by the api call "cleanup" tagged with signalTestStart.
-For more information see the API: link:https://github.com/gematik/TI-Messenger-Testsuite/blob/main/src/main/resources/api/TiMessengerTestTreiber.yaml[testdriver.yaml]
+For more information see the API: link:{sourcedir}/main/resources/api/TiMessengerTestTreiber.yaml[testdriver.yaml]
 All endpoints involved in this testcase will be triggered.
 If the testcase has no OrgAdmins, they will be filtered by the home-servers used in this testcase.
 
 === Known issues
 
-. Es kann beim Generieren des Codes aus der link:https://github.com/gematik/api-ti-messenger/blob/main/src/openapi/TiMessengerTestTreiber.yaml[Testtreiberschnittstelle] passieren, dass zusätzliche `/` in den Requestpath erstellt werden.
-Diese können zu Inkompatibilitäten führen.
-Dies kann auf Seiten der Testsuite umgangen werden indem in der Klasse link:{sourcedir}/main/java/de/gematik/tim/test/glue/api/TestdriverApiPath.java[TestdriverApiPath] bei INFO_PATH und DEVICES_PATH der vorgestellte `/` entfernt wird.
-
+. When generating the code from the link:https://github.com/gematik/api-ti-messenger/blob/main/src/openapi/TiMessengerTestTreiber.yaml[test driver interface], it may occur that additional `/` are created in the request path.
+These can lead to incompatibilities.
+This can be circumvented on the test suite side by removing the leading `/` in the INFO_PATH and DEVICES_PATH of the link:{sourcedir}/main/java/de/gematik/tim/test/glue/api/TestdriverApiPath.java[TestdriverApiPath] class.

@@ -35,10 +35,9 @@ import de.gematik.tim.test.models.FhirEndpointDTO.StatusEnum;
 import de.gematik.tim.test.models.FhirMetaDTO;
 import de.gematik.tim.test.models.FhirTagDTO;
 import io.restassured.response.Response;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 public class CreateEndpointTask extends HealthcareSpecificTask {
@@ -67,7 +66,9 @@ public class CreateEndpointTask extends HealthcareSpecificTask {
     Response response = lastResponse();
     if (response.statusCode() == CREATED.value()) {
       FhirEndpointDTO endpoint = parseResponse(FhirEndpointDTO.class);
-      assertThat(endpoint.getId()).as("Endpoint %s id is empty".formatted(endpoint.getName())).isNotBlank();
+      assertThat(endpoint.getId())
+          .as("Endpoint %s id is empty".formatted(endpoint.getName()))
+          .isNotBlank();
       addEndpointToActorForHS(actor, name, endpoint.getId(), hsName);
       addEndpoint(name, endpoint);
     }
@@ -86,13 +87,14 @@ public class CreateEndpointTask extends HealthcareSpecificTask {
 
   private List<FhirCodeableConceptDTO> buildPayloadType() {
     return List.of(
-        new FhirCodeableConceptDTO().coding(
-            List.of(
-                new FhirCodingDTO()
-                    .code("tim-chat")
-                    .system("https://gematik.de/fhir/directory/CodeSystem/EndpointDirectoryPayloadType")
-                    .display("TI-Messenger chat"))
-        ));
+        new FhirCodeableConceptDTO()
+            .coding(
+                List.of(
+                    new FhirCodingDTO()
+                        .code("tim-chat")
+                        .system(
+                            "https://gematik.de/fhir/directory/CodeSystem/EndpointDirectoryPayloadType")
+                        .display("TI-Messenger chat"))));
   }
 
   private FhirConnectionTypeDTO buildConnectionType() {
@@ -103,9 +105,14 @@ public class CreateEndpointTask extends HealthcareSpecificTask {
 
   public static FhirMetaDTO defaultEndpointMeta() {
     return new FhirMetaDTO()
-        .tag(List.of(new FhirTagDTO().code("owner").system("https://gematik.de/fhir/directory/CodeSystem/Origin")))
-        .profile(List.of(
-            "https://gematik.de/fhir/directory/StructureDefinition/EndpointDirectory",
-            "http://hl7.org/fhir/StructureDefinition/Endpoint"));
+        .tag(
+            List.of(
+                new FhirTagDTO()
+                    .code("owner")
+                    .system("https://gematik.de/fhir/directory/CodeSystem/Origin")))
+        .profile(
+            List.of(
+                "https://gematik.de/fhir/directory/StructureDefinition/EndpointDirectory",
+                "http://hl7.org/fhir/StructureDefinition/Endpoint"));
   }
 }

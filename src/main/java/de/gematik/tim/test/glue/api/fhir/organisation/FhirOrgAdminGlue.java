@@ -31,11 +31,6 @@ import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.D
 import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.FhirGetHealthcareServiceQuestion.getHealthcareService;
 import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.FhirIsHealthcareServiceDeletedQuestion.getDeletedHealthcareService;
 import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UpdateHealthcareServiceTask.updateHealthcareService;
-import static de.gematik.tim.test.glue.api.fhir.organisation.location.CreateLocationTask.addHealthcareServiceLocation;
-import static de.gematik.tim.test.glue.api.fhir.organisation.location.DeleteLocationTask.deleteLocation;
-import static de.gematik.tim.test.glue.api.fhir.organisation.location.FhirGetLocationListQuestion.getLocationList;
-import static de.gematik.tim.test.glue.api.fhir.organisation.location.FhirGetLocationQuestion.getLocation;
-import static de.gematik.tim.test.glue.api.fhir.organisation.location.UpdateLocationTask.updateLocation;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.assertCorrectEndpointNameAndMxid;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.assertMxIdsInEndpoint;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueEndpointName;
@@ -53,7 +48,6 @@ import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorInTheSpotlight;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
@@ -64,7 +58,6 @@ import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.Healthca
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility;
 import de.gematik.tim.test.models.FhirEndpointDTO;
 import de.gematik.tim.test.models.FhirHealthcareServiceDTO;
-import de.gematik.tim.test.models.FhirLocationDTO;
 import de.gematik.tim.test.models.FhirSearchResultDTO;
 import io.cucumber.java.de.Angenommen;
 import io.cucumber.java.de.Dann;
@@ -74,13 +67,10 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import java.math.BigDecimal;
 import java.util.List;
 import net.serenitybdd.screenplay.Actor;
 
 public class FhirOrgAdminGlue {
-
-  public static final String INVALID_HS_NAME = "INVALID";
 
   @Given("{string} finds {string} in the healthcare service {string}")
   @Angenommen("{string} findet {string} im Healthcare-Service {string}")
@@ -159,48 +149,6 @@ public class FhirOrgAdminGlue {
       String orgAdmin, String hsName, String client) {
     createHealthcareServiceWithName(orgAdmin, hsName);
     createEndpointForHealthcareService(orgAdmin, client, hsName);
-  }
-
-  @When("{string} tries to create a healthcare service with an invalid JSON {string}")
-  @Wenn(
-      "{string} versucht einen Healthcare-Service mit dem nicht validen JSON {string} zu erstellen")
-  public void createHealthcareServiceWithInvalidJson(String orgAdmin, String file) {
-    Actor admin = theActorCalled(orgAdmin);
-    admin.attemptsTo(createHealthcareService(INVALID_HS_NAME).withStringFromFile(file));
-    checkResponseCode(orgAdmin, BAD_REQUEST.value());
-  }
-
-  @When("{string} adds a location {string} to the healthcare service {string} with JSON {string}")
-  @Wenn(
-      "{string} fügt eine Location {string} zum Healthcare-Service {string} hinzu mit JSON {string}")
-  public void addLocationToHealthcareServiceWithJson(
-      String orgAdmin, String locationName, String hsName, String fileName) {
-    Actor admin = theActorCalled(orgAdmin);
-    admin.attemptsTo(
-        addHealthcareServiceLocation(locationName).fromFile(fileName).forHealthcareService(hsName));
-    checkResponseCode(orgAdmin, CREATED.value());
-  }
-
-  @Then(
-      "{string} changes the location {string} for the healthcare service {string} with JSON {string}")
-  @Dann(
-      "{string} ändert die Location {string} für den Healthcare-Service {string} mit JSON {string}")
-  public void changeLocationForHealthcareServiceWithJson(
-      String orgAdmin, String locationName, String hsName, String fileName) {
-    Actor admin = theActorCalled(orgAdmin);
-    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hsName);
-    FhirLocationDTO location = admin.asksFor(getLocation().withName(locationName));
-    admin.attemptsTo(updateLocation(location).withFile(fileName));
-    checkResponseCode(orgAdmin, OK.value());
-  }
-
-  @And("{string} deletes the location {string} for the healthcare service {string}")
-  @Und("{string} löscht die Location {string} für den Healthcare-Service {string}")
-  public void deleteLocationForHealthcareService(
-      String orgAdmin, String locationName, String hsName) {
-    Actor admin = theActorCalled(orgAdmin);
-    admin.attemptsTo(deleteLocation().withName(locationName).forHealthcareService(hsName));
-    checkResponseCode(orgAdmin, NO_CONTENT.value());
   }
 
   @When(
@@ -317,44 +265,6 @@ public class FhirOrgAdminGlue {
     checkResponseCode(orgAdmin, NO_CONTENT.value());
   }
 
-  @Then("the location {string} to the healthcare service {string} complies with the JSON {string}")
-  @Dann("entspricht die Location {string} zum Healthcare-Service {string} dem JSON {string}")
-  public void checkHealthcareServiceLocationMatchesJson(
-      String locationName, String hsName, String jsonFile) {
-    FhirLocationDTO location =
-        theActorInTheSpotlight()
-            .asksFor(getLocation().withName(locationName).forHealthcareService(hsName));
-
-    FhirLocationDTO expectedLocation = readJsonFile(jsonFile, FhirLocationDTO.class);
-
-    assertThat(location)
-        .usingRecursiveComparison()
-        .withEqualsForType((a, b) -> a.subtract(b).abs().doubleValue() < 0.00001, BigDecimal.class)
-        .ignoringFields("locationId")
-        .isEqualTo(expectedLocation);
-  }
-
-  @Then("no location {string} for the healthcare service {string} exists")
-  @Dann("existiert keine Location {string} für den Healthcare-Service {string}")
-  public void noHealthcareServiceLocationWithName(String locationName, String hsName) {
-    List<FhirLocationDTO> locationList =
-        theActorInTheSpotlight()
-            .asksFor(getLocationList().filterForName(locationName).forHealthcareService(hsName));
-    if (locationList.isEmpty()) {
-      throw new TestRunException(
-          "No matching location found with name "
-              + locationName
-              + " and healthcare service "
-              + hsName);
-    }
-  }
-
-  @Then("no endpoint exists for {string} in the health-care-service {string}")
-  @Dann("existiert kein Endpoint von {string} für den Healthcare-Service {string}")
-  public void noHealthcareServiceEndpointWithName(String actorName, String hsName) {
-    noHealthcareServiceEndpointWithNameTiming(actorName, hsName, null, null);
-  }
-
   @Then(
       "no endpoint exists for {string} in the health-care-service {string} [Retry {long} - {long}]")
   @Dann(
@@ -376,12 +286,6 @@ public class FhirOrgAdminGlue {
             .filter(endpoint -> endpoint.getAddress().equals(actor.recall(MX_ID)))
             .toList();
     assertThat(filtered).isEmpty();
-  }
-
-  @Then("the last deleted healthcare service does not exist anymore")
-  @Dann("existiert der zuletzt gelöschte Healthcare-Service nicht mehr")
-  public void lastDeletedHsDoesNotExistAnymore() {
-    lastDeletedHsDoesNotExistAnymoreTiming(null, null);
   }
 
   @Then("the last deleted healthcare service does not exist anymore [Retry {long} - {long}]")

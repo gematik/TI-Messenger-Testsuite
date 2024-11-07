@@ -32,16 +32,15 @@ public class SendDirectMessageToMxIdTask implements Task {
   private final String mxId;
   private final String message;
 
-  public static SendDirectMessageToMxIdTask sendDirectMessageToMxIdOutOfFederation(String mxId, String msg) {
+  public static SendDirectMessageToMxIdTask sendDirectMessageToMxIdOutOfFederation(
+      String mxId, String msg) {
     return new SendDirectMessageToMxIdTask(mxId, msg);
   }
 
   @Override
   public <T extends Actor> void performAs(T actor) {
-    DirectMessageDTO directMessage = new DirectMessageDTO()
-        .body(this.message)
-        .msgtype("m.text")
-        .toAccount(mxId);
+    DirectMessageDTO directMessage =
+        new DirectMessageDTO().body(this.message).msgtype("m.text").toAccount(mxId);
     actor.attemptsTo(SEND_DIRECT_MESSAGE.request().with(req -> req.body(directMessage)));
 
     logEventsAndSaveRoomToActor(actor);

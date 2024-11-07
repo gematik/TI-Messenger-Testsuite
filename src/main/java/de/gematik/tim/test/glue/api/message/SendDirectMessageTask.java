@@ -36,12 +36,11 @@ import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.DirectMessageDTO;
 import de.gematik.tim.test.models.MessageDTO;
 import de.gematik.tim.test.models.RoomDTO;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 import org.springframework.http.HttpStatus;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 public class SendDirectMessageTask implements Task {
@@ -58,10 +57,8 @@ public class SendDirectMessageTask implements Task {
     String actorMxId = actor.recall(MX_ID);
     String toMxId = toActor.recall(MX_ID);
 
-    DirectMessageDTO directMessage = new DirectMessageDTO()
-        .body(createUniqueMessageText())
-        .msgtype("m.text")
-        .toAccount(toMxId);
+    DirectMessageDTO directMessage =
+        new DirectMessageDTO().body(createUniqueMessageText()).msgtype("m.text").toAccount(toMxId);
     actor.attemptsTo(SEND_DIRECT_MESSAGE.request().with(req -> req.body(directMessage)));
     if (HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful()) {
       addMessage(this.message, lastResponse().as(MessageDTO.class));
@@ -70,11 +67,11 @@ public class SendDirectMessageTask implements Task {
     logEventsAndSaveRoomToActor(actor, actorMxId, toMxId);
   }
 
-  private <T extends Actor> void logEventsAndSaveRoomToActor(T actor, String actorMxId,
-      String toMxId) {
+  private <T extends Actor> void logEventsAndSaveRoomToActor(
+      T actor, String actorMxId, String toMxId) {
     boolean roomDoesExist =
-        isNotBlank(actor.recall(DIRECT_CHAT_NAME + toMxId)) || isNotBlank(
-            this.toActor.recall(DIRECT_CHAT_NAME + actorMxId));
+        isNotBlank(actor.recall(DIRECT_CHAT_NAME + toMxId))
+            || isNotBlank(this.toActor.recall(DIRECT_CHAT_NAME + actorMxId));
 
     boolean requestSuccessful = lastResponse().getStatusCode() == 200;
     if (isSameHomeserver(toMxId, actorMxId)) {
@@ -98,8 +95,7 @@ public class SendDirectMessageTask implements Task {
   }
 
   private void handleNewRoom(Actor actor, String actorMxId, String toMxId) {
-    RoomDTO room = actor.asksFor(
-        ownRoom().withMembers(List.of(actorMxId, toMxId)));
+    RoomDTO room = actor.asksFor(ownRoom().withMembers(List.of(actorMxId, toMxId)));
     actor.remember(room.getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX, JOIN);
     toActor.remember(room.getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX, INVITE);
     String roomNameActor = DIRECT_CHAT_NAME + toMxId;

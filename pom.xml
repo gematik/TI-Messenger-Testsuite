@@ -6,7 +6,7 @@
 
   <groupId>de.gematik.tim.test</groupId>
   <artifactId>TI-Messenger-Testsuite</artifactId>
-  <version>1.3.7</version>
+  <version>1.3.8</version>
   <packaging>jar</packaging>
   <name>TI-Messenger-Testsuite</name>
   <description>Testsuite to check functionality of TI-Messenger-Clients</description>
@@ -28,9 +28,11 @@
     <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
     <maven.javadoc.plugin.version>3.6.3</maven.javadoc.plugin.version>
     <junit.engine.version>5.8.2</junit.engine.version>
-    <ti.m.mtls.certs.version>1.3.2</ti.m.mtls.certs.version>
+    <ti.m.mtls.certs.version>1.3.5</ti.m.mtls.certs.version>
     <ti.m.sim.version>6.0.1</ti.m.sim.version>
 
+    <ti.m.mtls.output.directory>${project.build.directory}/profile-resources</ti.m.mtls.output.directory>
+    <tim.shared.properties>${ti.m.mtls.output.directory}/shared.properties</tim.shared.properties>
     <feature_dir>${project.build.directory}/features/</feature_dir>
     <feature.template.dir>
       ${project.basedir}/src/test/resources/templates/FeatureFiles/TI-M_11X/Zulassungstests
@@ -57,6 +59,7 @@
     <cutest.break.request>true</cutest.break.request>
     <cutest.break.tablesize>true</cutest.break.tablesize>
     <soft-filter.to.hard>false</soft-filter.to.hard>
+    <skip.save.tiger-yml>false</skip.save.tiger-yml>
     <custom.plugin>de.gematik.tim.test.glue.api.utils.cleaning.CucumberListener</custom.plugin>
     <maxRetryClaimRequest/>
     <saveConnections/>
@@ -234,7 +237,11 @@
           <tagExpressions>
             <tagExpression>
               <tag>client</tag>
-              <expression>$.clientInfo.canSendMessages and not($.clientInfo.isInsurance)</expression>
+              <expression>
+                $.clientInfo.canSendMessages and
+                not($.clientInfo.isInsurance) and
+                not($.clientInfo.isPro)
+              </expression>
             </tagExpression>
             <tagExpression>
               <tag>canSendMessages</tag>
@@ -250,7 +257,27 @@
             </tagExpression>
             <tagExpression>
               <tag>insurant</tag>
-              <expression>$.clientInfo.isInsurance</expression>
+              <expression>
+                $.clientInfo.canSendMessages and
+                $.clientInfo.isInsurance and
+                not($.clientInfo.isPro)
+              </expression>
+            </tagExpression>
+            <tagExpression>
+              <tag>proClient</tag>
+              <expression>
+                $.clientInfo.canSendMessages and
+                $.clientInfo.isPro and
+                not($.clientInfo.isInsurance)
+              </expression>
+            </tagExpression>
+            <tagExpression>
+              <tag>epaOrProClient</tag>
+              <expression>
+                $.clientInfo.canSendMessages and
+                ($.clientInfo.isInsurance or
+                $.clientInfo.isPro)
+              </expression>
             </tagExpression>
           </tagExpressions>
           <propertyExpressions>
@@ -548,6 +575,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+              <skip>${skip.save.tiger-yml}</skip>
               <outputDirectory>${basedir}/reports/${build.time}/report/additional-data/combine-items</outputDirectory>
               <resources>
                 <resource>
@@ -615,32 +643,6 @@
           </execution>
         </executions>
       </plugin>
-      <!--      Done with "cp" to keep timestamp-->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>3.0.0</version>
-        <configuration>
-          <skip>${skip.saving.reports}</skip>
-        </configuration>
-        <executions>
-          <execution>
-            <id>save_reports</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>cp</executable>
-              <arguments>
-                <argument>-a</argument>
-                <argument>${project.build.directory}/site/serenity/*</argument>
-                <argument>${basedir}/reports/${build.time}/report/</argument>
-              </arguments>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>properties-maven-plugin</artifactId>
@@ -671,7 +673,8 @@
       <properties>
         <feature.tables.max_rows>1</feature.tables.max_rows>
         <skip.saving.reports>true</skip.saving.reports>
-        <combine.items.file>${project.basedir}/src/test/resources/combine_items_ci.json
+        <combine.items.file>
+          ${project.basedir}/src/test/resources/combine_items_ci.json
         </combine.items.file>
         <saveConnections>true</saveConnections>
         <tiger.config.file>tiger-ci.yml</tiger.config.file>
@@ -686,26 +689,173 @@
             <version>3.3.0</version>
             <executions>
               <execution>
-                <id>copy</id>
-                <phase>pre-integration-test</phase>
+                <id>get-shared-properties</id>
+                <phase>validate</phase>
                 <goals>
-                  <goal>copy</goal>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>${project.groupId}</groupId>
+                      <artifactId>TI-Messenger-mTLS-Certs</artifactId>
+                      <version>${ti.m.mtls.certs.version}</version>
+                      <type>jar</type>
+                      <overWrite>true</overWrite>
+                      <outputDirectory>
+                        ${ti.m.mtls.output.directory}
+                      </outputDirectory>
+                      <includes>**/*.properties</includes>
+                      <excludes>META-INF/**</excludes>
+                    </artifactItem>
+                  </artifactItems>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>properties-maven-plugin</artifactId>
+            <version>1.0.0</version>
+            <executions>
+              <execution>
+                <id>read_shared_properties</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>read-project-properties</goal>
                 </goals>
               </execution>
             </executions>
             <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>de.gematik.tim.test</groupId>
-                  <artifactId>TI-Messenger-TestdriverSim</artifactId>
-                  <version>${ti.m.sim.version}</version>
-                  <type>jar</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>${project.build.directory}</outputDirectory>
-                  <destFileName>testdriverSim.jar</destFileName>
-                </artifactItem>
-              </artifactItems>
+              <files>
+                <file>${tim.shared.properties}</file>
+              </files>
+              <outputFile/>
+              <properties/>
             </configuration>
+          </plugin>
+          <plugin>
+            <groupId>io.github.git-commit-id</groupId>
+            <artifactId>git-commit-id-maven-plugin</artifactId>
+            <version>5.0.0</version>
+            <executions>
+              <execution>
+                <id>get_git_infos</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>revision</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <generateGitPropertiesFile>false</generateGitPropertiesFile>
+              <includeOnlyProperties>
+                <includeOnlyProperty>^git.branch</includeOnlyProperty>
+              </includeOnlyProperties>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>com.googlecode.maven-download-plugin</groupId>
+            <artifactId>download-maven-plugin</artifactId>
+            <version>1.6.0</version>
+            <executions>
+              <execution>
+                <id>get_simulator_from_gitlab</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>wget</goal>
+                </goals>
+                <configuration>
+                  <!--suppress UnresolvedMavenProperty -->
+                  <url>
+                    https://gitlab.prod.ccs.gematik.solutions/api/v4/projects/1037/repository/archive.zip?sha=${fetchMainOrBranch}&amp;private_token=${simulator.apikey}
+                  </url>
+                  <outputFileName>SimArtifact.zip</outputFileName>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                  <unpack>true</unpack>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>3.1.0</version>
+            <executions>
+              <execution>
+                <id>check_if_branch_exists_on_simulator</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <exportAntProperties>true</exportAntProperties>
+                  <target>
+                    <!--suppress UnresolvedMavenProperty -->
+                    <condition property="fetchMainOrBranch" value="${git.branch}" else="main">
+                      <!--suppress UnresolvedMavenProperty -->
+                      <http
+                          url="https://gitlab.prod.ccs.gematik.solutions/api/v4/projects/1037/repository/branches/${git.branch}?private_token=${simulator.apikey}"/>
+                    </condition>
+                  </target>
+                </configuration>
+              </execution>
+              <execution>
+                <id>rename_simulator_folder</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <pathconvert property="testdriversimPath" pathsep=",">
+                      <dirset dir="${project.build.directory}" includes="ti-m-testdriversim-*"/>
+                    </pathconvert>
+                    <move todir="${project.build.directory}/ti-m-testdriversim">
+                      <!--suppress UnresolvedMavenProperty -->
+                      <fileset dir="${testdriversimPath}"/>
+                    </move>
+                  </target>
+                </configuration>
+              </execution>
+              <execution>
+                <id>move_simulator_jar</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <move file="${project.build.directory}/ti-m-testdriversim/target/testdriver-mock.jar"
+                          tofile="${project.build.directory}/testdriverSim.jar"/>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.0.0</version>
+            <executions>
+              <execution>
+                <id>compile_simulator</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>mvn</executable>
+                  <arguments>
+                    <argument>-f</argument>
+                    <argument>${project.build.directory}/ti-m-testdriversim/pom.xml</argument>
+                    <argument>package</argument>
+                    <argument>-DskipTests</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>
@@ -746,21 +896,47 @@
               </execution>
             </executions>
           </plugin>
+          <!--      Done with "cp" to keep timestamp-->
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.0.0</version>
+            <configuration>
+              <skip>${skip.saving.reports}</skip>
+            </configuration>
+            <executions>
+              <execution>
+                <id>save_reports</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>cp</executable>
+                  <arguments>
+                    <argument>-a</argument>
+                    <argument>${project.build.directory}/site/serenity/*</argument>
+                    <argument>${basedir}/reports/${build.time}/report/</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
       </build>
       <properties>
         <combine.items.file>
-          ${project.build.directory}/profile-resources/combine_items_prod.json
+          ${ti.m.mtls.output.directory}/combine_items_prod.json
         </combine.items.file>
         <tiger.config.file>
-          ${project.build.directory}/profile-resources/tiger-prod.yml
+          ${ti.m.mtls.output.directory}/tiger-prod.yml
         </tiger.config.file>
         <tim.truststore>
-          ${project.build.directory}/profile-resources/gemRoot/cert/gem/gemTruststore.p12
+          ${ti.m.mtls.output.directory}/gemRoot/cert/gem/gemTruststore.p12
         </tim.truststore>
         <tim.truststore.pw>${env.PROD_TRUSTSTORE_PW}</tim.truststore.pw>
         <tim.keystore>
-          ${project.build.directory}/profile-resources/gemRoot/cert/gem/gemKeystore.p12
+          ${ti.m.mtls.output.directory}/gemRoot/cert/gem/gemKeystore.p12
         </tim.keystore>
         <tim.keystore.pw>${env.PROD_KEYSTORE_PW}</tim.keystore.pw>
         <timeout>240</timeout>
@@ -768,6 +944,7 @@
         <claimDuration>600</claimDuration>
         <soft-filter.to.hard>true</soft-filter.to.hard>
         <cutest.count.format>txt,json</cutest.count.format>
+        <skip.save.tiger-yml>true</skip.save.tiger-yml>
       </properties>
       <dependencies>
         <dependency>
@@ -781,19 +958,19 @@
       <id>reference-ci</id>
       <properties>
         <combine.items.file>
-          ${project.build.directory}/profile-resources/combine_items_prod.json
+          ${ti.m.mtls.output.directory}/combine_items_prod.json
         </combine.items.file>
         <tiger.config.file>
-          ${project.build.directory}/profile-resources/tiger-prod.yml
+          ${ti.m.mtls.output.directory}/tiger-prod.yml
         </tiger.config.file>
         <tim.truststore>
-          ${project.build.directory}/profile-resources/gemRoot/cert/gem/gemTruststore.p12
+          ${ti.m.mtls.output.directory}/gemRoot/cert/gem/gemTruststore.p12
         </tim.truststore>
-        <tim.truststore.pw>changeit</tim.truststore.pw>
+        <tim.truststore.pw>${env.PROD_TRUSTSTORE_PW}</tim.truststore.pw>
         <tim.keystore>
-          ${project.build.directory}/profile-resources/gemRoot/cert/gem/gemKeystore.p12
+          ${ti.m.mtls.output.directory}/gemRoot/cert/gem/gemKeystore.p12
         </tim.keystore>
-        <tim.keystore.pw>changeit</tim.keystore.pw>
+        <tim.keystore.pw>${env.PROD_KEYSTORE_PW}</tim.keystore.pw>
         <timeout>240</timeout>
         <pollInterval>5</pollInterval>
         <claimDuration>300</claimDuration>
@@ -838,6 +1015,36 @@
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
+      <build>
+        <plugins>
+          <!--      Done with "cp" to keep timestamp-->
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.0.0</version>
+            <configuration>
+              <skip>${skip.saving.reports}</skip>
+            </configuration>
+            <executions>
+              <execution>
+                <id>save_reports</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>cp</executable>
+                  <arguments>
+                    <argument>-a</argument>
+                    <argument>${project.build.directory}/site/serenity/*</argument>
+                    <argument>${basedir}/reports/${build.time}/report/</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
     <profile>
       <id>skip-saving-reports</id>
@@ -846,21 +1053,9 @@
       </properties>
     </profile>
     <profile>
-      <id>save-connections</id>
-      <properties>
-        <saveConnections>true</saveConnections>
-      </properties>
-    </profile>
-    <profile>
       <id>oneonly</id>
       <properties>
         <feature.tables.max_rows>1</feature.tables.max_rows>
-      </properties>
-    </profile>
-    <profile>
-      <id>usetags</id>
-      <properties>
-        <cucumber.filter.tags>@Ctl:UseCase</cucumber.filter.tags>
       </properties>
     </profile>
     <profile>
@@ -880,45 +1075,6 @@
       </build>
     </profile>
     <profile>
-      <id>external</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.6</version>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-                <configuration>
-                  <gpgArguments>
-                    <arg>--pinentry-mode</arg>
-                    <arg>loopback</arg>
-                  </gpgArguments>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>nexus-staging-maven-plugin</artifactId>
-            <version>1.6.7</version>
-            <extensions>true</extensions>
-            <configuration>
-              <serverId>ossrh</serverId>
-              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-              <autoReleaseAfterClose>false</autoReleaseAfterClose>
-              <stagingProgressTimeoutMinutes>20</stagingProgressTimeoutMinutes>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
       <id>dont-break-preperation</id>
       <properties>
         <cutest.break.context>false</cutest.break.context>
@@ -931,11 +1087,38 @@
       <properties>
         <testRun>TI-M_Testsuite</testRun>
         <polarion.project>releaseTIMessenger1101</polarion.project>
-        <serenityReportsFolderPath>${basedir}/reports/${build.time}/report
+        <serenityReportsFolderPath>
+          ${basedir}/reports/${build.time}/report
         </serenityReportsFolderPath>
       </properties>
       <build>
         <plugins>
+          <!--      Done with "cp" to keep timestamp-->
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.0.0</version>
+            <configuration>
+              <skip>${skip.saving.reports}</skip>
+            </configuration>
+            <executions>
+              <execution>
+                <id>save_reports</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>cp</executable>
+                  <arguments>
+                    <argument>-a</argument>
+                    <argument>${project.build.directory}/site/serenity/*</argument>
+                    <argument>${basedir}/reports/${build.time}/report/</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
           <plugin>
             <groupId>de.gematik</groupId>
             <artifactId>gematik-polarion-maven-plugin</artifactId>
@@ -948,7 +1131,8 @@
                   <password>${env.POLARION_CREDENTIALS_PSW}</password>
                   <project>${polarion.project}</project>
                   <testRun>${testRun}</testRun>
-                  <serenityReportsFolderPath>${serenityReportsFolderPath}
+                  <serenityReportsFolderPath>
+                    ${serenityReportsFolderPath}
                   </serenityReportsFolderPath>
                 </configuration>
                 <phase>post-integration-test</phase>
@@ -998,6 +1182,7 @@
         </plugins>
       </build>
     </profile>
+    <!--      used to skip saving reports when tests are skipped-->
     <profile>
       <id>skipTests equal skip.saving.reports</id>
       <activation>

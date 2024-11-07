@@ -35,8 +35,6 @@ import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_ENDPOINT_ADMIN
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_ENDPOINT_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_HEALTHCARE_SERVICE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_HS_ADMIN_PATH;
-import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_LOCATION_ADMIN_PATH;
-import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_LOCATION_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_ORG_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_PRACTITIONER_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_SEARCH_ENDPOINT_PATH;
@@ -68,7 +66,6 @@ import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UseEndpointAbility;
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.LookForDeletedHealthcareServiceAbility;
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility;
-import de.gematik.tim.test.glue.api.fhir.organisation.location.UseLocationAbility;
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
 import java.util.Arrays;
 import java.util.List;
@@ -178,29 +175,6 @@ public enum TestdriverApiEndpoint {
       UseDeviceAbility.class,
       UseHealthcareServiceAbility.class,
       UseEndpointAbility.class),
-
-  // FHIR ORG_ADMIN LOCATION
-  GET_LOCATIONS(GET, FHIR_LOCATION_PATH, UseDeviceAbility.class, UseHealthcareServiceAbility.class),
-  CREATE_LOCATION(
-      POST, FHIR_LOCATION_PATH, UseDeviceAbility.class, UseHealthcareServiceAbility.class),
-  UPDATE_LOCATION(
-      PUT,
-      FHIR_LOCATION_ADMIN_PATH,
-      UseDeviceAbility.class,
-      UseHealthcareServiceAbility.class,
-      UseLocationAbility.class),
-  GET_LOCATION(
-      GET,
-      FHIR_LOCATION_ADMIN_PATH,
-      UseDeviceAbility.class,
-      UseHealthcareServiceAbility.class,
-      UseLocationAbility.class),
-  DELETE_LOCATION(
-      DELETE,
-      FHIR_LOCATION_ADMIN_PATH,
-      UseDeviceAbility.class,
-      UseHealthcareServiceAbility.class,
-      UseLocationAbility.class),
 
   // MEDIA
   UPLOAD_MEDIA(POST, MEDIA_PATH, UseDeviceAbility.class),

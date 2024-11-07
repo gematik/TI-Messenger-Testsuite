@@ -24,16 +24,11 @@ import io.cucumber.java.en.Then;
 
 public class FhirSearchGlue {
 
-  @Then("{string} does NOT find user {string} when searching VZD")
-  @Dann("{string} findet TI-Messenger-Nutzer {string} bei Suche im VZD NICHT")
-  public void dontFindUserWithNameInAllVzd(String actorName, String userName) {
-    dontFindUserWithNameInAllVzd(actorName, userName, null, null);
-  }
-
   @Then("{string} does NOT find user {string} when searching VZD [Retry {long} - {long}]")
-  @Dann("{string} findet TI-Messenger-Nutzer {string} bei Suche im VZD NICHT [Retry {long} - {long}]")
-  public void dontFindUserWithNameInAllVzd(String actorName, String userName, Long customTimeout,
-      Long customPollInterval) {
+  @Dann(
+      "{string} findet TI-Messenger-Nutzer {string} bei Suche im VZD NICHT [Retry {long} - {long}]")
+  public void dontFindUserWithNameInAllVzd(
+      String actorName, String userName, Long customTimeout, Long customPollInterval) {
     dontFindUserWithNameInOrgVzd(actorName, userName, customTimeout, customPollInterval);
     dontFindPractitionerInFhir(actorName, userName, customTimeout, customPollInterval);
   }

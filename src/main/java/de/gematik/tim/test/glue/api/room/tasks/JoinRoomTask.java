@@ -27,12 +27,11 @@ import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.models.RoomDTO;
 import io.restassured.response.Response;
+import java.util.Objects;
+import java.util.Optional;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 import org.springframework.http.HttpStatus;
-
-import java.util.Objects;
-import java.util.Optional;
 
 public class JoinRoomTask implements Task {
 
@@ -49,14 +48,13 @@ public class JoinRoomTask implements Task {
 
   @Override
   public <T extends Actor> void performAs(T actor) {
-    Objects.requireNonNull(roomId,
-        "roomId of JoinRoomTask hast to be set with #withRoomId(roomId)");
+    Objects.requireNonNull(
+        roomId, "roomId of JoinRoomTask hast to be set with #withRoomId(roomId)");
     repeatedRequest(() -> joinRoom(actor), "join Room");
   }
 
   private <T extends Actor> Optional<RoomDTO> joinRoom(T actor) {
-    actor.attemptsTo(JOIN_ROOM.request()
-        .with(req -> req.pathParam(ROOM_ID_VARIABLE, roomId)));
+    actor.attemptsTo(JOIN_ROOM.request().with(req -> req.pathParam(ROOM_ID_VARIABLE, roomId)));
     Response resp = lastResponse();
     if (HttpStatus.valueOf(resp.statusCode()).is2xxSuccessful()) {
       RoomDTO room = parseResponse(RoomDTO.class);

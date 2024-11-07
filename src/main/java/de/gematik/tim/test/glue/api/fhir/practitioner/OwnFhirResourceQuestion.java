@@ -24,11 +24,10 @@ import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
 
 import de.gematik.tim.test.models.FhirBaseResourceDTO;
 import de.gematik.tim.test.models.FhirSearchResultDTO;
-import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.Question;
-
 import java.util.List;
 import java.util.Optional;
+import net.serenitybdd.screenplay.Actor;
+import net.serenitybdd.screenplay.Question;
 
 public class OwnFhirResourceQuestion implements Question<FhirSearchResultDTO> {
 

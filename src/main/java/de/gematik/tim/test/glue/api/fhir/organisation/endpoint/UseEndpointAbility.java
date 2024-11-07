@@ -34,11 +34,11 @@ import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 import org.springframework.http.HttpStatus;
 
-public class UseEndpointAbility extends MultiTargetAbility<String, EndpointInfo> implements
-    TestdriverApiAbility {
+public class UseEndpointAbility extends MultiTargetAbility<String, EndpointInfo>
+    implements TestdriverApiAbility {
 
-  public static <T extends Actor> void addEndpointToActorForHS(T actor, String endpointName,
-      String endpointId, String hsName) {
+  public static <T extends Actor> void addEndpointToActorForHS(
+      T actor, String endpointName, String endpointId, String hsName) {
     UseEndpointAbility ability = actor.abilityTo(UseEndpointAbility.class);
     if (isNull(ability)) {
       ability = new UseEndpointAbility();
@@ -75,11 +75,10 @@ public class UseEndpointAbility extends MultiTargetAbility<String, EndpointInfo>
   private Optional<Boolean> tearDownEndpoint(String endpointName) {
     setActive(endpointName);
     actor.attemptsTo(deleteEndPoint().withName(endpointName));
-    return HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful() ? Optional.of(TRUE)
+    return HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful()
+        ? Optional.of(TRUE)
         : Optional.empty();
   }
 
-  protected record EndpointInfo(String endpointId, String hsName) {
-
-  }
+  protected record EndpointInfo(String endpointId, String hsName) {}
 }
