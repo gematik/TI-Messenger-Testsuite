@@ -22,7 +22,6 @@ import de.gematik.tim.test.glue.api.contact.HasContactAbility;
 import de.gematik.tim.test.glue.api.devices.UseDeviceAbility;
 import de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UseEndpointAbility;
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility;
-import de.gematik.tim.test.glue.api.fhir.organisation.location.UseLocationAbility;
 import de.gematik.tim.test.glue.api.fhir.practitioner.CanDeleteOwnMxidAbility;
 import de.gematik.tim.test.glue.api.login.IsLoggedInAbility;
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
@@ -41,8 +40,7 @@ public enum TeardownOrder {
   HAS_CONTACT(3, HasContactAbility.class),
   USE_AUTHORIZATION(3, UseAuthorizationAbility.class),
   HAS_BLOCK_AND_ALLOW_LIST(3, HasBlockAndAllowListAbility.class),
-  USE_ENDPOINT(4, UseEndpointAbility.class),
-  USE_LOCATION(4, UseLocationAbility.class);
+  USE_ENDPOINT(4, UseEndpointAbility.class);
 
   private final int orderNumber;
   private final Class<? extends TeardownAbility> abilityClass;

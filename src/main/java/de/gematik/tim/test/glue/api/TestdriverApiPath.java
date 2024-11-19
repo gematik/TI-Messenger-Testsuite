@@ -32,7 +32,6 @@ public final class TestdriverApiPath {
   public static final String MESSAGE_ID_VARIABLE = "messageId";
   public static final String HEALTHCARE_SERVICE_ID_VARIABLE = "hsId";
   public static final String ENDPOINT_ID_VARIABLE = "endId";
-  public static final String LOCATION_ID_VARIABLE = "locId";
   public static final String MXID_VARIABLE = "mxid";
   public static final String MEDIA_ID_VARIABLE = "mediaId";
 

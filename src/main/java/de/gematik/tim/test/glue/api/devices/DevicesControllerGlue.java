@@ -26,7 +26,7 @@ import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_DEVICES;
 import static de.gematik.tim.test.glue.api.devices.CheckClientKindTask.checkIs;
 import static de.gematik.tim.test.glue.api.devices.ClaimDeviceTask.claimDevice;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.CLIENT;
-import static de.gematik.tim.test.glue.api.devices.ClientKind.INSURANT;
+import static de.gematik.tim.test.glue.api.devices.ClientKind.EPA_CLIENT;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.PRACTITIONER;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.PRO_CLIENT;
@@ -136,7 +136,7 @@ public class DevicesControllerGlue {
         case PRACTITIONER -> reserveClient(claimInfo.actor, claimInfo.api, CLIENT, PRACTITIONER);
         case ORG_ADMIN -> reserveClient(claimInfo.actor, claimInfo.api, ORG_ADMIN);
         case CLIENT -> reserveClient(claimInfo.actor, claimInfo.api, CLIENT);
-        case INSURANT -> reserveClient(claimInfo.actor, claimInfo.api, CLIENT, INSURANT);
+        case EPA_CLIENT -> reserveClient(claimInfo.actor, claimInfo.api, CLIENT, EPA_CLIENT);
         case PRO_CLIENT -> reserveClient(claimInfo.actor, claimInfo.api, CLIENT, PRO_CLIENT);
         case PRO_PRACTITIONER ->
             reserveClient(claimInfo.actor, claimInfo.api, CLIENT, PRACTITIONER, PRO_PRACTITIONER);

@@ -36,5 +36,4 @@ public final class ActorMemoryKeys {
   public static final String OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX = "_ownStatusInRoom";
   public static final String HOME_SERVER = "homeServer";
   public static final String MATRIX_CLIENT_VERSION = "matrixClientVersion";
-  public static final String AUTHORIZATION_MODE = "authorizationMode";
 }
