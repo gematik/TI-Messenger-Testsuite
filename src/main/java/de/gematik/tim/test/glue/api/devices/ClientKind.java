@@ -20,7 +20,7 @@ public enum ClientKind {
   PRACTITIONER,
   CLIENT,
   ORG_ADMIN,
-  INSURANT,
+  EPA_CLIENT,
   PRO_CLIENT,
   PRO_PRACTITIONER
 }

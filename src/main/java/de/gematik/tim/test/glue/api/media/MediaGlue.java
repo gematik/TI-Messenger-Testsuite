@@ -31,6 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
+
 import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
 import de.gematik.tim.test.models.MessageDTO;
@@ -45,6 +46,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 import lombok.SneakyThrows;
 import net.serenitybdd.screenplay.Actor;
+import org.apache.commons.lang3.NotImplementedException;
 
 public class MediaGlue {
 
@@ -56,6 +58,16 @@ public class MediaGlue {
   public void sendsAttachmentToRoom(String actorName, String fileName, String roomName) {
     uploadsAMediaFile(actorName, fileName);
     Path path = new File(RESOURCES_PATH + fileName).toPath();
+    String msgType;
+    if (fileName.endsWith(".jpg") || fileName.endsWith(".png")) {
+      msgType = "m.image";
+    }
+    else if (fileName.endsWith(".txt")) {
+      msgType = "m.text";
+    }
+    else{
+      throw new NotImplementedException("Unknown file type. Add a new messageType in the glue step to support this file.");
+    }
     Actor actor = theActorCalled(actorName);
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
     actor.attemptsTo(
@@ -63,7 +75,7 @@ public class MediaGlue {
             .withFileId(actor.recall(MEDIA_ID))
             .withMimetype(Files.probeContentType(path))
             .withSize((int) Files.size(path))
-            .withMsgType("m.file"));
+            .withMsgType(msgType));
     checkResponseCode(actorName, OK.value());
     checkRoomMembershipState(actor, roomName);
   }

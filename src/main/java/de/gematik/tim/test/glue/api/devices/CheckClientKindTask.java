@@ -17,7 +17,7 @@
 package de.gematik.tim.test.glue.api.devices;
 
 import static de.gematik.tim.test.glue.api.devices.ClientKind.CLIENT;
-import static de.gematik.tim.test.glue.api.devices.ClientKind.INSURANT;
+import static de.gematik.tim.test.glue.api.devices.ClientKind.EPA_CLIENT;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.PRACTITIONER;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.PRO_CLIENT;
@@ -75,7 +75,7 @@ public class CheckClientKindTask extends ParallelTaskRunner {
                   .formatted(actor.getName(), actor.abilityTo(CallAnApi.class).resolve("")))
           .isTrue();
     }
-    if (kind.contains(INSURANT)) {
+    if (kind.contains(EPA_CLIENT)) {
       assertThat(info.getClientInfo().getIsInsurance())
           .as(
               "Claimed device failed for actor %s on api %s because api have no insurant privileges! This information was received from the info endpoint."

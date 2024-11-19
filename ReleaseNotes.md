@@ -4,6 +4,20 @@
 
 ## Link to TI-Messenger-testsuite [`docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
 
+## Release 1.4.0
+
+### Changes
+
+- adds 400 Bad Request responses for test driver api
+- Adjustment for 03_AenderungEinesHealthcareService.json - Only one day of availableTime due to VZD change
+- API breaking change: renames FhirAvailableTimes to FhirAvailableTime and adjusts description and example to reflect
+  VZD update to profile 0.11.18
+
+### Bugs
+
+- fixed regression, pom.xml: removed `*` in save_reports to be compatible with macOS, see GitHub
+  issue: https://github.com/gematik/TI-Messenger-Testsuite/issues/46
+
 ## Release 1.3.8
 
 ### Changes

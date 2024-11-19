@@ -49,14 +49,14 @@ public class TransferGlue {
 
   @Wenn("{string} sendet ein Attachment {string} an den Raum {string} über Matrix-Protokoll v1.11")
   public void sendetEinAttachmentAnDenRaumÜberMatrixProtokollV(
-      String arg0, String arg1, String arg2, int arg3) {
+      String arg0, String arg1, String arg2) {
     // implement me
   }
 
   @Dann(
       "{string} empfängt das Attachment {string} von {string} im Raum {string} über Matrix-Protokoll v1.11")
   public void empfängtDasAttachmentVonImRaumÜberMatrixProtokollV(
-      String arg0, String arg1, String arg2, String arg3, int arg4) {
+      String arg0, String arg1, String arg2, String arg3) {
     // implement me
   }
 
@@ -90,8 +90,23 @@ public class TransferGlue {
     // implement me
   }
 
+  @Dann("{string} findet Healthcare-Service {string} bei Suche nach Namen minus {int}-{int} \\(Anzahl vorne-hinten) Char\\(s) abgeschnitten über die FDV-Schnittstelle")
+  public void findHealthcareServiceWithSearchParamFromEpaClient(String actorName, String healthcareServiceName, int begin, int end) {
+    // implement me
+  }
+
+  @Dann("{string} findet TI-Messenger-Nutzer {string} bei Suche nach Namen minus {int}-{int} \\(Anzahl vorne-hinten) Char\\(s) abgeschnitten die FDV-Schnittstelle")
+  public void findPractitionerWithSearchParamFromEpaClient(String actorName, String healthcareServiceName, int begin, int end) {
+    // implement me
+  }
+
   @Dann("{string} ändert seine letzte Nachricht im Chat mit {string} in {string}")
   public void findHCSFromEpaClient(String actor, String chatUser, String message) {
+    // implement me
+  }
+
+  @Dann("{string} ist dem Chat mit {listOfStrings} beigetreten")
+  public void enterChat(String actor, List<String> chatUser) {
     // implement me
   }
 }
