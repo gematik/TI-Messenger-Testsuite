@@ -383,6 +383,7 @@ public class GlueUtils {
                                       member.getMxid(), room.getRoomId())));
               RoomMembershipStateDTO status =
                   actorForMember.recall(room.getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX);
+
               if (!member.getMembershipState().equals(status)) {
                 handleRoomStateInconsistency(
                     format(

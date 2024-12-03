@@ -18,9 +18,13 @@ package de.gematik.tim.test.glue.api.authorization;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
+import static de.gematik.tim.test.glue.api.authorization.AddAllowedDomainsTask.addAllowedDomains;
 import static de.gematik.tim.test.glue.api.authorization.AddAllowedUsersTask.addAllowedUsers;
+import static de.gematik.tim.test.glue.api.authorization.AddBlockedDomainsTask.addBlockedDomains;
 import static de.gematik.tim.test.glue.api.authorization.AddBlockedUsersTask.addBlockedUsers;
+import static de.gematik.tim.test.glue.api.authorization.DeleteAllowedDomainsTask.deleteAllowedDomains;
 import static de.gematik.tim.test.glue.api.authorization.DeleteAllowedUsersTask.deleteAllowedUsers;
+import static de.gematik.tim.test.glue.api.authorization.DeleteBlockedDomainsTask.deleteBlockedDomains;
 import static de.gematik.tim.test.glue.api.authorization.DeleteBlockedUsersTask.deleteBlockedUsers;
 import static de.gematik.tim.test.glue.api.authorization.GetAuthorizationModeQuestion.getAuthorizationMode;
 import static de.gematik.tim.test.glue.api.authorization.SetAuthorizationModeTask.setAuthorizationMode;
@@ -114,5 +118,59 @@ public class AuthorizationGlue {
     }
     actor.attemptsTo(deleteAllowedUsers(allowedUsersMxids));
     checkResponseCode(actorName, NO_CONTENT.value());
+  }
+
+  @Then("{string} puts the domain of {listOfStrings} on the block list")
+  @Dann("{string} hinterlegt die Domain von {listOfStrings} in der Blockliste")
+  public void putDomainInBlockList(String actorName, List<String> blockedUsers) {
+    Actor actor = theActorCalled(actorName);
+    List<String> blockedDomains = getDomainsFromUsers(blockedUsers);
+    actor.attemptsTo(addBlockedDomains(blockedDomains));
+    checkResponseCode(actorName, OK.value());
+  }
+
+  @Then("{string} removes the domain of {listOfStrings} from the block list")
+  @Dann("{string} entfernt die Domain von {listOfStrings} in der Blockliste")
+  public void deleteDomainInBlockList(String actorName, List<String> blockedUsers) {
+    Actor actor = theActorCalled(actorName);
+    List<String> blockedDomains = getDomainsFromUsers(blockedUsers);
+    actor.attemptsTo(deleteBlockedDomains(blockedDomains));
+    checkResponseCode(actorName, NO_CONTENT.value());
+  }
+
+  @Then("{string} puts the domain of {listOfStrings} on the allow list")
+  @Dann("{string} hinterlegt die Domain von {listOfStrings} in der Allowliste")
+  public void putDomainInAllowList(String actorName, List<String> allowedUsers) {
+    Actor actor = theActorCalled(actorName);
+    List<String> allowedDomains = getDomainsFromUsers(allowedUsers);
+    actor.attemptsTo(addAllowedDomains(allowedDomains));
+    checkResponseCode(actorName, OK.value());
+  }
+
+  @Then("{string} removes the domain of {listOfStrings} from the allow list")
+  @Dann("{string} entfernt die Domain von {listOfStrings} in der Allowliste")
+  public void deleteDomainInAllowList(String actorName, List<String> allowedUsers) {
+    Actor actor = theActorCalled(actorName);
+    List<String> allowedDomains = getDomainsFromUsers(allowedUsers);
+    actor.attemptsTo(deleteAllowedDomains(allowedDomains));
+    checkResponseCode(actorName, NO_CONTENT.value());
+  }
+
+  private List<String> getDomainsFromUsers(List<String> allowedUsers) {
+    List<String> domains = new ArrayList<>();
+    for (String allowedUser : allowedUsers) {
+      Actor allowedActor = theActorCalled(allowedUser);
+      String mxId = allowedActor.recall(MX_ID);
+      String domain = extractDomainFromMxId(mxId);
+      domains.add(domain);
+    }
+    return domains;
+  }
+
+  private String extractDomainFromMxId(String mxId) {
+    if (mxId == null || !mxId.contains(":")) {
+      throw new IllegalArgumentException(mxId + " is not a valid MxId");
+    }
+    return mxId.split(":")[1];
   }
 }

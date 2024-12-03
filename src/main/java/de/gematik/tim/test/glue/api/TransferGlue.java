@@ -19,46 +19,13 @@ package de.gematik.tim.test.glue.api;
 import static lombok.AccessLevel.PRIVATE;
 
 import io.cucumber.java.de.Dann;
-import io.cucumber.java.de.Wenn;
 import java.util.List;
+
+import io.cucumber.java.en.Then;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor(access = PRIVATE)
 public class TransferGlue {
-
-  @Dann("{string} hinterlegt die Domain von {listOfStrings} in der Blockliste")
-  public void putDomainInBlockList(String actorNames, List<String> blockedUsers) {
-    // implement me
-  }
-
-  @Dann("{string} entfernt die Domain von {listOfStrings} in der Blockliste")
-  public void deleteDomainInBlockList(String actorNames, List<String> blockedUsers) {
-    // implement me
-  }
-
-  @Dann("{string} hinterlegt die Domain von {listOfStrings} in der Allowliste")
-  public void putDomainInAllowList(String actorNames, List<String> blockedUsers) {
-    // implement me
-  }
-
-  // Noch nicht in gebrauch, wird aber kommen :)
-  @Dann("{string} entfernt die Domain von {listOfStrings} in der Allowliste")
-  public void deleteDomainInAllowList(String actorNames, List<String> blockedUsers) {
-    // implement me
-  }
-
-  @Wenn("{string} sendet ein Attachment {string} an den Raum {string} über Matrix-Protokoll v1.11")
-  public void sendetEinAttachmentAnDenRaumÜberMatrixProtokollV(
-      String arg0, String arg1, String arg2) {
-    // implement me
-  }
-
-  @Dann(
-      "{string} empfängt das Attachment {string} von {string} im Raum {string} über Matrix-Protokoll v1.11")
-  public void empfängtDasAttachmentVonImRaumÜberMatrixProtokollV(
-      String arg0, String arg1, String arg2, String arg3) {
-    // implement me
-  }
 
   @Dann(
       "{listOfStrings} hinterlegt auf dem HomeServer sein Dehydrated Device inkl speichern des Schlüsselmaterials")
@@ -90,23 +57,178 @@ public class TransferGlue {
     // implement me
   }
 
-  @Dann("{string} findet Healthcare-Service {string} bei Suche nach Namen minus {int}-{int} \\(Anzahl vorne-hinten) Char\\(s) abgeschnitten über die FDV-Schnittstelle")
-  public void findHealthcareServiceWithSearchParamFromEpaClient(String actorName, String healthcareServiceName, int begin, int end) {
+  @Dann(
+      "{string} findet Healthcare-Service {string} bei Suche nach Namen minus {int}-{int} \\(Anzahl vorne-hinten) Char\\(s) abgeschnitten über die FDV-Schnittstelle")
+  public void findHealthcareServiceWithSearchParamFromEpaClient(
+      String actorName, String healthcareServiceName, int begin, int end) {
     // implement me
   }
 
-  @Dann("{string} findet TI-Messenger-Nutzer {string} bei Suche nach Namen minus {int}-{int} \\(Anzahl vorne-hinten) Char\\(s) abgeschnitten die FDV-Schnittstelle")
-  public void findPractitionerWithSearchParamFromEpaClient(String actorName, String healthcareServiceName, int begin, int end) {
+  @Dann(
+      "{string} findet TI-Messenger-Nutzer {string} bei Suche nach Namen minus {int}-{int} \\(Anzahl vorne-hinten) Char\\(s) abgeschnitten die FDV-Schnittstelle")
+  public void findPractitionerWithSearchParamFromEpaClient(
+      String actorName, String healthcareServiceName, int begin, int end) {
     // implement me
   }
 
-  @Dann("{string} ändert seine letzte Nachricht im Chat mit {string} in {string}")
-  public void findHCSFromEpaClient(String actor, String chatUser, String message) {
+  @Dann(
+      "{string} findet {string} im Healthcare-Service {string} über die FDV-Schnittstelle NICHT [Retry 13 - 4]")
+  public void dontfindHcsEndpintWithSearchParamFromEpaClient(
+      String actorName, String userEndpoint, String healthcareServiceName) {
     // implement me
   }
 
-  @Dann("{string} ist dem Chat mit {listOfStrings} beigetreten")
-  public void enterChat(String actor, List<String> chatUser) {
+  @Dann(
+      "{string} findet {string} bei Suche in FHIR über die FDV-Schnittstelle NICHT [Retry 13 - 4]")
+  public void dontFindPractitionerEndpintWithSearchParamFromEpaClient(
+      String actorName, String userEndpoint, String healthcareServiceName) {
     // implement me
   }
+
+  @Dann(
+      "{string} setzt die endpointVisibility für seine Practitioner Endpunkt Extension auf {string}")
+  public void setEndpointVisibilityForPractitioner(String actor, String endpointVisibility) {
+    // implement me
+  }
+
+  @Dann(
+      "{string} sieht die endpointVisibility der Practitioner Endpunkt Extension von {string} ist auf dem Wert {string}")
+  public void getEndpointVisibilityForPractitioner(
+      String actor, String actorPractitioner, String endpointVisibility) {
+    // implement me
+  }
+
+  @Dann("{string} löscht die endpointVisibility {string} für seine Practitioner Endpunkt Extension")
+  public void deleteEndpointVisibilityForPractitioner(String actor, String endpointVisibility) {
+    // implement me
+  }
+
+  @Dann(
+      "{string} sieht die endpointVisibility der Practitioner Endpunkt Extension von {string} nicht mehr auf dem Wert {string} [Retry 10 - 3]")
+  public void getNotEndpointVisibilityForPractitioner(
+      String actor, String actorPractitioner, String endpointVisibility) {
+    // implement me
+  }
+
+  @Dann(
+      "{string} setzt die endpointVisibility für die Endpunkt Extension von {string} im Healthcare-Service {string} auf {string}")
+  public void setEndpointVisibilityForHcsEndpiont(
+      String actor, String hcsEndpoint, String hcsName, String endpointVisibility) {
+    // implement me
+  }
+
+  @Dann(
+      "{string} sieht die endpointVisibility für die Endpunkt Extension von {string} im Healthcare-Service {string} auf dem Wert {string}")
+  public void getEndpointVisibilityForHcsEndpiont(
+      String actor, String hcsEndpoint, String hcsName, String endpointVisibility) {
+    // implement me
+  }
+
+  @Dann(
+      "{string} löscht die endpointVisibility {string} für die Endpunkt Extension von {string} im Healthcare-Service {string}")
+  public void deleteEndpointVisibilityForHcsEndpiont(
+      String actor, String endpointVisibility, String hcsEndpoint, String hcsName) {
+    // implement me
+  }
+
+  @Dann(
+      "{string} sieht die endpointVisibility für die Endpunkt Extension von {string} im Healthcare-Service {string} nicht mehr auf dem Wert {string} [Retry 10 - 3]")
+  public void getNotEndpointVisibilityForHcsEndpiont(
+      String actor, String hcsEndpoint, String hcsName, String endpointVisibility) {
+    // implement me
+  }
+
+  @Dann(
+      "{string} prüft die Raumversion im Raum {string} auf Version {string}")
+  public void checkRoomVersionRoom(
+          String actor, String roomName, String version) {
+    // implement me
+  }
+
+  @Dann(
+          "{string} prüft die Raumversion im Chat mit {string} auf Version {string}")
+  public void checkRoomVersionChat(
+          String actor, String chatPartner, String version) {
+    // implement me
+  }
+
+  @Dann(
+          "{string} erstellt einen Chat-Raum mit Fallbezug {string}")
+  public void crateRoomWithCaseReference(
+          String actor, String roomName) {
+    // implement me
+  }
+
+  @Dann(
+          "{string} prüft, ob die Pflichtparameter in den Room States {listOfStrings} im Raum {string} befüllt sind")
+  @Then(
+          "{string} prüft, ob der Pflichtparameter in den Room States {listOfStrings} im Raum {string} befüllt ist")
+  public void checkParameterFilledForRoomStatesOfRoom(
+          String actor, List<String> requestedRoomStates, String roomName) {
+    // implement me
+  }
+
+  @Dann(
+          "{string} prüft, ob die Pflichtparameter in den Room States {listOfStrings} im Chat mit {string} befüllt sind")
+  @Then(
+          "{string} prüft, ob der Pflichtparameter in den Room States {listOfStrings} im Chat mit {string} befüllt ist")
+  public void checkParameterFilledForRoomStatesOfChat(
+          String actor, List<String> requestedRoomStates, String chatPartner) {
+    // implement me
+  }
+
+  @Dann(
+          "{string} prüft, ob die Parameter in den Room States {listOfStrings} im Chat mit {string} leer sind")
+  @Then(
+          "{string} prüft, ob der Parameter in den Room States {listOfStrings} im Chat mit {string} leer ist")
+  public void checkParameterNotExistentForRoomStatesOfChat(
+          String actor, List<String> requestedRoomStates, String chatPartner) {
+    // implement me
+  }
+
+  @Dann(
+          "{string} prüft, ob die Parameter in den Room States {listOfStrings} im Raum {string} leer sind")
+  @Then(
+          "{string} prüft, ob der Parameter in den Room States {listOfStrings} im Raum {string} leer ist")
+  public void checkParameterNotExistentForRoomStatesOfRoom(
+          String actor, List<String> requestedRoomStates, String roomName) {
+    // implement me
+  }
+
+  @Dann(
+          "{string} prüft, ob die Pflichtparameter in den Room States {listOfStrings} im Raum {string} vorhanden sind")
+  @Then(
+          "{string} prüft, ob der Pflichtparameter in den Room States {listOfStrings} im Raum {string} vorhanden ist")
+  public void checkParameterExistentForRoomStatesOfRoom(
+          String actor, List<String> requestedRoomStates, String roomName) {
+    // implement me
+  }
+
+  @Dann(
+          "{string} prüft, ob die Pflichtparameter in den Room States {listOfStrings} im Chat mit {string} vorhanden sind")
+  @Then(
+          "{string} prüft, ob der Pflichtparameter in den Room States {listOfStrings} im Chat mit {string} vorhanden ist")
+  public void checkParameterExistentForRoomStatesOfChat(
+          String actor, List<String> requestedRoomStates, String chatPartner) {
+    // implement me
+  }
+
+  @Then(
+          "{word} fragt an Schnittstelle {word} die API {string} ab")
+  public void pingApiOnHomeserver(String actorName, String apiName, String apiUrl) {
+    // implement me
+  }
+
+  @Then(
+          "{word} fragt an Schnittstelle {word} die API {string} inkl Parameterbefüllung ab")
+  public void pingApiOnHomeserverIncludingParameter(String actorName, String apiName, String apiUrl) {
+    // implement me
+  }
+
+  @Then(
+          "{string} überprüft, ob die Response der API {string} befüllt ist")
+  public void pingApiOnHomeserverIncludingParameter(String actorName, String apiUrl) {
+    // implement me - Werte 200 und 401 (o.ä. sind erlaubt, Ergebniss muss geloggt werden)
+  }
+
 }

@@ -22,6 +22,7 @@ import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.HttpMethod.POST
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.HttpMethod.PUT;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ACCOUNT_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ALLOWED_USERS_PATH;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.AUTHENTICATED_MEDIA_DOWNLOAD_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.AUTHORIZATION_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.BLOCKED_USERS_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.CLAIM_DEVICE_PATH;
@@ -179,6 +180,7 @@ public enum TestdriverApiEndpoint {
   // MEDIA
   UPLOAD_MEDIA(POST, MEDIA_PATH, UseDeviceAbility.class),
   DOWNLOAD_MEDIA(GET, MEDIA_DOWNLOAD_PATH, UseDeviceAbility.class),
+  DOWNLOAD_AUTHENTICATED_MEDIA(GET, AUTHENTICATED_MEDIA_DOWNLOAD_PATH, UseDeviceAbility.class),
 
   // CONTACT-MANAGEMENT
   GET_CONTACT(GET, CONTACT_PATH, UseDeviceAbility.class),
@@ -191,6 +193,10 @@ public enum TestdriverApiEndpoint {
 
   ADD_BLOCKED_USERS(POST, BLOCKED_USERS_PATH, UseDeviceAbility.class),
   ADD_ALLOWED_USERS(POST, ALLOWED_USERS_PATH, UseDeviceAbility.class),
+  ADD_ALLOWED_DOMAINS(POST, ALLOWED_USERS_PATH, UseDeviceAbility.class),
+  ADD_BLOCKED_DOMAINS(POST, BLOCKED_USERS_PATH, UseDeviceAbility.class),
+  DELETE_ALLOWED_DOMAINS(DELETE, ALLOWED_USERS_PATH, UseDeviceAbility.class),
+  DELETE_BLOCKED_DOMAINS(DELETE, BLOCKED_USERS_PATH, UseDeviceAbility.class),
   DELETE_BLOCKED_USERS(DELETE, BLOCKED_USERS_PATH, UseDeviceAbility.class),
   DELETE_ALLOWED_USERS(DELETE, ALLOWED_USERS_PATH, UseDeviceAbility.class);
 

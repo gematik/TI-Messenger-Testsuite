@@ -55,7 +55,7 @@ public class FhirAdministrationGlue {
         actorName -> {
           Actor actor = theActorCalled(actorName);
           actor.attemptsTo(authenticateOnFhirVzd());
-          checkResponseCode();
+          checkResponseCode(actorName, OK.value());
           actor.attemptsTo(setMxid());
           checkResponseCode(actorName, CREATED.value());
         });

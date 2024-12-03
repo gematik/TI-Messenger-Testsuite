@@ -198,6 +198,52 @@ From must start with http:// and match the value in link:{sourcedir}/test/resour
 Make sure that the specified URL ends with a trailing '/', otherwise the connection will fail.
 <3> Additional resources in the path must be specified.
 
+=== Correct Completion of the Metadata for the Interface
+
+IMPORTANT: Please ensure that the interface metadata is populated with all
+required parameters accurately.
+
+One of these parameters is the information interface, which requires the
+OS information. This parameter must be filled with the corresponding
+operating system. This applies equally to both the TI-M client interface
+(`clientInfo`) and the organization admin interface (`fachdienstInfo`).
+
+For the TI-M client interface, the operating system must be differentiated between:
+
+-   Mobile clients (e.g., Android, iOS)
+-   Native clients (e.g., Windows, macOS)
+-   Web clients (e.g., Linux Server, Windows Server)
+
+The same applies to the organization admin interface. If it is
+integrated into a TI-M client (e.g., within a native app), the operating
+system should be specified similarly to TI-M clients (e.g., Windows, macOS).
+
+Client interface example:
+----
+"clientInfo": {
+        "osInfo": {
+            "operatingSystem": "Android",
+            "version": "10"
+        }
+    }
+----
+Organisation admin interface example:
+----
+"fachdienstInfo": {
+        "osInfo": {
+            "operatingSystem": "LinuxServer",
+            "version": "5.15"
+        }
+    }
+----
+Please ensure that all required parameters are filled in, not just the `osInfo` field!
+
+Additionally, this parameter must also be populated when using the same codebase for
+multiple products requiring approval. It must align with the information
+provided in the submitted application for approval documents.
+
+Example: In the application for approval: TI-M Client Android -> `"operatingSystem": "Android"`.
+
 === Starting the test cases
 
 The test suite executes the tests as Maven integration tests.

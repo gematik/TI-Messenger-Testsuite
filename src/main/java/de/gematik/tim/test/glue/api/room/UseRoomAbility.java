@@ -95,7 +95,7 @@ public class UseRoomAbility extends MultiTargetAbility<String, RoomDTO>
   }
 
   public String getRoomIdByName(String roomName) {
-    return getTarget(roomName).getName();
+    return getTarget(roomName).getRoomId();
   }
 
   @Override
