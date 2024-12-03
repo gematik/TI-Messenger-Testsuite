@@ -1567,7 +1567,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Uploads a file and returns its file-id"
+      summary: "Uploads a file and returns its fileId"
       operationId: postMediaFile
       parameters:
         - in: header
@@ -1600,8 +1600,6 @@ paths:
       tags:
         - media
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
       summary: "Returns a previously uploaded file with given id"
       operationId: getMediaFile
       responses:
@@ -1617,19 +1615,34 @@ paths:
         default:
           $ref: "#/components/responses/DefaultResponse"
 
-    delete:
+  /devices/{deviceId}/media/authenticated/{fileId}:
+    parameters:
+      - $ref: "#/components/parameters/deviceId"
+      - $ref: "#/components/parameters/transactionIdHeader"
+      - $ref: "#/components/parameters/fileId"
+    get:
       tags:
         - media
-        - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Deletes a previously uploaded file with given id"
-      operationId: deleteMediaFile
+      summary: "Returns a previously uploaded file with authentication"
+      description:
+        "Since Matrix version 1.11 the download of media files is authenticated.
+        This endpoint is used to test the new authenticated download,
+        where fileId is the id received during upload."
+      operationId: getAuthenticatedMediaFile
       responses:
-        "204":
-          description: "Media deleted"
+        "200":
+          description: "Retrieved the media file"
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
         "404":
           $ref: "#/components/responses/NotFound"
+        default:
+          $ref: "#/components/responses/DefaultResponse"
 
   /devices/{deviceId}/authorizationMode:
     parameters:
@@ -2021,7 +2034,7 @@ paths:
         - TI-M_Pro
         - TI-M_ePA
       summary: "Deletes the domain from the list of users and domains not allowed to contact the client"
-      operationId: deleteBlockedDomain
+      operationId: deleteBlockedUserDomain
       responses:
         "204":
           description: "Blocked user domain deleted"

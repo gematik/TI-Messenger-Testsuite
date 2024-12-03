@@ -259,4 +259,11 @@ public class MessageControllerGlue {
     actor.attemptsTo(editMessage().withMessage(messageText).withMessageId(message.getMessageId()));
     checkResponseCode(actorName, OK.value());
   }
+
+  @Then("{string} edits her last sent message in chat with {string} to {string}")
+  @Dann("{string} ändert seine letzte Nachricht im Chat mit {string} in {string}")
+  public void editsLastSentMessageInChat(String actorName, String chatUser, String messageText) {
+    editsHerLastSentMessageTo(
+        actorName, DIRECT_CHAT_NAME + theActorCalled(chatUser).recall(MX_ID), messageText);
+  }
 }

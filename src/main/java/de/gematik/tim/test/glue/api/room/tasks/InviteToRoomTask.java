@@ -64,7 +64,8 @@ public class InviteToRoomTask implements Task {
 
     if (canBeInvited) {
       getAllActiveActorsByMxIds(invitees.stream().map(MxIdDTO::getMxid).toList(), shouldFindMxid)
-          .forEach(a -> a.remember(roomId + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX, INVITE));
+          .forEach(
+              invitee -> invitee.remember(roomId + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX, INVITE));
       sendRawDataEvent(actor.recall(MX_ID));
     }
   }

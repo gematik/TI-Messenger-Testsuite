@@ -19,6 +19,7 @@ package de.gematik.tim.test.glue.api.room;
 import static com.jayway.jsonpath.JsonPath.parse;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DIRECT_CHAT_NAME;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX;
 import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
 import static de.gematik.tim.test.glue.api.fhir.organisation.FhirOrgAdminGlue.findsAddressInHealthcareService;
 import static de.gematik.tim.test.glue.api.room.UseRoomAbility.addRoomToActor;
@@ -33,6 +34,7 @@ import static de.gematik.tim.test.glue.api.room.tasks.JoinRoomTask.joinRoom;
 import static de.gematik.tim.test.glue.api.room.tasks.LeaveRoomTask.leaveRoom;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.checkRoomMembershipState;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.checkRoomVersion;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getAllActiveActorsByMxIds;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getRoomByInternalName;
 import static de.gematik.tim.test.models.RoomMembershipStateDTO.INVITE;
@@ -58,6 +60,7 @@ import io.cucumber.java.de.Wenn;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -133,7 +136,6 @@ public class RoomControllerGlue {
 
     String roomId =
         invitingActor.abilityTo(UseRoomAbility.class).getRoomIdByName(DIRECT_CHAT_NAME + thirdMxid);
-
     invitingActor.attemptsTo(invite(List.of(invitedMxid)).toRoom(roomId));
   }
 
@@ -188,6 +190,20 @@ public class RoomControllerGlue {
     RoomDTO roomWithLimitedMemberView =
         invitedActor.asksFor(ownRoom().withMemberHasStatus(invitedActor.recall(MX_ID), INVITE));
     invitedActor.attemptsTo(joinRoom().withRoomId(roomWithLimitedMemberView.getRoomId()));
+    RoomDTO roomUpdated = parseResponse(RoomDTO.class);
+    List<RoomMemberDTO> roomMembers = roomUpdated.getMembers();
+    Optional<RoomMemberDTO> optionalRoomMemberDTO =
+        roomMembers.stream()
+            .filter(member -> invitedActor.recall(MX_ID).equals(member.getMxid()))
+            .findFirst();
+    if (optionalRoomMemberDTO.isPresent()) {
+      RoomMemberDTO roomMember = optionalRoomMemberDTO.get();
+      RoomMembershipStateDTO status =
+          invitedActor.recall(roomUpdated.getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX);
+      if (!roomMember.getMembershipState().equals(status)) {
+        throw new TestRunException(format("%s join room task failed", actorName));
+      }
+    }
     checkResponseCode(actorName, OK.value());
     checkRoomMembershipState();
   }
@@ -359,8 +375,22 @@ public class RoomControllerGlue {
     Actor actor = theActorCalled(actorName);
     RoomDTO room =
         actor.asksFor(ownRoom().withName(roomName).withMemberHasStatus(actor.recall(MX_ID), JOIN));
+    assertThat(room).as(format("Actor %s has not joined room %s", actorName, roomName)).isNotNull();
+    checkRoomMembershipState(room);
+  }
+
+  @Then("{string} joined the chat with {listOfStrings}")
+  @Dann("{string} ist dem Chat mit {listOfStrings} beigetreten")
+  public void userInDirectChat(String actorName, List<String> chatMembers) {
+    Actor actor = theActorCalled(actorName);
+    List<String> chatMemberMxIds = new ArrayList<>();
+    for (String chatMember : chatMembers) {
+      chatMemberMxIds.add(theActorCalled(chatMember).recall(MX_ID));
+    }
+    chatMemberMxIds.add(actor.recall(MX_ID));
+    RoomDTO room = actor.asksFor(ownRoom().withMembers(chatMemberMxIds));
     assertThat(room)
-        .as(format("Actor %s have not joined room %s", actorName, roomName))
+        .as(format("Actor %s has not joined room with %s", actorName, chatMembers))
         .isNotNull();
     checkRoomMembershipState(room);
   }

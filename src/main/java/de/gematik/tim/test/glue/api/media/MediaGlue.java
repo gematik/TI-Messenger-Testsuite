@@ -19,6 +19,7 @@ package de.gematik.tim.test.glue.api.media;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MEDIA_ID;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
+import static de.gematik.tim.test.glue.api.media.DownloadAuthenticatedMediaQuestion.downloadAuthenticatedMedia;
 import static de.gematik.tim.test.glue.api.media.DownloadMediaQuestion.downloadMedia;
 import static de.gematik.tim.test.glue.api.media.UploadMediaTask.uploadMedia;
 import static de.gematik.tim.test.glue.api.message.GetRoomMessageQuestion.messageFromSenderWithTextInActiveRoom;
@@ -30,7 +31,6 @@ import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
-
 
 import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
@@ -61,12 +61,11 @@ public class MediaGlue {
     String msgType;
     if (fileName.endsWith(".jpg") || fileName.endsWith(".png")) {
       msgType = "m.image";
-    }
-    else if (fileName.endsWith(".txt")) {
+    } else if (fileName.endsWith(".txt")) {
       msgType = "m.text";
-    }
-    else{
-      throw new NotImplementedException("Unknown file type. Add a new messageType in the glue step to support this file.");
+    } else {
+      throw new NotImplementedException(
+          "Unknown file type. Add a new messageType in the glue step to support this file.");
     }
     Actor actor = theActorCalled(actorName);
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
@@ -89,28 +88,55 @@ public class MediaGlue {
     checkResponseCode(actorName, CREATED.value());
   }
 
-  @SneakyThrows
   @Then("{string} receives the attachment {string} from {string} in the room {string}")
   @Dann("{string} empfängt das Attachment {string} von {string} im Raum {string}")
   public void receiveAttachmentInRoom(
-      String actorName, String fileName, String userName, String roomName) {
-    Actor actor = theActorCalled(actorName);
+      String receiverName, String fileName, String senderName, String roomName) {
+    Actor actor = theActorCalled(receiverName);
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
-    String senderMxId = theActorCalled(userName).recall(MX_ID);
+    MessageDTO message = getMediaMessage(senderName, receiverName, fileName);
+    byte[] receivedMedia = actor.asksFor(downloadMedia().withFileId(message.getFileId()));
+
+    checkResponseCode(receiverName, OK.value());
+    checkMediaIntegrity(fileName, receivedMedia, message);
+    checkRoomMembershipState(actor, roomName);
+  }
+
+  @Then(
+      "{string} receives an attachment {string} from {string} in the room {string} using matrix protocol v1.11")
+  @Dann(
+      "{string} empfängt das Attachment {string} von {string} im Raum {string} über Matrix-Protokoll v1.11")
+  public void receiveAuthenticatedAttachmentInRoom(
+      String receiverName, String fileName, String senderName, String roomName) {
+    Actor actor = theActorCalled(receiverName);
+    actor.abilityTo(UseRoomAbility.class).setActive(roomName);
+    MessageDTO message = getMediaMessage(senderName, receiverName, fileName);
+    byte[] receivedMedia =
+        actor.asksFor(downloadAuthenticatedMedia().withFileId(message.getFileId()));
+
+    checkResponseCode(receiverName, OK.value());
+    checkMediaIntegrity(fileName, receivedMedia, message);
+    checkRoomMembershipState(actor, roomName);
+  }
+
+  private MessageDTO getMediaMessage(String senderName, String receiverName, String fileName) {
+    Actor actor = theActorCalled(receiverName);
+    String senderMxId = theActorCalled(senderName).recall(MX_ID);
     Optional<MessageDTO> message =
         actor.asksFor(messageFromSenderWithTextInActiveRoom(fileName, senderMxId));
-
     if (message.isEmpty()) {
       throw new TestRunException(
           format("Could not find message %s from sender %s", fileName, senderMxId));
     }
-    byte[] receivedMedia = actor.asksFor(downloadMedia().withFileId(message.get().getFileId()));
+    return message.get();
+  }
 
+  @SneakyThrows
+  private void checkMediaIntegrity(String fileName, byte[] receivedMedia, MessageDTO message) {
     Path path = Path.of(RESOURCES_PATH + fileName);
     try (FileInputStream fis = new FileInputStream(path.toFile())) {
       assertThat(receivedMedia).isEqualTo(fis.readAllBytes());
     }
-    assertThat(message.get().getBody()).isEqualTo(getCreatedMessage(fileName).getBody());
-    checkRoomMembershipState(actor, roomName);
+    assertThat(message.getBody()).isEqualTo(getCreatedMessage(fileName).getBody());
   }
 }

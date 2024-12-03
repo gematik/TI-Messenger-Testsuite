@@ -6,7 +6,7 @@
 
   <groupId>de.gematik.tim.test</groupId>
   <artifactId>TI-Messenger-Testsuite</artifactId>
-  <version>1.4.0</version>
+  <version>1.4.1</version>
   <packaging>jar</packaging>
   <name>TI-Messenger-Testsuite</name>
   <description>Testsuite to check functionality of TI-Messenger-Clients</description>
@@ -749,7 +749,7 @@
               </execution>
             </executions>
             <configuration>
-              <generateGitPropertiesFile>false</generateGitPropertiesFile>
+              <generateGitPropertiesFile>true</generateGitPropertiesFile>
               <includeOnlyProperties>
                 <includeOnlyProperty>^git.branch</includeOnlyProperty>
               </includeOnlyProperties>
@@ -819,6 +819,19 @@
                     </move>
                   </target>
                 </configuration>
+              </execution>
+              <execution>
+                <id>move-git-properties</id>
+                <phase>initialize</phase>
+                <configuration>
+                  <target>
+                    <copy file="${project.build.directory}/classes/git.properties"
+                          todir="${project.build.directory}/ti-m-testdriversim"/>
+                  </target>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
               </execution>
               <execution>
                 <id>move_simulator_jar</id>
@@ -916,7 +929,7 @@
                   <executable>cp</executable>
                   <arguments>
                     <argument>-a</argument>
-                    <argument>${project.build.directory}/site/serenity/</argument>
+                    <argument>${project.build.directory}/site/serenity/.</argument>
                     <argument>${basedir}/reports/${build.time}/report/</argument>
                   </arguments>
                 </configuration>
@@ -1037,7 +1050,7 @@
                   <executable>cp</executable>
                   <arguments>
                     <argument>-a</argument>
-                    <argument>${project.build.directory}/site/serenity/</argument>
+                    <argument>${project.build.directory}/site/serenity/.</argument>
                     <argument>${basedir}/reports/${build.time}/report/</argument>
                   </arguments>
                 </configuration>
@@ -1113,7 +1126,7 @@
                   <executable>cp</executable>
                   <arguments>
                     <argument>-a</argument>
-                    <argument>${project.build.directory}/site/serenity/</argument>
+                    <argument>${project.build.directory}/site/serenity/.</argument>
                     <argument>${basedir}/reports/${build.time}/report/</argument>
                   </arguments>
                 </configuration>

@@ -2,15 +2,26 @@
 
 # Release notes
 
-## Link to TI-Messenger-testsuite [`docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
+## Link to TI-Messenger-testsuite [
+
+`docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
+
+## Release 1.4.1
+
+### Changes
+
+- adds functionality for add and delete domains in block/allow lists
+- API change, breaking only ePa: renames deleteBlockedDomain to deleteBlockedUserDomain for consistency
 
 ## Release 1.4.0
 
 ### Changes
 
 - adds 400 Bad Request responses for test driver api
-- Adjustment for 03_AenderungEinesHealthcareService.json - Only one day of availableTime due to VZD change
-- API breaking change: renames FhirAvailableTimes to FhirAvailableTime and adjusts description and example to reflect
+- Adjustment for 03_AenderungEinesHealthcareService.json - Only one day of availableTime due to VZD
+  change
+- API breaking change: renames FhirAvailableTimes to FhirAvailableTime and adjusts description and
+  example to reflect
   VZD update to profile 0.11.18
 
 ### Bugs
@@ -24,7 +35,8 @@
 
 - Two unused endpoints were removed from the test driver API: getLocations, getLocation
 - Adjusts the blockedUsers and allowedUsers endpoints to allow code generation
-- Three unused endpoints were removed from the test driver API: createLocation, updateLocation, deleteLocation
+- Three unused endpoints were removed from the test driver API: createLocation, updateLocation,
+  deleteLocation
 
 ### Bugs
 
@@ -336,7 +348,8 @@
 - HttpTimout for serentiy set to 5 minutes. Can be configured by -DhttpTimeout=\<seconds>
 - If a claim device fails, the testsuite will retry to claim up to 3 times (configurable via
   environment
-  variable <maxRetryClaimRequest> [`read more (Parameter die das Verhalten der Testsuite anpassen)`](doc/userguide/GettingStarted.adoc)
+  variable <maxRetryClaimRequest> [
+  `read more (Parameter die das Verhalten der Testsuite anpassen)`](doc/userguide/GettingStarted.adoc)
 
 ### Bugfixes
 

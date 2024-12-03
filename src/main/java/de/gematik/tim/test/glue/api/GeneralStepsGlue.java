@@ -24,7 +24,6 @@ import de.gematik.tim.test.glue.api.threading.ParallelExecutor;
 import de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager;
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.en.Then;
-import org.springframework.http.HttpStatus;
 
 public class GeneralStepsGlue {
 
@@ -39,12 +38,6 @@ public class GeneralStepsGlue {
       if (lastResponse().statusCode() != responseCode) {
         throw new TestRunException("Operation returned error code " + lastResponse().statusCode());
       }
-    }
-  }
-
-  public static void checkResponseCode() {
-    if (!HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful()) {
-      throw new TestRunException("Operation returned error code " + lastResponse().statusCode());
     }
   }
 }
