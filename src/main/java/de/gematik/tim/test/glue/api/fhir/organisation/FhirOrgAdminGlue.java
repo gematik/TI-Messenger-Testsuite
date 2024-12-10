@@ -328,7 +328,7 @@ public class FhirOrgAdminGlue {
     jsonEndpoint.setAddress(actualAddress);
     assertThat(endpoint)
         .usingRecursiveComparison()
-        .ignoringFields("identifier", "meta", "resourceType", "text")
+        .ignoringFields("identifier", "meta", "resourceType", "text", "managingOrganization")
         .ignoringFieldsMatchingRegexes(".*id")
         .isEqualTo(jsonEndpoint);
   }

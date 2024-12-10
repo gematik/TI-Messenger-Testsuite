@@ -62,7 +62,7 @@ public class MediaGlue {
     if (fileName.endsWith(".jpg") || fileName.endsWith(".png")) {
       msgType = "m.image";
     } else if (fileName.endsWith(".txt")) {
-      msgType = "m.text";
+      msgType = "m.file";
     } else {
       throw new NotImplementedException(
           "Unknown file type. Add a new messageType in the glue step to support this file.");
