@@ -231,4 +231,101 @@ public class TransferGlue {
     // implement me - Werte 200 und 401 (o.ä. sind erlaubt, Ergebniss muss geloggt werden)
   }
 
+  @Then(
+          "{string} versucht User {listOfStrings} in der Allowliste zu hinterlegen")
+  public void tryToPutUserOnAllowlist(String actorName, List<String> userName) {
+    // implement me - negativ - hier wird forbidden/400 erwartet)
+  }
+
+  @Then(
+          "{string} versucht User {listOfStrings} in der Blockliste zu hinterlegen")
+  public void tryToPutUserOnBlocklist(String actorName, List<String> userName) {
+    // implement me - negativ - hier wird forbidden/400 erwartet)
+  }
+
+  @Then(
+          "{string} versucht die Domain von {listOfStrings} in der Allowliste zu hinterlegen")
+  public void tryToPutDomainOnAllowlist(String actorName, List<String> userName) {
+    // implement me - negativ - hier wird forbidden/400 erwartet)
+  }
+
+  @Then(
+          "{string} versucht die Domain von {listOfStrings} in der Blockliste zu hinterlegen")
+  public void tryToPutDomainOnBlocklist(String actorName, List<String> userName) {
+    // implement me - negativ - hier wird forbidden/400 erwartet)
+  }
+
+  @Then(
+          "{string} schreibt {string} direkt {string} als {string}")
+  public void sendMessageToChatWithMsgType(String actorName, String userName, String message, String msgType) {
+    // implement me - hier werden verschiedene Typen als msgType erwartet, die dann auch in den Responses als Struktur gerüft werden sollen)
+  }
+
+  @Then(
+          "{string} empfängt eine Nachricht {string} von {string} als {string}")
+  public void getMessageFromChatWithMsgType(String actorName, String message, String userName, String msgType) {
+    // implement me - hier werden verschiedene Typen als msgType erwartet, die dann auch in den Responses als Struktur gerüft werden sollen)
+  }
+
+  @Then(
+          "{string} sendet die Nachricht {string} als {string} an den Raum {string}")
+  public void sendMessageToRoomWithMsgType(String actorName, String message, String msgType, String roomName) {
+    // implement me - hier werden verschiedene Typen als msgType erwartet, die dann auch in den Responses als Struktur gerüft werden sollen)
+  }
+
+  @Then(
+          "{string} empfängt eine Nachricht {string} als {string} von {string} im Raum {string}")
+  public void getMessageFromRoomWithMsgType(String actorName, String message, String msgType, String userName, String roomName) {
+    // implement me - hier werden verschiedene Typen als msgType erwartet, die dann auch in den Responses als Struktur gerüft werden sollen)
+  }
+
+  @Then(
+          "{string} sendet {string} die Location {string} als {string}")
+  public void sendLocationToChatWithMsgType(String actorName, String userName, String location, String msgType) {
+    // implement me)
+  }
+
+  @Then(
+          "{string} sendet die Location {string} als {string} an den Raum {string}")
+  public void sendLocationToRoomWithMsgType(String actorName, String location, String msgType, String roomName) {
+    // implement me)
+  }
+
+  @Then(
+          "{string} empfängt die Location {string} von {string} als {string}")
+  public void getLocationToChatWithMsgType(String actorName, String location, String userName, String msgType) {
+    // implement me)
+  }
+
+  @Then(
+          "{string} empfängt die Location {string} als {string} von {string} im Raum {string}")
+  public void getLocationToRoomWithMsgType(String actorName, String location, String msgType, String userName, String roomName) {
+    // implement me)
+  }
+
+  @Then(
+          "{string} sendet ein Attachment {string} direkt an {string} als {string}")
+  public void sendAttachmentToChatWithMsgType(String actorName, String file, String userName, String msgType) {
+    // implement me)
+  }
+
+  @Then(
+          "{string} sendet ein Attachment {string} als {string} an den Raum {string}")
+  public void sendAttachmentToRoomWithMsgType(String actorName, String file, String msgType, String roomName) {
+    // implement me)
+  }
+
+  @Then(
+          "{string} empfängt das Attachment {string} von {string} über Matrix-Protokoll v1.11 als {string}")
+  public void getAttachmentToChatWithMsgType(String actorName, String file, String userName, String msgType) {
+    // implement me)
+  }
+
+  @Then(
+          "{string} empfängt das Attachment {string} von {string} im Raum {string} über Matrix-Protokoll v1.11 als {string}")
+  public void getAttachmentToRoomWithMsgType(String actorName, String file, String userName, String roomName, String msgType) {
+    // implement me)
+  }
+
+
 }

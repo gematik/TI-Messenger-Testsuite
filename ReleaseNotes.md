@@ -6,6 +6,16 @@
 
 `docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
 
+## Release 1.4.2
+
+### Changes
+
+- readjusts attachment type from m.text to m.file
+
+### Bugs
+
+- ignores managingOrganization in endpoint comparison
+
 ## Release 1.4.1
 
 ### Changes
