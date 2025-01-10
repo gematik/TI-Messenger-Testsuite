@@ -54,6 +54,7 @@ import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.glue.api.threading.ParallelExecutor;
 import de.gematik.tim.test.glue.api.utils.IndividualLogger;
+import de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -84,6 +85,9 @@ public class DevicesControllerGlue {
 
   @Before
   public void setup(Scenario scenario) {
+    if (TestcasePropertiesManager.isDryRun()) {
+      return;
+    }
     startTest(scenario);
     RawDataStatistics.startTest();
     IndividualLogger.startTest();
@@ -95,6 +99,9 @@ public class DevicesControllerGlue {
 
   @After
   public void teardown() {
+    if (TestcasePropertiesManager.isDryRun()) {
+      return;
+    }
     stage().drawTheCurtain();
     RawDataStatistics.addToReport();
     IndividualLogger.addToReport();
@@ -108,7 +115,7 @@ public class DevicesControllerGlue {
   @Angenommen("Es werden folgende Clients reserviert:")
   public void followingClientsWillBeClaimed(DataTable data) {
     List<ClaimInfo> claimInfos = data.asLists().stream().map(this::toClaimInfo).toList();
-    if (CLAIM_PARALLEL.equals(TRUE) && allowParallelClaim) {
+    if (allowParallelClaim && TRUE.equals(CLAIM_PARALLEL)) {
       handleParallel(claimInfos);
       setParallelFlag(false);
     } else {

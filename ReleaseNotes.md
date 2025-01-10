@@ -6,6 +6,14 @@
 
 `docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
 
+## Release 1.4.3
+
+### Changes
+
+- corrects typo in profile dont-break-preperation to dont-break-preparation
+- updates testing dependencies
+- restructuring of maven build configuration
+
 ## Release 1.4.2
 
 ### Changes

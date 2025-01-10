@@ -50,6 +50,7 @@ public class TestcasePropertiesManager {
       "The requested %s with name: %s does not exist in central management. Was it created before?";
   private static final String TCID_PREFIX = "@TCID";
   private static String id;
+  private static boolean dryRun;
   private static Map<String, HealthcareServiceInfo> healthcareServices;
   private static Map<String, FhirEndpointDTO> endpoints;
   private static Map<String, RoomDTO> rooms;
@@ -70,6 +71,14 @@ public class TestcasePropertiesManager {
                         "This scenario seems to have no TCID! Name: "
                             + testCaseStarted.getTestCase().getName()));
     id = format("%s/%s", testId, UUID.randomUUID());
+  }
+
+  public static void setDryRun(boolean newDryRun) {
+    dryRun = newDryRun;
+  }
+
+  public static boolean isDryRun() {
+    return dryRun;
   }
 
   public static void startTest(Scenario scenario) {

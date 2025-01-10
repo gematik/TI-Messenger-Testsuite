@@ -6,7 +6,7 @@
 
   <groupId>de.gematik.tim.test</groupId>
   <artifactId>TI-Messenger-Testsuite</artifactId>
-  <version>1.4.2</version>
+  <version>1.4.3</version>
   <packaging>jar</packaging>
   <name>TI-Messenger-Testsuite</name>
   <description>Testsuite to check functionality of TI-Messenger-Clients</description>
@@ -20,16 +20,14 @@
 
     <jacoco.version>0.8.8</jacoco.version>
     <cucumber-test-combinations-maven-plugin.version>
-      2.10.0
+      2.11.1
     </cucumber-test-combinations-maven-plugin.version>
-    <tiger.version>3.0.1</tiger.version>
-    <serenity.core.version>4.1.0</serenity.core.version>
+    <tiger.version>3.4.7</tiger.version>
+    <serenity.core.version>4.2.3</serenity.core.version>
     <polarion.toolbox.version>3.0.0-185</polarion.toolbox.version>
     <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
     <maven.javadoc.plugin.version>3.6.3</maven.javadoc.plugin.version>
-    <junit.engine.version>5.8.2</junit.engine.version>
-    <ti.m.mtls.certs.version>1.3.5</ti.m.mtls.certs.version>
-    <ti.m.sim.version>6.0.1</ti.m.sim.version>
+    <ti.m.mtls.certs.version>1.4.0</ti.m.mtls.certs.version>
 
     <ti.m.mtls.output.directory>${project.build.directory}/profile-resources</ti.m.mtls.output.directory>
     <tim.shared.properties>${ti.m.mtls.output.directory}/shared.properties</tim.shared.properties>
@@ -97,7 +95,7 @@
     <dependency>
       <groupId>de.gematik</groupId>
       <artifactId>tiger-cloud-extension</artifactId>
-      <version>1.0.9</version>
+      <version>1.0.10</version>
     </dependency>
     <dependency>
       <groupId>net.sf.supercsv</groupId>
@@ -125,11 +123,6 @@
       <version>${serenity.core.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
-      <version>${junit.engine.version}</version>
-    </dependency>
-    <dependency>
       <groupId>com.nimbusds</groupId>
       <artifactId>nimbus-jose-jwt</artifactId>
       <version>9.37.3</version>
@@ -141,22 +134,14 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <version>${junit.engine.version}</version>
-      <scope>test</scope>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.5.6</version>
     </dependency>
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>${junit.engine.version}</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-params</artifactId>
-      <version>${junit.engine.version}</version>
-      <scope>compile</scope>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+      <version>4.0.2</version>
     </dependency>
   </dependencies>
 
@@ -312,7 +297,7 @@
           <!--          Combine config-->
           <breakIfTableToSmall>${cutest.break.tablesize}</breakIfTableToSmall>
           <outputDir>${feature_dir}</outputDir>
-          <templateDir>${feature.template.dir}</templateDir>
+          <templateSources>${feature.template.dir}</templateSources>
           <filterConfiguration>
             <maxTableRows>${feature.tables.max_rows}</maxTableRows>
           </filterConfiguration>
@@ -368,6 +353,7 @@
               <!-- optional -->
               <!--suppress UnresolvedMavenProperty -->
               <driverClassName>Parallel${ctr}IT</driverClassName>
+              <templateFile>${project.basedir}/src/main/resources/driver5ClassTemplate.jtmpl</templateFile>
             </configuration>
             <id>default-sources</id>
             <goals>
@@ -664,217 +650,6 @@
 
   <profiles>
     <profile>
-      <id>ci-pipeline</id>
-      <activation>
-        <property>
-          <name>profile.ci</name>
-        </property>
-      </activation>
-      <properties>
-        <feature.tables.max_rows>1</feature.tables.max_rows>
-        <skip.saving.reports>true</skip.saving.reports>
-        <combine.items.file>
-          ${project.basedir}/src/test/resources/combine_items_ci.json
-        </combine.items.file>
-        <saveConnections>true</saveConnections>
-        <tiger.config.file>tiger-ci.yml</tiger.config.file>
-        <runWithoutRetry>true</runWithoutRetry>
-        <soft-filter.to.hard>true</soft-filter.to.hard>
-      </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <version>3.3.0</version>
-            <executions>
-              <execution>
-                <id>get-shared-properties</id>
-                <phase>validate</phase>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <configuration>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>${project.groupId}</groupId>
-                      <artifactId>TI-Messenger-mTLS-Certs</artifactId>
-                      <version>${ti.m.mtls.certs.version}</version>
-                      <type>jar</type>
-                      <overWrite>true</overWrite>
-                      <outputDirectory>
-                        ${ti.m.mtls.output.directory}
-                      </outputDirectory>
-                      <includes>**/*.properties</includes>
-                      <excludes>META-INF/**</excludes>
-                    </artifactItem>
-                  </artifactItems>
-                  <overWriteSnapshots>true</overWriteSnapshots>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>properties-maven-plugin</artifactId>
-            <version>1.0.0</version>
-            <executions>
-              <execution>
-                <id>read_shared_properties</id>
-                <phase>validate</phase>
-                <goals>
-                  <goal>read-project-properties</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <files>
-                <file>${tim.shared.properties}</file>
-              </files>
-              <outputFile/>
-              <properties/>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>io.github.git-commit-id</groupId>
-            <artifactId>git-commit-id-maven-plugin</artifactId>
-            <version>5.0.0</version>
-            <executions>
-              <execution>
-                <id>get_git_infos</id>
-                <phase>validate</phase>
-                <goals>
-                  <goal>revision</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <generateGitPropertiesFile>true</generateGitPropertiesFile>
-              <includeOnlyProperties>
-                <includeOnlyProperty>^git.branch</includeOnlyProperty>
-              </includeOnlyProperties>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>com.googlecode.maven-download-plugin</groupId>
-            <artifactId>download-maven-plugin</artifactId>
-            <version>1.6.0</version>
-            <executions>
-              <execution>
-                <id>get_simulator_from_gitlab</id>
-                <phase>initialize</phase>
-                <goals>
-                  <goal>wget</goal>
-                </goals>
-                <configuration>
-                  <!--suppress UnresolvedMavenProperty -->
-                  <url>
-                    https://gitlab.prod.ccs.gematik.solutions/api/v4/projects/1037/repository/archive.zip?sha=${fetchMainOrBranch}&amp;private_token=${simulator.apikey}
-                  </url>
-                  <outputFileName>SimArtifact.zip</outputFileName>
-                  <outputDirectory>${project.build.directory}</outputDirectory>
-                  <unpack>true</unpack>
-                  <skipCache>true</skipCache>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <version>3.1.0</version>
-            <executions>
-              <execution>
-                <id>check_if_branch_exists_on_simulator</id>
-                <phase>validate</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <exportAntProperties>true</exportAntProperties>
-                  <target>
-                    <!--suppress UnresolvedMavenProperty -->
-                    <condition property="fetchMainOrBranch" value="${git.branch}" else="main">
-                      <!--suppress UnresolvedMavenProperty -->
-                      <http
-                          url="https://gitlab.prod.ccs.gematik.solutions/api/v4/projects/1037/repository/branches/${git.branch}?private_token=${simulator.apikey}"/>
-                    </condition>
-                  </target>
-                </configuration>
-              </execution>
-              <execution>
-                <id>rename_simulator_folder</id>
-                <phase>initialize</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <target>
-                    <pathconvert property="testdriversimPath" pathsep=",">
-                      <dirset dir="${project.build.directory}" includes="ti-m-testdriversim-*"/>
-                    </pathconvert>
-                    <move todir="${project.build.directory}/ti-m-testdriversim">
-                      <!--suppress UnresolvedMavenProperty -->
-                      <fileset dir="${testdriversimPath}"/>
-                    </move>
-                  </target>
-                </configuration>
-              </execution>
-              <execution>
-                <id>move-git-properties</id>
-                <phase>initialize</phase>
-                <configuration>
-                  <target>
-                    <copy file="${project.build.directory}/classes/git.properties"
-                          todir="${project.build.directory}/ti-m-testdriversim"/>
-                  </target>
-                </configuration>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>move_simulator_jar</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <target>
-                    <move file="${project.build.directory}/ti-m-testdriversim/target/testdriver-mock.jar"
-                          tofile="${project.build.directory}/testdriverSim.jar"/>
-                  </target>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>3.0.0</version>
-            <executions>
-              <execution>
-                <id>compile_simulator</id>
-                <phase>initialize</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>mvn</executable>
-                  <arguments>
-                    <argument>-f</argument>
-                    <argument>${project.build.directory}/ti-m-testdriversim/pom.xml</argument>
-                    <argument>package</argument>
-                    <argument>-DskipTests</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
       <id>prod</id>
       <build>
         <plugins>
@@ -1020,47 +795,6 @@
       </build>
     </profile>
     <profile>
-      <id>dev</id>
-      <properties>
-        <tiger.config.file>tiger-dev.yml</tiger.config.file>
-        <runWithoutRetry>true</runWithoutRetry>
-        <soft-filter.to.hard>true</soft-filter.to.hard>
-      </properties>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <build>
-        <plugins>
-          <!--      Done with "cp" to keep timestamp-->
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>3.0.0</version>
-            <configuration>
-              <skip>${skip.saving.reports}</skip>
-            </configuration>
-            <executions>
-              <execution>
-                <id>save_reports</id>
-                <phase>post-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>cp</executable>
-                  <arguments>
-                    <argument>-a</argument>
-                    <argument>${project.build.directory}/site/serenity/.</argument>
-                    <argument>${basedir}/reports/${build.time}/report/</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
       <id>skip-saving-reports</id>
       <properties>
         <skip.saving.reports>true</skip.saving.reports>
@@ -1089,7 +823,7 @@
       </build>
     </profile>
     <profile>
-      <id>dont-break-preperation</id>
+      <id>dont-break-preparation</id>
       <properties>
         <cutest.break.context>false</cutest.break.context>
         <cutest.break.request>false</cutest.break.request>
