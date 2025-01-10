@@ -18,10 +18,12 @@ package de.gematik.tim.test.glue.api;
 
 import static lombok.AccessLevel.PRIVATE;
 
+import io.cucumber.java.de.Angenommen;
 import io.cucumber.java.de.Dann;
 import java.util.List;
 
 import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor(access = PRIVATE)
@@ -160,18 +162,32 @@ public class TransferGlue {
   }
 
   @Dann(
-          "{string} prüft, ob die Pflichtparameter in den Room States {listOfStrings} im Raum {string} befüllt sind")
+          "{string} erstellt einen Chat-Raum mit Fallbezug {string} inkl. Topic")
+  public void crateRoomWithCaseReferenceInclTopic(
+          String actor, String roomName) {
+    // implement me
+  }
+
+  @Dann(
+          "{string} erstellt einen Chat-Raum {string} inkl. Topic")
+  public void crateRoomInclTopic(
+          String actor, String roomName) {
+    // implement me
+  }
+
+  @Dann(
+          "{string} prüft, ob die Parameter in den Room States {listOfStrings} im Raum {string} befüllt sind")
   @Then(
-          "{string} prüft, ob der Pflichtparameter in den Room States {listOfStrings} im Raum {string} befüllt ist")
+          "{string} prüft, ob der Parameter in den Room States {listOfStrings} im Raum {string} befüllt ist")
   public void checkParameterFilledForRoomStatesOfRoom(
           String actor, List<String> requestedRoomStates, String roomName) {
     // implement me
   }
 
   @Dann(
-          "{string} prüft, ob die Pflichtparameter in den Room States {listOfStrings} im Chat mit {string} befüllt sind")
+          "{string} prüft, ob die Parameter in den Room States {listOfStrings} im Chat mit {string} befüllt sind")
   @Then(
-          "{string} prüft, ob der Pflichtparameter in den Room States {listOfStrings} im Chat mit {string} befüllt ist")
+          "{string} prüft, ob der Parameter in den Room States {listOfStrings} im Chat mit {string} befüllt ist")
   public void checkParameterFilledForRoomStatesOfChat(
           String actor, List<String> requestedRoomStates, String chatPartner) {
     // implement me
@@ -196,20 +212,34 @@ public class TransferGlue {
   }
 
   @Dann(
-          "{string} prüft, ob die Pflichtparameter in den Room States {listOfStrings} im Raum {string} vorhanden sind")
+          "{string} prüft, ob die Parameter in den Room States {listOfStrings} im Raum {string} vorhanden sind")
   @Then(
-          "{string} prüft, ob der Pflichtparameter in den Room States {listOfStrings} im Raum {string} vorhanden ist")
+          "{string} prüft, ob der Parameter in den Room States {listOfStrings} im Raum {string} vorhanden ist")
   public void checkParameterExistentForRoomStatesOfRoom(
           String actor, List<String> requestedRoomStates, String roomName) {
     // implement me
   }
 
   @Dann(
-          "{string} prüft, ob die Pflichtparameter in den Room States {listOfStrings} im Chat mit {string} vorhanden sind")
+          "{string} prüft, ob die Parameter in den Room States {listOfStrings} im Chat mit {string} vorhanden sind")
   @Then(
-          "{string} prüft, ob der Pflichtparameter in den Room States {listOfStrings} im Chat mit {string} vorhanden ist")
+          "{string} prüft, ob der Parameter in den Room States {listOfStrings} im Chat mit {string} vorhanden ist")
   public void checkParameterExistentForRoomStatesOfChat(
           String actor, List<String> requestedRoomStates, String chatPartner) {
+    // implement me
+  }
+
+  @Dann(
+          "{string} prüft, ob der Parameter in den Room States {string} im Raum {string} mit dem Wert von {string} befüllt ist")
+  public void compareParameterForRoomStatesOfRoom(
+          String actor, String requestedValue, String roomName, String comapreValue) {
+    // implement me
+  }
+
+  @Dann(
+          "{string} prüft, ob der Parameter in den Room States {string} im Chat mit {string} mit dem Wert von {string} befüllt ist")
+  public void compareParameterForRoomStatesOfChat(
+          String actor, String requestedValue, String chatPartner, String comapreValue) {
     // implement me
   }
 
@@ -264,13 +294,13 @@ public class TransferGlue {
   @Then(
           "{string} empfängt eine Nachricht {string} von {string} als {string}")
   public void getMessageFromChatWithMsgType(String actorName, String message, String userName, String msgType) {
-    // implement me - hier werden verschiedene Typen als msgType erwartet, die dann auch in den Responses als Struktur gerüft werden sollen)
+    // tbd ... implement me - hier werden verschiedene Typen als msgType erwartet, die dann auch in den Responses als Struktur gerüft werden sollen)
   }
 
   @Then(
           "{string} sendet die Nachricht {string} als {string} an den Raum {string}")
   public void sendMessageToRoomWithMsgType(String actorName, String message, String msgType, String roomName) {
-    // implement me - hier werden verschiedene Typen als msgType erwartet, die dann auch in den Responses als Struktur gerüft werden sollen)
+    // tbd ... implement me - hier werden verschiedene Typen als msgType erwartet, die dann auch in den Responses als Struktur gerüft werden sollen)
   }
 
   @Then(
@@ -327,5 +357,71 @@ public class TransferGlue {
     // implement me)
   }
 
+  @Then(
+          "{string} erstellt einen Healthcare-Service {string} und setzen einen Funktionsaccount-Endpunkt auf {string}")
+  public void createHcsWithFunctionAccount(String actorName, String hcsName, String userName) {
+    // implement me)
+  }
+
+  @Then(
+          "{string} findet {string} im Healthcare-Service {string} mit dem ConnectionType {string}")
+  public void findHcsWithFunctionAccount(String actorName, String userName, String hcsName, String connectionType) {
+    // implement me)
+  }
+
+
+  @Then(
+          "A schickt ein Delete über die Schnittstelle <ApiName{int}> an die API {string} ab")
+  public void pingApiWithDelete(int arg0, String arg1) {
+    // implement me
+  }
+
+  @Then(
+          "{string} findet {string} nicht mehr in seiner Allowliste")
+  public void dontFindUserInAllowList(int actorName, String userName) {
+    // implement me
+  }
+
+  @Then(
+          "{string} findet {listOfStrings} nicht mehr in seiner Blockliste")
+  public void dontFindUserInBlockList(int actorName, List<String> userName) {
+    // implement me
+  }
+
+  @Then(
+          "{string} hinterlegt die User {listOfStrings} in der Allowliste erneut")
+  public void putUserOnAllowListAgain(int actorName, List<String> userName) {
+    // implement me - Values 200 % 403 (blocked) OK
+  }
+
+  @Then(
+          "{string} hinterlegt die User {listOfStrings} in der Blockliste erneut")
+  public void putUserOnBlockListAgain(int actorName, List<String> userName) {
+    // implement me - Values 200 % 403 (blocked) OK
+  }
+
+  @When(
+          "{string} hinterlegt die Gruppe {string} in der Blockliste")
+  public void addsGroupToBlockList(String actorName, String groupName) {
+    // implement me
+  }
+
+  @When(
+          "{string} entfernt die Gruppe {string} aus der Blockliste")
+  public void deletesGroupFromBlockList(String actorName, String groupName) {
+    // implement me
+  }
+
+  @When(
+          "{string} hinterlegt die Gruppe {string} in der Allowliste")
+  public void addsGroupToAllowList(String actorName, String groupName) {
+    // implement me
+  }
+
+  @When(
+          "{string} entfernt die Gruppe {string} aus der Allowliste")
+  public void deletesGroupFromAllowList(String actorName, String groupName) {
+    // implement me
+  }
 
 }

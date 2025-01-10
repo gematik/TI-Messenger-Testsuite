@@ -44,6 +44,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
+import de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager;
 import de.gematik.tim.test.models.MessageDTO;
 import de.gematik.tim.test.models.RoomDTO;
 import io.cucumber.java.Before;
@@ -59,6 +60,9 @@ public class MessageControllerGlue {
 
   @Before
   public void setup() {
+    if (TestcasePropertiesManager.isDryRun()) {
+      return;
+    }
     setTheStage(Cast.ofStandardActors());
   }
 
