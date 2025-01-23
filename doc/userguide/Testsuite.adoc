@@ -127,7 +127,7 @@ Die Anfrage der Geräte-Information aller Schnittstellen hat nur informativen Ch
 
 image:Akteur2.png[float="left"]image:Akteur1.png[float="left"]
 
-=== 2. Akteure des TI-Messenger-Dienst
+=== 2. Akteure des TI-Messenger-Diensts
 
 {empty} +
 
@@ -257,7 +257,7 @@ In dieser Datei werden alle Testobjekte verwaltet.
 image:Clients.png[float="center"]
 
 Die unterschiedlichen Testtreibeschnittstellen werden mit mTLS gesichert.
-Eine unterstützende Anleitung hierzu befindet sich link:GettingStarted.adoc#_zertifikate_einrichten[hier].
+Eine unterstützende Anleitung hierzu befindet sich link:GettingStarted.adoc#_set_up_certificates[hier].
 
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
@@ -313,7 +313,7 @@ Dies gilt für Messenger-Clients ebenso wie für Org-Admin Clients.
 Wenn hinter dem Messenger-Client Device eine HBA liegt, um HBA Interaktionen z.B. mit dem VZD durchzuführen, müssen der User des Devices und der Name auf der HBA übereinstimmen.
 Somit kann sich dann der eingeloggte und hinterlegte User auch als HBA authentifizieren.
 
-*Der hinterlegte User muss auf dem Homeserver bzw. der TI-M Instanz registriert sein*, so dass eine Anmeldung im TI-M über die Testtreiber Schnittstelle mittels POST Login möglich wird.
+*Der hinterlegte User muss auf dem Homeserver bzw. der TI-M Instanz registriert sein*, sodass eine Anmeldung im TI-M über die Testtreiber Schnittstelle mittels POST Login möglich wird.
 
 Der Start eines Testfalls sieht dann wie folgt aus:
 
@@ -465,14 +465,14 @@ Somit wird gewährleistet, dass genau das richtige Set an Daten für den jeweili
 *Die combine_items.json*
 
 Grundlage hierfür ist das kartesische Produkt aller möglichen Kombinationen der in der generierten Target combine_items.json (target/generated-combine/combine_items.json) enthaltenen Schnittstellen.
-Mit Hilfe von Filtern, die direkt im .cute-File (später feature-File) gesetzt werden, kann nun diese Liste verkleinert und fokussiert werden.
+Mithilfe von Filtern, die direkt im .cute-File (später feature-File) gesetzt werden, kann nun diese Liste verkleinert und fokussiert werden.
 
 Die *combine_items.json im Target Folder* (target/generated-combine/combine_items.json) wird aus der *Source combine_items.json* (src/test/resources/combine_items.json) und den aus der *Testtreiber Schnittstelle zum Device ausgelesenen Daten* (definiert in der pom.xml) erzeugt.
 
 - Source combine_items.json - Bereitstellen der Schnittstelle (url).
 Evtl. zusätzliche Tags und Properties.
 - pom.xml - Tags und Properties, die über die Testtreiber-Schnittstelle vom Device als Info-Daten (im Folgenden als "Info-Daten" bezeichnet) ausgelesen werden und für alle Schnittstellen gelten.
-- Target combine_items.json - Das Produkt aus Source combine_items.json und ausgelesenen Info-Daten (pom.xml).
+- Target combine_items.json - das Produkt aus Source combine_items.json und ausgelesenen Info-Daten (pom.xml).
 Dies dient als Grundlage für die Kombinatorik.
 
 Beispiel einer Source combine_items.json:
@@ -496,7 +496,7 @@ Oder auch Properties, die durch das Auslesen der Info-Daten gefüllt werden und 
 
 Hintergrund der Vergleichsoptionen von Tags und Properties ist, dass so z.B. schon vor dem Erstellen der Testdaten geprüft werden kann, dass die hinterlegten Devices an der genannten Schnittstelle den Anforderungen entsprechen, die notwendig sind.
 
-Tags, die in der Source combine_itmes.json angegeben sind und ebenfalls aus einem Device ausgelesen werden sollen (definiert in der pom.xml), können miteinander verglichen werden.
+Tags, die in der Source combine_items.json angegeben sind und ebenfalls aus einem Device ausgelesen werden sollen (definiert in der pom.xml), können miteinander verglichen werden.
 Dies geschieht case sensitive (1:1 Beziehung).
 Sollte sich der Tag in der combine_items.json und von dem in der pom.xml definierten unterscheiden, wird der Tag aus der Source combine_items.json als zusätzlicher Tag gewertet und in die Target combine_items.json übernommen.
 
@@ -515,7 +515,7 @@ Beispiel:
 
 *Vergleichsoptionen Properties*
 
-Geben wir z.B. die Property ‚os‘ (wie im obrigen Beispiel) mit einem entsprechenden Wert mit, so wird geprüft, ob das Device hinter der URL des Testtreibers tatsächlich dieses ‚os‘ hinterlegt hat, wenn diese Property ebenfalls in der pom.xml definiert ist.
+Geben wir z.B. die Property ‚os‘ (wie im obigen Beispiel) mit einem entsprechenden Wert mit, so wird geprüft, ob das Device hinter der URL des Testtreibers tatsächlich dieses ‚os‘ hinterlegt hat, wenn diese Property ebenfalls in der pom.xml definiert ist.
 Die Überprüfung erfolgt hier case sensitive (iOS – iOS; usw).
 
 [cols='40%,40%,20%']
@@ -563,7 +563,7 @@ image:TargetCombineInclPool.png[float="center"]
 
 [TIP]
 [black]#*_In der Target combine_items.json (target/generated-combine/combine_items.json) sind dann alle Schnittstellen zu den Testtreibern der einzelnen Devices inklusive aller notwendigen Daten hinterlegt.
-Mit Hilfe dieser Daten können dann die Testdaten für die Feature Files erzeugt und die einzelnen Tests ausgeführt werden._*#
+Mithilfe dieser Daten können dann die Testdaten für die Feature Files erzeugt und die einzelnen Tests ausgeführt werden._*#
 
 Diese Tags und Properties dienen der direkten Steuerung der Testdaten, die zu einem bestimmten Testfall passen.
 In der Abbildung oben ist zu sehen:
@@ -591,7 +591,7 @@ Gehen wir an dieser Stelle einfach davon aus, dass wir *3 verschiedene Clients (
 .Abbildung{counter:my-example-number: 1}: TestCase Steps
 image:TestCase.png[float="center"]
 
-Eine Chat-Kommunikation von 2 User mit einer HBA soll innerhalb einer Organisation über die Schittstellen <ApiName1A> und <ApiName1B> stattfinden.
+Eine Chat-Kommunikation von 2 User mit einer HBA soll innerhalb einer Organisation über die Schnittstellen <ApiName1A> und <ApiName1B> stattfinden.
 
 Um nun das kartesische Produkt aller möglichen Kombinationen anzupassen, sagen wir nun:
 
@@ -600,8 +600,8 @@ Um nun das kartesische Produkt aller möglichen Kombinationen anzupassen, sagen 
 - Sie dürfen auch vice versa vorkommen (z.B. IOS-Android, Android-IOS)
 - ApiName1A soll ein Client sein (kein OrgAdmin)
 - ApiName1B soll ein Client sein (kein OrgAdmin)
-- ApiName1A soll eine HBA hinterliegen, um Practitioner Handlungen durchzuühren
-- ApiName1B soll eine HBA hinterliegen, um Practitioner Handlungen durchzuühren
+- ApiName1A soll eine HBA hinterliegen, um Practitioner Handlungen durchzuführen
+- ApiName1B soll eine HBA hinterliegen, um Practitioner Handlungen durchzuführen
 
 Um dies zu erreichen werden nun folgende Filter mit Blick auf die Target combine_items.json angewandt:
 
@@ -635,16 +635,16 @@ Wie genau die Reihenfolge der Filterung funktioniert ist ebenfalls der Dokumenta
 Es besteht auch weiter die Möglichkeit vor Erstellung der Target combine_items.json und dem Lauf der Kombinatorik Vergleichswerte für die einzelnen Items zu definieren.
 Hierzu wird die Response json jeder Schnittstelle validiert.
 
-So kann bespielsweise eine Minimalanzahl von Devices hinter einer Schnittstelle geprüft werden.
+So kann beispielsweise eine Minimalanzahl von Devices hinter einer Schnittstelle geprüft werden.
 Dies ist auch als Defaultwert in der pom.xml hinterlegt:
 
 .Abbildung{counter:my-example-number: 1}: Default Expression in pom.xml
 image:DeafultExpression.png[float="center"]
 
-Hier ist beispielsweise definiert, dass alle Schitstellen mit dem Wert 'orgAdmin' mindestens ein Device und alle anderen 3 Devices hinterlegt haben müssen (wie in Kaptiel 4.3 beschrieben), sonst wird der Run nicht weiter fortgesetzt.
+Hier ist beispielsweise definiert, dass alle Schnittstellen mit dem Wert 'orgAdmin' mindestens ein Device und alle anderen 3 Devices hinterlegt haben müssen (wie in Kapitel 4.3 beschrieben), sonst wird der Run nicht weiter fortgesetzt.
 
-Es können auch dedizierte Vergleichswerte definiert werden, die dann einzelnen Schnitstellen in der combine_items.json zugeordnet werden können.
-Dies kann auch global in der pom.xml geschehen, so dass dann an die Schnitstellt in der combine_items.json lediglich die ID weiter gegeben werden muss.
+Es können auch dedizierte Vergleichswerte definiert werden, die dann einzelnen Schnittstellen in der combine_items.json zugeordnet werden können.
+Dies kann auch global in der pom.xml geschehen, sodass dann an die Schnittstelle in der combine_items.json lediglich die ID weiter gegeben werden muss.
 
 Weitere Information zu den Möglichkeiten sind unter https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc#pooling[Plugin/doc/userguide] zu finden.
 
@@ -686,9 +686,9 @@ Hintergrund hierfür ist, dass so bestimmte Schnittstellen dediziert bzw. auch i
 Der ‚practitioner Tag‘ ist derzeit (kann auch erweitert werden) eines von drei Tags, die über die Testtreiberschnittstelle am Info Endpunkt vom jeweiligen Device abgefragt werden.
 Diese drei Tags sind in der pom.xml definiert (Erklärung zur pom.xml weiter oben in Kapitel 6.2) und sind folgende:
 
-- client – Es handelt sich um einen User Client, der Nachrichten versenden darf
-- orgAdmin – Es handelt sich um einen OrgAdmin Client, der auf das Organisationsverzeichnis im VZD zugreifen darf
-- practitioner – Hinter diesem Device ist eine HBA hinterlegt, so dass der User auch auf das Personenverzeichnis im VZD zugreifen darf
+- client – es handelt sich um einen User Client, der Nachrichten versenden darf
+- orgAdmin – es handelt sich um einen OrgAdmin Client, der auf das Organisationsverzeichnis im VZD zugreifen darf
+- practitioner – hinter diesem Device ist eine HBA hinterlegt, sodass der User auch auf das Personenverzeichnis im VZD zugreifen darf
 
 Folgen wir nun unserem vorigen Beispiel und schauen auf die Tags, die einerseits vergeben und andererseits vom Device selbst ausgelesen wurden:
 
@@ -809,7 +809,7 @@ image:VersionFilterTestCase3.png[float="center"]
 [TIP]
 [black]#*_Wichtig: Versionsfilter auf Testfallebene übersteuern gesetzte Filter in der pom.xml und auch in der Kommandozeile!!!_*#
 
-Die Hirarchie ist also wie folgt:
+Die Hierarchie ist also wie folgt:
 
 Versionsfilter auf Testfallebene > Versionsfilter in der Kommandozeile > Versionsfilter in der pom.xml
 
@@ -829,7 +829,7 @@ image::Tag.png[float="left"]
 *Pooling*
 
 Das Pooling Feature dient dazu, dass mehrere spezifizierte Gruppen von Schnittstellen gegeneinander getestet werden können.
-So besteht die Möglichkeit, dass z.B. mehrere Hersteller Teilnehmer eines IOP Tests sein können, ohne wirklich alle Schnitstellen gegeneinander zu testen.
+So besteht die Möglichkeit, dass z.B. mehrere Hersteller Teilnehmer eines IOP Tests sein können, ohne wirklich alle Schnittstellen gegeneinander zu testen.
 
 [TIP]
 [black]#*_Ein Pool besteht aus mehreren Gruppen!_*#
@@ -856,7 +856,7 @@ image:PoolGroups.png[float="center"]
 So kann an dieser Stelle folgendes definiert werden:
 
 - groupPattern: Diese beschreiben welcher namentliche Wert einer Gruppe im Pool enthalten sein soll
-- amount: Dieser Wert beschreib die Anzahl der Gruppen, die im Pool vorkommen dürfen
+- amount: Dieser Wert beschreibt die Anzahl der Gruppen, die im Pool vorkommen dürfen
 - strategy: Dieser Wert beschreibt die 'Matching' Strategie der groupPattern.
 In diesem Fall z.B. kann mit Wildcards gearbeitet werden
 
@@ -1424,7 +1424,6 @@ maven clean verify
 
 [cols='1,3']
 |===
-| ci-pipeline | jeder Testfall wird in der Single Mock Umgebung nur einmal ausgeführt
 | newonly     | der Testschwerpunkt liegt auf neuen Elementen
 | oneonly     | jeder Testfall wird nur einmal ausgeführt
 | usetags     | es werden nur bestimmte Tags ausgeführt, default @Ctl:UseCase
@@ -1446,7 +1445,7 @@ Default:
 
 * HttpTimout = 180 Sekunden -> Timeout bis irgendeine Antwort erwartet wird (wird bei jeder neuen Anfrage wieder resettet)
 * Timeout = 10 Sekunden -> Zeit die bis auf die erwartete Antwort gewartet wird.
-Kann überschritten werden wenn Server nicht antwortet.
+Kann überschritten werden, wenn der Server nicht antwortet.
 Dann greift _HttpTimeout_
 * PollInterval = 1 Sekunde -> Zeit die gewartet wird bis nach einer nicht erwarteten Antwort eine weitere Request ausgesendet wird
 
@@ -1472,7 +1471,7 @@ image::Testrun.png[float="left"]
 {empty} +
 {empty} +
 
-Für das erfolreiche Ausführen der Testfälle aus dem Folder "Zulasungstests" müssen auf Seiten des Anbieters folgende Clients vorhanden sein:
+Für das erfolgreiche Ausführen der Testfälle aus dem Folder "Zulassungstests" müssen aufseiten des Anbieters folgende Clients vorhanden sein:
 
 - 1 Client mit HBA Funktionalität (Testobjekt)
 - 1 Org-Admin (Testobjekt)
@@ -1484,7 +1483,7 @@ Der Gegenpart (z.B. die Referenzimplementierung) benötigt:
 
 [TIP]
 [black]#*_Zur Bereitstellung der Clients seitens des Herstellers ist Kapitel 4 nochmal zu erwähnen.
-Die obrige Aufzählung dient der Übersichtlichkeit._*#
+Die obige Aufzählung dient der Übersichtlichkeit._*#
 
 Für den Folder Zulassungstests müssen jeweils ein Client mit HBA Funktionalität inkl Org-Admin pro Homeserver vorhanden sein.
 Dieses Testset bezieht sich auf den regulären Zulassungstest und ist unter src/test/resources/templates/FeatureFiles/TI-M_11X/Zulassungstests zu sehen.
@@ -1493,7 +1492,7 @@ Für das Ausführen dieser Suite in Gänze reicht es den Befehlt "mvn clean inst
 
 Die Combine Items kann dann z.B. wie folgt aussehen, wenn wir hier davon ausgehen, dass "A" der Hersteller ist und "B" z.B. die Referenzimplementierung oder zu Testzwecken eine weitere Instanz.
 
-.Abbildung{counter:my-example-number: 1}: Beispiel Combine Items Zulasungstests
+.Abbildung{counter:my-example-number: 1}: Beispiel Combine Items Zulassungstests
 image:Combine_Zulass.png[float="center"]
 
 image::Testrun.png[float="left"]
@@ -1518,12 +1517,12 @@ reports/2023-06-19_17_09_55/report/#index.html
 *Header*
 
 Im Header des Serenity Reports werden alle Gruppen und Testtreiberschnittstellen aufgeführt.
-So ist schon direkt zu sehen, welche Schnittstellen an diesem Test Run beteilig waren.
+So ist schon direkt zu sehen, welche Schnittstellen an diesem Test Run beteiligt waren.
 
 .Abbildung{counter:my-example-number: 1}: Serenity Report Header
 image:ReportHeader.png[float="center"]
 
-Dargestellt werden hier die am Testrun beteiligten Gruppen inkl. der dazu gehörigen Schnittstellen und die Schnittstellen, die Teil des Testruns waren ohne zu einer Gruppe zu gehören.
+Dargestellt werden hier die am Testrun beteiligten Gruppen inkl. der dazugehörigen Schnittstellen und die Schnittstellen, die Teil des Testruns waren ohne zu einer Gruppe zu gehören.
 
 *Summary*
 
@@ -1535,7 +1534,7 @@ In der Summary ist ein Überblick über alle in diesem Testrun gelaufenen Testf�
 .Abbildung{counter:my-example-number: 1}: Serenity Report Überblick Resultate
 image:ReportSummaryResults.png[float="center"]
 
-Unterhlab dieser Darstellung sind alle Tags, die in dem Testrun bzw der Testfälle vorhanden waren, aufgeführt.
+Unterhalb dieser Darstellung sind alle Tags, die in dem Testrun bzw der Testfälle vorhanden waren, aufgeführt.
 Diese dienen der Filterung bzw Analyse.
 
 .Abbildung{counter:my-example-number: 1}: Serenity Report Überblick Tags
@@ -1546,14 +1545,14 @@ image:ReportSummaryTags.png[float="center"]
 .Abbildung{counter:my-example-number: 1}: Serenity Report Tabs
 image:ReportsTestresults.png[float="center"]
 
-Unterhalb des Tabs 'Test Results' des Reports sind alle ausgeführten Testfälle inkl. der dazu gehörigen Testdaten aufgeführt.
+Unterhalb des Tabs 'Test Results' des Reports sind alle ausgeführten Testfälle inkl. der dazugehörigen Testdaten aufgeführt.
 Diese Auslistung dient der Analyse und zeigt exakt, welche Testreiberschnittstellen welche Aktionen ausführen inkl. deren Response.
-Dazu ist es notwenig in die Testfälle selbst zu gehen und dann sie entsprechenden Runs zu öffnen:
+Dazu ist es notwendig in die Testfälle selbst zu gehen und dann sie entsprechenden Runs zu öffnen:
 
 .Abbildung{counter:my-example-number: 1}: Serenity Report TestCase
 image:ReportTestCaseInside.png[float="center"]
 
-Im unteren Bereich eines Testfalls ist folgendes zu finden:
+Im unteren Bereich eines Testfalls ist Folgendes zu finden:
 
 .Abbildung{counter:my-example-number: 1}: Serenity Report TestCase zusätzliche Optionen
 image:ReportTestCaseInsideUnder.png[float="center"]
@@ -1565,8 +1564,8 @@ Die einzelnen Punkte sind wie folgt zu verstehen:
 - TestcaseId: Die Testcase ID inkl eine UUID (Eindeutigkeit) zur Verifizierung
 - RBelllog: Weitere Logart, die noch detaillierter ist
 
-Der Rbellog ist im Gegensastz zu dem Serenity Report noch etwas detaillierter und für tiefe Analysen vorgesehen.
-Dieser betrachtet genu den Testfall indem er aufgerufen wird:
+Der Rbellog ist im Gegensatz zu dem Serenity Report noch etwas detaillierter und für tiefe Analysen vorgesehen.
+Dieser betrachtet genau den Testfall, in dem er aufgerufen wird:
 
 .Abbildung{counter:my-example-number: 1}: Rbellog
 image:ReportRbellog.png[float="center"]
@@ -1586,7 +1585,7 @@ target/generated-combine
 Mögliche Fehler, die das PlugIn zum Abbruch bringen, können u.a. sein:
 
 - Tabellen einzelner Testfälle können nicht gebildet werden, z.B. aufgrund fehlender Schnittstellen (oder mit Werten, die nicht zu den Filtern passen)
-- Vorbedinungen (in 6.2 beschrieben), wie z.B. die Anzahl der definierten Devices, sind nicht gegeben
+- Vorbedingungen (in 6.2 beschrieben), wie z.B. die Anzahl der definierten Devices, sind nicht gegeben
 - Vergleichsoperationen (in 6.2 beschrieben) für Tags geben ein false zurück
 - Bei der Generierung von Pool Tests (in 6.5 beschrieben) sind zu wenige Gruppen oder Schnittstellen vorhanden, um diesen Run zu füllen (z.B. einen Pool Test für 4 Gruppen, nur 3 Gruppen vorhanden und keine weitere Schnittstelle um aufzufüllen)
 

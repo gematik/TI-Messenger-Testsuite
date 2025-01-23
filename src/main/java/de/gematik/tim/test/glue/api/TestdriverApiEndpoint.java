@@ -33,6 +33,7 @@ import static de.gematik.tim.test.glue.api.TestdriverApiPath.DEVICE_ID_VARIABLE;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.DIRECT_MESSAGE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_AUTHENTICATE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_ENDPOINT_ADMIN_PATH;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_ENDPOINT_ADMIN_PATH_VISIBILITY;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_ENDPOINT_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_HEALTHCARE_SERVICE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_HS_ADMIN_PATH;
@@ -41,6 +42,7 @@ import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_PRACTITIONER_P
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_SEARCH_ENDPOINT_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_SEARCH_ORG_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_SEARCH_PRACTITIONER_PATH;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.FHIR_VISIBILITY_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.HOMESERVER_SEARCH_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.INFO_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.KEY_PATH;
@@ -133,6 +135,8 @@ public enum TestdriverApiEndpoint {
   SET_MXID_PRACTITIONER(POST, FHIR_PRACTITIONER_PATH, UseDeviceAbility.class),
   READ_MXID_PRACTITIONER(GET, FHIR_PRACTITIONER_PATH, UseDeviceAbility.class),
   DELETE_MXID_PRACTITIONER(DELETE, FHIR_PRACTITIONER_PATH, UseDeviceAbility.class),
+  SET_ENDPOINT_VISIBILITY_PRACTITIONER(POST, FHIR_VISIBILITY_PATH, UseDeviceAbility.class),
+  DELETE_ENDPOINT_VISIBILITY_PRACTITIONER(DELETE, FHIR_VISIBILITY_PATH, UseDeviceAbility.class),
 
   // FHIR ORG_ADMIN
   SEARCH_ORG(GET, FHIR_SEARCH_ORG_PATH, UseDeviceAbility.class),
@@ -176,6 +180,18 @@ public enum TestdriverApiEndpoint {
       UseDeviceAbility.class,
       UseHealthcareServiceAbility.class,
       UseEndpointAbility.class),
+  SET_ENDPOINT_VISIBILITY(
+      POST,
+      FHIR_ENDPOINT_ADMIN_PATH_VISIBILITY,
+      UseDeviceAbility.class,
+      UseHealthcareServiceAbility.class,
+      UseEndpointAbility.class),
+  DELETE_ENDPOINT_VISIBILITY(
+      DELETE,
+      FHIR_ENDPOINT_ADMIN_PATH_VISIBILITY,
+      UseDeviceAbility.class,
+      UseHealthcareServiceAbility.class,
+      UseEndpointAbility.class),
 
   // MEDIA
   UPLOAD_MEDIA(POST, MEDIA_PATH, UseDeviceAbility.class),
@@ -193,10 +209,10 @@ public enum TestdriverApiEndpoint {
 
   ADD_BLOCKED_USERS(POST, BLOCKED_USERS_PATH, UseDeviceAbility.class),
   ADD_ALLOWED_USERS(POST, ALLOWED_USERS_PATH, UseDeviceAbility.class),
-  ADD_ALLOWED_DOMAINS(POST, ALLOWED_USERS_PATH, UseDeviceAbility.class),
-  ADD_BLOCKED_DOMAINS(POST, BLOCKED_USERS_PATH, UseDeviceAbility.class),
-  DELETE_ALLOWED_DOMAINS(DELETE, ALLOWED_USERS_PATH, UseDeviceAbility.class),
-  DELETE_BLOCKED_DOMAINS(DELETE, BLOCKED_USERS_PATH, UseDeviceAbility.class),
+  ADD_ALLOWED_SERVER_NAMES(POST, ALLOWED_USERS_PATH, UseDeviceAbility.class),
+  ADD_BLOCKED_SERVER_NAMES(POST, BLOCKED_USERS_PATH, UseDeviceAbility.class),
+  DELETE_ALLOWED_SERVER_NAMES(DELETE, ALLOWED_USERS_PATH, UseDeviceAbility.class),
+  DELETE_BLOCKED_SERVER_NAMES(DELETE, BLOCKED_USERS_PATH, UseDeviceAbility.class),
   DELETE_BLOCKED_USERS(DELETE, BLOCKED_USERS_PATH, UseDeviceAbility.class),
   DELETE_ALLOWED_USERS(DELETE, ALLOWED_USERS_PATH, UseDeviceAbility.class);
 
@@ -254,6 +270,6 @@ public enum TestdriverApiEndpoint {
     POST(Post::to),
     PUT(Put::to),
     DELETE(Delete::from);
-    private final Function<String, RestInteraction> creator;
+    public final Function<String, RestInteraction> creator;
   }
 }

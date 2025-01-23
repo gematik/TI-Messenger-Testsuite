@@ -633,6 +633,110 @@ paths:
         default:
           $ref: "#/components/responses/DefaultResponse"
 
+  /devices/{deviceId}/fhir/org/healthcareService/{hsId}/endpointVisibility/{endId}:
+    parameters:
+      - $ref: "#/components/parameters/deviceId"
+      - $ref: "#/components/parameters/transactionIdHeader"
+      - $ref: "#/components/parameters/healthcareServiceId"
+      - $ref: "#/components/parameters/endpointId"
+
+    post:
+      tags:
+        - orgAdminFhirEndpoints
+        - TI-M_Pro
+      summary: "Set the endpointVisibility of the endpoint of the healthcare service to hide-versichert"
+      operationId: setEndpointVisibilityOfHealthcareService
+      responses:
+        "201":
+          description: "endpointVisibility in FHIR-VZD was created as hide-versichert"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FhirEndpoint"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "501":
+          description: "Unimplemented - if the underlying client does not support practitioner FHIR-VZD administration"
+        default:
+          $ref: "#/components/responses/DefaultResponse"
+
+    delete:
+      tags:
+        - orgAdminFhirEndpoints
+        - TI-M_Pro
+      summary: "Remove the endpointVisibility of the endpoint of the healthcare service."
+      operationId: removeEndpointVisibilityOfHealthcareService
+      responses:
+        "204":
+          description: "Successfully deleted"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "501":
+          description: "Unimplemented - if the underlying client does not support practitioner FHIR-VZD administration"
+        default:
+          $ref: "#/components/responses/DefaultResponse"
+
+  /devices/{deviceId}/fhir/endpointVisibility:
+    parameters:
+      - $ref: "#/components/parameters/deviceId"
+      - $ref: "#/components/parameters/transactionIdHeader"
+
+    post:
+      tags:
+        - practitionerFhirAdministration
+        - TI-M_Pro
+      summary: "Set the endpointVisibility in the own practitioner FHIR resource to hide-versichert"
+      operationId: setEndpointVisibility
+      responses:
+        "201":
+          description: "endpointVisibility in FHIR-VZD was created as hide-versichert"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FhirEndpoint"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "501":
+          description: "Unimplemented - if the underlying client does not support practitioner FHIR-VZD administration"
+        default:
+          $ref: "#/components/responses/DefaultResponse"
+
+    delete:
+      tags:
+        - practitionerFhirAdministration
+        - TI-M_Pro
+      summary: "Remove the endpointVisibility in the own Practitioner FHIR resource."
+      operationId: removeEndpointVisibility
+      responses:
+        "204":
+          description: "Successfully deleted"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "501":
+          description: "Unimplemented - if the underlying client does not support practitioner FHIR-VZD administration"
+        default:
+          $ref: "#/components/responses/DefaultResponse"
+
   /devices/{deviceId}/fhir/fhirAuthenticate:
     parameters:
       - $ref: "#/components/parameters/deviceId"
@@ -1701,11 +1805,11 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Returns a list of all users and domains, which are allowed to contact the client"
+      summary: "Returns a list of all users and server-names, which are allowed to contact the client"
       operationId: getAllowedUsersList
       responses:
         "200":
-          description: "List of allowed users and/or domains"
+          description: "List of allowed users and/or server-names"
           content:
             application/json:
               schema:
@@ -1724,7 +1828,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Adds the users and/or domains in the provided list to the list of allowed users and domains"
+      summary: "Adds the users and/or server-names in the provided list to the list of allowed users and server-names"
       operationId: addAllowedUsersList
       requestBody:
         required: true
@@ -1734,7 +1838,7 @@ paths:
               $ref: "#/components/schemas/AuthorizationList"
       responses:
         "200":
-          description: "Allowed users and/or domains added"
+          description: "Allowed users and/or server-names added"
           content:
             application/json:
               schema:
@@ -1755,7 +1859,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Deletes all users and domains allowed to contact the client"
+      summary: "Deletes all users and server-names allowed to contact the client"
       operationId: deleteAllowedUsersList
       responses:
         "204":
@@ -1780,11 +1884,11 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Returns a list of all users and domains, which are not allowed to contact the client"
+      summary: "Returns a list of all users and server-names, which are not allowed to contact the client"
       operationId: getBlockedUsersList
       responses:
         "200":
-          description: "List of blocked users and/or domains"
+          description: "List of blocked users and/or server-names"
           content:
             application/json:
               schema:
@@ -1803,7 +1907,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Adds the users and/or domains in the provided list to the list of blocked users and domains"
+      summary: "Adds the users and/or server-names in the provided list to the list of blocked users and server-names"
       operationId: addBlockedUsersList
       requestBody:
         required: true
@@ -1813,7 +1917,7 @@ paths:
               $ref: "#/components/schemas/AuthorizationList"
       responses:
         "200":
-          description: "Blocked users and/or domains added"
+          description: "Blocked users and/or server-names added"
           content:
             application/json:
               schema:
@@ -1834,7 +1938,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Deletes all users and domains not allowed to contact the client"
+      summary: "Deletes all users and server-names not allowed to contact the client"
       operationId: deleteBlockedUsersList
       responses:
         "204":
@@ -1901,27 +2005,27 @@ paths:
         default:
           $ref: "#/components/responses/DefaultResponse"
 
-  /devices/{deviceId}/allowedUsers/domain/{domain}:
+  /devices/{deviceId}/allowedUsers/serverName/{serverName}:
     parameters:
       - $ref: "#/components/parameters/deviceId"
       - $ref: "#/components/parameters/transactionIdHeader"
-      - $ref: "#/components/parameters/domainInPath"
+      - $ref: "#/components/parameters/serverNameInPath"
     get:
       tags:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Returns the domain, if users from this domain are allowed to contact the client"
-      operationId: getAllowedUserDomain
+      summary: "Returns the server-name, if users from this server are allowed to contact the client"
+      operationId: getAllowedUserServerName
       responses:
         "200":
-          description: "Get allowed user domain"
+          description: "Get allowed user server-name"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Domain"
+                $ref: "#/components/schemas/ServerName"
         "400":
-          description: "Cannot get allowed domain for mode AllowAll"
+          description: "Cannot get allowed server-name for mode AllowAll"
           content:
             application/json:
               schema:
@@ -1934,13 +2038,13 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Deletes the domain from the list of users and domains allowed to contact the client"
-      operationId: deleteAllowedUserDomain
+      summary: "Deletes the server-name from the list of users and server-names allowed to contact the client"
+      operationId: deleteAllowedUserServerName
       responses:
         "204":
-          description: "Allowed user domain deleted"
+          description: "Allowed user server-name deleted"
         "400":
-          description: "Cannot delete allowed domains for mode AllowAll"
+          description: "Cannot delete allowed server-names for mode AllowAll"
           content:
             application/json:
               schema:
@@ -2000,27 +2104,27 @@ paths:
         default:
           $ref: "#/components/responses/DefaultResponse"
 
-  /devices/{deviceId}/blockedUsers/domain/{domain}:
+  /devices/{deviceId}/blockedUsers/serverName/{serverName}:
     parameters:
       - $ref: "#/components/parameters/deviceId"
       - $ref: "#/components/parameters/transactionIdHeader"
-      - $ref: "#/components/parameters/domainInPath"
+      - $ref: "#/components/parameters/serverNameInPath"
     get:
       tags:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Returns the domain, if users from this domain are not allowed to contact the client"
-      operationId: getBlockedUserDomain
+      summary: "Returns the server-name, if users from this Matrix server are not allowed to contact the client"
+      operationId: getBlockedUserServerName
       responses:
         "200":
-          description: "Get blocked user domain"
+          description: "Get blocked user Matrix server"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Domain"
+                $ref: "#/components/schemas/ServerName"
         "400":
-          description: "Cannot get blocked domain for mode BlockAll"
+          description: "Cannot get blocked Matrix server for mode BlockAll"
           content:
             application/json:
               schema:
@@ -2033,13 +2137,13 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Deletes the domain from the list of users and domains not allowed to contact the client"
-      operationId: deleteBlockedUserDomain
+      summary: "Deletes the server-name from the list of users and server-names not allowed to contact the client"
+      operationId: deleteBlockedUserServerName
       responses:
         "204":
-          description: "Blocked user domain deleted"
+          description: "Blocked user server-name deleted"
         "400":
-          description: "Cannot delete blocked domain for mode BlockAll"
+          description: "Cannot delete blocked server-name for mode BlockAll"
           content:
             application/json:
               schema:
@@ -2090,14 +2194,14 @@ components:
         type: string
         example: "@you:example.org"
 
-    domainInPath:
-      name: domain
+    serverNameInPath:
+      name: serverName
       in: path
-      description: "Matrix-Domain"
+      description: "Server-Name: https://spec.matrix.org/v1.11/appendices/#server-name"
       required: true
       schema:
         type: string
-        example: ":matrix.org"
+        example: "matrix.org"
 
     healthcareServiceId:
       name: hsId
@@ -2255,7 +2359,7 @@ components:
       description: "The list of entries in authorization list"
       required:
         - mxids
-        - domains
+        - serverNames
       type: object
       properties:
         mxids:
@@ -2263,11 +2367,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/MxId"
-        domains:
-          description: "The list of domains"
+        serverNames:
+          description: "The list of server-names"
           type: array
           items:
-            $ref: "#/components/schemas/Domain"
+            $ref: "#/components/schemas/ServerName"
 
     AuthorizationMode:
       description: "Client authorization mode"
@@ -2493,17 +2597,6 @@ components:
       allOf:
         - $ref: "#/components/schemas/MessageContent"
 
-    Domain:
-      description: "A Matrix-Domain"
-      type: object
-      required:
-        - domain
-      properties:
-        domain:
-          description: "The Matrix-Domain"
-          type: string
-          example: ":matrix.org"
-
     Error:
       description: "Default error object with information about the occurred error"
       type: object
@@ -2675,6 +2768,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/FhirCodeableConcept"
+        extension:
+          type: array
+          items:
+            $ref: "#/components/schemas/FhirExtension"
 
     FhirEntry:
       description: "FhirSearchEntry"
@@ -2690,6 +2787,18 @@ components:
           $ref: "#/components/schemas/FhirBaseResource"
         search:
           $ref: "#/components/schemas/FhirSearch"
+
+    FhirExtension:
+      description: "Additional content defined by implementations"
+      type: object
+      required:
+        - url
+        - valueCoding
+      properties:
+        url:
+          type: string
+        valueCoding:
+          $ref: "#/components/schemas/FhirCoding"
 
     FhirHealthcareService:
       description: "Information about this healthcareService"
@@ -3306,6 +3415,17 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Room"
+
+    ServerName:
+      description: "A Server-Name: https://spec.matrix.org/v1.11/appendices/#server-name"
+      type: object
+      required:
+        - serverName
+      properties:
+        serverName:
+          description: "The Server-Name"
+          type: string
+          example: "matrix.org"
 
     SoftwareInfo:
       description: "General information about the software"

@@ -18,13 +18,13 @@ package de.gematik.tim.test.glue.api.authorization;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
-import static de.gematik.tim.test.glue.api.authorization.AddAllowedDomainsTask.addAllowedDomains;
+import static de.gematik.tim.test.glue.api.authorization.AddAllowedSeverNamesTask.addAllowedServerNames;
 import static de.gematik.tim.test.glue.api.authorization.AddAllowedUsersTask.addAllowedUsers;
-import static de.gematik.tim.test.glue.api.authorization.AddBlockedDomainsTask.addBlockedDomains;
+import static de.gematik.tim.test.glue.api.authorization.AddBlockedServerNamesTask.addBlockedServerNames;
 import static de.gematik.tim.test.glue.api.authorization.AddBlockedUsersTask.addBlockedUsers;
-import static de.gematik.tim.test.glue.api.authorization.DeleteAllowedDomainsTask.deleteAllowedDomains;
+import static de.gematik.tim.test.glue.api.authorization.DeleteAllowedServerNamesTask.deleteAllowedServerNames;
 import static de.gematik.tim.test.glue.api.authorization.DeleteAllowedUsersTask.deleteAllowedUsers;
-import static de.gematik.tim.test.glue.api.authorization.DeleteBlockedDomainsTask.deleteBlockedDomains;
+import static de.gematik.tim.test.glue.api.authorization.DeleteBlockedServerNamesTask.deleteBlockedServerNames;
 import static de.gematik.tim.test.glue.api.authorization.DeleteBlockedUsersTask.deleteBlockedUsers;
 import static de.gematik.tim.test.glue.api.authorization.GetAuthorizationModeQuestion.getAuthorizationMode;
 import static de.gematik.tim.test.glue.api.authorization.SetAuthorizationModeTask.setAuthorizationMode;
@@ -120,54 +120,54 @@ public class AuthorizationGlue {
     checkResponseCode(actorName, NO_CONTENT.value());
   }
 
-  @Then("{string} puts the domain of {listOfStrings} on the block list")
-  @Dann("{string} hinterlegt die Domain von {listOfStrings} in der Blockliste")
-  public void putDomainInBlockList(String actorName, List<String> blockedUsers) {
+  @Then("{string} puts the server-name of {listOfStrings} on the block list")
+  @Dann("{string} hinterlegt den Server-Namen von {listOfStrings} in der Blockliste")
+  public void putServerNameInBlockList(String actorName, List<String> blockedUsers) {
     Actor actor = theActorCalled(actorName);
-    List<String> blockedDomains = getDomainsFromUsers(blockedUsers);
-    actor.attemptsTo(addBlockedDomains(blockedDomains));
+    List<String> blockedServerNames = getServerNamesFromUsers(blockedUsers);
+    actor.attemptsTo(addBlockedServerNames(blockedServerNames));
     checkResponseCode(actorName, OK.value());
   }
 
-  @Then("{string} removes the domain of {listOfStrings} from the block list")
-  @Dann("{string} entfernt die Domain von {listOfStrings} in der Blockliste")
-  public void deleteDomainInBlockList(String actorName, List<String> blockedUsers) {
+  @Then("{string} removes the server-name of {listOfStrings} from the block list")
+  @Dann("{string} entfernt den Server-Namen von {listOfStrings} in der Blockliste")
+  public void deleteServerNameInBlockList(String actorName, List<String> blockedUsers) {
     Actor actor = theActorCalled(actorName);
-    List<String> blockedDomains = getDomainsFromUsers(blockedUsers);
-    actor.attemptsTo(deleteBlockedDomains(blockedDomains));
+    List<String> blockedServerNames = getServerNamesFromUsers(blockedUsers);
+    actor.attemptsTo(deleteBlockedServerNames(blockedServerNames));
     checkResponseCode(actorName, NO_CONTENT.value());
   }
 
-  @Then("{string} puts the domain of {listOfStrings} on the allow list")
-  @Dann("{string} hinterlegt die Domain von {listOfStrings} in der Allowliste")
-  public void putDomainInAllowList(String actorName, List<String> allowedUsers) {
+  @Then("{string} puts the server-name of {listOfStrings} on the allow list")
+  @Dann("{string} hinterlegt den Server-Namen von {listOfStrings} in der Allowliste")
+  public void putServerNameInAllowList(String actorName, List<String> allowedUsers) {
     Actor actor = theActorCalled(actorName);
-    List<String> allowedDomains = getDomainsFromUsers(allowedUsers);
-    actor.attemptsTo(addAllowedDomains(allowedDomains));
+    List<String> allowedServerNames = getServerNamesFromUsers(allowedUsers);
+    actor.attemptsTo(addAllowedServerNames(allowedServerNames));
     checkResponseCode(actorName, OK.value());
   }
 
-  @Then("{string} removes the domain of {listOfStrings} from the allow list")
-  @Dann("{string} entfernt die Domain von {listOfStrings} in der Allowliste")
-  public void deleteDomainInAllowList(String actorName, List<String> allowedUsers) {
+  @Then("{string} removes the server-name of {listOfStrings} from the allow list")
+  @Dann("{string} entfernt den Server-Namen von {listOfStrings} in der Allowliste")
+  public void deleteServerNameInAllowList(String actorName, List<String> allowedUsers) {
     Actor actor = theActorCalled(actorName);
-    List<String> allowedDomains = getDomainsFromUsers(allowedUsers);
-    actor.attemptsTo(deleteAllowedDomains(allowedDomains));
+    List<String> allowedServerNames = getServerNamesFromUsers(allowedUsers);
+    actor.attemptsTo(deleteAllowedServerNames(allowedServerNames));
     checkResponseCode(actorName, NO_CONTENT.value());
   }
 
-  private List<String> getDomainsFromUsers(List<String> allowedUsers) {
-    List<String> domains = new ArrayList<>();
+  private List<String> getServerNamesFromUsers(List<String> allowedUsers) {
+    List<String> serverNames = new ArrayList<>();
     for (String allowedUser : allowedUsers) {
       Actor allowedActor = theActorCalled(allowedUser);
       String mxId = allowedActor.recall(MX_ID);
-      String domain = extractDomainFromMxId(mxId);
-      domains.add(domain);
+      String serverName = extractServerNameFromMxId(mxId);
+      serverNames.add(serverName);
     }
-    return domains;
+    return serverNames;
   }
 
-  private String extractDomainFromMxId(String mxId) {
+  private String extractServerNameFromMxId(String mxId) {
     if (mxId == null || !mxId.contains(":")) {
       throw new IllegalArgumentException(mxId + " is not a valid MxId");
     }
