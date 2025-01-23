@@ -78,6 +78,7 @@ public final class TestdriverApiPath {
   public static final String FHIR_SEARCH_PRACTITIONER_PATH =
       FHIR_BASE_PATH + "/searchPractitionerInFhirDirectory";
   public static final String FHIR_PRACTITIONER_PATH = FHIR_BASE_PATH + "/mxidInFhirDirectory";
+  public static final String FHIR_VISIBILITY_PATH = FHIR_BASE_PATH + "/endpointVisibility";
   public static final String FHIR_AUTHENTICATE_PATH = FHIR_BASE_PATH + "/fhirAuthenticate";
   public static final String FHIR_ORG_PATH = FHIR_BASE_PATH + "/org";
 
@@ -93,6 +94,11 @@ public final class TestdriverApiPath {
   public static final String FHIR_ENDPOINT_PATH = FHIR_HS_ADMIN_PATH + "/endpoint";
   public static final String FHIR_ENDPOINT_ADMIN_PATH =
       FHIR_ENDPOINT_PATH + "/" + PATH_VARIABLE.formatted(ENDPOINT_ID_VARIABLE);
+
+  public static final String FHIR_ENDPOINT_VISIBILITY_PATH =
+      FHIR_HS_ADMIN_PATH + "/endpointVisibility";
+  public static final String FHIR_ENDPOINT_ADMIN_PATH_VISIBILITY =
+      FHIR_ENDPOINT_VISIBILITY_PATH + "/" + PATH_VARIABLE.formatted(ENDPOINT_ID_VARIABLE);
 
   // CONTACT-MANAGEMENT
   public static final String CONTACT_PATH = DEVICE_ID_PATH + "/contacts";

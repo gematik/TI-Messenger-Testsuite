@@ -22,8 +22,11 @@ import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
 import static de.gematik.tim.test.glue.api.fhir.organisation.FhirSearchOrgQuestion.organizationEndpoints;
 import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.CreateEndpointTask.addHealthcareServiceEndpoint;
 import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.DeleteEndpointTask.deleteEndPoint;
+import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.DeleteEndpointVisibilityOfHealthcareServiceTask.deleteEndpointVisibility;
 import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.FhirGetEndpointListQuestion.getEndpointList;
 import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.FhirGetEndpointQuestion.getEndpoint;
+import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.NoFhirVisibilityOfHealthcareServiceQuestion.endpointVisibleInFhirDirectory;
+import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.SetEndpointVisibilityOfHealthcareServiceTask.setEndpointVisibility;
 import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UpdateEndpointTask.updateEndpoint;
 import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UpdateEndpointTask.updateEndpointFromFile;
 import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.CreateHealthcareServiceTask.createHealthcareService;
@@ -44,6 +47,7 @@ import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getHs
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.removeInternalEndpointWithName;
 import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
 import static de.gematik.tim.test.models.FhirResourceTypeDTO.HEALTHCARESERVICE;
+import static java.lang.String.format;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorInTheSpotlight;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,7 +60,9 @@ import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UseEndpointAbility;
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.HealthcareServiceInfo;
 import de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility;
+import de.gematik.tim.test.models.FhirCodingDTO;
 import de.gematik.tim.test.models.FhirEndpointDTO;
+import de.gematik.tim.test.models.FhirExtensionDTO;
 import de.gematik.tim.test.models.FhirHealthcareServiceDTO;
 import de.gematik.tim.test.models.FhirSearchResultDTO;
 import io.cucumber.java.de.Angenommen;
@@ -331,5 +337,85 @@ public class FhirOrgAdminGlue {
         .ignoringFields("identifier", "meta", "resourceType", "text", "managingOrganization")
         .ignoringFieldsMatchingRegexes(".*id")
         .isEqualTo(jsonEndpoint);
+  }
+
+  @When(
+      "{string} sets the endpointVisibility of the endpoint extension of {string} in the healthcare service {string} to hide-versicherte")
+  @Wenn(
+      "{string} setzt die endpointVisibility für die Endpunkt Extension von {string} im Healthcare-Service {string} auf hide-versicherte")
+  public void setEndpointVisibilityForHealthcareService(
+      String orgAdmin, String client, String hsName) {
+    Actor admin = theActorCalled(orgAdmin);
+    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hsName);
+    admin
+        .abilityTo(UseEndpointAbility.class)
+        .setActive(theActorCalled(client).recall(DISPLAY_NAME));
+    admin.attemptsTo(setEndpointVisibility());
+    checkResponseCode(orgAdmin, CREATED.value());
+  }
+
+  @When(
+      "{string} deletes the endpointVisibility hide-versicherte for the endpoint extension of {string} in the healthcare service {string}")
+  @Wenn(
+      "{string} löscht die endpointVisibility hide-versicherte für die Endpunkt Extension von {string} im Healthcare-Service {string}")
+  public void deleteEndpointVisibilityForHealthcareService(
+      String orgAdmin, String client, String hsName) {
+    Actor admin = theActorCalled(orgAdmin);
+    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hsName);
+    FhirEndpointDTO endpoint =
+        getEndpointFromInternalName(theActorCalled(client).recall(DISPLAY_NAME));
+    admin.attemptsTo(deleteEndpointVisibility(endpoint));
+    checkResponseCode(orgAdmin, NO_CONTENT.value());
+  }
+
+  @And(
+      "{string} sees the endpointVisibility for the endpoint extension of {string} in the healthcare service {string} as hide-versicherte")
+  @Und(
+      "{string} sieht die endpointVisibility für die Endpunkt Extension von {string} im Healthcare-Service {string} auf hide-versicherte")
+  public void getEndpointVisibilityForHealthcareService(
+      String orgAdmin, String userName, String hsName) {
+    Actor admin = theActorCalled(orgAdmin);
+    Actor user = theActorCalled(userName);
+    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hsName);
+    admin.abilityTo(UseEndpointAbility.class).setActive(user.recall(DISPLAY_NAME));
+    FhirEndpointDTO endpoint = admin.asksFor(getEndpoint());
+    assertCorrectEndpointNameAndNotVisible(endpoint, user);
+  }
+
+  @And(
+      "{string} sees the endpointVisibility for the endpoint extension of {string} in the healthcare service {string} NO longer as hide-versicherte [Retry {long} - {long}]")
+  @Und(
+      "{string} sieht die endpointVisibility für die Endpunkt Extension von {string} im Healthcare-Service {string} NICHT mehr auf dem Wert hide-versicherte [Retry {long} - {long}]")
+  public void doNotGetEndpointVisibilityForHealthcareService(
+      String orgAdmin,
+      String userName,
+      String hsName,
+      Long customTimeout,
+      Long customPollInterval) {
+    Actor admin = theActorCalled(orgAdmin);
+    Actor user = theActorCalled(userName);
+    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hsName);
+    admin.abilityTo(UseEndpointAbility.class).setActive(user.recall(DISPLAY_NAME));
+    admin.asksFor(
+        endpointVisibleInFhirDirectory().withCustomInterval(customTimeout, customPollInterval));
+  }
+
+  private void assertCorrectEndpointNameAndNotVisible(
+      FhirEndpointDTO endpoint, Actor searchedActor) {
+    String endpointName = getEndpointFromInternalName(searchedActor.recall(DISPLAY_NAME)).getName();
+    assertThat(endpoint.getExtension())
+        .as(format("Could not find any extension for endpoint %s", endpointName))
+        .isNotEmpty();
+
+    List<FhirCodingDTO> valueCodes =
+        endpoint.getExtension().stream().map(FhirExtensionDTO::getValueCoding).toList();
+    assertThat(valueCodes)
+        .as(format("Could not find any valueCodes for endpoint %s", endpointName))
+        .isNotEmpty();
+
+    List<String> codes = valueCodes.stream().map(FhirCodingDTO::getCode).toList();
+    assertThat(codes)
+        .as("No allowed code was found for endpoint %s", endpointName)
+        .contains("hide-versicherte");
   }
 }

@@ -6,6 +6,13 @@
 
 `docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
 
+## Release 1.5.0
+
+### Changes
+
+- API change, breaking only ePa: renames domains under authorisation-management to server-name. More information
+  at [`server-name`](https://spec.matrix.org/v1.11/appendices/#server-name)
+
 ## Release 1.4.3
 
 ### Changes
@@ -29,7 +36,8 @@
 ### Changes
 
 - adds functionality for add and delete domains in block/allow lists
-- API change, breaking only ePa: renames deleteBlockedDomain to deleteBlockedUserDomain for consistency
+- API change, breaking only ePa: renames deleteBlockedDomain to deleteBlockedUserDomain for
+  consistency
 
 ## Release 1.4.0
 

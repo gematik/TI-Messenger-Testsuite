@@ -36,7 +36,9 @@ import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
 import de.gematik.tim.test.models.MessageDTO;
 import io.cucumber.java.de.Dann;
+import io.cucumber.java.de.Und;
 import io.cucumber.java.de.Wenn;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import java.io.File;
@@ -138,5 +140,14 @@ public class MediaGlue {
       assertThat(receivedMedia).isEqualTo(fis.readAllBytes());
     }
     assertThat(message.getBody()).isEqualTo(getCreatedMessage(fileName).getBody());
+  }
+
+  @And(
+      "{word} requests at interface {word} the media API {string} including parameters with http method {string}")
+  @Und(
+      "{word} fragt an Schnittstelle {word} die media API {string} inkl Parameterbefüllung über ein {string} ab")
+  public void pingApiOnHomeserverForMedia(
+      String actorName, String interfaceName, String matrixUrl, String httpMethod) {
+    // implement me
   }
 }

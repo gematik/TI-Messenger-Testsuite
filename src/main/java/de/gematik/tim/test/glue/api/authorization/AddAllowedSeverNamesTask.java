@@ -18,30 +18,32 @@
 
 package de.gematik.tim.test.glue.api.authorization;
 
-import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.DELETE_BLOCKED_DOMAINS;
+import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.ADD_ALLOWED_SERVER_NAMES;
 
 import de.gematik.tim.test.models.AuthorizationListDTO;
-import de.gematik.tim.test.models.DomainDTO;
+import de.gematik.tim.test.models.ServerNameDTO;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 
 @RequiredArgsConstructor
-public class DeleteBlockedDomainsTask implements Task {
+public class AddAllowedSeverNamesTask implements Task {
 
-  private final List<String> blockedDomains;
+  private final List<String> allowedDomains;
 
-  public static DeleteBlockedDomainsTask deleteBlockedDomains(List<String> blockedDomains) {
-    return new DeleteBlockedDomainsTask(blockedDomains);
+  public static AddAllowedSeverNamesTask addAllowedServerNames(List<String> allowedServerNames) {
+    return new AddAllowedSeverNamesTask(allowedServerNames);
   }
 
   @Override
   public <T extends Actor> void performAs(T actor) {
-    List<DomainDTO> domainDTOs =
-        blockedDomains.stream().map(domain -> new DomainDTO().domain(domain)).toList();
-    AuthorizationListDTO blockedList = new AuthorizationListDTO();
-    blockedList.domains(domainDTOs);
-    actor.attemptsTo(DELETE_BLOCKED_DOMAINS.request().with(req -> req.body(blockedList)));
+    List<ServerNameDTO> serverNameDTOs =
+        allowedDomains.stream()
+            .map(servername -> new ServerNameDTO().serverName(servername))
+            .toList();
+    AuthorizationListDTO allowedList = new AuthorizationListDTO();
+    allowedList.serverNames(serverNameDTOs);
+    actor.attemptsTo(ADD_ALLOWED_SERVER_NAMES.request().with(req -> req.body(allowedList)));
   }
 }
