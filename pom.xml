@@ -18,9 +18,9 @@
   </parent>
 
   <properties>
-    <jacoco.version>0.8.8</jacoco.version>
-    <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
-    <maven.javadoc.plugin.version>3.6.3</maven.javadoc.plugin.version>
+    <jacoco.version>0.8.12</jacoco.version>
+    <maven.source.plugin.version>3.3.1</maven.source.plugin.version>
+    <maven.javadoc.plugin.version>3.11.2</maven.javadoc.plugin.version>
     <tiger.config.file>tiger.yml</tiger.config.file>
 
     <maxRetryClaimRequest/>
@@ -52,12 +52,17 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.7.0</version>
+        <version>3.13.0</version>
         <configuration>
           <encoding>${project.build.sourceEncoding}</encoding>
           <source>${java.version}</source>
           <target>${java.version}</target>
           <debug>true</debug>
+          <compileSourceRoots>
+            <compileSourceRoot>src/main/java/**</compileSourceRoot>
+            <compileSourceRoot>src/generated/java/**</compileSourceRoot>
+            <compileSourceRoot>${project.build.directory}/generated-test-sources/tigerbdd/de/gematik/tim/test/drivers</compileSourceRoot>
+          </compileSourceRoots>
         </configuration>
       </plugin>
       <plugin>
