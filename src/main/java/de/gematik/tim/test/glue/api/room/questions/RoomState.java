@@ -19,14 +19,14 @@ package de.gematik.tim.test.glue.api.room.questions;
 import lombok.Getter;
 
 @Getter
-public enum RoomStates {
+public enum RoomState {
   TIM_DEFAULT("de.gematik.tim.room.default.v1", null),
   TIM_ROOM_TYPE("m.room.create", new Content("$.type", "de.gematik.tim.roomtype.default.v1"));
 
-  private String type;
-  private Content content;
+  private final String type;
+  private final Content content;
 
-  RoomStates(String type, Content content) {
+  RoomState(String type, Content content) {
     this.type = type;
     this.content = content;
   }

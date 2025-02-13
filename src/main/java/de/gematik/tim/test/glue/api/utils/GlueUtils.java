@@ -104,6 +104,15 @@ public class GlueUtils {
     }
   }
 
+  public static void checkRoomVersionIs(RoomDTO room, String version) {
+    if (room.getRoomVersion() == null || !room.getRoomVersion().equals(version)) {
+      throw new AssertionFailed(
+          format(
+              "Room %s does not have correct version. Expected version %s, but was %s",
+              room.getRoomId(), version, room.getRoomVersion()));
+    }
+  }
+
   private static boolean versionNotSupported(String roomVersion) {
     List<String> supportedVersions = List.of("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
     return !supportedVersions.contains(roomVersion);

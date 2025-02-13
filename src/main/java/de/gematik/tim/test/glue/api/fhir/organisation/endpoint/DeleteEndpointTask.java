@@ -16,12 +16,15 @@
 
 package de.gematik.tim.test.glue.api.fhir.organisation.endpoint;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.DELETE_ENDPOINT;
 import static de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UseEndpointAbility.removeEndpointFromActor;
+import static java.lang.String.format;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 import io.restassured.response.Response;
+import jxl.common.AssertionFailed;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
@@ -50,6 +53,8 @@ public class DeleteEndpointTask extends EndpointSpecificTask {
           String.format(
               "Attempted to remove endpoint %s, but got status code: %d ",
               DELETE_ENDPOINT.getPath(), lastResponse().statusCode()));
+      throw new AssertionFailed(
+          format("Endpoint for mxId %s could not be deleted", actor.recall(MX_ID)));
     }
   }
 }

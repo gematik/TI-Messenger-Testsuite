@@ -6,6 +6,17 @@
 
 `docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
 
+## Release 1.5.1
+
+### Changes
+
+- moves configuration of cucumber-test-combinations-maven-plugin and related properties from pom.xml to parent-pom.xml
+
+### Bugs
+
+- fixes assertion of room states in FeatureFile 14 to take effect
+- partly reverts changes from https://github.com/gematik/TI-Messenger-Testsuite/issues/61 by removing compileSourceRoots
+
 ## Release 1.5.0
 
 ### Changes

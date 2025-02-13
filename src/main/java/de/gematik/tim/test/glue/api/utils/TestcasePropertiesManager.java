@@ -110,7 +110,7 @@ public class TestcasePropertiesManager {
     messages.put(name, message);
   }
 
-  public static HealthcareServiceInfo getHsFromInternalName(String name) {
+  public static HealthcareServiceInfo getHealthcareServiceFromInternalName(String name) {
     if (healthcareServices.containsKey(name)) {
       return healthcareServices.get(name);
     }
