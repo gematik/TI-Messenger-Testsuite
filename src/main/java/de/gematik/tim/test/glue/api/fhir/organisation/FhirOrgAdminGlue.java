@@ -43,7 +43,7 @@ import static de.gematik.tim.test.glue.api.utils.GlueUtils.mxidToUri;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.readJsonFile;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addEndpoint;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getEndpointFromInternalName;
-import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getHsFromInternalName;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getHealthcareServiceFromInternalName;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.removeInternalEndpointWithName;
 import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
 import static de.gematik.tim.test.models.FhirResourceTypeDTO.HEALTHCARESERVICE;
@@ -81,12 +81,14 @@ public class FhirOrgAdminGlue {
   @Given("{string} finds {string} in the healthcare service {string}")
   @Angenommen("{string} findet {string} im Healthcare-Service {string}")
   public static void findsAddressInHealthcareService(
-      String actorName, String userName, String hsName) {
+      String actorName, String userName, String hcsName) {
     Actor actor = theActorCalled(actorName);
     String mxId = theActorCalled(userName).recall(MX_ID);
     FhirSearchResultDTO result =
         actor.asksFor(
-            organizationEndpoints().withHsName(hsName).havingMxIdAsUriInEndpoint(mxidToUri(mxId)));
+            organizationEndpoints()
+                .withHealthcareServiceName(hcsName)
+                .havingMxIdAsUriInEndpoint(mxidToUri(mxId)));
     List<FhirEndpointDTO> endpoints =
         getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
     assertCorrectEndpointNameAndMxid(endpoints, theActorCalled(userName));
@@ -100,7 +102,8 @@ public class FhirOrgAdminGlue {
       String actorName, String healthcareServiceName, int begin, int end) {
     Actor actor = theActorCalled(actorName);
 
-    HealthcareServiceInfo healthcareServiceInfo = getHsFromInternalName(healthcareServiceName);
+    HealthcareServiceInfo healthcareServiceInfo =
+        getHealthcareServiceFromInternalName(healthcareServiceName);
     String uniqueHealthcareServiceName = healthcareServiceInfo.name();
     assertThat(begin + end)
         .as("You cut to much of the healthcare service name: " + uniqueHealthcareServiceName)
@@ -129,22 +132,22 @@ public class FhirOrgAdminGlue {
 
   @And("{string} creates a healthcare service {string}")
   @Und("{string} erstellt einen Healthcare-Service {string}")
-  public void createHealthcareServiceWithName(String orgAdmin, String hsName) {
+  public void createHealthcareServiceWithName(String orgAdmin, String hcsName) {
     Actor admin = theActorCalled(orgAdmin);
-    admin.attemptsTo(createHealthcareService(hsName));
+    admin.attemptsTo(createHealthcareService(hcsName));
     checkResponseCode(orgAdmin, CREATED.value());
   }
 
   @When("{string} creates an endpoint for {string} in healthcare service {string}")
   @Wenn("{string} erstellt Endpunkt für {string} auf Healthcare-Service {string}")
-  public void createEndpointForHealthcareService(String orgAdmin, String client, String hsName) {
+  public void createEndpointForHealthcareService(String orgAdmin, String client, String hcsName) {
     Actor admin = theActorCalled(orgAdmin);
     Actor endpointActor = theActorCalled(client);
     String endpointMxId = endpointActor.recall(MX_ID);
     admin.attemptsTo(
         addHealthcareServiceEndpoint(endpointActor.recall(DISPLAY_NAME))
             .withMxIdAsUri(mxidToUri(endpointMxId))
-            .forHealthcareService(hsName));
+            .forHealthcareService(hcsName));
     checkResponseCode(orgAdmin, CREATED.value());
   }
 
@@ -152,9 +155,9 @@ public class FhirOrgAdminGlue {
   @Angenommen(
       "{string} erstellt einen Healthcare-Service {string} und setzen einen Endpunkt auf {string}")
   public void createsHealthcareServiceWithNameAndCreatEndpointWithMxIdOfActor(
-      String orgAdmin, String hsName, String client) {
-    createHealthcareServiceWithName(orgAdmin, hsName);
-    createEndpointForHealthcareService(orgAdmin, client, hsName);
+      String orgAdmin, String hcsName, String client) {
+    createHealthcareServiceWithName(orgAdmin, hcsName);
+    createEndpointForHealthcareService(orgAdmin, client, hcsName);
   }
 
   @When(
@@ -179,10 +182,11 @@ public class FhirOrgAdminGlue {
   @When("{string} changes endpoint of healthcare service {string} to {string}")
   @Wenn("{string} ändert den Endpunkt des Healthcare-Services {string} auf {string}")
   public void changeHealthcareServiceEndpointToOtherMxId(
-      String orgAdmin, String hsName, String userName) {
+      String orgAdmin, String hcsName, String userName) {
     Actor admin = theActorCalled(orgAdmin);
-    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hsName);
-    FhirSearchResultDTO result = admin.asksFor(organizationEndpoints().withHsName(hsName));
+    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hcsName);
+    FhirSearchResultDTO result =
+        admin.asksFor(organizationEndpoints().withHealthcareServiceName(hcsName));
     FhirEndpointDTO endpoint =
         getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class).stream()
             .findFirst()
@@ -197,9 +201,9 @@ public class FhirOrgAdminGlue {
 
   @When("{string} changes the endpoint name of {string} of the healthcare service {string}")
   @Wenn("{string} ändert den Endpunktname von {string} des Healthcare-Services {string}")
-  public void changeEndpointNameInHs(String orgAdmin, String client, String hsName) {
+  public void changeEndpointNameInHs(String orgAdmin, String client, String hcsName) {
     Actor admin = theActorCalled(orgAdmin);
-    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hsName);
+    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hcsName);
     FhirEndpointDTO endpoint =
         getEndpointFromInternalName(theActorCalled(client).recall(DISPLAY_NAME));
     endpoint.setName(createUniqueEndpointName());
@@ -217,10 +221,10 @@ public class FhirOrgAdminGlue {
   @Und(
       "{string} ändert den Endpunkt von {string} im Healthcare-Service {string} mit dem JSON {string}")
   public void changeEndpointForHealthcareServiceWithJson(
-      String orgAdmin, String client, String hsName, String fileName) {
+      String orgAdmin, String client, String hcsName, String fileName) {
     String endpointName = theActorCalled(client).recall(DISPLAY_NAME);
     Actor admin = theActorCalled(orgAdmin);
-    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hsName);
+    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hcsName);
     admin.abilityTo(UseEndpointAbility.class).setActive(endpointName);
     admin.attemptsTo(
         updateEndpointFromFile(fileName).withHomeserver(getHomeServerWithoutHttpAndPort(admin)));
@@ -229,10 +233,10 @@ public class FhirOrgAdminGlue {
 
   @And("{string} deletes the endpoint of {string} of the healthcare service {string}")
   @Und("{string} löscht den Endpoint von {string} für den Healthcare-Service {string}")
-  public void deleteEndpointOfHealthcareService(String orgAdmin, String userName, String hsName) {
+  public void deleteEndpointOfHealthcareService(String orgAdmin, String userName, String hcsName) {
     String endpointName = theActorCalled(userName).recall(DISPLAY_NAME);
     Actor admin = theActorCalled(orgAdmin);
-    admin.attemptsTo(deleteEndPoint().withName(endpointName).forHealthcareService(hsName));
+    admin.attemptsTo(deleteEndPoint().withName(endpointName).forHealthcareService(hcsName));
     checkResponseCode(orgAdmin, NO_CONTENT.value());
   }
 
@@ -240,24 +244,24 @@ public class FhirOrgAdminGlue {
   @Wenn(
       "{string} ändert die Daten des von {string} angelegten Healthcare-Service {string} mit JSON {string}")
   public void changeDataFromHealthcareServiceWithJson(
-      String orgAdmin, String hsCreator, String hsName, String fileName) {
+      String orgAdmin, String hsCreator, String hcsName, String fileName) {
     Actor admin = theActorCalled(orgAdmin);
     UseHealthcareServiceAbility ability =
         theActorCalled(hsCreator).abilityTo(UseHealthcareServiceAbility.class);
     admin.can(ability);
-    changeDataFromHealthcareServiceWithJson(orgAdmin, hsName, fileName);
+    changeDataFromHealthcareServiceWithJson(orgAdmin, hcsName, fileName);
     checkResponseCode(orgAdmin, OK.value());
   }
 
   @And("{string} changes the data of the healthcare service {string} with the JSON {string}")
   @Und("{string} ändert die Daten des Healthcare-Service {string} mit JSON {string}")
   public void changeDataFromHealthcareServiceWithJson(
-      String orgAdmin, String hsName, String fileName) {
+      String orgAdmin, String hcsName, String fileName) {
     Actor admin = theActorCalled(orgAdmin);
 
     admin.attemptsTo(
         updateHealthcareService()
-            .withName(hsName)
+            .withName(hcsName)
             .withFile(fileName)
             .withOrganizationOfCurrentDevice());
     checkResponseCode(orgAdmin, OK.value());
@@ -265,9 +269,9 @@ public class FhirOrgAdminGlue {
 
   @And("{string} deletes the healthcare service {string}")
   @Und("{string} löscht den Healthcare-Service {string}")
-  public void actorDeletesHealthcareService(String orgAdmin, String hsName) {
+  public void actorDeletesHealthcareService(String orgAdmin, String hcsName) {
     Actor admin = theActorCalled(orgAdmin);
-    admin.attemptsTo(deleteHealthcareService().withName(hsName));
+    admin.attemptsTo(deleteHealthcareService().withName(hcsName));
     checkResponseCode(orgAdmin, NO_CONTENT.value());
   }
 
@@ -276,12 +280,12 @@ public class FhirOrgAdminGlue {
   @Dann(
       "existiert kein Endpoint von {string} für den Healthcare-Service {string} [Retry {long} - {long}]")
   public void noHealthcareServiceEndpointWithNameTiming(
-      String actorName, String hsName, Long timeout, Long pollInterval) {
+      String actorName, String hcsName, Long timeout, Long pollInterval) {
     Actor actor = theActorCalled(actorName);
     FhirSearchResultDTO result =
         actor.asksFor(
             organizationEndpoints()
-                .withHsName(hsName)
+                .withHealthcareServiceName(hcsName)
                 .havingAtLeastXEndpoints(0)
                 .withCustomInterval(timeout, pollInterval));
 
@@ -304,9 +308,9 @@ public class FhirOrgAdminGlue {
 
   @Then("{string} compares the healthcare service {string} with the JSON {string}")
   @Dann("vergleicht {string} den Healthcare-Service {string} mit dem JSON {string}")
-  public void compareHealthcareServiceWithJson(String orgAdmin, String hsName, String fileName) {
+  public void compareHealthcareServiceWithJson(String orgAdmin, String hcsName, String fileName) {
     Actor actor = theActorCalled(orgAdmin);
-    FhirHealthcareServiceDTO hs = actor.asksFor(getHealthcareService().withName(hsName));
+    FhirHealthcareServiceDTO hs = actor.asksFor(getHealthcareService().withName(hcsName));
     FhirHealthcareServiceDTO jsonHs = readJsonFile(fileName, FhirHealthcareServiceDTO.class);
 
     jsonHs.setEndpoint(jsonHs.getEndpoint() == null ? List.of() : jsonHs.getEndpoint());
@@ -324,9 +328,9 @@ public class FhirOrgAdminGlue {
   @And("the endpoint of {string} in the healthcare service {string} is the JSON {string}")
   @Und("entspricht der Endpunkt von {string} im Healthcare-Service {string} dem JSON {string}")
   public void compareEndpointOfHealthcareServiceWithJson(
-      String user, String hsName, String fileName) {
+      String user, String hcsName, String fileName) {
     Actor admin = theActorInTheSpotlight();
-    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hsName);
+    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hcsName);
     admin.abilityTo(UseEndpointAbility.class).setActive(theActorCalled(user).recall(DISPLAY_NAME));
     FhirEndpointDTO endpoint = admin.asksFor(getEndpoint());
     FhirEndpointDTO jsonEndpoint = readJsonFile(fileName, FhirEndpointDTO.class);
@@ -344,9 +348,9 @@ public class FhirOrgAdminGlue {
   @Wenn(
       "{string} setzt die endpointVisibility für die Endpunkt Extension von {string} im Healthcare-Service {string} auf hide-versicherte")
   public void setEndpointVisibilityForHealthcareService(
-      String orgAdmin, String client, String hsName) {
+      String orgAdmin, String client, String hcsName) {
     Actor admin = theActorCalled(orgAdmin);
-    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hsName);
+    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hcsName);
     admin
         .abilityTo(UseEndpointAbility.class)
         .setActive(theActorCalled(client).recall(DISPLAY_NAME));
@@ -359,9 +363,9 @@ public class FhirOrgAdminGlue {
   @Wenn(
       "{string} löscht die endpointVisibility hide-versicherte für die Endpunkt Extension von {string} im Healthcare-Service {string}")
   public void deleteEndpointVisibilityForHealthcareService(
-      String orgAdmin, String client, String hsName) {
+      String orgAdmin, String client, String hcsName) {
     Actor admin = theActorCalled(orgAdmin);
-    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hsName);
+    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hcsName);
     FhirEndpointDTO endpoint =
         getEndpointFromInternalName(theActorCalled(client).recall(DISPLAY_NAME));
     admin.attemptsTo(deleteEndpointVisibility(endpoint));
@@ -373,10 +377,10 @@ public class FhirOrgAdminGlue {
   @Und(
       "{string} sieht die endpointVisibility für die Endpunkt Extension von {string} im Healthcare-Service {string} auf hide-versicherte")
   public void getEndpointVisibilityForHealthcareService(
-      String orgAdmin, String userName, String hsName) {
+      String orgAdmin, String userName, String hcsName) {
     Actor admin = theActorCalled(orgAdmin);
     Actor user = theActorCalled(userName);
-    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hsName);
+    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hcsName);
     admin.abilityTo(UseEndpointAbility.class).setActive(user.recall(DISPLAY_NAME));
     FhirEndpointDTO endpoint = admin.asksFor(getEndpoint());
     assertCorrectEndpointNameAndNotVisible(endpoint, user);
@@ -389,12 +393,12 @@ public class FhirOrgAdminGlue {
   public void doNotGetEndpointVisibilityForHealthcareService(
       String orgAdmin,
       String userName,
-      String hsName,
+      String hcsName,
       Long customTimeout,
       Long customPollInterval) {
     Actor admin = theActorCalled(orgAdmin);
     Actor user = theActorCalled(userName);
-    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hsName);
+    admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hcsName);
     admin.abilityTo(UseEndpointAbility.class).setActive(user.recall(DISPLAY_NAME));
     admin.asksFor(
         endpointVisibleInFhirDirectory().withCustomInterval(customTimeout, customPollInterval));
@@ -417,5 +421,75 @@ public class FhirOrgAdminGlue {
     assertThat(codes)
         .as("No allowed code was found for endpoint %s", endpointName)
         .contains("hide-versicherte");
+  }
+
+  @Then(
+      "{string} creates a healthcare service {string} and sets a functional account endpoint to {string}")
+  @Dann(
+      "{string} erstellt einen Healthcare-Service {string} und setzen einen Funktionsaccount-Endpunkt auf {string}")
+  public void createHealthcareServiceWithFunctionAccount(
+      String orgAdmin, String hcsName, String userName) {
+    createHealthcareServiceWithName(orgAdmin, hcsName);
+    Actor admin = theActorCalled(orgAdmin);
+    Actor endpointActor = theActorCalled(userName);
+    String endpointMxId = endpointActor.recall(MX_ID);
+    admin.attemptsTo(
+        addHealthcareServiceEndpoint(endpointActor.recall(DISPLAY_NAME))
+            .withMxIdAsUri(mxidToUri(endpointMxId))
+            .withConnectionTypeCode("tim-fa")
+            .forHealthcareService(hcsName));
+    checkResponseCode(orgAdmin, CREATED.value());
+  }
+
+  @Then(
+      "{string} finds {string} in the healthcare service {string} with the ConnectionType {string}")
+  @Dann("{string} findet {string} im Healthcare-Service {string} mit dem ConnectionType {string}")
+  public void findHealthcareServiceWithFunctionAccount(
+      String actorName, String userName, String hcsName, String connectionType) {
+    Actor actor = theActorCalled(actorName);
+    String mxId = theActorCalled(userName).recall(MX_ID);
+    FhirSearchResultDTO result =
+        actor.asksFor(
+            organizationEndpoints()
+                .withHealthcareServiceName(hcsName)
+                .havingMxIdAsUriInEndpoint(mxidToUri(mxId)));
+    List<FhirEndpointDTO> endpoints =
+        getResourcesFromSearchResult(result, ENDPOINT, FhirEndpointDTO.class);
+    String endpointName =
+        getEndpointFromInternalName(theActorCalled(userName).recall(DISPLAY_NAME)).getName();
+    List<FhirEndpointDTO> namedEndpoints = getEndpointsByName(endpoints, endpointName);
+    List<FhirEndpointDTO> endpointsWithAddress =
+        getEndpointsByAddress(namedEndpoints, theActorCalled(userName).recall(MX_ID));
+    List<String> connectionTypeCodes =
+        endpointsWithAddress.stream()
+            .map(
+                endpoint -> {
+                  assert endpoint.getConnectionType() != null;
+                  return endpoint.getConnectionType().getCode();
+                })
+            .toList();
+    assertThat(connectionTypeCodes).contains(connectionType);
+  }
+
+  private List<FhirEndpointDTO> getEndpointsByName(
+      List<FhirEndpointDTO> endpoints, String endpointName) {
+    List<FhirEndpointDTO> namedEndpoints =
+        endpoints.stream().filter(endpoint -> endpoint.getName().equals(endpointName)).toList();
+    assertThat(namedEndpoints)
+        .as(format("Could not find endpoint with name %s", endpointName))
+        .isNotEmpty();
+    return namedEndpoints;
+  }
+
+  private List<FhirEndpointDTO> getEndpointsByAddress(
+      List<FhirEndpointDTO> endpoints, String mxId) {
+    List<FhirEndpointDTO> endpointsWithAddress =
+        endpoints.stream()
+            .filter(endpoint -> endpoint.getAddress().equals(mxidToUri(mxId)))
+            .toList();
+    assertThat(endpointsWithAddress)
+        .as(format("Could not find endpoint with mxId %s", mxidToUri(mxId)))
+        .isNotEmpty();
+    return endpointsWithAddress;
   }
 }

@@ -45,6 +45,7 @@ public class CreateEndpointTask extends HealthcareSpecificTask {
   private final String name;
   private String mxId;
   private StatusEnum status;
+  private String connectionTypeCode;
 
   public static CreateEndpointTask addHealthcareServiceEndpoint(String endpointName) {
     return new CreateEndpointTask(endpointName);
@@ -52,6 +53,11 @@ public class CreateEndpointTask extends HealthcareSpecificTask {
 
   public CreateEndpointTask withMxIdAsUri(String mxId) {
     this.mxId = mxId;
+    return this;
+  }
+
+  public CreateEndpointTask withConnectionTypeCode(String connectionTypeCode) {
+    this.connectionTypeCode = connectionTypeCode;
     return this;
   }
 
@@ -98,9 +104,10 @@ public class CreateEndpointTask extends HealthcareSpecificTask {
   }
 
   private FhirConnectionTypeDTO buildConnectionType() {
+    connectionTypeCode = connectionTypeCode == null ? "tim" : connectionTypeCode;
     return new FhirConnectionTypeDTO()
         .system("https://gematik.de/fhir/directory/CodeSystem/EndpointDirectoryConnectionType")
-        .code("tim");
+        .code(connectionTypeCode);
   }
 
   public static FhirMetaDTO defaultEndpointMeta() {

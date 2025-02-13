@@ -85,16 +85,6 @@ public class TransferGlue {
     // implement me
   }
 
-  @Dann("{string} prüft die Raumversion im Raum {string} auf Version {string}")
-  public void checkRoomVersionRoom(String actor, String roomName, String version) {
-    // implement me
-  }
-
-  @Dann("{string} prüft die Raumversion im Chat mit {string} auf Version {string}")
-  public void checkRoomVersionChat(String actor, String chatPartner, String version) {
-    // implement me
-  }
-
   @Dann("{string} erstellt einen Chat-Raum {string} inkl. Topic")
   public void crateRoomInclTopic(String actor, String roomName) {
     // implement me
@@ -271,18 +261,6 @@ public class TransferGlue {
     // implement me)
   }
 
-  @Then(
-      "{string} erstellt einen Healthcare-Service {string} und setzen einen Funktionsaccount-Endpunkt auf {string}")
-  public void createHcsWithFunctionAccount(String actorName, String hcsName, String userName) {
-    // implement me)
-  }
-
-  @Then("{string} findet {string} im Healthcare-Service {string} mit dem ConnectionType {string}")
-  public void findHcsWithFunctionAccount(
-      String actorName, String userName, String hcsName, String connectionType) {
-    // implement me)
-  }
-
   @Then("{string} findet {string} nicht mehr in seiner Allowliste")
   public void dontFindUserInAllowList(int actorName, String userName) {
     // implement me
@@ -323,6 +301,26 @@ public class TransferGlue {
     // implement me
   }
 
+  @When("{string} prüft, dass die Gruppe {listOfStrings} in der Blockliste gesetzt ist")
+  public void checkGroupOnBlocklist(int actorName, String groupName) {
+    // implement me
+  }
+
+  @When("{string} prüft, dass die Gruppe {listOfStrings} in der Allowliste gesetzt ist")
+  public void checkGroupOnAllowlist(int actorName, String groupName) {
+    // implement me
+  }
+
+  @When("{string} prüft, dass die Gruppe {listOfStrings} in der Blockliste nicht gesetzt ist")
+  public void checkGroupNotOnBlocklist(int actorName, String groupName) {
+    // implement me
+  }
+
+  @When("{string} prüft, dass die Gruppe {listOfStrings} in der Allowliste nicht gesetzt ist")
+  public void checkGroupNotOnAllowlist(int actorName, String groupName) {
+    // implement me
+  }
+
   @When("{string} prüft, ob User {listOfStrings} in der Blockliste gesetzt ist")
   public void checkUserOnBlocklist(int actorName, List<String> userName) {
     // implement me
@@ -348,9 +346,14 @@ public class TransferGlue {
     // implement me
   }
 
-  @When("{word} fragt an Schnittstelle {word} die profile API {string} inkl Parameterbefüllung von {string} über ein {string} ab")
-  public void pingApiOnHomeserverWithUserParameters(String actorName, String interfaceName, String matrixUrl, String parameterUser, String httpMethod) {
+  @When(
+      "{word} fragt an Schnittstelle {word} die profile API {string} inkl Parameterbefüllung von {string} über ein {string} ab")
+  public void pingApiOnHomeserverWithUserParameters(
+      String actorName,
+      String interfaceName,
+      String matrixUrl,
+      String parameterUser,
+      String httpMethod) {
     // implement me
   }
-
 }

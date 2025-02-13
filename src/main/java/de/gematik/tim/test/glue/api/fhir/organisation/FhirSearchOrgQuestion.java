@@ -21,7 +21,7 @@ import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEARCH_ORG;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.getResourcesFromSearchResult;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
-import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getHsFromInternalName;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getHealthcareServiceFromInternalName;
 import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
@@ -36,7 +36,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class FhirSearchOrgQuestion implements Question<FhirSearchResultDTO> {
 
-  private String hsName;
+  private String hcsName;
   private String mxIdInEndpoint;
   private int minimalSearchResults = 1;
   private Long customTimeout;
@@ -46,13 +46,13 @@ public class FhirSearchOrgQuestion implements Question<FhirSearchResultDTO> {
     return new FhirSearchOrgQuestion();
   }
 
-  public FhirSearchOrgQuestion withHsName(String hsName) {
-    this.hsName = getHsFromInternalName(hsName).name();
+  public FhirSearchOrgQuestion withHealthcareServiceName(String hcsName) {
+    this.hcsName = getHealthcareServiceFromInternalName(hcsName).name();
     return this;
   }
 
-  public FhirSearchOrgQuestion withUniqueHsName(String hsName) {
-    this.hsName = hsName;
+  public FhirSearchOrgQuestion withUniqueHsName(String hcsName) {
+    this.hcsName = hcsName;
     return this;
   }
 
@@ -104,8 +104,8 @@ public class FhirSearchOrgQuestion implements Question<FhirSearchResultDTO> {
   }
 
   private RequestSpecification prepareQuery(RequestSpecification request) {
-    if (StringUtils.isNotBlank(hsName)) {
-      request.queryParam("healthcareServiceName", hsName);
+    if (StringUtils.isNotBlank(hcsName)) {
+      request.queryParam("healthcareServiceName", hcsName);
     }
     return request;
   }

@@ -34,6 +34,7 @@ import static de.gematik.tim.test.glue.api.room.tasks.JoinRoomTask.joinRoom;
 import static de.gematik.tim.test.glue.api.room.tasks.LeaveRoomTask.leaveRoom;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.checkRoomMembershipState;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.checkRoomVersion;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.checkRoomVersionIs;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getAllActiveActorsByMxIds;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getRoomByInternalName;
@@ -49,7 +50,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
 import de.gematik.tim.test.glue.api.exceptions.TestRunException;
-import de.gematik.tim.test.glue.api.room.questions.RoomStates;
+import de.gematik.tim.test.glue.api.room.questions.RoomState;
 import de.gematik.tim.test.models.RoomDTO;
 import de.gematik.tim.test.models.RoomMemberDTO;
 import de.gematik.tim.test.models.RoomMembershipStateDTO;
@@ -333,37 +334,45 @@ public class RoomControllerGlue {
 
   @Then("{string} checks the room state in the chat with {string} to be {listOfStrings}")
   @Dann("{string} prüft den Room State im Chat mit {string} auf {listOfStrings}")
-  public void checkRoomStatesOfChat(String actorName, String userName, List<String> roomStates) {
+  public void checkRoomStatesOfChat(
+      String actorName, String userName, List<String> expectedRoomStates) {
     String roomName = DIRECT_CHAT_NAME + theActorCalled(userName).recall(MX_ID);
-    checkRoomStatesOfRoom(actorName, roomName, roomStates);
+    checkRoomStatesOfRoom(actorName, roomName, expectedRoomStates);
   }
 
   @Then("{string} checks the room state in the room {string} to be {listOfStrings}")
   @Dann("{string} prüft den Room State im Raum {string} auf {listOfStrings}")
   public void checkRoomStatesOfRoom(
-      String actorName, String roomName, List<String> requestedRoomStates) {
+      String actorName, String roomName, List<String> wantedRoomStates) {
     Actor actor = theActorCalled(actorName);
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
     List<RoomStateDTO> roomStates = actor.asksFor(roomStates());
-    Set<RoomStates> roomsStatesToCheck =
-        requestedRoomStates.stream().map(RoomStates::valueOf).collect(Collectors.toSet());
-    for (RoomStates s : roomsStatesToCheck) {
-      assertThat(isRoomStateInList(s, roomStates))
-          .as(format("Expected roomState %s could not be found in Room %s", s, roomName));
+    Set<RoomState> expectedRoomStates =
+        wantedRoomStates.stream().map(RoomState::valueOf).collect(Collectors.toSet());
+    for (RoomState expectedRoomState : expectedRoomStates) {
+      assertThat(isRoomStateInList(expectedRoomState, roomStates))
+          .as(
+              format(
+                  "Expected roomState %s could not be found in Room %s",
+                  expectedRoomState, roomName))
+          .isTrue();
     }
     checkRoomMembershipState(actor, roomName);
   }
 
-  public boolean isRoomStateInList(RoomStates roomState, List<RoomStateDTO> roomStates) {
-    roomStates = roomStates.stream().filter(r -> r.getType().equals(roomState.getType())).toList();
-    if (nonNull(roomState.getContent())) {
+  public boolean isRoomStateInList(RoomState expectedRoomState, List<RoomStateDTO> roomStates) {
+    roomStates =
+        roomStates.stream()
+            .filter(roomState -> roomState.getType().equals(expectedRoomState.getType()))
+            .toList();
+    if (nonNull(expectedRoomState.getContent())) {
       roomStates =
           roomStates.stream()
               .filter(
-                  r ->
-                      parse(r.getContent())
-                          .read(roomState.getContent().jsonPath())
-                          .equals(roomState.getContent().value()))
+                  roomState ->
+                      parse(roomState.getContent())
+                          .read(expectedRoomState.getContent().jsonPath())
+                          .equals(expectedRoomState.getContent().value()))
               .toList();
     }
     return !roomStates.isEmpty();
@@ -450,5 +459,23 @@ public class RoomControllerGlue {
                 .withMembers(List.of(actorMxid, userMxid))
                 .withName(roomName)
                 .withCustomInterval(timeout, pollInterval));
+  }
+
+  @Then("{string} checks the room version in room {string} to be version {string}")
+  @Dann("{string} prüft die Raumversion im Raum {string} auf Version {string}")
+  public void checkRoomVersionRoom(String actorName, String roomName, String version) {
+    Actor actor = theActorCalled(actorName);
+    RoomDTO room = actor.asksFor(ownRoom().withName(roomName));
+    assertThat(room)
+        .as(format("Actor %s has no room with name %s", actorName, roomName))
+        .isNotNull();
+    checkRoomVersionIs(room, version);
+  }
+
+  @Then("{string} checks the room version in chat with {string} to be version {string}")
+  @Dann("{string} prüft die Raumversion im Chat mit {string} auf Version {string}")
+  public void checkRoomVersionChat(String actorName, String userName, String version) {
+    String roomName = DIRECT_CHAT_NAME + theActorCalled(userName).recall(MX_ID);
+    checkRoomVersionRoom(actorName, roomName, version);
   }
 }

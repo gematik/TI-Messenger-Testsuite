@@ -394,7 +394,7 @@ genutzt werden
 | @Ctl:Chat               | Tests die einen Chat benutzen
 | @Ctl:SearchPart         | Tests mit teilqualifizierter Suche
 | @Ctl:Raum               | Tests die einen Raum benutzen
-| @Ctl:InvitReject        | Tests mit abgelehnter Einladung
+| @Ctl:InviteReject        | Tests mit abgelehnter Einladung
 | @Ctl:RejectThird        | Tests Einladung von Dritten wir abgelehnt
 | @Ctl:MsgForward         | Tests senden Nachrichten von A nach B
 | @Ctl:MsgBackward        | Tests senden Nachrichten von B nach A
@@ -467,11 +467,11 @@ Somit wird gewährleistet, dass genau das richtige Set an Daten für den jeweili
 Grundlage hierfür ist das kartesische Produkt aller möglichen Kombinationen der in der generierten Target combine_items.json (target/generated-combine/combine_items.json) enthaltenen Schnittstellen.
 Mithilfe von Filtern, die direkt im .cute-File (später feature-File) gesetzt werden, kann nun diese Liste verkleinert und fokussiert werden.
 
-Die *combine_items.json im Target Folder* (target/generated-combine/combine_items.json) wird aus der *Source combine_items.json* (src/test/resources/combine_items.json) und den aus der *Testtreiber Schnittstelle zum Device ausgelesenen Daten* (definiert in der pom.xml) erzeugt.
+Die *combine_items.json im Target Folder* (target/generated-combine/combine_items.json) wird aus der *Source combine_items.json* (src/test/resources/combine_items.json) und den aus der *Testtreiber Schnittstelle zum Device ausgelesenen Daten* (definiert in der parent-pom.xml) erzeugt.
 
 - Source combine_items.json - Bereitstellen der Schnittstelle (url).
 Evtl. zusätzliche Tags und Properties.
-- pom.xml - Tags und Properties, die über die Testtreiber-Schnittstelle vom Device als Info-Daten (im Folgenden als "Info-Daten" bezeichnet) ausgelesen werden und für alle Schnittstellen gelten.
+- parent-pom.xml - Tags und Properties, die über die Testtreiber-Schnittstelle vom Device als Info-Daten (im Folgenden als "Info-Daten" bezeichnet) ausgelesen werden und für alle Schnittstellen gelten.
 - Target combine_items.json - das Produkt aus Source combine_items.json und ausgelesenen Info-Daten (pom.xml).
 Dies dient als Grundlage für die Kombinatorik.
 
@@ -496,17 +496,17 @@ Oder auch Properties, die durch das Auslesen der Info-Daten gefüllt werden und 
 
 Hintergrund der Vergleichsoptionen von Tags und Properties ist, dass so z.B. schon vor dem Erstellen der Testdaten geprüft werden kann, dass die hinterlegten Devices an der genannten Schnittstelle den Anforderungen entsprechen, die notwendig sind.
 
-Tags, die in der Source combine_items.json angegeben sind und ebenfalls aus einem Device ausgelesen werden sollen (definiert in der pom.xml), können miteinander verglichen werden.
+Tags, die in der Source combine_items.json angegeben sind und ebenfalls aus einem Device ausgelesen werden sollen (definiert in der parent-pom.xml), können miteinander verglichen werden.
 Dies geschieht case sensitive (1:1 Beziehung).
-Sollte sich der Tag in der combine_items.json und von dem in der pom.xml definierten unterscheiden, wird der Tag aus der Source combine_items.json als zusätzlicher Tag gewertet und in die Target combine_items.json übernommen.
+Sollte sich der Tag in der combine_items.json und von dem in der parent-pom.xml definierten unterscheiden, wird der Tag aus der Source combine_items.json als zusätzlicher Tag gewertet und in die Target combine_items.json übernommen.
 
 Beispiel:
 
 [cols='20%,20%,20%,20%,20%']
 |===
-| *Source combine_items.json* |*Definition in der pom.xml* | *Daten aus der TesttreiberSchnittstelle* |  *Aktion* | *Ergebnis in der Target combine_items.json*
+| *Source combine_items.json* |*Definition in der parent-pom.xml* | *Daten aus der TesttreiberSchnittstelle* |  *Aktion* | *Ergebnis in der Target combine_items.json*
 | client                      | client                     | true                                     | Vergleich | Ein Eintrag (client)
-| client                      | *nichts*                   | (nichts in der pom.xml definiert)        | Übernahme | Ein Eintrag (client)
+| client                      | *nichts*                   | (nichts in der parent-pom.xml definiert)        | Übernahme | Ein Eintrag (client)
 | Client                      | client                     | true                                     | Übernahme | Zwei Einträge (client, Client)
 | *nichts*                    | client                     | true                                     | Übernahme | Ein Eintrag (client)
 | client                      | client                     | false                                    | Vergleich | Abbruch - Error
@@ -515,7 +515,7 @@ Beispiel:
 
 *Vergleichsoptionen Properties*
 
-Geben wir z.B. die Property ‚os‘ (wie im obigen Beispiel) mit einem entsprechenden Wert mit, so wird geprüft, ob das Device hinter der URL des Testtreibers tatsächlich dieses ‚os‘ hinterlegt hat, wenn diese Property ebenfalls in der pom.xml definiert ist.
+Geben wir z.B. die Property ‚os‘ (wie im obigen Beispiel) mit einem entsprechenden Wert mit, so wird geprüft, ob das Device hinter der URL des Testtreibers tatsächlich dieses ‚os‘ hinterlegt hat, wenn diese Property ebenfalls in der parent-pom.xml definiert ist.
 Die Überprüfung erfolgt hier case sensitive (iOS – iOS; usw).
 
 [cols='40%,40%,20%']
@@ -534,19 +534,19 @@ image:OS_Info.png[float="center"]
 
 *Erzeugung von Tags und Properties über die Testtreiberschnittstelle*
 
-Die Daten, die von dem jeweiligen Device ausgelesen werden und die combine_items.json im Target Folder (target/generated-combine/combine_items.json) anreichern, werden in der pom.xml unter ‚cucumber-test-combinations-maven-plugin‘ definiert.
+Die Daten, die von dem jeweiligen Device ausgelesen werden und die combine_items.json im Target Folder (target/generated-combine/combine_items.json) anreichern, werden in der parent-pom.xml unter ‚cucumber-test-combinations-maven-plugin‘ definiert.
 Dies können Tags oder auch Properties sein.
 
 Beispiel für die Erzeugung von Tags:
 
-.Abbildung{counter:my-example-number: 1}: Tag Generierung in pom.xml
+.Abbildung{counter:my-example-number: 1}: Tag Generierung in parent-pom.xml
 image:TagsPom.png[float="center"]
 
 Tags werden erzeugt, wenn der eingegebene JSON-Path im "expression"-Teil 'true' zurückliefert.
 
 Beispiel für die Erzeugung von Properties:
 
-.Abbildung{counter:my-example-number: 1}: Property Generierung in pom.xml
+.Abbildung{counter:my-example-number: 1}: Property Generierung in parent-pom.xml
 image:propertiesPom.png[float="center"]
 
 Tags und Properties werden erzeugt durch die auf der Schnittstelle hinterlegten Daten, die über die Testtreiberschnittstelle vor jedem Testrun an der Info Schnittstelle ausgelesen werden.
@@ -636,15 +636,15 @@ Es besteht auch weiter die Möglichkeit vor Erstellung der Target combine_items.
 Hierzu wird die Response json jeder Schnittstelle validiert.
 
 So kann beispielsweise eine Minimalanzahl von Devices hinter einer Schnittstelle geprüft werden.
-Dies ist auch als Defaultwert in der pom.xml hinterlegt:
+Dies ist auch als Defaultwert in der parent-pom.xml hinterlegt:
 
-.Abbildung{counter:my-example-number: 1}: Default Expression in pom.xml
+.Abbildung{counter:my-example-number: 1}: Default Expression in parent-pom.xml
 image:DeafultExpression.png[float="center"]
 
 Hier ist beispielsweise definiert, dass alle Schnittstellen mit dem Wert 'orgAdmin' mindestens ein Device und alle anderen 3 Devices hinterlegt haben müssen (wie in Kapitel 4.3 beschrieben), sonst wird der Run nicht weiter fortgesetzt.
 
 Es können auch dedizierte Vergleichswerte definiert werden, die dann einzelnen Schnittstellen in der combine_items.json zugeordnet werden können.
-Dies kann auch global in der pom.xml geschehen, sodass dann an die Schnittstelle in der combine_items.json lediglich die ID weiter gegeben werden muss.
+Dies kann auch global in der parent-pom.xml geschehen, sodass dann an die Schnittstelle in der combine_items.json lediglich die ID weiter gegeben werden muss.
 
 Weitere Information zu den Möglichkeiten sind unter https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc#pooling[Plugin/doc/userguide] zu finden.
 
@@ -684,7 +684,7 @@ Hintergrund hierfür ist, dass so bestimmte Schnittstellen dediziert bzw. auch i
 *Der 'practitioner' Tag*
 
 Der ‚practitioner Tag‘ ist derzeit (kann auch erweitert werden) eines von drei Tags, die über die Testtreiberschnittstelle am Info Endpunkt vom jeweiligen Device abgefragt werden.
-Diese drei Tags sind in der pom.xml definiert (Erklärung zur pom.xml weiter oben in Kapitel 6.2) und sind folgende:
+Diese drei Tags sind in der parent-pom.xml definiert (Erklärung zur parent-pom.xml weiter oben in Kapitel 6.2) und sind folgende:
 
 - client – es handelt sich um einen User Client, der Nachrichten versenden darf
 - orgAdmin – es handelt sich um einen OrgAdmin Client, der auf das Organisationsverzeichnis im VZD zugreifen darf
@@ -737,27 +737,27 @@ Ein Beispiel:
 .Abbildung{counter:my-example-number: 1}: Target combine_items.json mit Versionen
 image:VersionFilterCombineItems.png[float="center"]
 
-Welcher Wert hier für das Feature Versionsfilter genutzt wird, wird in der pom.xml konfiguriert:
+Welcher Wert hier für das Feature Versionsfilter genutzt wird, wird in der parent-pom.xml konfiguriert:
 
-.Abbildung{counter:my-example-number: 1}: Version Property in pom.xml
+.Abbildung{counter:my-example-number: 1}: Version Property in parent-pom.xml
 image:VersionFilterPom.png[float="center"]
 
 [TIP]
-[black]#*_Wichtig: Default ist die VersionProperties mit >version< befüllt und muss ggf. angepasst werden passend zu den tatsächlich ausgelesenen und in der pom.xml definierten Daten._*#
+[black]#*_Wichtig: Default ist die VersionProperties mit >version< befüllt und muss ggf. angepasst werden passend zu den tatsächlich ausgelesenen und in der parent-pom.xml definierten Daten._*#
 
 [TIP]
 [black]#*_Der Versionsparameter muss in Form von X , X.X , X.X.X or X.X.X.X etc. vorhanden sein, wobei X ein Integer sein muss!_*#
 
-Um einen Versionsfilter *global* zu setzen, muss der entsprechende Wert in die pom.xml eingetragen werden.
+Um einen Versionsfilter *global* zu setzen, muss der entsprechende Wert in die parent-pom.xml eingetragen werden.
 Per default ist dieser nicht befüllt.
 
-.Abbildung{counter:my-example-number: 1}: Globaler Versionfilter in pom.xml
+.Abbildung{counter:my-example-number: 1}: Globaler Versionfilter in parent-pom.xml
 image:CucumberFilterVersion.png[float="center"]
 
 Wird hier nun ein Wert eingetragen, werden nur die Schnittstellen der combine_items für die Kombinatorik genutzt, die diesem Wert entsprechen.
 Ergo werden alle Schnittstellen die diesem Wert nicht entsprechen, an dem folgenden Testrun nicht teilnehmen.
 
-.Abbildung{counter:my-example-number: 1}: Globaler Versionfilter in pom.xml befüllt
+.Abbildung{counter:my-example-number: 1}: Globaler Versionfilter in parent-pom.xml befüllt
 image:CucumberFilterVersionBefuellt.png[float="center"]
 
 Wichtig an dieser Stelle ist zu erwähnen, dass vor der Version ein Standard ‚two-way comparison operator‘ gesetzt werden muss.
@@ -776,7 +776,7 @@ Ein Beispiel hierfür ist:
 *mvn clean verify -Dcucumber.filter.version=--EQ--&#8201;3.3.3*
 
 [TIP]
-[black]#*_Wichtig an dieser Stelle ist: Wenn in der pom.xml ein Versionsfilter und in der Kommandozeile ebenfalls ein Versionsfilter angegeben wird, so übersteuert der Wert in der Kommandozeile den globalen Wert in der pom.xml!_*#
+[black]#*_Wichtig an dieser Stelle ist: Wenn in der parent-pom.xml ein Versionsfilter und in der Kommandozeile ebenfalls ein Versionsfilter angegeben wird, so übersteuert der Wert in der Kommandozeile den globalen Wert in der parent-pom.xml!_*#
 
 Auf Testfallebene kann dieser Filter ebenfalls genutzt werden.
 Hierzu können Versionsfilter für die Parameter genutzt werden, die dann im Nachgang die Kombinatorik bestimmen.
@@ -801,17 +801,17 @@ So würde in der Kombinatorik und anschließenden Ausführung für beide Paramet
 
 Zwangsläufig müssen nicht alle Parameter mit einem Versionsfilter befüllt werden.
 Wir können in diesem Beispiel auch nur dem Parameter „ApiName1“ einen Versionsfilter geben.
-Für „ApiName2“ wird dann entweder der global gesetzte Filter in der pom.xml genutzt oder sollte dieser nicht befüllt sein, eben alle anderen Schnittstellen, da hier keine Beschränkung vorliegt.
+Für „ApiName2“ wird dann entweder der global gesetzte Filter in der parent-pom.xml genutzt oder sollte dieser nicht befüllt sein, eben alle anderen Schnittstellen, da hier keine Beschränkung vorliegt.
 
 .Abbildung{counter:my-example-number: 1}: TestCase mit Versionsfilter #3
 image:VersionFilterTestCase3.png[float="center"]
 
 [TIP]
-[black]#*_Wichtig: Versionsfilter auf Testfallebene übersteuern gesetzte Filter in der pom.xml und auch in der Kommandozeile!!!_*#
+[black]#*_Wichtig: Versionsfilter auf Testfallebene übersteuern gesetzte Filter in der parent-pom.xml und auch in der Kommandozeile!!!_*#
 
 Die Hierarchie ist also wie folgt:
 
-Versionsfilter auf Testfallebene > Versionsfilter in der Kommandozeile > Versionsfilter in der pom.xml
+Versionsfilter auf Testfallebene > Versionsfilter in der Kommandozeile > Versionsfilter in der parent-pom.xml
 
 Weitere Informationen sind, wie zuvor erwähnt, an folgender Stelle zu finden:
 
@@ -846,11 +846,11 @@ Daraus wird dann ersichtlich welche Gruppen an dem Testrun teilgenommen haben un
 .Abbildung{counter:my-example-number: 1}: Used Groups
 image:usedGroups.png[float="center"]
 
-In der pom.xml können u.a. Pools definiert werden.
+In der parent-pom.xml können u.a. Pools definiert werden.
 
 Ein Beispiel:
 
-.Abbildung{counter:my-example-number: 1}: Pool Definition in pom.xml
+.Abbildung{counter:my-example-number: 1}: Pool Definition in parent-pom.xml
 image:PoolGroups.png[float="center"]
 
 So kann an dieser Stelle folgendes definiert werden:
@@ -862,11 +862,11 @@ In diesem Fall z.B. kann mit Wildcards gearbeitet werden
 
 Weitere Informationen zu diesen Werten und vor allem den Möglichkeiten der 'Matching' Strategien ist hier zu entnehmen: https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc#pooling[Plugin/doc/userguide]
 
-Die grundlegende Konfiguration des Poolings findet ebenfalls in der pom.xml statt
+Die grundlegende Konfiguration des Poolings findet ebenfalls in der parent-pom.xml statt
 
 Ein Beispiel:
 
-.Abbildung{counter:my-example-number: 1}: Pool Konfiguration in pom.xml
+.Abbildung{counter:my-example-number: 1}: Pool Konfiguration in parent-pom.xml
 image:PoolingPom.png[float="center"]
 
 Neben den zuvor beschriebenen Pools können so nun folgende Werte bestimmt werden:
@@ -880,12 +880,12 @@ An dieser Stelle kann dieser Wert auch fix gesetzt werden.
 [TIP]
 [black]#*_Wichtig: All diese Werte können auch flexibel genutzt werden, indem sie mit Parametern befüllt werden._*#
 
-.Abbildung{counter:my-example-number: 1}: Flexible Pool Konfiguration in pom.xml
+.Abbildung{counter:my-example-number: 1}: Flexible Pool Konfiguration in parent-pom.xml
 image:Pom_pooling.png[float="center"]
 
 Zur Ausführung eines Pools kann die Kommandozeile genutzt werden.
 
-Zum Beispiel kann hier nun, wenn die Werte in der pom.xml als Parameter definiert sind, die größe des Pools und exkludierte Gruppen definiert werden:
+Zum Beispiel kann hier nun, wenn die Werte in der parent-pom.xml als Parameter definiert sind, die größe des Pools und exkludierte Gruppen definiert werden:
 
  -DpoolSize=3 -DexcludedGroups='\*special'
 
@@ -897,7 +897,7 @@ An erster Stelle kann nun über die Pattern bestimmt werden, welche namentlichen
 Mehrere Pattern werden mit einer '|' getrennt.
 Dieser Wert muss mindestens einmal befüllt sein.
 Die beiden folgenden Werte können auch leer gelassen werden.
-Dann greifen die Default-Werte (amount=0 und default Matching Strategie aus der pom.xml)
+Dann greifen die Default-Werte (amount=0 und default Matching Strategie aus der parent-pom.xml)
 
 Der zweite Wert definiert die Anzahl der Gruppen, die mit den zuvor genannten Pattern am Pool teilnehmen sollen.
 
@@ -906,7 +906,7 @@ Der dritte Wert definiert die 'Matching' Strategie.
 Nach einem ';' können noch weitere Definitionen getroffen werden, z.B. für andere 'Matching' Strategien.
 
 [TIP]
-[black]#*_Wichtig: Sollte in der Kommandozeile oder in der Konfiguration poolGroupString genutzt werden, überschreibt diese andere in der pom.xml definierten Werte und Pools._*#
+[black]#*_Wichtig: Sollte in der Kommandozeile oder in der Konfiguration poolGroupString genutzt werden, überschreibt diese andere in der parent-pom.xml definierten Werte und Pools._*#
 
 Wenn als Anzahl 0 oder nicht mitgegeben wird, werden alle passenden Gruppen genutzt.
 
