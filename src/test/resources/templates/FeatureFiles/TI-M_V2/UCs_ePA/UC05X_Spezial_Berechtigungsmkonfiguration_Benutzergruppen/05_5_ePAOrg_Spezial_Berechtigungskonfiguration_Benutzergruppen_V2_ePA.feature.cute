@@ -1,0 +1,144 @@
+# language: de
+@File:FeatureFile_05X_05_V2_ePA @Ctl:UseCaseV2_05X_ePA
+@PRODUKT:TI-M_FD_ePA
+@PRODUKT:TI-M_Client_Basis
+@PRODUKT:TI-M_Client_Pro
+@Zul:ePA
+@AFO-ID:A_25704
+@AFO-ID:A_25046
+
+Funktionalität: 05X. (5) Berechtigungskonfiguration - ePA User (Versicherter) wird als Benutzergruppe geblockt/zugelassen (ePA Spec)
+
+  Dieser Anwendungsfall dient dazu, die in der Pro Spec festgelegte Anforderung zur akteursspezifischen
+  Berechtigungskonfiguration zu überprüfen. Ziel ist es, sicherzustellen, dass Akteuren des TI-M ePA nicht die Möglichkeit gegeben wird,
+  Org oder HBA-User zu kontaktieren, die die Benutzergruppe "Versicherte" geblockt haben. Sollte er nicht geblockt sein,
+  muss die Kontakaufnahme möglich sein.
+
+  COMMENT: ePA
+  A_25704     AF_10233 - Versicherteneinladung erlauben
+  COMMENT: Basis
+  A_25046     Durchsetzung der Berechtigungskonfiguration - Client
+
+  Inhalt
+  TF 1 - 2    User AllowAll blockt/entblockt Gruppe (ePA User verucht Org User zu kontaktieren) (Chat/Raum)
+  TF 3 - 4    User BlockAll allow/unallow Gruppe (ePA User verucht Org User zu kontaktieren) (Chat/Raum)
+
+  @WIP
+  @Ctl:AllowAll @Ctl:GruppenBP
+  @TCID:TIM_V2_ePA_AF_05X0501 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+  Szenariogrundriss: 05X.05.01 Spezial Berechtigungskonfiguration Benutzergruppen - Chat - GruppenBlock - User AllowAll blockt/entblockt Gruppe (ePA User verucht Org User zu kontaktieren)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+      | B | EPA_CLIENT  | <ApiName2> |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" hinterlegt die Gruppe "Versicherte" in der Blockliste
+    Und        "B" versucht "A" direkt "Testnachricht 1" zu schreiben
+    Dann       erhält "B" einen Responsecode 403
+    Und        "A" erhält KEINE Einladung von "B" [Retry 10 - 3]
+    Und        "A" entfernt die Gruppe "Versicherte" aus der Blockliste
+    Und        "B" schreibt "A" direkt "Testnachricht 2"
+    Dann       "A" erhält eine Einladung von "B"
+    Und        "A" bestätigt eine Einladung von "B"
+    Und        "A" empfängt eine Nachricht "Testnachricht 2" von "B"
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("proClient"))
+    @Filter(ApiName2.hasTag("epaClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @WIP
+  @Ctl:AllowAll @Ctl:GruppenBP
+  @TCID:TIM_V2_ePA_AF_05X0502 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+  Szenariogrundriss: 05X.05.02 Spezial Berechtigungskonfiguration Benutzergruppen - Raum - GruppenBlock - User AllowAll blockt/entblockt Gruppe (ePA User verucht Org User zu kontaktieren)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+      | B | EPA_CLIENT  | <ApiName2> |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" hinterlegt die Gruppe "Versicherte" in der Blockliste
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "B" versucht "A" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann       erhält "B" einen Responsecode 403
+    Und        "A" erhält KEINE Einladung von "B" für den Raum "TIM Testraum 1" [Retry 10 - 3]
+    Und        "A" entfernt die Gruppe "Versicherte" aus der Blockliste
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 2"
+    Und        "B" lädt "A" in Chat-Raum "TIM Testraum 2" ein
+    Dann       "A" erhält eine Einladung in Raum "TIM Testraum 2" von "B"
+    Und        "A" bestätigt eine Einladung in Raum "TIM Testraum 2" von "B"
+    Und        "A" ist dem Raum "TIM Testraum 2" beigetreten
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("proClient"))
+    @Filter(ApiName2.hasTag("epaClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @WIP
+  @Ctl:BlockAll @Ctl:GruppenBP
+  @TCID:TIM_V2_ePA_AF_05X0503 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+  Szenariogrundriss: 05X.05.03 Spezial Berechtigungskonfiguration Benutzergruppen - Chat - GruppenAllow - User BlockAll allow/unallow Gruppe (ePA User verucht Org User zu kontaktieren)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+      | B | EPA_CLIENT  | <ApiName2> |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" hinterlegt die Gruppe "Versicherte" in der Allowliste
+    Und        "B" schreibt "A" direkt "Testnachricht 1"
+    Dann       "A" erhält eine Einladung von "B"
+    Und        "A" bestätigt eine Einladung von "B"
+    Und        "A" empfängt eine Nachricht "Testnachricht 1" von "B"
+    Und        "A" entfernt die Gruppe "Versicherte" aus der Allowliste
+    Und        "B" versucht "A" direkt "Testnachricht 2" zu schreiben
+    Dann       erhält "B" einen Responsecode 403
+    Und        "A" erhält KEINE Einladung von "B" [Retry 10 - 3]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("proClient"))
+    @Filter(ApiName2.hasTag("epaClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @WIP
+  @Ctl:BlockAll @Ctl:GruppenBP
+  @TCID:TIM_V2_ePA_AF_05X0504 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+  Szenariogrundriss: 05X.05.04 Spezial Berechtigungskonfiguration Benutzergruppen - Raum - GruppenAllow - User BlockAll allow/unallow Gruppe (ePA User verucht Org User zu kontaktieren)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+      | B | EPA_CLIENT  | <ApiName2> |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" hinterlegt die Gruppe "Versicherte" in der Allowliste
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "B" lädt "A" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "A" erhält eine Einladung in Raum "TIM Testraum 1" von "B"
+    Und        "A" bestätigt eine Einladung in Raum "TIM Testraum 1" von "B"
+    Und        "A" ist dem Raum "TIM Testraum 1" beigetreten
+    Und        "A" entfernt die Gruppe "Versicherte" aus der Allowliste
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 2"
+    Und        "B" versucht "A" in Chat-Raum "TIM Testraum 2" einzuladen
+    Dann       erhält "B" einen Responsecode 403
+    Und        "A" erhält KEINE Einladung von "B" für den Raum "TIM Testraum 2" [Retry 10 - 3]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("proClient"))
+    @Filter(ApiName2.hasTag("epaClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |

@@ -1,0 +1,47 @@
+# language: de
+@File:FeatureFile_10X_06_V2_Basis @Ctl:UseCaseV2_10X_Basis
+@PRODUKT:TI-M_FD_Basis
+@Zul:ePA
+@AFO-ID:A_26263
+
+Funktionalität: 10X. (6) API Checks (Basis Spec)
+
+  Die folgenden Testfälle sollen APIs (inkl. verbotenen und deprecated APIs) und deren Existenz bzw. Erreichbarkeit überprüfen.
+
+  COMMENT: Basis
+  A_26263    - Unauthenticated Media
+
+  Inhalt
+  TF 1  Deprecated Media Endpunkte - Ausserhalb von HomeServern (ePA User empfängt Attachment)
+
+  @WIP
+  @Ctl:AllowAll @Ctl:ApiCheck @Ctl:Attachment
+  @TCID:TIM_V2_BASIS_AF_10X0601 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+  Szenariogrundriss: 10X.06.01 API Checks - Deprecated Media Endpunkte auf unterschiedlichen HomeServern (ePA User empfängt Attachment)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+      | B | EPA_CLIENT  | <ApiName2> |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
+    Wenn       "A" sendet ein Attachment "bild.jpg" als "m.image" an den Raum "TIM Testraum 1"
+    Und        B fragt an Schnittstelle <ApiName2> die media API "/_matrix/media/v3/download/{serverName}/{mediaId}" inkl Parameterbefüllung über ein "GET" ab
+    Dann       erhält "B" einen Responsecode 200
+    Und        B fragt an Schnittstelle <ApiName2> die media API "/_matrix/media/v3/download/{serverName}/{mediaId}/{fileName}" inkl Parameterbefüllung über ein "GET" ab
+    Dann       erhält "B" einen Responsecode 200
+    Und        B fragt an Schnittstelle <ApiName2> die media API "/_matrix/media/v3/thumbnail/{serverName}/{mediaId}" inkl Parameterbefüllung über ein "GET" ab
+    Dann       erhält "B" einen Responsecode 200
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName2,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("proClient"))
+    @Filter(ApiName2.hasTag("epaClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |

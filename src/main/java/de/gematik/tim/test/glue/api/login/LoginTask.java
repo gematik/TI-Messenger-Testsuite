@@ -16,6 +16,7 @@
 
 package de.gematik.tim.test.glue.api.login;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.ACCESS_TOKEN;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.ACCOUNT_PASSWORD;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DISPLAY_NAME;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HOME_SERVER;
@@ -119,6 +120,7 @@ public class LoginTask extends ParallelTaskRunner implements Task {
       actor.remember(MX_ID, account.getMxid());
       actor.remember(ACCOUNT_PASSWORD, account.getPassword());
       actor.remember(DISPLAY_NAME, account.getDisplayName());
+      actor.remember(ACCESS_TOKEN, account.getAccessToken());
     }
     actor.can(logOut());
     actor.remember(IS_LOGGED_IN, true);

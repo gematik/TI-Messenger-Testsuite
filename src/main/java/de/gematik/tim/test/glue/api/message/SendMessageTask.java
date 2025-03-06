@@ -16,15 +16,6 @@
 
 package de.gematik.tim.test.glue.api.message;
 
-import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
-import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEND_MESSAGE;
-import static de.gematik.tim.test.glue.api.room.questions.GetCurrentRoomQuestion.currentRoom;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueMessageText;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.isSameHomeserver;
-import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addMessage;
-import static java.util.Objects.requireNonNull;
-import static net.serenitybdd.rest.SerenityRest.lastResponse;
-
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.models.MessageContentDTO;
 import de.gematik.tim.test.models.MessageContentInfoDTO;
@@ -34,74 +25,83 @@ import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 import org.springframework.http.HttpStatus;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
+import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEND_MESSAGE;
+import static de.gematik.tim.test.glue.api.room.questions.GetCurrentRoomQuestion.currentRoom;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.isSameHomeserver;
+import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addMessage;
+import static java.util.Objects.requireNonNull;
+import static net.serenitybdd.rest.SerenityRest.lastResponse;
+
 @RequiredArgsConstructor
 public class SendMessageTask implements Task {
 
-  private final String body;
-  private String msgType = "m.text";
-  private String fileId;
-  private String mimetype;
-  private Integer size;
+    private final String body;
+    private String msgType = "m.text";
+    private String fileId;
+    private String mimetype;
+    private Integer size;
 
-  public static SendMessageTask sendMessage(String messageText) {
-    requireNonNull(messageText);
-    return new SendMessageTask(messageText);
-  }
-
-  public SendMessageTask withFileId(String fileId) {
-    this.fileId = fileId;
-    return this;
-  }
-
-  public SendMessageTask withMimetype(String mimetype) {
-    this.mimetype = mimetype;
-    return this;
-  }
-
-  public SendMessageTask withSize(Integer size) {
-    this.size = size;
-    return this;
-  }
-
-  public SendMessageTask withMsgType(String msgType) {
-    this.msgType = msgType;
-    return this;
-  }
-
-  @Override
-  public <T extends Actor> void performAs(T actor) {
-    MessageContentDTO message = buildMessage();
-
-    actor.attemptsTo(SEND_MESSAGE.request().with(req -> req.body(message)));
-
-    if (HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful()) {
-      addMessage(body, lastResponse().as(MessageDTO.class));
+    public static SendMessageTask sendMessage(String messageText) {
+        requireNonNull(messageText);
+        return new SendMessageTask(messageText);
     }
-    String actorId = actor.recall(MX_ID);
-    actor
-        .asksFor(currentRoom())
-        .getMembers()
-        .forEach(
-            member -> {
-              String memberId = member.getMxid();
-              if (actorId.equals(memberId)) {
-                return;
-              }
-              if (isSameHomeserver(actorId, memberId)) {
-                RawDataStatistics.exchangeMessageSameHomeserver();
-              } else {
-                RawDataStatistics.exchangeMessageMultiHomeserver();
-              }
-            });
-  }
 
-  private MessageContentDTO buildMessage() {
-    MessageContentDTO message =
-        new MessageContentDTO().body(createUniqueMessageText()).msgtype(msgType);
-    if (fileId != null) {
-      message.fileId(fileId);
-      message.info(new MessageContentInfoDTO().mimetype(mimetype).size(size));
+    public SendMessageTask withFileId(String fileId) {
+        this.fileId = fileId;
+        return this;
     }
-    return message;
-  }
+
+    public SendMessageTask withMimetype(String mimetype) {
+        this.mimetype = mimetype;
+        return this;
+    }
+
+    public SendMessageTask withSize(Integer size) {
+        this.size = size;
+        return this;
+    }
+
+    public SendMessageTask withMsgType(String msgType) {
+        this.msgType = msgType;
+        return this;
+    }
+
+    @Override
+    public <T extends Actor> void performAs(T actor) {
+        MessageContentDTO message = buildMessage();
+
+        actor.attemptsTo(SEND_MESSAGE.request().with(req -> req.body(message)));
+
+        if (HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful()) {
+            addMessage(body, lastResponse().as(MessageDTO.class));
+        }
+
+        String actorId = actor.recall(MX_ID);
+        actor
+                .asksFor(currentRoom())
+                .getMembers()
+                .forEach(
+                        member -> {
+                            String memberId = member.getMxid();
+                            if (actorId.equals(memberId)) {
+                                return;
+                            }
+                            if (isSameHomeserver(actorId, memberId)) {
+                                RawDataStatistics.exchangeMessageSameHomeserver();
+                            } else {
+                                RawDataStatistics.exchangeMessageMultiHomeserver();
+                            }
+                        });
+    }
+
+    private MessageContentDTO buildMessage() {
+        MessageContentDTO message =
+                new MessageContentDTO().body(body).msgtype(msgType);
+        if (fileId != null) {
+            message.fileId(fileId);
+            message.info(new MessageContentInfoDTO().mimetype(mimetype).size(size));
+        }
+        return message;
+    }
 }

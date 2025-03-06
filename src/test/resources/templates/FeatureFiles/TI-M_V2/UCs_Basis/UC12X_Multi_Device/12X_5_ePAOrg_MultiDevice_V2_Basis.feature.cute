@@ -1,0 +1,85 @@
+# language: de
+@File:FeatureFile_12X_05_V2_Basis @Ctl:UseCaseV2_12X_Basis
+@PRODUKT:TI-M_Client_ePA
+@Zul:ePA
+@AFO-ID:A_25514
+
+Funktionalität: 12X. (5) Nutzung von mehreren Geräten (Basis Spec)
+
+  Die folgenden Testfälle sollen die Funktionalität der Nutzung von mehreren Devices mit einem Account sicher stellen.
+
+  COMMENT: Basis
+  A_25514   Key-Sharing zwischen Geräten eines Akteurs
+
+  Inhalt
+  TF 1     Nutzung mehrerer Devices - zwischen 2 Organisationen (ePAUser - OrgUser)
+  TF 2     Nutzung mehrerer Devices - zwischen 2 Organisationen - Erhalt vorheriger Nachrichten (ePAUser - OrgUser)
+
+  @Ctl:AllowAll @Ctl:MultiDevices
+    @TCID:TIM_V2_Basis_AF_12X0501 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 12X.05.01 Multi Device - Events außerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT    | <ApiName1A> |
+      | C | PRO_CLIENT    | <ApiName2>  |
+    Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "C" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" exportiert seinen Session-Key
+    Und        "B" reserviert ein Client und meldet sich mit den Daten von "A" an der Schnittstelle <ApiName1B> an
+    Und        "B" importiert den Session-Key von "A"
+    Wenn       "C" schreibt "A" direkt "Testnachricht 1"
+    Und        "A" erhält eine Einladung von "C"
+    Und        "B" erhält eine Einladung von "C"
+    Und        "A" bestätigt eine Einladung von "C"
+    Und        "A" empfängt eine Nachricht "Testnachricht 1" von "C"
+    Und        "A" loggt sich im TI-Messenger aus
+    Dann       "B" empfängt eine Nachricht "Testnachricht 1" von "C"
+    Und        "B" schreibt "C" direkt "Testnachricht 2"
+    Und        "C" empfängt eine Nachricht "Testnachricht 2" von "B"
+
+    @Shuffle(true)
+  #@DistinctColumn(ApiName1C)
+    @MaxSameColumnProperty(ApiName1B,homeserver,2)
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1A.hasTag("epaClient"))
+    @Filter(ApiName1B.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B | ApiName2 |
+
+  @Ctl:AllowAll @Ctl:MultiDevices
+    @TCID:TIM_V2_Basis_AF_12X0502 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 12X.05.02 Multi Device - Events außerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices - Erhalt vorheriger Nachrichten
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT | <ApiName1A> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "C" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" exportiert seinen Session-Key
+    Wenn       "C" schreibt "A" direkt "Testnachricht 1"
+    Und        "A" erhält eine Einladung von "C"
+    Und        "A" bestätigt eine Einladung von "C"
+    Und        "A" empfängt eine Nachricht "Testnachricht 1" von "C"
+    Und        "A" schreibt "C" direkt "Testnachricht 2"
+    Und        "B" reserviert ein Client und meldet sich mit den Daten von "A" an der Schnittstelle <ApiName1B> an
+    Und        "B" importiert den Session-Key von "A"
+    Und        "A" loggt sich im TI-Messenger aus
+    Dann       "B" empfängt eine Nachricht "Testnachricht 1" von "C"
+    Und        "B" empfängt eine Nachricht "Testnachricht 2" von "A"
+
+    @Shuffle(true)
+  #@DistinctColumn(ApiName1C)
+    @MaxSameColumnProperty(ApiName1B,homeserver,2)
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1A.hasTag("epaClient"))
+    @Filter(ApiName1B.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B | ApiName2 |

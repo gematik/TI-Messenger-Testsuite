@@ -2300,6 +2300,10 @@ components:
         - password
         - displayName
       properties:
+        accessToken:
+          type: string
+          description: "Access token for this user"
+          example: "my_great_token_3vLflW"
         username:
           type: string
           description: "Username that can be used to login to this account"
@@ -3210,6 +3214,14 @@ components:
       required:
         - author
       properties:
+        event_id:
+          type: string
+          description: "The globally unique identifier for this event."
+          example: "$HLBTpCvLsh7Zm8eivY25SC9NMWWv2jHElYVJaCHJ37c"
+        type:
+          type: string
+          description: "The type of the event"
+          example: "m.room.message"
         messageId:
           type: string
           description: "The message identifier. Must be returned in response to a sendMessage request. Is used to delete a specific message."
@@ -3227,6 +3239,14 @@ components:
         author:
           type: string
           description: "MxId of the author of this message"
+        origin_server_ts:
+          type: integer
+          description: "Timestamp (in milliseconds since the unix epoch) on originating homeserver when this event was sent."
+          example: 1738838934261
+        room_id:
+          type: string
+          description: "The ID of the room associated with this event."
+          example: "!BmMriOJBQAlLhHSCLQ:matrix.org"
       allOf:
         - $ref: "#/components/schemas/MessageContent"
 
@@ -3260,6 +3280,87 @@ components:
               type: integer
               description: "Size of the file in bytes."
               example: 123456
+        format:
+          type: string
+          description: "The format used in the formatted_body. Only org.matrix.custom.html is supported."
+          example: "org.matrix.custom.html"
+        formatted_body:
+          type: string
+          description: "The formatted version of the body, when it acts as a caption. This is required if format is specified."
+          example: "<b>This is an example text message</b>"
+        filename:
+          type: string
+          description: "The original filename of the uploaded file."
+          example: "something-important.doc"
+        file:
+          type: object
+          required:
+            - url
+            - key
+            - iv
+            - hashes
+            - v
+          description: "Encrypted media file information, including URL, encryption key, IV, and hash. Used for secure media sharing in Matrix messages."
+          properties:
+            url:
+              type: string
+              description: "The URL to the file."
+              example: "mxc://matrix.org/HErreTZgdnUUKBDCRkbMlPyX"
+            v:
+              type: string
+              description: "Version of the encrypted attachment’s protocol. Must be v2."
+              example: "v2"
+            key:
+              $ref: "#/components/schemas/MessageContentFileKey"
+            iv:
+              type: string
+              description: "The 128-bit unique counter block used by AES-CTR, encoded as unpadded base64."
+              example: "3mUNzXhtlSYAAAAAAAAAAA"
+            hashes:
+              type: object
+              description: "A map from an algorithm name to a hash of the ciphertext, encoded as unpadded base64."
+              properties:
+                sha256:
+                  type: string
+                  description: "SHA-256 hash of the encrypted file."
+                  example: "JsonRvH9Pa05eQTR6uOs35qzsLRqY8b2AxIJ6IY/OZo"
+        geo_uri:
+          type: string
+          description: "A geo URI (RFC5870) representing this location."
+          example: "geo:51.5008,0.1247"
+
+    MessageContentFileKey:
+      description: "A JSON Web Key object."
+      type: object
+      required:
+        - alg
+        - ext
+        - k
+        - key_ops
+        - kty
+      properties:
+        alg:
+          type: string
+          description: "Algorithm. Must be A256CTR."
+          example: "A256CTR"
+        ext:
+          type: boolean
+          description: "Extractable. Must be true. This is a W3C extension."
+          example: true
+        k:
+          type: string
+          description: "The key, encoded as urlsafe unpadded base64."
+          example: "8mAj7ykxlizPrN2SdXNU3HCw1lZ-ZrukVZjCQstmR4M"
+        key_ops:
+          type: array
+          items:
+            type: string
+          description: "Key operations. Must at least contain encrypt and decrypt."
+          example: [ "encrypt", "decrypt" ]
+        kty:
+          type: string
+          description: "Key type. Must be oct."
+          example: "oct"
 
     Messages:
       description: "A list of messages and its properties"

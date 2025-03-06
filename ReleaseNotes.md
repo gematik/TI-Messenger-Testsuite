@@ -6,6 +6,23 @@
 
 `docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
 
+
+## Release 2.0.0 
+### Beta Release TI-M Testuite Version 2
+
+### Features
+
+- Release Testcases TI-M_V2 (TI-M Pro, TI-M ePA) [`TI-M_V2`](src/test/resources/templates/FeatureFiles/TI-M_V2)
+- Documentation Testsuite V2 [`Testsuite_Version2`](doc/userguide/Testsuite_Version2.adoc)
+
+  **Note**: Please read the documentation. The handling of Testcases with the temporary tag @WIP is also described there.
+
+### Changes
+
+- API change, breaking only TI-M Version 2: adds fields to messages for better checks on media events
+- API change, breaking only TI-M Version 2: access_token is required to be provided on login
+
+
 ## Release 1.5.1
 
 ### Changes

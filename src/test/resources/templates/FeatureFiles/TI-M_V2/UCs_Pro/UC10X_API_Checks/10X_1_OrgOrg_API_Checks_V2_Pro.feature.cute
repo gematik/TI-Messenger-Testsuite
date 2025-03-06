@@ -1,0 +1,28 @@
+# language: de
+@File:FeatureFile_10X_01_V2_Pro @Ctl:UseCaseV2_10X_Pro
+@PRODUKT:TI-M_FD_Pro
+@Zul:Pro @Zul:ProKK
+@AFO-ID:A_26520
+
+Funktionalität: 10X. (1) API Checks (Pro Spec)
+
+  Die folgenden Testfälle sollen APIs (inkl. verbotenen und deprecated APIs) und deren Existenz bzw. Erreichbarkeit überprüfen.
+
+  COMMENT: Pro
+  A_26520 - Öffentliche Räume Server-API
+
+  Inhalt
+  TF 1       Endpunkt öffentliche Räume (Negativ)
+
+  @Ctl:ApiCheck
+  @TCID:TIM_V2_PRO_AF_10X0101 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  Szenariogrundriss: 10X.01.01 API Checks - Endpunkt öffentliche Räume (Org-User) (Negativ)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+    Wenn       A fragt an Schnittstelle <ApiName1> die API "/_matrix/federation/v1/publicRooms" über ein "GET" ab
+    Dann       erhält "A" einen Responsecode 403
+
+    @Filter(ApiName1.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 |

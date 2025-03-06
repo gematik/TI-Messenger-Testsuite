@@ -1,0 +1,968 @@
+# language: de
+@File:FeatureFile_05_06_V2_Basis @Ctl:UseCaseV2_05_Basis
+@PRODUKT:TI-M_Client_Basis @PRODUKT:TI-M_FD_Basis @PRODUKT:VZD_FHIR
+@Zul:ePA
+@AF-ID:AF_10061-04
+@AFO-ID:A_25045-01
+@AFO-ID:A_25046
+@AFO-ID:A_25043
+
+Funktionalität: 5.1.5 (6) Einladung von Akteuren außerhalb einer Organisation (Basis Spec)
+
+  In diesem Anwendungsfall wird ein Akteur außerhalb einer Organisation eingeladen. Für die Suche nach Akteuren
+  außerhalb der Organisation kann das VZD-FHIR-Directory verwendet werden. Ist die MXID des gesuchten Akteurs dort nicht
+  vorhanden, muss es die Möglichkeit geben, die Kontaktaufnahme auch auf anderen Wegen zu ermöglichen,
+  mindestens mittels manueller Eingabe der MXID. Weitere Optionen wie z. B. QR-Code-Scans sind zulässig.
+
+  COMMENT: Basis
+  AF_10061-04 Einladung von Akteuren außerhalb einer Organisation
+  A_25045-01  Funktionsumfang der Berechtigungskonfiguration
+  A_25046     Durchsetzung der Berechtigungskonfiguration - Client
+  A_25043     Berechtigungskonfiguration in Accountdaten speichern
+
+  Inhalt
+  TF 1  - 2  Org-User lädt ePA-User ein (AllowAll) Chat/Raum
+  TF 3  - 4  Org-User lädt ePA-User ein (BlockAll) Chat/Raum - Negativ
+  TF 5       ePA-User AllowAll (blockt/entblockt Org-User) (Chat)
+  TF 6       ePA-User AllowAll (2 User blockt/entblockt) (Raum)
+  TF 7       ePA-User AllowAll wird von geblocktem und ungeblocktem User eingeladen
+  TF 8       ePA-User BlockAll (allow/unallow User) (Chat)
+  TF 9       ePA-User BlockAll (2 User allow/unallow) (Raum)
+  TF 10      ePA-User BlockAll wird von allow und unallow User eingeladen
+  TF 11      User (versucht)lädt ePA-User ein im MixedMode
+  TF 12 - 13 ePA-User AllowAll blockt/entblockt Server-Namen (Chat/Raum)
+  TF 14 - 15 ePA-User BlockAll allow/unallow Server-Namen (Chat/Raum)
+  TF 16 - 17 ePA-User lehnt Einladung ab (AllowAll) (Chat/Raum)
+  TF 18 - 19 ePA-User lehnt Einladung ab (BlockAll) (Chat/Raum)
+  TF 20      Dritter Nutzer (ePA-User) wird von org-User in Chat eingeladen werden (AllowAll)
+  TF 21      Dritter Nutzer (ePA-User) wird von org-User in Chat eingeladen werden (BlockAll) - Negativ
+  TF 22 - 25 Eintragung/Löschen in Liste von anderem Berechtigungsmodus (AllowAll) - Negativ
+  TF 26 - 29 Eintragung/Löschen in Liste von anderem Berechtigungsmodus (BlockAll) - Negativ
+  TF 30      Eintrag doppelter MXID Einträge in BlockListe (AllowAll)
+  TF 31      Eintrag doppelter MXID Einträge in AllowListe (BlockAll)
+  TF 32      Einträge bleiben trotz Logout erhalten (AllowAll)
+  TF 33      Einträge bleiben trotz Logout erhalten (BlockAll)
+
+  @Ctl:AllowAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050601 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.06.01 Einladung außerhalb einer Organisation - Chat - AllowAll - Org-User lädt ePA-User ein
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+      | B | EPA_CLIENT  | <ApiName2>  |
+    Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "B" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" schreibt "B" direkt "Testnachricht 1"
+    Dann       "B" erhält eine Einladung von "A"
+    Und        "B" bestätigt eine Einladung von "A"
+    Und        "B" empfängt eine Nachricht "Testnachricht 1" von "A"
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("proClient"))
+    @Filter(ApiName2.hasTag("epaClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:AllowAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050602 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.06.02 Einladung außerhalb einer Organisation - Raum - AllowAll - Org-User lädt ePA-User ein
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+      | B | EPA_CLIENT  | <ApiName2>  |
+    Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "B" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("proClient"))
+    @Filter(ApiName2.hasTag("epaClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:BlockAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050603 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  Szenariogrundriss: 05.06.03 Einladung außerhalb einer Organisation - Chat - BlockAll - Org-User lädt ePA-User ein
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+      | B | EPA_CLIENT  | <ApiName2>  |
+    Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "B" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" versucht "B" direkt "Testnachricht 1" zu schreiben
+    Dann       erhält "A" einen Responsecode 403
+    Und        "B" erhält KEINE Einladung von "A" [Retry 10 - 3]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("proClient"))
+    @Filter(ApiName2.hasTag("epaClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:BlockAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050604 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  Szenariogrundriss: 05.06.04 Einladung außerhalb einer Organisation - Raum - BlockAll - Org-User lädt ePA-User ein
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+      | B | EPA_CLIENT  | <ApiName2>  |
+    Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "B" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" versucht "B" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann       erhält "A" einen Responsecode 403
+    Und        "B" erhält KEINE Einladung von "A" für den Raum "TIM Testraum 1" [Retry 10 - 3]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("proClient"))
+    @Filter(ApiName2.hasTag("epaClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:AllowAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050605 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.06.05 Einladung außerhalb einer Organisation - Chat - AllowAll - ePA-User AllowAll (blockt/entblockt Org-User)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+      | B | EPA_CLIENT  | <ApiName2>  |
+    Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "B" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "B" hinterlegt die User "A" in der Blockliste
+    Und        "A" versucht "B" direkt "Testnachricht 1" zu schreiben
+    Dann       erhält "A" einen Responsecode 403
+    Und        "B" erhält KEINE Einladung von "A" [Retry 10 - 3]
+    Und        "B" entfernt die User "A" in der Blockliste
+    Und        "A" schreibt "B" direkt "Testnachricht 2"
+    Dann       "B" erhält eine Einladung von "A"
+    Und        "B" bestätigt eine Einladung von "A"
+    Und        "B" empfängt eine Nachricht "Testnachricht 2" von "A"
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("proClient"))
+    @Filter(ApiName2.hasTag("epaClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:AllowAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050606 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.06.06 Einladung außerhalb einer Organisation - Raum - AllowAll - ePA-User AllowAll (2 User blockt/entblockt)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2A> |
+      | C | PRO_CLIENT  | <ApiName2B> |
+    Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "B" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "C" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" hinterlegt die User "B" in der Blockliste
+    Und        "A" hinterlegt die User "C" in der Blockliste
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "B" versucht "A" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann       erhält "B" einen Responsecode 403
+    Und        "A" erhält KEINE Einladung von "B" für den Raum "TIM Testraum 1" [Retry 10 - 3]
+    Und        "C" erstellt einen Chat-Raum "TIM Testraum 2"
+    Und        "C" versucht "A" in Chat-Raum "TIM Testraum 2" einzuladen
+    Dann       erhält "C" einen Responsecode 403
+    Und        "A" erhält KEINE Einladung von "C" für den Raum "TIM Testraum 2" [Retry 10 - 3]
+    Und        "A" entfernt die User "B" in der Blockliste
+    Und        "A" entfernt die User "C" in der Blockliste
+    Und        "B" lädt "A" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "A" erhält eine Einladung in Raum "TIM Testraum 1" von "B"
+    Und        "A" bestätigt eine Einladung in Raum "TIM Testraum 1" von "B"
+    Und        "A" ist dem Raum "TIM Testraum 1" beigetreten
+    Und        "C" lädt "A" in Chat-Raum "TIM Testraum 2" ein
+    Dann       "A" erhält eine Einladung in Raum "TIM Testraum 2" von "C"
+    Und        "A" bestätigt eine Einladung in Raum "TIM Testraum 2" von "C"
+    Und        "A" ist dem Raum "TIM Testraum 2" beigetreten
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+    @Filter(!ApiName2A.properties["homeserver"].equals(ApiName1.properties["homeserver"]))
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2A.hasTag("proClient"))
+    @Filter(ApiName2B.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2A | ApiName2B |
+
+  @Ctl:AllowAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050607 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.06.07 Einladung außerhalb einer Organisation - Raum - AllowAll - ePA-User AllowAll wird von geblocktem und ungeblocktem User eingeladen
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2A> |
+      | C | PRO_CLIENT  | <ApiName2B> |
+    Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "B" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "C" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" hinterlegt die User "B" in der Blockliste
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "B" lädt "C" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "C" erhält eine Einladung in Raum "TIM Testraum 1" von "B"
+    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "B"
+    Und        "C" ist dem Raum "TIM Testraum 1" beigetreten
+    Und        "B" versucht "A" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann       erhält "B" einen Responsecode 403
+    Und        "A" erhält KEINE Einladung von "B" für den Raum "TIM Testraum 1" [Retry 10 - 3]
+    Und        "C" lädt "A" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "A" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "A" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "A" ist dem Raum "TIM Testraum 1" beigetreten
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+    @Filter(!ApiName2A.properties["homeserver"].equals(ApiName1.properties["homeserver"]))
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2A.hasTag("proClient"))
+    @Filter(ApiName2B.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2A | ApiName2B |
+
+  @Ctl:BlockAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050608 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.06.08 Einladung außerhalb einer Organisation - Chat - BlockAll - ePA-User BlockAll (allow/unallow User)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2> |
+    Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "B" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" hinterlegt die User "B" in der Allowliste
+    Und        "B" schreibt "A" direkt "Testnachricht 1"
+    Dann       "A" erhält eine Einladung von "B"
+    Und        "A" bestätigt eine Einladung von "B"
+    Und        "A" empfängt eine Nachricht "Testnachricht 1" von "B"
+    Wenn       "A" verlässt Chat mit "B"
+    Und        "A" entfernt die User "B" in der Allowliste
+    Und        "B" versucht "A" direkt "Testnachricht 2" zu schreiben
+    Dann       erhält "B" einen Responsecode 403
+    Und        "A" erhält KEINE Einladung von "B" [Retry 10 - 3]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:BlockAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050609 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.06.09 Einladung außerhalb einer Organisation - Raum - BlockAll - ePA-User BlockAll (2 User allow/unallow)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2A> |
+      | C | PRO_CLIENT  | <ApiName2B> |
+    Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "B" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "C" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" hinterlegt die User "B" in der Allowliste
+    Und        "A" hinterlegt die User "C" in der Allowliste
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "B" lädt "A" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "A" erhält eine Einladung in Raum "TIM Testraum 1" von "B"
+    Und        "A" bestätigt eine Einladung in Raum "TIM Testraum 1" von "B"
+    Und        "A" ist dem Raum "TIM Testraum 1" beigetreten
+    Und        "A" verlässt Raum "TIM Testraum 1"
+    Und        "C" erstellt einen Chat-Raum "TIM Testraum 2"
+    Und        "C" lädt "A" in Chat-Raum "TIM Testraum 2" ein
+    Dann       "A" erhält eine Einladung in Raum "TIM Testraum 2" von "C"
+    Und        "A" bestätigt eine Einladung in Raum "TIM Testraum 2" von "C"
+    Und        "A" ist dem Raum "TIM Testraum 2" beigetreten
+    Und        "A" verlässt Raum "TIM Testraum 2"
+    Und        "A" entfernt die User "B" in der Allowliste
+    Und        "A" entfernt die User "C" in der Allowliste
+    Und        "B" versucht "A" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann       erhält "B" einen Responsecode 403
+    Und        "A" erhält KEINE Einladung von "B" für den Raum "TIM Testraum 1" [Retry 10 - 3]
+    Und        "C" versucht "A" in Chat-Raum "TIM Testraum 2" einzuladen
+    Dann       erhält "C" einen Responsecode 403
+    Und        "A" erhält KEINE Einladung von "C" für den Raum "TIM Testraum 2" [Retry 10 - 3]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+    @Filter(!ApiName2A.properties["homeserver"].equals(ApiName1.properties["homeserver"]))
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2A.hasTag("proClient"))
+    @Filter(ApiName2B.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2A | ApiName2B |
+
+  @Ctl:BlockAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050610 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.06.10 Einladung außerhalb einer Organisation - Raum - BlockAll - ePA-User BlockAll wird von allow und unallow User eingeladen
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2A> |
+      | C | PRO_CLIENT  | <ApiName2B> |
+    Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "B" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "C" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" hinterlegt die User "B" in der Allowliste
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "B" lädt "C" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "C" erhält eine Einladung in Raum "TIM Testraum 1" von "B"
+    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "B"
+    Und        "C" ist dem Raum "TIM Testraum 1" beigetreten
+    Und        "C" versucht "A" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann       erhält "C" einen Responsecode 403
+    Und        "A" erhält KEINE Einladung von "C" für den Raum "TIM Testraum 1" [Retry 10 - 3]
+    Und        "B" lädt "A" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "A" erhält eine Einladung in Raum "TIM Testraum 1" von "B"
+    Und        "A" bestätigt eine Einladung in Raum "TIM Testraum 1" von "B"
+    Und        "A" ist dem Raum "TIM Testraum 1" beigetreten
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+    @Filter(!ApiName2A.properties["homeserver"].equals(ApiName1.properties["homeserver"]))
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2A.hasTag("proClient"))
+    @Filter(ApiName2B.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2A | ApiName2B |
+
+  @Ctl:MixedMode @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050611 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.06.11 Einladung außerhalb einer Organisation - Raum - MixedMode - User (versucht)lädt ePA-User ein
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+      | B | EPA_CLIENT  | <ApiName2> |
+    Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "B" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" versucht "B" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann       erhält "A" einen Responsecode 403
+    Und        "B" erhält KEINE Einladung von "A" für den Raum "TIM Testraum 1" [Retry 10 - 3]
+    Und        "B" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
+    Und        "B" verlässt Raum "TIM Testraum 1"
+    Und        "B" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" versucht "B" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann       erhält "A" einen Responsecode 403
+    Und        "B" erhält KEINE Einladung von "A" für den Raum "TIM Testraum 1" [Retry 10 - 3]
+    Und        "B" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
+
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("proClient"))
+    @Filter(ApiName2.hasTag("epaClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:DomainBP @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050612 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.06.12 Einladung außerhalb einer Organisation - Chat - DomainBlock - ePA-User blockt/ unblockt Server-Namen
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2> |
+    Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "B" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" hinterlegt den Server-Namen von "B" in der Blockliste
+    Und        "B" versucht "A" direkt "Testnachricht 1" zu schreiben
+    Dann       erhält "B" einen Responsecode 403
+    Und        "A" erhält KEINE Einladung von "B" [Retry 10 - 3]
+    Und        "A" entfernt den Server-Namen von "B" in der Blockliste
+    Und        "B" schreibt "A" direkt "Testnachricht 2"
+    Dann       "A" erhält eine Einladung von "B"
+    Und        "A" bestätigt eine Einladung von "B"
+    Und        "A" empfängt eine Nachricht "Testnachricht 2" von "B"
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:DomainBP @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050613 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.06.13 Einladung außerhalb einer Organisation - Raum - DomainBlock - ePA-User blockt/ unblockt Server-Namen
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2> |
+    Und        "A", "B" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" hinterlegt den Server-Namen von "B" in der Blockliste
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "B" versucht "A" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann       erhält "B" einen Responsecode 403
+    Und        "A" erhält KEINE Einladung von "B" für den Raum "TIM Testraum 1" [Retry 10 - 3]
+    Und        "A" entfernt den Server-Namen von "B" in der Blockliste
+    Und        "B" lädt "A" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "A" erhält eine Einladung in Raum "TIM Testraum 1" von "B"
+    Und        "A" bestätigt eine Einladung in Raum "TIM Testraum 1" von "B"
+    Und        "A" ist dem Raum "TIM Testraum 1" beigetreten
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:DomainBP @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050614 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.06.14 Einladung außerhalb einer Organisation - Chat - DomainBlock - ePA-User allow/ unallow Domain
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2> |
+    Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "B" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" hinterlegt den Server-Namen von "B" in der Allowliste
+    Und        "B" schreibt "A" direkt "Testnachricht 1"
+    Dann       "A" erhält eine Einladung von "B"
+    Und        "A" bestätigt eine Einladung von "B"
+    Und        "A" empfängt eine Nachricht "Testnachricht 1" von "B"
+    Wenn       "A" verlässt Chat mit "B"
+    Und        "A" entfernt den Server-Namen von "B" in der Allowliste
+    Und        "B" versucht "A" direkt "Testnachricht 2" zu schreiben
+    Dann       erhält "B" einen Responsecode 403
+    Und        "A" erhält KEINE Einladung von "B" [Retry 10 - 3]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:DomainBP @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050615 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.06.15 Einladung außerhalb einer Organisation - Raum - DomainBlock - ePA-User allow/ unallow Domain
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2> |
+    Und        "A", "B" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" hinterlegt den Server-Namen von "B" in der Allowliste
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "B" lädt "A" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "A" erhält eine Einladung in Raum "TIM Testraum 1" von "B"
+    Und        "A" bestätigt eine Einladung in Raum "TIM Testraum 1" von "B"
+    Und        "A" ist dem Raum "TIM Testraum 1" beigetreten
+    Wenn       "A" verlässt Raum "TIM Testraum 1"
+    Und        "A" entfernt den Server-Namen von "B" in der Allowliste
+    Und        "B" versucht "A" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann       erhält "B" einen Responsecode 403
+    Und        "A" erhält KEINE Einladung von "B" für den Raum "TIM Testraum 1" [Retry 10 - 3]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:AllowAll @Ctl:InviteReject @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050616 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.06.16 Einladung außerhalb einer Organisation - Chat - AllowAll - ePA-User lehnt Einladung ab
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+      | B | EPA_CLIENT  | <ApiName2> |
+    Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "B" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" schreibt "B" direkt "Testnachricht 1"
+    Dann       "B" erhält eine Einladung von "A"
+    Wenn       "B" lehnt eine Einladung zum Chat mit "A" ab
+    Dann       "B" ist dem Chat mit "A" nicht beigetreten [Retry 10 - 3]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("proClient"))
+    @Filter(ApiName2.hasTag("epaClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:AllowAll @Ctl:InviteReject @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050617 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.06.17 Einladung außerhalb einer Organisation - Raum - AllowAll - ePA-User lehnt Einladung ab
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+      | B | EPA_CLIENT  | <ApiName2> |
+    Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "B" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Wenn       "B" lehnt eine Einladung von "A" für Raum "TIM Testraum 1" ab
+    Dann       "B" ist dem Raum "TIM Testraum 1" nicht beigetreten [Retry 10 - 2]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("proClient"))
+    @Filter(ApiName2.hasTag("epaClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:BlockAll @Ctl:InviteReject @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050618 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.06.18 Einladung außerhalb einer Organisation - Chat - BlockAll - ePA-User lehnt Einladung ab
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+      | B | EPA_CLIENT  | <ApiName2> |
+    Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "B" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" hinterlegt die User "B" in der Allowliste
+    Und        "B" schreibt "A" direkt "Testnachricht 1"
+    Dann       "A" erhält eine Einladung von "B"
+    Wenn       "A" lehnt eine Einladung zum Chat mit "B" ab
+    Dann       "A" ist dem Chat mit "B" nicht beigetreten [Retry 10 - 3]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("proClient"))
+    @Filter(ApiName2.hasTag("epaClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:BlockAll @Ctl:InviteReject @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050619 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.06.19 Einladung außerhalb einer Organisation - Raum - BlockAll - ePA-User lehnt Einladung ab
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2> |
+    Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "B" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" hinterlegt die User "B" in der Allowliste
+    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "B" lädt "A" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "A" erhält eine Einladung in Raum "TIM Testraum 1" von "B"
+    Wenn       "A" lehnt eine Einladung von "B" für Raum "TIM Testraum 1" ab
+    Dann       "A" ist dem Raum "TIM Testraum 1" nicht beigetreten [Retry 10 - 2]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:AllowAll @BP
+    @TCID:TIM_V2_BASIS_AF_050620 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.06.20 Einladung außerhalb einer Organisation - Chat - AllowAll - Dritter Nutzer wird in Chat eingeladen werden (ePA)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT    | <ApiName1A> |
+      | B | EPA_CLIENT    | <ApiName1B> |
+      | C | PRO_CLIENT    | <ApiName2>  |
+    Und        "A", "B", "C" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "C" schreibt "B" direkt "Testnachricht 1"
+    Und        "B" erhält eine Einladung von "C"
+    Und        "B" bestätigt eine Einladung von "C"
+    Und        "B" empfängt eine Nachricht "Testnachricht 1" von "C"
+    Und        "C" lädt "A" in Chat mit "B" ein
+    Und        "A" erhält eine Einladung von "C"
+    Und        "A" bestätigt eine Einladung von "C"
+    Und        "A" ist dem Chat mit "B", "C" beigetreten
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(!ApiName2.properties["homeserver"].equals(ApiName1A.properties["homeserver"]))
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1A.hasTag("epaClient"))
+    @Filter(ApiName1B.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B | ApiName2 |
+
+  @Ctl:AllowAll @BP
+    @TCID:TIM_V2_BASIS_AF_050621 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  Szenariogrundriss: 05.06.21 Einladung außerhalb einer Organisation - Chat - BlockAll - Dritter Nutzer (ePA-User) wird von Org-User in Chat eingeladen werden
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT    | <ApiName1A> |
+      | B | EPA_CLIENT    | <ApiName1B> |
+      | C | PRO_CLIENT    | <ApiName2>  |
+    Und        "A", "C" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "B" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "C" schreibt "A" direkt "Testnachricht 1"
+    Und        "A" erhält eine Einladung von "C"
+    Und        "A" bestätigt eine Einladung von "C"
+    Und        "A" empfängt eine Nachricht "Testnachricht 1" von "C"
+    Und        "C" versucht "B" in Chat mit "A" einzuladen
+    Dann       erhält "D" einen Responsecode 403
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(!ApiName2.properties["homeserver"].equals(ApiName1A.properties["homeserver"]))
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1A.hasTag("epaClient"))
+    @Filter(ApiName1B.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B | ApiName2 |
+
+  @WIP
+    @Ctl:AllowAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050622 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+  Szenariogrundriss: 05.06.22 Einladung außerhalb einer Organisation - AllowAll - Eintragung in Liste von anderem Berechtigungsmodus (ePA-User)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2> |
+    Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" versucht User "B" in der Allowliste zu hinterlegen
+    Dann       erhält "A" einen Responsecode 400
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @WIP
+    @Ctl:AllowAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050623 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+  Szenariogrundriss: 05.06.23 Einladung außerhalb einer Organisation - AllowAll - Eintragung eines Server-Namen in Liste von anderem Berechtigungsmodus (ePA-User)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2> |
+    Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" versucht den Server-Namen von "B" in der Allowliste zu hinterlegen
+    Dann       erhält "A" einen Responsecode 400
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @WIP
+    @Ctl:AllowAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050624 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+  Szenariogrundriss: 05.06.24 Einladung außerhalb einer Organisation - AllowAll - Löschen in Liste von anderem Berechtigungsmodus (ePA-User)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2> |
+    Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" hinterlegt die User "B" in der Allowliste
+    Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" versucht User "B" in der Allowliste zu entfernen
+    Dann       erhält "A" einen Responsecode 403
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @WIP
+    @Ctl:AllowAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050625 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+  Szenariogrundriss: 05.06.25 Einladung außerhalb einer Organisation - AllowAll - Löschen eines Server-Namen in Liste von anderem Berechtigungsmodus (ePA-User)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2> |
+    Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" hinterlegt den Server-Namen von "B" in der Allowliste
+    Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" versucht den Server-Namen von "B" in der Allowliste zu entfernen
+    Dann       erhält "A" einen Responsecode 403
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @WIP
+    @Ctl:BlockAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050626 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+  Szenariogrundriss: 05.06.26 Einladung außerhalb einer Organisation - BlockAll - Eintragung in Liste von anderem Berechtigungsmodus (ePA-User)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2> |
+    Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" versucht User "B" in der Blockliste zu hinterlegen
+    Dann       erhält "A" einen Responsecode 400
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @WIP
+    @Ctl:BlockAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050627 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+  Szenariogrundriss: 05.06.27 Einladung außerhalb einer Organisation - BlockAll - Eintragung eines Server-Namen in Liste von anderem Berechtigungsmodus (ePA-User)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2> |
+    Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" versucht den Server-Namen von "B" in der Blockliste zu hinterlegen
+    Dann       erhält "A" einen Responsecode 400
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @WIP
+    @Ctl:BlockAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050628 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+  Szenariogrundriss: 05.06.28 Einladung außerhalb einer Organisation - BlockAll - Löschen in Liste von anderem Berechtigungsmodus (ePA-User)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2> |
+    Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" hinterlegt die User "B" in der Blockliste
+    Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" versucht User "B" in der Blockliste zu entfernen
+    Dann       erhält "A" einen Responsecode 403
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @WIP
+    @Ctl:BlockAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050629 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+  Szenariogrundriss: 05.06.29 Einladung außerhalb einer Organisation - BlockAll - Löschen eines Server-Namen in Liste von anderem Berechtigungsmodus (ePA-User)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2> |
+    Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" hinterlegt den Server-Namen von "B" in der Blockliste
+    Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" versucht den Server-Namen von "B" in der Blockliste zu entfernen
+    Dann       erhält "A" einen Responsecode 403
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @WIP
+  @Ctl:AllowAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050630 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+  Szenariogrundriss: 05.06.30 Einladung außerhalb einer Organisation - AllowAll - Eintrag doppelter MXID Einträge in BlockListe
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2> |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" hinterlegt die User "B" in der Blockliste
+    Und        "A" hinterlegt die User "B" in der Blockliste erneut
+    Und        "A" entfernt die User "B" in der Blockliste
+    Und        "A" findet "B" nicht mehr in seiner Blockliste
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @WIP
+  @Ctl:BlockAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050631 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+  Szenariogrundriss: 05.06.31 Einladung außerhalb einer Organisation - BlockAll - Eintrag doppelter MXID Einträge in AllowListe
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2> |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" hinterlegt die User "B" in der Allowliste
+    Und        "A" hinterlegt die User "B" in der Allowliste erneut
+    Und        "A" entfernt die User "B" in der Allowliste
+    Und        "A" findet "B" nicht mehr in seiner Allowliste
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @WIP
+    @Ctl:AllowAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050632 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+  Szenariogrundriss: 05.06.32 Einladung außerhalb einer Organisation - AllowAll - Einträge bleiben trotz Logout erhalten
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2> |
+    Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" hinterlegt die User "B" in der Blockliste
+    Und        "A" hinterlegt den Server-Namen von "B" in der Blockliste
+    Und        "A" loggt sich im TI-Messenger aus
+    Und        "A" loggt sich im TI-Messenger ein
+    Und        "A" prüft, ob der eigene Authorization Mode auf "AllowAll" gesetzt ist
+    Und        "A" prüft, ob User "B" in der Blockliste gesetzt ist
+    Und        "A" prüft, ob die Domain von "B" in der Blockliste gesetzt ist
+
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @WIP
+    @Ctl:BlockAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050633 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+  Szenariogrundriss: 05.06.33 Einladung außerhalb einer Organisation - BlockAll - Einträge bleiben trotz Logout erhalten
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2> |
+    Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" hinterlegt die User "B" in der Allowliste
+    Und        "A" hinterlegt den Server-Namen von "B" in der Allowliste
+    Und        "A" loggt sich im TI-Messenger aus
+    Und        "A" loggt sich im TI-Messenger ein
+    Und        "A" prüft, ob der eigene Authorization Mode auf "BlockAll" gesetzt ist
+    Und        "A" prüft, ob User "B" in der Allowliste gesetzt ist
+    Und        "A" prüft, ob die Domain von "B" in der Allowliste gesetzt ist
+
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |

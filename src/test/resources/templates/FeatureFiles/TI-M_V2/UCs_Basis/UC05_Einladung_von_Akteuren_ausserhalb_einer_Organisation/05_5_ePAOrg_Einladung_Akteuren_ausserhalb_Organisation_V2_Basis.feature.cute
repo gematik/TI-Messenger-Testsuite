@@ -1,0 +1,128 @@
+# language: de
+@File:FeatureFile_05_05_V2_Basis @Ctl:UseCaseV2_05_Basis
+@PRODUKT:TI-M_Client_Basis @PRODUKT:TI-M_FD_Basis @PRODUKT:VZD_FHIR
+@Zul:ePA
+@AF-ID:AF_10061-04
+@AFO-ID:A_25045-01
+@AFO-ID:A_25046
+
+Funktionalität: 5.1.5 (5) Einladung von Akteuren außerhalb einer Organisation (Basis Spec)
+
+  In diesem Anwendungsfall wird ein Akteur außerhalb einer Organisation eingeladen. Für die Suche nach Akteuren
+  außerhalb der Organisation kann das VZD-FHIR-Directory verwendet werden. Ist die MXID des gesuchten Akteurs dort nicht
+  vorhanden, muss es die Möglichkeit geben, die Kontaktaufnahme auch auf anderen Wegen zu ermöglichen,
+  mindestens mittels manueller Eingabe der MXID. Weitere Optionen wie z. B. QR-Code-Scans sind zulässig.
+
+  COMMENT: Basis
+  AF_10061-04 Einladung von Akteuren außerhalb einer Organisation
+  A_25045-01  Funktionsumfang der Berechtigungskonfiguration
+  A_25046     Durchsetzung der Berechtigungskonfiguration - Client
+
+  Inhalt
+  TF 1  - 2  ePA-User lädt Org-User ein (AllowAll) Chat/Raum
+  TF 3       Dritter Nutzer (Org-User) wird von ePA-User in Chat eingeladen werden (AllowAll)
+
+  @WIP
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050501 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+  Szenariogrundriss: 05.05.01 Einladung außerhalb einer Organisation - Chat - AllowAll - ePA-User lädt Org-User ein
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN   | <ApiName1A> |
+      | B | PRO_CLIENT  | <ApiName1B> |
+      | C | EPA_CLIENT  | <ApiName2>  |
+    Und        "B" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "C" setzt den eigenen Authorization Mode auf "AllowAll"
+    Wenn       "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann       "C" findet "B" im Healthcare-Service "HealthcareServiceName1" über die FDV-Schnittstelle
+    Und        "C" schreibt "B" direkt "Testnachricht 1"
+    Dann       "B" erhält eine Einladung von "C"
+    Und        "B" bestätigt eine Einladung von "C"
+    Und        "B" empfängt eine Nachricht "Testnachricht 1" von "C"
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("proClient"))
+    @Filter(ApiName2.hasTag("epaClient"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B | ApiName2 |
+
+  @WIP
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050502 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+  Szenariogrundriss: 05.05.02 Einladung außerhalb einer Organisation - Raum - AllowAll - ePA-User lädt Org-User ein
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN   | <ApiName1A> |
+      | B | PRO_CLIENT  | <ApiName1B> |
+      | C | EPA_CLIENT    | <ApiName2>  |
+    Und        "B" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "C" setzt den eigenen Authorization Mode auf "AllowAll"
+    Wenn       "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann       "C" findet "B" im Healthcare-Service "HealthcareServiceName1" über die FDV-Schnittstelle
+    Und        "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("proClient"))
+    @Filter(ApiName2.hasTag("epaClient"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B | ApiName2 |
+
+  @WIP
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD @BP
+    @TCID:TIM_V2_BASIS_AF_050503 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+  Szenariogrundriss: 05.05.03 Einladung außerhalb einer Organisation - Chat - AllowAll - Dritter Nutzer (Org-User) wird von ePA-User in Chat eingeladen werden
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN   | <ApiName1A> |
+      | B | PRO_CLIENT  | <ApiName1B> |
+      | C | PRO_CLIENT  | <ApiName1C> |
+      | D | EPA_CLIENT  | <ApiName2>  |
+    Und        "B", "C", "D" setzt den eigenen Authorization Mode auf "AllowAll"
+    Wenn       "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Wenn       "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
+    Dann       "D" findet "B" im Healthcare-Service "HealthcareServiceName1" über die FDV-Schnittstelle
+    Und        "D" schreibt "B" direkt "Testnachricht 1"
+    Und        "B" erhält eine Einladung von "D"
+    Und        "B" bestätigt eine Einladung von "D"
+    Und        "B" empfängt eine Nachricht "Testnachricht 1" von "D"
+    Dann       "D" findet "C" im Healthcare-Service "HealthcareServiceName2" über die FDV-Schnittstelle
+    Und        "D" lädt "C" in Chat mit "B" ein
+    Und        "C" erhält eine Einladung von "D"
+    Und        "C" bestätigt eine Einladung von "D"
+    Und        "C" ist dem Chat mit "D", "B" beigetreten
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1C.properties["homeserver"]))
+    @Filter(!ApiName2.properties["homeserver"].equals(ApiName1A.properties["homeserver"]))
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("proClient"))
+    @Filter(ApiName1C.hasTag("proClient"))
+    @Filter(ApiName2.hasTag("epaClient"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B |  ApiName1C |ApiName2 |
+
+
+
+
+
+
