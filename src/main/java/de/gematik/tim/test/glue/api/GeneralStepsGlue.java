@@ -17,7 +17,11 @@
 package de.gematik.tim.test.glue.api;
 
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
+import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
+import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.not;
 
 import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.glue.api.threading.ParallelExecutor;
@@ -39,5 +43,14 @@ public class GeneralStepsGlue {
         throw new TestRunException("Operation returned error code " + lastResponse().statusCode());
       }
     }
+  }
+
+  @Then("{string} checks, that the response is not empty")
+  @Dann("{string} überprüft, dass die Response befüllt ist")
+  public static void responseContainsBody(String actorName) {
+    theActorCalled(actorName)
+        .should(
+            seeThatResponse(
+                "check response body is not empty", res -> res.body(not(emptyOrNullString()))));
   }
 }

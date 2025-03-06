@@ -1,0 +1,70 @@
+# language: de
+@File:FeatureFile_03_09_V2_ePA @Ctl:UseCaseV2
+@PRODUKT:TI-M_Client_ePA @PRODUKT:TI-M_FD_ePA
+@Zul:ePA
+@AF-ID:AF_10233
+@AFO-ID:A_25705
+
+Funktionalität: 03. (9) Berechtigungsmanagement (ePA Spec)
+
+  Dieser Anwendungsfall erweitert die in der TI-M Basis definierte Prüflogik für den Messenger-Proxy,
+  neben der Föderationsprüfung ist zusätzlich zu prüfen, dass der Einladende und der Eingeladene nicht der Gruppe
+  Versicherte zuzuordnen sind.
+  Sind der Sender und der Empfänger beide Akteure in der Rolle Versicherter dann MUSS die Einladung vom
+  TI-Messenger-Proxy abgelehnt werden. Ein Akteur ist als Versicherter zu identifizieren, wenn die Domain seiner
+  MXID über den Wert "true" im Feld "isInsurance" innerhalb der Föderationsliste verfügt.
+
+  COMMENT: ePA
+  AF_10233 - Versicherteneinladung unterbinden
+  A_25705 - AF_10233 - Versicherteneinladung unterbinden
+
+  Inhalt
+  TF 1     Versicherter versucht Versicherten in Chat einzuladen (AllowAll) (Gleicher HomeServer) - Negativ
+  TF 2     Versicherter versucht Versicherten in Raum einzuladen (BlockAll) (Gleicher HomeServer) - Negativ
+
+  @Ctl:AllowAll
+  @TCID:TIM_V2_ePA_AF_030901 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  Szenariogrundriss: 03.09.01 TI-M ePA - Berechtigungsmanagement - Chat - Versicherter versucht Versicherten einzuladen (AllowAll)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT    | <ApiName1A> |
+      | B | EPA_CLIENT    | <ApiName1B> |
+    Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "B" setzt den eigenen Authorization Mode auf "AllowAll"
+    Wenn       "A" versucht "B" direkt "Testnachricht 1" zu schreiben
+    Dann       erhält "A" einen Responsecode 403
+    Und        "B" erhält KEINE Einladung von "A" [Retry 10 - 3]
+
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("epaClient"))
+    @Filter(ApiName1B.hasTag("epaClient"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B |
+
+  @Ctl:BlockAll
+  @TCID:TIM_V2_ePA_AF_030902 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  Szenariogrundriss: 03.09.02 TI-M ePA - Berechtigungsmanagement - Raum - Versicherter versucht Versicherten einzuladen (BlockAll)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT    | <ApiName1A> |
+      | B | EPA_CLIENT    | <ApiName1B> |
+    Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "B" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Wenn       "A" versucht "B" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann       erhält "A" einen Responsecode 403
+    Und        "B" erhält KEINE Einladung von "A" [Retry 10 - 3]
+    Und        "B" hinterlegt die User "A" in der Allowliste
+    Wenn       "A" versucht "B" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann       erhält "A" einen Responsecode 403
+    Und        "B" erhält KEINE Einladung von "A" [Retry 10 - 3]
+
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("epaClient"))
+    @Filter(ApiName1B.hasTag("epaClient"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B |

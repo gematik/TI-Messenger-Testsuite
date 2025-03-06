@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,31 +16,30 @@
 
 package de.gematik.tim.test.glue.api.info;
 
-import de.gematik.tim.test.glue.api.TestdriverApiEndpoint.HttpMethod;
-import de.gematik.tim.test.glue.api.TestdriverApiInteraction;
-import java.util.ArrayList;
-import lombok.RequiredArgsConstructor;
+import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_WELL_KNOWN_HOMESERVER;
+import static net.serenitybdd.rest.SerenityRest.lastResponse;
+
+import lombok.Getter;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
-import net.serenitybdd.screenplay.rest.interactions.RestInteraction;
+import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
+import org.springframework.http.HttpStatus;
 
-@RequiredArgsConstructor
-public class CallMatrixApiTask implements Task {
-
-  private final String matrixUrl;
-  private final String httpMethod;
-
-  public static CallMatrixApiTask callForbiddenMatrixEndpoint(String matrixUrl, String httpMethod) {
-    return new CallMatrixApiTask(matrixUrl, httpMethod);
-  }
+@Getter
+public abstract class CallMatrixApiTask implements Task {
 
   @Override
   public <T extends Actor> void performAs(T actor) {
-    actor.attemptsTo(request());
-  }
-
-  private TestdriverApiInteraction request() {
-    RestInteraction restInteraction = HttpMethod.valueOf(httpMethod).creator.apply(matrixUrl);
-    return new TestdriverApiInteraction(restInteraction, new ArrayList<>());
+    actor.attemptsTo(GET_WELL_KNOWN_HOMESERVER.request());
+    if (HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful()) {
+      String url = lastResponse().jsonPath().getString("'m.homeserver'.base_url");
+      if (!url.startsWith("http://") && !url.startsWith("https://")) {
+        url = "https://" + url;
+      }
+      if (url.endsWith("/")) {
+        url = url.substring(0, url.length() - 1);
+      }
+      actor.can(CallAnApi.at(url));
+    }
   }
 }

@@ -16,12 +16,15 @@
 
 package de.gematik.tim.test.glue.api.info;
 
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.ACCESS_TOKEN;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HOME_SERVER;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MATRIX_CLIENT_VERSION;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_INFO;
 import static de.gematik.tim.test.glue.api.info.ApiInfoQuestion.apiInfo;
-import static de.gematik.tim.test.glue.api.info.CallMatrixApiTask.callForbiddenMatrixEndpoint;
+import static de.gematik.tim.test.glue.api.info.CallForbiddenMatrixApiTask.callForbiddenMatrixEndpoint;
+import static de.gematik.tim.test.glue.api.info.CallMatrixApiWithoutForwardingTask.callMatrixEndpointWithoutForwarding;
 import static de.gematik.tim.test.glue.api.info.SupportedMatrixVersionQuestion.matrixSupportedServerVersion;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.prepareApiNameForHttp;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
@@ -106,18 +109,38 @@ public class InfoControllerGlue {
       String actorName, String interfaceName, String matrixUrl, String httpMethod) {
     String interfaceUrl = prepareApiNameForHttp(interfaceName);
     Actor actor = theActorCalled(actorName).can(CallAnApi.at(interfaceUrl));
-    actor.attemptsTo(callForbiddenMatrixEndpoint(matrixUrl, httpMethod));
+    if (matrixUrl.startsWith("/.well-known")) {
+      pingApiWithoutForwarding(actor, matrixUrl, httpMethod);
+      return;
+    }
+    String accessToken = actor.recall(ACCESS_TOKEN);
+    if (accessToken != null) {
+      actor.attemptsTo(
+          callForbiddenMatrixEndpoint(matrixUrl, httpMethod).withAccessToken(accessToken));
+    } else {
+      actor.attemptsTo(callForbiddenMatrixEndpoint(matrixUrl, httpMethod));
+    }
   }
 
-  @And(
-      "{word} requests at interface {word} the profile API {string} including parameters with http method {string}")
-  @Und(
-      "{word} fragt an Schnittstelle {word} die profile API {string} inkl Parameterbefüllung über ein {string} ab")
-  public void pingApiOnHomeserverForUser(
-      String actorName, String interfaceName, String matrixUrl, String httpMethod) {
+  private void pingApiWithoutForwarding(Actor actor, String matrixUrl, String httpMethod) {
+    actor.attemptsTo(callMatrixEndpointWithoutForwarding(matrixUrl, httpMethod));
+  }
+
+  @When(
+      "{word} requests at interface {word} the profile API {string} including parameters of user {string} with http method {string}")
+  @Wenn(
+      "{word} fragt an Schnittstelle {word} die profile API {string} inkl Parameterbefüllung von {string} über ein {string} ab")
+  public void pingApiOnHomeserverWithUserParameters(
+      String actorName,
+      String interfaceName,
+      String matrixUrl,
+      String userName,
+      String httpMethod) {
+    Actor user = theActorCalled(userName);
+    String userId = user.recall(MX_ID);
     String interfaceUrl = prepareApiNameForHttp(interfaceName);
     Actor actor = theActorCalled(actorName).can(CallAnApi.at(interfaceUrl));
-    String matrixUrlIncludingParameter = matrixUrl.replace("{userId}", "@tim-gematik:matrix.org");
+    String matrixUrlIncludingParameter = matrixUrl.replace("{userId}", userId);
     actor.attemptsTo(callForbiddenMatrixEndpoint(matrixUrlIncludingParameter, httpMethod));
   }
 }

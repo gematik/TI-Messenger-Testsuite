@@ -1,0 +1,340 @@
+# language: de
+@File:FeatureFile_04_09_V2_Basis @Ctl:UseCaseV2_04_Basis @Ctl:OneHomeServer
+@PRODUKT:TI-M_Client_Basis @PRODUKT:TI-M_FD_Basis
+@Zul:ePA
+@AF-ID:AF_10063-01
+@AFO-ID:A_25575
+@AFO-ID:A_25576
+@AFO-ID:A_25492
+@AFO-ID:A_26574
+@AFO-ID:A_26575
+@AFO-ID:A_25395-01
+@AFO-ID:A_26077
+
+Funktionalität: 5.1.4 (9) Austausch von Events innerhalb einer Organisation (Basis Spec)
+
+  Dieser Anwendungsfall ermöglicht es Akteuren, welche sich in einem gemeinsamen Raum innerhalb eines Messenger-Service befinden,
+  Nachrichten auszutauschen und weitere durch die Matrix-Spezifikation festgelegte Aktionen (Events) auszuführen.
+
+  COMMENT: Basis
+  AF_10063-01 Austausch von Events zwischen Akteuren innerhalb einer Organisation
+  A_25575    Löschen von Nachrichten
+  A_25576    Lokales Löschen bei Entfernung von Nachrichten aus dem Room State
+  A_25492    Löschfunktion des Clients
+  A_26574    Entschlüsseln von Nachrichten nach Wiederanmeldung
+  A_26575    Ablage von Schlüsseln zum Entschlüsseln von Nachrichten nach Wiederanmeldung
+  A_25395-01 Matrix Module - Event Replacements
+  A_26077    Server-seitiges Schlüssel-Backup
+
+  Inhalt
+  TF 1      Versicherte vom gleichen HomeServer schreiben sich (Raum)
+  TF 2      Versicherte vom gleichen HomeServer löschen Nachrichten (Raum)
+  TF 3      Versicherte vom gleichen HomeServer ändern Nachrichten (Raum)
+  TF 4 - 5  Versicherter "A" sendet eine Nachricht an ausgeloggten Versicherten "B" - Dehydrated Devices (Positiv/Negativ)
+  TF 6      Versicherter "A" ändert und sendet eine Nachricht an ausgeloggten Versicherten "B" - Dehydrated Devices
+  TF 7      Versicherter sendet ein Attachment über Matrix-Protokoll v1.11 an ausgeloggten Versicherten "B" - Dehydrated Devices
+  TF 8      Versicherter empfängt alte und neue Nachrichten nach Session-Key Export und Import (Raum)
+
+  @Ctl:AllowAll @Ctl:Gruppenchat
+    @TCID:TIM_V2_BASIS_AF_040901 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 04.09.01 Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Versicherte vom gleichen HomeServer schreiben sich
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1A> |
+      | B | EPA_CLIENT  | <ApiName1B> |
+      | C | PRO_CLIENT  | <ApiName2>  |
+    Und        "A", "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" lädt "C" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "C" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "C" ist dem Raum "TIM Testraum 1" beigetreten
+    Und        "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
+    Wenn       "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Dann       "B", "C" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
+    Wenn       "B" sendet die Nachricht "Testnachricht 2" an den Raum "TIM Testraum 1"
+    Dann       "A", "C" empfängt eine Nachricht "Testnachricht 2" von "B" im Raum "TIM Testraum 1"
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("epaClient"))
+    @Filter(ApiName1B.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B | ApiName2 |
+
+  @Ctl:AllowAll @Ctl:MsgDelete @Ctl:Gruppenchat
+    @TCID:TIM_V2_BASIS_AF_040902 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 04.09.02 Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Versicherte vom gleichen HomeServer löschen Nachrichten
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1A> |
+      | B | EPA_CLIENT  | <ApiName1B> |
+      | C | PRO_CLIENT  | <ApiName2>  |
+    Und        "A", "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" lädt "C" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "C" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "C" ist dem Raum "TIM Testraum 1" beigetreten
+    Und        "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
+    Wenn       "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Dann       "B", "C" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
+    Wenn       "A" löscht seine Nachricht "Testnachricht 1" im Raum "TIM Testraum 1"
+    Dann       "B" kann die Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 10 - 3]
+    Dann       "C" kann die Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 10 - 3]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("epaClient"))
+    @Filter(ApiName1B.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B | ApiName2 |
+
+  @Ctl:AllowAll @Ctl:MsgEdit @Ctl:Gruppenchat
+    @TCID:TIM_V2_BASIS_AF_040903 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 04.09.03 Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Versicherte vom gleichen HomeServer ändern Nachrichten
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1A> |
+      | B | EPA_CLIENT  | <ApiName1B> |
+      | C | PRO_CLIENT  | <ApiName2>  |
+    Und        "A", "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" lädt "C" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "C" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "C" ist dem Raum "TIM Testraum 1" beigetreten
+    Und        "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
+    Wenn       "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Dann       "B", "C" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
+    Dann       "A" ändert seine letzte Nachricht im Raum "TIM Testraum 1" in "Testnachricht 2"
+    Wenn       "B" empfängt eine Nachricht "Testnachricht 2" von "A" im Raum "TIM Testraum 1"
+    Und        "B" kann die Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 10 - 3]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("epaClient"))
+    @Filter(ApiName1B.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B | ApiName2 |
+
+  @WIP
+  @Ctl:AllowAll @Ctl:MsgDehydrated @Ctl:Gruppenchat
+    @TCID:TIM_V2_BASIS_AF_040904 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+  Szenariogrundriss: 04.09.04 Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Versicherter "A" sendet eine Nachricht an ausgeloggten Versicherten "B" (Positiv)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1A> |
+      | B | EPA_CLIENT  | <ApiName1B> |
+      | C | PRO_CLIENT  | <ApiName2> |
+    Und        "A", "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A", "B", "C" haben "kein" Dehydrated Device auf dem HomeServer hinterlegt
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" lädt "C" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "C" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "C" ist dem Raum "TIM Testraum 1" beigetreten
+    Und        "B" hinterlegt auf dem HomeServer sein Dehydrated Device inkl speichern des Schlüsselmaterials
+    Und        "B" loggt sich im TI-Messenger aus
+    Und        "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Wenn       "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Dann       "C" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
+    Wenn       "B" loggt sich im TI-Messenger ein
+    Und        "B" holt sich entschlüsselt sein Dehydrated Device vom HomeServer ab
+    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Dann       "B" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("epaClient"))
+    @Filter(ApiName1B.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B | ApiName2 |
+
+  @WIP
+  @Ctl:AllowAll @Ctl:Gruppenchat
+    @TCID:TIM_V2_BASIS_AF_040905 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+  Szenariogrundriss: 04.09.05 Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Versicherter "A" sendet eine Nachricht an ausgeloggten Versicherten "B" (negativ)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1A> |
+      | B | EPA_CLIENT  | <ApiName1B> |
+      | C | PRO_CLIENT  | <ApiName2> |
+    Und        "A", "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A", "B", "C" haben "kein" Dehydrated Device auf dem HomeServer hinterlegt
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" lädt "C" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "C" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "C" ist dem Raum "TIM Testraum 1" beigetreten
+    Und        "B" loggt sich im TI-Messenger aus
+    Und        "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Wenn       "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Dann       "C" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
+    Wenn       "B" loggt sich im TI-Messenger ein
+    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "B" kann die Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1" nicht sehen [Retry 10 - 3]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("epaClient"))
+    @Filter(ApiName1B.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B | ApiName2 |
+
+  @WIP
+  @Ctl:AllowAll @Ctl:MsgDehydrated @Ctl:MsgEdit @Ctl:Gruppenchat
+    @TCID:TIM_V2_BASIS_AF_040906 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+  Szenariogrundriss: 04.09.06 Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Versicherter "A" ändert und sendet eine Nachricht an ausgeloggten Versicherten "B" (Positiv)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1A> |
+      | B | EPA_CLIENT  | <ApiName1B> |
+      | C | PRO_CLIENT  | <ApiName2> |
+    Und        "A", "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A", "B", "C" haben "kein" Dehydrated Device auf dem HomeServer hinterlegt
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" lädt "C" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "C" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "C" ist dem Raum "TIM Testraum 1" beigetreten
+    Und        "B" hinterlegt auf dem HomeServer sein Dehydrated Device inkl speichern des Schlüsselmaterials
+    Und        "B" loggt sich im TI-Messenger aus
+    Und        "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Wenn       "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Dann       "C" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
+    Dann       "A" ändert seine letzte Nachricht im Raum "TIM Testraum 1" in "Testnachricht 2"
+    Wenn       "B" loggt sich im TI-Messenger ein
+    Und        "B" holt sich entschlüsselt sein Dehydrated Device vom HomeServer ab
+    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Wenn       "B" empfängt eine Nachricht "Testnachricht 2" von "A" im Raum "TIM Testraum 1"
+    Und        "B" kann die Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 10 - 3]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("epaClient"))
+    @Filter(ApiName1B.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B | ApiName2 |
+
+  @WIP
+  @Ctl:AllowAll @Ctl:MsgDehydrated @Ctl:Attachment @Ctl:Gruppenchat
+    @TCID:TIM_V2_BASIS_AF_040907 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+  Szenariogrundriss: 04.09.07 Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Versicherter "A" sendet Attachment an ausgeloggten Versicherten "B" (Positiv)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1A> |
+      | B | EPA_CLIENT  | <ApiName1B> |
+      | C | PRO_CLIENT  | <ApiName2> |
+    Und        "A", "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A", "B", "C" haben "kein" Dehydrated Device auf dem HomeServer hinterlegt
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" lädt "C" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "C" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "C" ist dem Raum "TIM Testraum 1" beigetreten
+    Und        "B" hinterlegt auf dem HomeServer sein Dehydrated Device inkl speichern des Schlüsselmaterials
+    Und        "B" loggt sich im TI-Messenger aus
+    Und        "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Wenn       "A" sendet ein Attachment "bild.jpg" als "m.image" an den Raum "TIM Testraum 1"
+    Dann       "C" empfängt das Attachment "bild.jpg" von "A" im Raum "TIM Testraum 1" über Matrix-Protokoll v1.11 als "m.image"
+    Wenn       "B" loggt sich im TI-Messenger ein
+    Und        "B" holt sich entschlüsselt sein Dehydrated Device vom HomeServer ab
+    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Dann       "B" empfängt das Attachment "bild.jpg" von "A" im Raum "TIM Testraum 1" über Matrix-Protokoll v1.11 als "m.image"
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("epaClient"))
+    @Filter(ApiName1B.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B | ApiName2 |
+
+  @WIP
+  @Ctl:AllowAll @Ctl:Gruppenchat
+    @TCID:TIM_V2_BASIS_AF_040908 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+  Szenariogrundriss: 04.09.08 Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Versicherter empfängt alte und neue Nachrichten nach Session-Key Export und Import
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1A> |
+      | B | EPA_CLIENT  | <ApiName1B> |
+      | C | PRO_CLIENT  | <ApiName2> |
+    Und        "A", "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" lädt "C" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "C" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "C" ist dem Raum "TIM Testraum 1" beigetreten
+    Und        "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
+    Und        "B" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Und        "A" empfängt eine Nachricht "Testnachricht 1" von "B" im Raum "TIM Testraum 1"
+    Und        "A" exportiert seinen Session-Key
+    Und        "A" loggt sich im TI-Messenger aus
+    Und        "B" sendet die Nachricht "Testnachricht 2" an den Raum "TIM Testraum 1"
+    Und        "A" loggt sich im TI-Messenger ein
+    Und        "A" importiert den Session-Key von "A"
+    Und        "A" empfängt eine Nachricht "Testnachricht 1" von "B" im Raum "TIM Testraum 1"
+    Dann       "A" kann die Nachricht "Testnachricht 2" von "B" im Raum "TIM Testraum 1" nicht sehen [Retry 10 - 3]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("epaClient"))
+    @Filter(ApiName1B.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B | ApiName2 |
