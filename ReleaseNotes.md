@@ -6,8 +6,94 @@
 
 `docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
 
+## Release 2.1.0
 
-## Release 2.0.0 
+### Beta Release TI-M Testsuite Version 2
+
+### Bugs
+
+- fixes API tests trying to reach homeserver under test driver url
+
+### Changes
+
+- API change, breaking only TI-M Version 2: new endpoint for a logout waiting for a full sync
+- API change: clean-up endpoint (operationId: cleanUp) is mandatory to implement
+
+### Features
+
+- Current testcases in status WIP: [`WIP-List`](doc/userguide/WIP.txt)
+
+
+- implements test for logout incl sync (no WIP anymore)
+
+  @TCID:TIM_V2_BASIS_AF_040114
+
+  @TCID:TIM_V2_BASIS_AF_040908
+
+  @TCID:TIM_V2_BASIS_AF_060112
+
+  @TCID:TIM_V2_BASIS_AF_060612
+
+
+- implements test for deprecated media endpoints (no WIP anymore)
+
+  @TCID:TIM_V2_BASIS_AF_10X0103
+
+  @TCID:TIM_V2_BASIS_AF_10X0104
+
+  @TCID:TIM_V2_BASIS_AF_10X0503
+
+  @TCID:TIM_V2_BASIS_AF_10X0601
+
+
+- implements location tests (no WIP anymore)
+
+  @TCID:TIM_V2_BASIS_AF_11X0107
+
+  @TCID:TIM_V2_BASIS_AF_11X0108
+
+  @TCID:TIM_V2_BASIS_AF_11X0507
+
+  @TCID:TIM_V2_BASIS_AF_11X0508
+
+  @TCID:TIM_V2_BASIS_AF_11X0607
+
+  @TCID:TIM_V2_BASIS_AF_11X0608
+
+
+- implements room state tests (no WIP anymore)
+
+  @TCID:TIM_V2_BASIS_AF_09X0101
+
+  @TCID:TIM_V2_BASIS_AF_09X0102
+
+  @TCID:TIM_V2_BASIS_AF_09X0401
+
+  @TCID:TIM_V2_BASIS_AF_09X0402
+
+  @TCID:TIM_V2_BASIS_AF_09X0501
+
+  @TCID:TIM_V2_BASIS_AF_09X0502
+
+
+- New Testcases for TI-M Pro (Status WIP)
+
+  @TCID:TIM_V2_PRO_AF_06X0103
+
+  @TCID:TIM_V2_PRO_AF_06X0104
+
+
+- New Testcase for TI-M ePA
+
+  @TCID:TIM_V2_ePA_AF_06X0901
+
+
+- Deleted TF
+
+  @TCID:TIM_V2_PRO_AF_020201
+
+## Release 2.0.0
+
 ### Beta Release TI-M Testuite Version 2
 
 ### Features
@@ -15,13 +101,13 @@
 - Release Testcases TI-M_V2 (TI-M Pro, TI-M ePA) [`TI-M_V2`](src/test/resources/templates/FeatureFiles/TI-M_V2)
 - Documentation Testsuite V2 [`Testsuite_Version2`](doc/userguide/Testsuite_Version2.adoc)
 
-  **Note**: Please read the documentation. The handling of Testcases with the temporary tag @WIP is also described there.
+  **Note**: Please read the documentation. The handling of Testcases with the temporary tag @WIP is also described
+  there.
 
 ### Changes
 
 - API change, breaking only TI-M Version 2: adds fields to messages for better checks on media events
 - API change, breaking only TI-M Version 2: access_token is required to be provided on login
-
 
 ## Release 1.5.1
 

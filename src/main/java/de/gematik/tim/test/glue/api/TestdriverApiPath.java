@@ -67,6 +67,7 @@ public final class TestdriverApiPath {
   // LOGIN
   public static final String LOGIN_PATH = DEVICE_ID_PATH + "/login";
   public static final String LOGOUT_PATH = DEVICE_ID_PATH + "/logout";
+  public static final String LOGOUT_WITH_SYNC_PATH = LOGOUT_PATH + "/synced";
 
   // HOMESERVER
   public static final String HOMESERVER_BASE_PATH = "/homeserver";

@@ -19,6 +19,7 @@ package de.gematik.tim.test.glue.api.login;
 import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
 import static de.gematik.tim.test.glue.api.login.LoginTask.login;
 import static de.gematik.tim.test.glue.api.login.LogoutTask.logout;
+import static de.gematik.tim.test.glue.api.login.LogoutWithSyncTask.logoutWithSync;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.CLAIM_PARALLEL;
 import static java.lang.Boolean.FALSE;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
@@ -57,6 +58,13 @@ public class LoginGlue {
   @Wenn("{string} loggt sich im TI-Messenger aus")
   public void logsOut(String actorName) {
     theActorCalled(actorName).attemptsTo(logout());
+    checkResponseCode(actorName, OK.value());
+  }
+
+  @When("{string} logs out including and waits for full sync")
+  @Wenn("{string} loggt sich im TI-Messenger aus inkl. erfolgreichem Sync")
+  public void fullySyncedLogOut(String actorName) {
+    theActorCalled(actorName).attemptsTo(logoutWithSync());
     checkResponseCode(actorName, OK.value());
   }
 }

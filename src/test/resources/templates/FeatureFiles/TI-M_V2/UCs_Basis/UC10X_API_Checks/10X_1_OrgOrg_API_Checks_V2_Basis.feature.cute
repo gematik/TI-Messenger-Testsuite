@@ -31,7 +31,7 @@ Funktionalität: 10X. (1) API Checks (Basis Spec)
   Szenariogrundriss: 10X.01.01 API Checks - Verbot von URL-Previews (Org-User)
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
-    Wenn       A fragt an Schnittstelle <ApiName1> die API "/_matrix/media/v3/preview_url" über ein "GET" ab
+    Wenn       A fragt an seinem HomeServer die API "/_matrix/media/v3/preview_url" über ein "GET" ab
     Dann       erhält "A" einen Responsecode 404
 
     @Filter(ApiName1.hasTag("proClient"))
@@ -44,7 +44,7 @@ Funktionalität: 10X. (1) API Checks (Basis Spec)
   Szenariogrundriss: 10X.01.02 API Checks - Verbot von URL-Previews (Org-User)
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
-    Wenn       A fragt an Schnittstelle <ApiName1> die API "/_matrix/client/v1/media/preview_url" über ein "GET" ab
+    Wenn       A fragt an seinem HomeServer die API "/_matrix/client/v1/media/preview_url" über ein "GET" ab
     Dann       erhält "A" einen Responsecode 404
 
     @Filter(ApiName1.hasTag("proClient"))
@@ -52,9 +52,8 @@ Funktionalität: 10X. (1) API Checks (Basis Spec)
     Beispiele:
       | ApiName1 |
 
-  @WIP
   @Ctl:AllowAll @Ctl:ApiCheck @Ctl:Attachment
-  @TCID:TIM_V2_BASIS_AF_10X0103 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+  @TCID:TIM_V2_BASIS_AF_10X0103 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10X.01.03 API Checks - Deprecated Media Endpunkte auf dem gleichen HomeServer (Org-User)
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1A> |
@@ -66,11 +65,11 @@ Funktionalität: 10X. (1) API Checks (Basis Spec)
     Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
     Wenn       "A" sendet ein Attachment "bild.jpg" als "m.image" an den Raum "TIM Testraum 1"
-    Und        B fragt an Schnittstelle <ApiName1B> die media API "/_matrix/media/v3/download/{serverName}/{mediaId}" inkl Parameterbefüllung über ein "GET" ab
+    Und        B fragt an seinem HomeServer die media API "/_matrix/media/v3/download/{serverName}/{mediaId}" inkl Parameterbefüllung über ein "GET" ab
     Dann       erhält "B" einen Responsecode 200
-    Und        B fragt an Schnittstelle <ApiName1B> die media API "/_matrix/media/v3/download/{serverName}/{mediaId}/{fileName}" inkl Parameterbefüllung über ein "GET" ab
+    Und        B fragt an seinem HomeServer die media API "/_matrix/media/v3/download/{serverName}/{mediaId}/{fileName}" inkl Parameterbefüllung über ein "GET" ab
     Dann       erhält "B" einen Responsecode 200
-    Und        B fragt an Schnittstelle <ApiName1B> die media API "/_matrix/media/v3/thumbnail/{serverName}/{mediaId}" inkl Parameterbefüllung über ein "GET" ab
+    Und        B fragt an seinem HomeServer die media API "/_matrix/media/v3/thumbnail/{serverName}/{mediaId}" inkl Parameterbefüllung über ein "GET" ab
     Dann       erhält "B" einen Responsecode 200
 
     @Shuffle(true) #
@@ -84,9 +83,8 @@ Funktionalität: 10X. (1) API Checks (Basis Spec)
     Beispiele:
       | ApiName1A | ApiName1B |
 
-  @WIP
   @Ctl:AllowAll @Ctl:ApiCheck @Ctl:Attachment
-  @TCID:TIM_V2_BASIS_AF_10X0104 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+  @TCID:TIM_V2_BASIS_AF_10X0104 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10X.01.04 API Checks - Deprecated Media Endpunkte auf unterschiedlichen HomeServern (Org-User)
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
@@ -98,11 +96,11 @@ Funktionalität: 10X. (1) API Checks (Basis Spec)
     Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
     Wenn       "A" sendet ein Attachment "bild.jpg" als "m.image" an den Raum "TIM Testraum 1"
-    Und        B fragt an Schnittstelle <ApiName2> die media API "/_matrix/media/v3/download/{serverName}/{mediaId}" inkl Parameterbefüllung über ein "GET" ab
+    Und        B fragt an seinem HomeServer die media API "/_matrix/media/v3/download/{serverName}/{mediaId}" inkl Parameterbefüllung über ein "GET" ab
     Dann       erhält "B" einen Responsecode 200
-    Und        B fragt an Schnittstelle <ApiName2> die media API "/_matrix/media/v3/download/{serverName}/{mediaId}/{fileName}" inkl Parameterbefüllung über ein "GET" ab
+    Und        B fragt an seinem HomeServer die media API "/_matrix/media/v3/download/{serverName}/{mediaId}/{fileName}" inkl Parameterbefüllung über ein "GET" ab
     Dann       erhält "B" einen Responsecode 200
-    Und        B fragt an Schnittstelle <ApiName2> die media API "/_matrix/media/v3/thumbnail/{serverName}/{mediaId}" inkl Parameterbefüllung über ein "GET" ab
+    Und        B fragt an seinem HomeServer die media API "/_matrix/media/v3/thumbnail/{serverName}/{mediaId}" inkl Parameterbefüllung über ein "GET" ab
     Dann       erhält "B" einen Responsecode 200
 
     @Shuffle(true) #
@@ -119,7 +117,8 @@ Funktionalität: 10X. (1) API Checks (Basis Spec)
   @Ctl:ApiCheck
   @TCID:TIM_V2_BASIS_AF_10X0105 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10X.01.05 API Checks - Support Endpunkt (Org-User)
-    Angenommen A fragt an Schnittstelle <ApiName1> die API "/.well-known/matrix/support" über ein "GET" ab
+    Angenommen A fragt an Schnittstelle <ApiName1> die Home-Server-Adresse ab
+    Und        A fragt an seinem HomeServer die API "/.well-known/matrix/support" über ein "GET" ab
     Dann       erhält "A" einen Responsecode 200
     Und        "A" überprüft, dass die Response befüllt ist
 
@@ -133,7 +132,8 @@ Funktionalität: 10X. (1) API Checks (Basis Spec)
   Szenariogrundriss: 10X.01.06 API Checks - Authentisierung von Profilabfragen
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
-    Wenn       B fragt an Schnittstelle <ApiName2> die profile API "/_matrix/client/v3/profile/{userId}" inkl Parameterbefüllung von "A" über ein "GET" ab
+    Und        B fragt an Schnittstelle <ApiName2> die Home-Server-Adresse ab
+    Wenn       B fragt an seinem HomeServer die profile API "/_matrix/client/v3/profile/{userId}" inkl Parameterbefüllung von "A" über ein "GET" ab
     Dann       erhält "B" einen Responsecode 401
 
     @DistinctProperty(homeserver)
@@ -150,7 +150,8 @@ Funktionalität: 10X. (1) API Checks (Basis Spec)
   Szenariogrundriss: 10X.01.07 API Checks - Authentisierung von Profilabfragen mit avatar_url
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
-    Wenn       B fragt an Schnittstelle <ApiName2> die profile API "/_matrix/client/v3/profile/{userId}/avatar_url" inkl Parameterbefüllung von "A" über ein "GET" ab
+    Und        B fragt an Schnittstelle <ApiName2> die Home-Server-Adresse ab
+    Wenn       B fragt an seinem HomeServer die profile API "/_matrix/client/v3/profile/{userId}/avatar_url" inkl Parameterbefüllung von "A" über ein "GET" ab
     Dann       erhält "B" einen Responsecode 401
 
     @DistinctProperty(homeserver)
@@ -167,7 +168,8 @@ Funktionalität: 10X. (1) API Checks (Basis Spec)
   Szenariogrundriss: 10X.01.08 API Checks - Authentisierung von Profilabfragen mit displayname
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
-    Angenommen B fragt an Schnittstelle <ApiName2> die profile API "/_matrix/client/v3/profile/{userId}/displayname" inkl Parameterbefüllung von "A" über ein "GET" ab
+    Und        B fragt an Schnittstelle <ApiName2> die Home-Server-Adresse ab
+    Wenn       B fragt an seinem HomeServer die profile API "/_matrix/client/v3/profile/{userId}/displayname" inkl Parameterbefüllung von "A" über ein "GET" ab
     Dann       erhält "B" einen Responsecode 401
 
     @DistinctProperty(homeserver)
@@ -184,7 +186,7 @@ Funktionalität: 10X. (1) API Checks (Basis Spec)
   Szenariogrundriss: 10X.01.09 API Checks - Standardisierte Fehlermeldungen für unbekannte Endpunkte
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
-    Wenn       A fragt an Schnittstelle <ApiName1> die API "/_matrix/media/v3/config" über ein "GET" ab
+    Wenn       A fragt an seinem HomeServer die API "/_matrix/media/v3/config" über ein "GET" ab
     Dann       erhält "A" einen Responsecode 404
 
     @Filter(ApiName1.hasTag("proClient"))
@@ -195,7 +197,8 @@ Funktionalität: 10X. (1) API Checks (Basis Spec)
   @Ctl:ApiCheck
   @TCID:TIM_V2_BASIS_AF_10X0110 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 10X.01.10 API Checks - Standardisierte Fehlermeldungen für unbekannte Methoden
-    Angenommen A fragt an Schnittstelle <ApiName1> die API "/.well-known/matrix/support" über ein "DELETE" ab
+    Angenommen A fragt an Schnittstelle <ApiName1> die Home-Server-Adresse ab
+    Wenn       A fragt an seinem HomeServer die API "/.well-known/matrix/support" über ein "DELETE" ab
     Dann       erhält "A" einen Responsecode 405
 
     @Filter(ApiName1.hasTag("proClient"))

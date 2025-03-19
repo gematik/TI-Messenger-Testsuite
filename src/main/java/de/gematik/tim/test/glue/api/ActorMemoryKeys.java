@@ -37,4 +37,5 @@ public final class ActorMemoryKeys {
   public static final String HOME_SERVER = "homeServer";
   public static final String MATRIX_CLIENT_VERSION = "matrixClientVersion";
   public static final String ACCESS_TOKEN = "accessToken";
+  public static final String MEDIA_URI = "matrixMediaContentUri";
 }

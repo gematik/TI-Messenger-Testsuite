@@ -15,6 +15,8 @@ Funktionalität: 06X. (1) Berechtigungskonfiguration Benutzergruppen (Pro Spec)
   Inhalt
   TF 1      GruppenBlock - User blockt/entblockt Gruppe (AllowAll)
   TF 2      GruppenAllow - User allow/unallow Gruppe (BlockAll)
+  TF 3      GruppenBlock - Einträge bleiben trotz Logout erhalten
+  TF 4      GruppenAllow - Einträge bleiben trotz Logout erhalten
 
   @WIP
   @Ctl:AllowAll @Ctl:GruppenBP
@@ -44,6 +46,44 @@ Funktionalität: 06X. (1) Berechtigungskonfiguration Benutzergruppen (Pro Spec)
     Und        "A" prüft, dass die Gruppe "Versicherte" in der Allowliste gesetzt ist
     Und        "A" entfernt die Gruppe "Versicherte" aus der Allowliste
     Und        "A" prüft, dass die Gruppe "Versicherte" in der Allowliste nicht gesetzt ist
+
+  @Filter(ApiName1.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 |
+
+  @WIP
+  @Ctl:AllowAll @Ctl:GruppenBP
+  @TCID:TIM_V2_PRO_AF_06X0103 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+  Szenariogrundriss: 06X.01.03 Berechtigungskonfiguration Benutzergruppen - AllowAll - GruppenBlock - Einträge bleiben trotz Logout erhalten
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+    Und        "A" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" hinterlegt die Gruppe "Versicherte" in der Blockliste
+    Und        "A" prüft, dass die Gruppe "Versicherte" in der Blockliste gesetzt ist
+    Und        "A" loggt sich im TI-Messenger aus
+    Und        "A" loggt sich im TI-Messenger ein
+    Und        "A" prüft, ob der eigene Authorization Mode auf "AllowAll" gesetzt ist
+    Und        "A" prüft, dass die Gruppe "Versicherte" in der Blockliste gesetzt ist
+
+  @Filter(ApiName1.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 |
+
+  @WIP
+  @Ctl:BlockAll @Ctl:GruppenBP
+  @TCID:TIM_V2_PRO_AF_06X0104 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+  Szenariogrundriss: 06X.01.04 Berechtigungskonfiguration Benutzergruppen - BlockAll - GruppenAllow - Einträge bleiben trotz Logout erhalten
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+    Und        "A" setzen den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" hinterlegt die Gruppe "Versicherte" in der Allowliste
+    Und        "A" prüft, dass die Gruppe "Versicherte" in der Allowliste gesetzt ist
+    Und        "A" loggt sich im TI-Messenger aus
+    Und        "A" loggt sich im TI-Messenger ein
+    Und        "A" prüft, ob der eigene Authorization Mode auf "BlockAll" gesetzt ist
+    Und        "A" prüft, dass die Gruppe "Versicherte" in der Allowliste gesetzt ist
 
   @Filter(ApiName1.hasTag("proClient"))
 
