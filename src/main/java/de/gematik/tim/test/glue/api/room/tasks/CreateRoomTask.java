@@ -19,6 +19,7 @@ package de.gematik.tim.test.glue.api.room.tasks;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.CREATE_ROOM;
 import static de.gematik.tim.test.glue.api.room.UseRoomAbility.addRoomToActor;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueMessageText;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueRoomName;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.models.CreateRoomRequestDTO.RoomAccessEnum.PRIVATE;
@@ -33,6 +34,7 @@ import net.serenitybdd.screenplay.Task;
 public class CreateRoomTask implements Task {
 
   private String roomName;
+  private String topic;
 
   public static CreateRoomTask createRoom() {
     return new CreateRoomTask();
@@ -43,11 +45,16 @@ public class CreateRoomTask implements Task {
     return this;
   }
 
+  public CreateRoomTask withTopic() {
+    this.topic = createUniqueMessageText();
+    return this;
+  }
+
   @Override
   public <T extends Actor> void performAs(T actor) {
     String uniqueName = createUniqueRoomName();
     CreateRoomRequestDTO requestDTO =
-        new CreateRoomRequestDTO().roomAccess(PRIVATE).name(uniqueName);
+        new CreateRoomRequestDTO().roomAccess(PRIVATE).name(uniqueName).theme(topic);
 
     actor.attemptsTo(CREATE_ROOM.request().with(req -> req.body(requestDTO)));
     RoomDTO room = parseResponse(RoomDTO.class);

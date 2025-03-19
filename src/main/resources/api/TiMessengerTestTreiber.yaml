@@ -105,13 +105,12 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Indicates a test start, can be used for clean up"
-      description: "Implementation is optional! Testsuite sends a request to the involved endpoints
+      summary: "Indicates a test start, is used for clean up"
+      description: "Implementation is no longer optional! Testsuite sends a request to the involved endpoints
       (even to the org-admin who is not named in the feature-file).
       There will be no claiming attempt before triggering these endpoints.
-      After getting any response the testcase starts.
-      This is an opportunity to clean user/rooms/FHIR-VZD etc.
-      Even if an error code is returned the testsuite will start the test."
+      After getting the response the testcase starts.
+      This is an opportunity to clean user/rooms/FHIR-VZD etc."
       operationId: cleanUp
       responses:
         "200":
@@ -316,6 +315,33 @@ paths:
       responses:
         "200":
           description: "Logout successful"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        default:
+          $ref: "#/components/responses/DefaultResponse"
+
+  /devices/{deviceId}/logout/synced:
+    parameters:
+      - $ref: "#/components/parameters/deviceId"
+      - $ref: "#/components/parameters/transactionIdHeader"
+
+    post:
+      summary: "Logout of an account with prolonged wait time"
+      description: "This variant of the logout is used in tests, where it is important,
+       that the logout is fully executed and synchronized before proceeding.
+       The response must only be send, once the account is fully logged out."
+      tags:
+        - login/logout
+        - TI-M_Pro
+        - TI-M_ePA
+      operationId: syncedLogout
+      responses:
+        "200":
+          description: "Logout fully executed"
         "400":
           $ref: "#/components/responses/BadRequest"
         "404":

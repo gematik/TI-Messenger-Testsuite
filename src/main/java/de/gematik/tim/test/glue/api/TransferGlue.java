@@ -85,79 +85,6 @@ public class TransferGlue {
     // implement me
   }
 
-  @Dann("{string} erstellt einen Chat-Raum {string} inkl. Topic")
-  public void crateRoomInclTopic(String actor, String roomName) {
-    // implement me
-  }
-
-  @Dann(
-      "{string} prüft, ob die Parameter in den Room States {listOfStrings} im Raum {string} befüllt sind")
-  @Then(
-      "{string} prüft, ob der Parameter in den Room States {listOfStrings} im Raum {string} befüllt ist")
-  public void checkParameterFilledForRoomStatesOfRoom(
-      String actor, List<String> requestedRoomStates, String roomName) {
-    // implement me
-  }
-
-  @Dann(
-      "{string} prüft, ob die Parameter in den Room States {listOfStrings} im Chat mit {string} befüllt sind")
-  @Then(
-      "{string} prüft, ob der Parameter in den Room States {listOfStrings} im Chat mit {string} befüllt ist")
-  public void checkParameterFilledForRoomStatesOfChat(
-      String actor, List<String> requestedRoomStates, String chatPartner) {
-    // implement me
-  }
-
-  @Dann(
-      "{string} prüft, ob die Parameter in den Room States {listOfStrings} im Chat mit {string} leer sind")
-  @Then(
-      "{string} prüft, ob der Parameter in den Room States {listOfStrings} im Chat mit {string} leer ist")
-  public void checkParameterNotExistentForRoomStatesOfChat(
-      String actor, List<String> requestedRoomStates, String chatPartner) {
-    // implement me
-  }
-
-  @Dann(
-      "{string} prüft, ob die Parameter in den Room States {listOfStrings} im Raum {string} leer sind")
-  @Then(
-      "{string} prüft, ob der Parameter in den Room States {listOfStrings} im Raum {string} leer ist")
-  public void checkParameterNotExistentForRoomStatesOfRoom(
-      String actor, List<String> requestedRoomStates, String roomName) {
-    // implement me
-  }
-
-  @Dann(
-      "{string} prüft, ob die Parameter in den Room States {listOfStrings} im Raum {string} vorhanden sind")
-  @Then(
-      "{string} prüft, ob der Parameter in den Room States {listOfStrings} im Raum {string} vorhanden ist")
-  public void checkParameterExistentForRoomStatesOfRoom(
-      String actor, List<String> requestedRoomStates, String roomName) {
-    // implement me
-  }
-
-  @Dann(
-      "{string} prüft, ob die Parameter in den Room States {listOfStrings} im Chat mit {string} vorhanden sind")
-  @Then(
-      "{string} prüft, ob der Parameter in den Room States {listOfStrings} im Chat mit {string} vorhanden ist")
-  public void checkParameterExistentForRoomStatesOfChat(
-      String actor, List<String> requestedRoomStates, String chatPartner) {
-    // implement me
-  }
-
-  @Dann(
-      "{string} prüft, ob der Parameter in den Room States {string} im Raum {string} mit dem Wert von {string} befüllt ist")
-  public void compareParameterForRoomStatesOfRoom(
-      String actor, String requestedValue, String roomName, String comapreValue) {
-    // implement me
-  }
-
-  @Dann(
-      "{string} prüft, ob der Parameter in den Room States {string} im Chat mit {string} mit dem Wert von {string} befüllt ist")
-  public void compareParameterForRoomStatesOfChat(
-      String actor, String requestedValue, String chatPartner, String comapreValue) {
-    // implement me
-  }
-
   @Then("{string} versucht User {listOfStrings} in der Allowliste zu hinterlegen")
   public void tryToPutUserOnAllowlist(String actorName, List<String> userName) {
     // implement me - negativ - hier wird forbidden/400 erwartet)
@@ -176,30 +103,6 @@ public class TransferGlue {
   @Then("{string} versucht den Server-Namen von {listOfStrings} in der Blockliste zu hinterlegen")
   public void tryToPutServerNameOnBlocklist(String actorName, List<String> userName) {
     // implement me - negativ - hier wird forbidden/400 erwartet)
-  }
-
-  @Then("{string} sendet {string} die Location {string} als {string}")
-  public void sendLocationToChatWithMsgType(
-      String actorName, String userName, String location, String msgType) {
-    // implement me)
-  }
-
-  @Then("{string} sendet die Location {string} als {string} an den Raum {string}")
-  public void sendLocationToRoomWithMsgType(
-      String actorName, String location, String msgType, String roomName) {
-    // implement me)
-  }
-
-  @Then("{string} empfängt die Location {string} von {string} als {string}")
-  public void getLocationToChatWithMsgType(
-      String actorName, String location, String userName, String msgType) {
-    // implement me)
-  }
-
-  @Then("{string} empfängt die Location {string} als {string} von {string} im Raum {string}")
-  public void getLocationToRoomWithMsgType(
-      String actorName, String location, String msgType, String userName, String roomName) {
-    // implement me)
   }
 
   @Then("{string} findet {string} nicht mehr in seiner Allowliste")

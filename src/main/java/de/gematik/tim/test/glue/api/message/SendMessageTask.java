@@ -28,6 +28,7 @@ import org.springframework.http.HttpStatus;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEND_MESSAGE;
 import static de.gematik.tim.test.glue.api.room.questions.GetCurrentRoomQuestion.currentRoom;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueMessageText;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.isSameHomeserver;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addMessage;
 import static java.util.Objects.requireNonNull;
@@ -41,6 +42,7 @@ public class SendMessageTask implements Task {
     private String fileId;
     private String mimetype;
     private Integer size;
+    private String geoUri;
 
     public static SendMessageTask sendMessage(String messageText) {
         requireNonNull(messageText);
@@ -64,6 +66,11 @@ public class SendMessageTask implements Task {
 
     public SendMessageTask withMsgType(String msgType) {
         this.msgType = msgType;
+        return this;
+    }
+
+    public SendMessageTask withGeoUri(String geoUri) {
+        this.geoUri = geoUri;
         return this;
     }
 
@@ -97,10 +104,19 @@ public class SendMessageTask implements Task {
 
     private MessageContentDTO buildMessage() {
         MessageContentDTO message =
-                new MessageContentDTO().body(body).msgtype(msgType);
+                new MessageContentDTO().msgtype(msgType);
+        if (msgType.equals("m.image") || msgType.equals("m.video") || msgType.equals("m.audio") || msgType.equals("m.file")) {
+            message.body(body);
+        }
+        else{
+            message.body(createUniqueMessageText());
+        }
         if (fileId != null) {
             message.fileId(fileId);
             message.info(new MessageContentInfoDTO().mimetype(mimetype).size(size));
+        }
+        if (geoUri != null) {
+            message.geoUri(geoUri);
         }
         return message;
     }

@@ -23,6 +23,7 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.OWN_ROOM_MEMBERSHIP_S
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEND_DIRECT_MESSAGE;
 import static de.gematik.tim.test.glue.api.room.UseRoomAbility.addRoomToActor;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomQuestion.ownRoom;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueMessageText;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.isSameHomeserver;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addMessage;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addRoom;
@@ -51,6 +52,7 @@ public class SendDirectMessageTask implements Task {
   private String fileId;
   private String mimetype;
   private Integer size;
+  private String geoUri;
 
   public static SendDirectMessageTask sendDirectMessageTo(Actor toActor, String message) {
     return new SendDirectMessageTask(toActor, message);
@@ -77,18 +79,32 @@ public class SendDirectMessageTask implements Task {
     return this;
   }
 
+  public SendDirectMessageTask withGeoUri(String geoUri) {
+    this.geoUri = geoUri;
+    return this;
+  }
+
   @Override
   public <T extends Actor> void performAs(T actor) {
     String actorMxId = actor.recall(MX_ID);
     String toMxId = toActor.recall(MX_ID);
 
     DirectMessageDTO directMessage =
-            new DirectMessageDTO().body(message).msgtype(msgType).toAccount(toMxId);
+            new DirectMessageDTO().msgtype(msgType).toAccount(toMxId);
+    if (msgType.equals("m.image") || msgType.equals("m.video") || msgType.equals("m.audio") || msgType.equals("m.file")) {
+      directMessage.body(message);
+    }
+    else{
+      directMessage.body(createUniqueMessageText());
+    }
     if (fileId != null) {
       directMessage.fileId(fileId);
     }
     if(mimetype != null && size != null) {
       directMessage.info(new MessageContentInfoDTO().mimetype(mimetype).size(size));
+    }
+    if(geoUri != null) {
+      directMessage.geoUri(geoUri);
     }
     actor.attemptsTo(SEND_DIRECT_MESSAGE.request().with(req -> req.body(directMessage)));
     if (HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful()) {

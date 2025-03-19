@@ -48,6 +48,7 @@ import static de.gematik.tim.test.glue.api.TestdriverApiPath.INFO_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.KEY_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.LOGIN_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.LOGOUT_PATH;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.LOGOUT_WITH_SYNC_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.MEDIA_DOWNLOAD_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.MEDIA_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.MESSAGE_ID_PATH;
@@ -63,7 +64,6 @@ import static de.gematik.tim.test.glue.api.TestdriverApiPath.SUPPORTED_VERSIONS_
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.UNCLAIM_DEVICE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.WELL_KNOWN_HOMESERVER_PATH;
 import static java.util.Objects.requireNonNull;
-
 
 import de.gematik.tim.test.glue.api.devices.UseDeviceAbility;
 import de.gematik.tim.test.glue.api.exceptions.TestRunException;
@@ -107,6 +107,7 @@ public enum TestdriverApiEndpoint {
   // LOGIN
   LOGIN(POST, LOGIN_PATH, UseDeviceAbility.class),
   LOGOUT(POST, LOGOUT_PATH, UseDeviceAbility.class),
+  LOGOUT_WITH_SYNC(POST, LOGOUT_WITH_SYNC_PATH, UseDeviceAbility.class),
 
   // ROOM
   GET_ROOMS(GET, ROOMS_PATH, UseDeviceAbility.class),

@@ -1,0 +1,34 @@
+# language: de
+@File:FeatureFile_06X_01_V2_ePA @Ctl:UseCaseV2_06X_ePA
+@PRODUKT:TI-M_FD_ePA
+@Zul:ePA
+@AFO-ID:A_26375
+
+Funktionalität: 06X. (9) Ergänzungen zur Matrix-Spezifikation (ePA Spec)
+
+  Die folgenden Testfälle sollen Ergänzungen zur Matrix-Spezifikation überprüfen.
+
+  COMMENT: ePA
+  A_26375 - Verbot von Suchabfragen
+
+  Inhalt
+  TF 1      Verbot von Suchabfragen im eigenen HomeServer (ePA-User)
+
+  @TCID:TIM_V2_ePA_AF_06X0901 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 06X.09.01 Ergänzungen zur Matrix-Spezifikation - Verbot von Suchabfragen im eigenen HomeServer (ePA-User)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1A> |
+      | B | EPA_CLIENT  | <ApiName1B> |
+    Wenn       "A" findet TI-Messenger-Nutzer "B" bei der Suche im HomeServer nicht [Retry 10 - 3]
+    Und        "B" findet TI-Messenger-Nutzer "A" bei der Suche im HomeServer nicht [Retry 10 - 3]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1A.hasTag("epaClient"))
+    @Filter(ApiName1B.hasTag("epaClient"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B |

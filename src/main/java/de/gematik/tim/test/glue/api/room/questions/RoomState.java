@@ -21,7 +21,11 @@ import lombok.Getter;
 @Getter
 public enum RoomState {
   TIM_DEFAULT("de.gematik.tim.room.default.v1", null),
-  TIM_ROOM_TYPE("m.room.create", new Content("$.type", "de.gematik.tim.roomtype.default.v1"));
+  TIM_ROOM_TYPE("m.room.create", new Content("$.type", "de.gematik.tim.roomtype.default.v1")),
+  TIM_ROOM_NAME("de.gematik.tim.room.name", null),
+  TIM_ROOM_TOPIC("de.gematik.tim.room.topic", null),
+  ROOM_NAME("m.room.name", null),
+  ROOM_TOPIC("m.room.topic", null);
 
   private final String type;
   private final Content content;

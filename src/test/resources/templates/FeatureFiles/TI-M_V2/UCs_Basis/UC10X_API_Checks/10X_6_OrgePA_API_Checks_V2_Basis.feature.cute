@@ -14,9 +14,8 @@ Funktionalität: 10X. (6) API Checks (Basis Spec)
   Inhalt
   TF 1  Deprecated Media Endpunkte - Ausserhalb von HomeServern (ePA User empfängt Attachment)
 
-  @WIP
   @Ctl:AllowAll @Ctl:ApiCheck @Ctl:Attachment
-  @TCID:TIM_V2_BASIS_AF_10X0601 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+  @TCID:TIM_V2_BASIS_AF_10X0601 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 10X.06.01 API Checks - Deprecated Media Endpunkte auf unterschiedlichen HomeServern (ePA User empfängt Attachment)
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
@@ -28,11 +27,11 @@ Funktionalität: 10X. (6) API Checks (Basis Spec)
     Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
     Wenn       "A" sendet ein Attachment "bild.jpg" als "m.image" an den Raum "TIM Testraum 1"
-    Und        B fragt an Schnittstelle <ApiName2> die media API "/_matrix/media/v3/download/{serverName}/{mediaId}" inkl Parameterbefüllung über ein "GET" ab
+    Und        B fragt an seinem HomeServer die media API "/_matrix/media/v3/download/{serverName}/{mediaId}" inkl Parameterbefüllung über ein "GET" ab
     Dann       erhält "B" einen Responsecode 200
-    Und        B fragt an Schnittstelle <ApiName2> die media API "/_matrix/media/v3/download/{serverName}/{mediaId}/{fileName}" inkl Parameterbefüllung über ein "GET" ab
+    Und        B fragt an seinem HomeServer die media API "/_matrix/media/v3/download/{serverName}/{mediaId}/{fileName}" inkl Parameterbefüllung über ein "GET" ab
     Dann       erhält "B" einen Responsecode 200
-    Und        B fragt an Schnittstelle <ApiName2> die media API "/_matrix/media/v3/thumbnail/{serverName}/{mediaId}" inkl Parameterbefüllung über ein "GET" ab
+    Und        B fragt an seinem HomeServer die media API "/_matrix/media/v3/thumbnail/{serverName}/{mediaId}" inkl Parameterbefüllung über ein "GET" ab
     Dann       erhält "B" einen Responsecode 200
 
     @Shuffle(true) #

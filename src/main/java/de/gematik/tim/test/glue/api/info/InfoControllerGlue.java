@@ -19,6 +19,7 @@ package de.gematik.tim.test.glue.api.info;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.ACCESS_TOKEN;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HOME_SERVER;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MATRIX_CLIENT_VERSION;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MEDIA_URI;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_INFO;
@@ -35,6 +36,7 @@ import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.not;
 import static org.springframework.http.HttpStatus.OK;
 
+import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import io.cucumber.java.de.Angenommen;
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.de.Und;
@@ -103,12 +105,11 @@ public class InfoControllerGlue {
         .isFalse();
   }
 
-  @And("{word} requests at interface {word} the API {string} with http method {string}")
-  @Und("{word} fragt an Schnittstelle {word} die API {string} über ein {string} ab")
-  public void pingApiOnHomeserver(
-      String actorName, String interfaceName, String matrixUrl, String httpMethod) {
-    String interfaceUrl = prepareApiNameForHttp(interfaceName);
-    Actor actor = theActorCalled(actorName).can(CallAnApi.at(interfaceUrl));
+  @And("{word} requests at their homeserver the API {string} with http method {string}")
+  @Und("{word} fragt an seinem HomeServer die API {string} über ein {string} ab")
+  public void pingApiOnHomeserver(String actorName, String matrixUrl, String httpMethod) {
+    Actor actor = theActorCalled(actorName);
+    actor.can(CallAnApi.at(actor.recall(HOME_SERVER)));
     if (matrixUrl.startsWith("/.well-known")) {
       pingApiWithoutForwarding(actor, matrixUrl, httpMethod);
       return;
@@ -127,20 +128,38 @@ public class InfoControllerGlue {
   }
 
   @When(
-      "{word} requests at interface {word} the profile API {string} including parameters of user {string} with http method {string}")
+      "{word} requests at their homeserver the profile API {string} including parameters of user {string} with http method {string}")
   @Wenn(
-      "{word} fragt an Schnittstelle {word} die profile API {string} inkl Parameterbefüllung von {string} über ein {string} ab")
+      "{word} fragt an seinem HomeServer die profile API {string} inkl Parameterbefüllung von {string} über ein {string} ab")
   public void pingApiOnHomeserverWithUserParameters(
-      String actorName,
-      String interfaceName,
-      String matrixUrl,
-      String userName,
-      String httpMethod) {
+      String actorName, String matrixUrl, String userName, String httpMethod) {
     Actor user = theActorCalled(userName);
     String userId = user.recall(MX_ID);
-    String interfaceUrl = prepareApiNameForHttp(interfaceName);
-    Actor actor = theActorCalled(actorName).can(CallAnApi.at(interfaceUrl));
+
+    Actor actor = theActorCalled(actorName);
+    actor.can(CallAnApi.at(actor.recall(HOME_SERVER)));
     String matrixUrlIncludingParameter = matrixUrl.replace("{userId}", userId);
     actor.attemptsTo(callForbiddenMatrixEndpoint(matrixUrlIncludingParameter, httpMethod));
+  }
+
+  @And(
+      "{word} requests at their homeserver the media API {string} including parameters with http method {string}")
+  @Und(
+      "{word} fragt an seinem HomeServer die media API {string} inkl Parameterbefüllung über ein {string} ab")
+  public void pingApiOnHomeserverForMedia(String actorName, String matrixUrl, String httpMethod) {
+    Actor actor = theActorCalled(actorName);
+    actor.can(CallAnApi.at(actor.recall(HOME_SERVER)));
+    String mediaUri = actor.recall(MEDIA_URI);
+    String[] uriTokens = mediaUri.split("/");
+    if (uriTokens.length != 4) {
+      throw new TestRunException("Could not parse provided media uri " + mediaUri);
+    }
+    String serverName = uriTokens[2];
+    String mediaId = uriTokens[3];
+
+    String urlIncludingServername = matrixUrl.replace("{serverName}", serverName);
+    String urlIncludingMediaId = urlIncludingServername.replace("{mediaId}", mediaId);
+    String urlIncludingFilename = urlIncludingMediaId.replace("{fileName}", "myNewFilename");
+    actor.attemptsTo(callForbiddenMatrixEndpoint(urlIncludingFilename, httpMethod));
   }
 }

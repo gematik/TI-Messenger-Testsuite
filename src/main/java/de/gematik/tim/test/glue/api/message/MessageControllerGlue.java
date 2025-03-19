@@ -13,25 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.gematik.tim.test.glue.api.message;
-
-import de.gematik.tim.test.glue.api.exceptions.TestRunException;
-import de.gematik.tim.test.glue.api.room.UseRoomAbility;
-import de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager;
-import de.gematik.tim.test.models.MessageDTO;
-import de.gematik.tim.test.models.RoomDTO;
-import io.cucumber.java.Before;
-import io.cucumber.java.de.Dann;
-import io.cucumber.java.de.Wenn;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
-import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.actors.Cast;
-import org.apache.commons.lang3.NotImplementedException;
-
-import java.util.List;
-import java.util.Optional;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.DIRECT_CHAT_NAME;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
@@ -61,8 +43,25 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
+import de.gematik.tim.test.glue.api.exceptions.TestRunException;
+import de.gematik.tim.test.glue.api.room.UseRoomAbility;
+import de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager;
+import de.gematik.tim.test.models.MessageDTO;
+import de.gematik.tim.test.models.RoomDTO;
+import io.cucumber.java.Before;
+import io.cucumber.java.de.Dann;
+import io.cucumber.java.de.Wenn;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+import java.util.List;
+import java.util.Optional;
+import net.serenitybdd.screenplay.Actor;
+import net.serenitybdd.screenplay.actors.Cast;
+import org.apache.commons.lang3.NotImplementedException;
 
 public class MessageControllerGlue {
+
+    private static final String geoUri = "geo:52.5229073,13.3875704";
 
     @Before
     public void setup() {
@@ -283,11 +282,13 @@ public class MessageControllerGlue {
         assertThat(receivedMessage.getType()).isEqualTo("m.room.message");
         if (receivedMessage.getFormat() != null && !receivedMessage.getFormat().isEmpty()) {
             assertThat(receivedMessage.getFormattedBody()).isNotNull().isNotEmpty();
+        } else if (msgType.equals("m.location")) {
+            assertThat(receivedMessage.getGeoUri()).isEqualTo(geoUri);
         }
     }
 
     @Then("{string} writes {string} directly {string} as {string}")
-    @Then("{string} schreibt {string} direkt {string} als {string}")
+    @Dann("{string} schreibt {string} direkt {string} als {string}")
     public void sendMessageToChatWithMsgType(String actorName, String userName, String message, String msgType) {
         Actor sender = theActorCalled(actorName);
         Actor receiver = theActorCalled(userName);
@@ -299,7 +300,7 @@ public class MessageControllerGlue {
     }
 
     @Then("{string} sends the message {string} as {string} to the room {string}")
-    @Then("{string} sendet die Nachricht {string} als {string} an den Raum {string}")
+    @Dann("{string} sendet die Nachricht {string} als {string} an den Raum {string}")
     public void sendMessageToRoomWithMsgType(String actorName, String message, String msgType, String roomName) {
         Actor actor = theActorCalled(actorName);
         actor.abilityTo(UseRoomAbility.class).setActive(roomName);
@@ -322,7 +323,7 @@ public class MessageControllerGlue {
     }
 
     @Then("{string} receives a message {string} from {string} as {string}")
-    @Then("{string} empfängt eine Nachricht {string} von {string} als {string}")
+    @Dann("{string} empfängt eine Nachricht {string} von {string} als {string}")
     public void getMessageFromChatWithMsgType(String actorName, String message, String userName, String msgType) {
         Actor actor = theActorCalled(actorName);
         RoomDTO room = getRoomBetweenTwoActors(actor, userName);
@@ -331,7 +332,7 @@ public class MessageControllerGlue {
     }
 
     @Then("{string} receives a message {string} as {string} from {string} in room {string}")
-    @Then("{string} empfängt eine Nachricht {string} als {string} von {string} im Raum {string}")
+    @Dann("{string} empfängt eine Nachricht {string} als {string} von {string} im Raum {string}")
     public void getMessageFromRoomWithMsgType(String actorName, String message, String msgType, String userName, String roomName) {
         Actor actor = theActorCalled(actorName);
         String senderMxId = theActorCalled(userName).recall(MX_ID);
@@ -349,4 +350,53 @@ public class MessageControllerGlue {
         assertThat(receivedMessage.getBody()).isEqualTo(getCreatedMessage(message).getBody());
         checkRequiredProperties(receivedMessage, msgType);
     }
+
+
+    @Then("{string} sends {string} the location {string} as {string}.")
+    @Dann("{string} sendet {string} die Location {string} als {string}")
+    public void sendLocationToChatWithMsgType(String actorName, String userName, String location, String msgType) {
+        Actor sender = theActorCalled(actorName);
+        Actor receiver = theActorCalled(userName);
+        sender.attemptsTo(sendDirectMessageTo(receiver, location)
+                .withMsgType(msgType)
+                .withGeoUri(geoUri));
+        RoomDTO room = checkRoomMembershipStateInDirectChatOf(actorName);
+        checkRoomVersion(room);
+        checkResponseCode(actorName, OK.value());
+        MessageDTO receivedMessage = getCreatedMessage(location);
+        assertThat(receivedMessage.getBody()).isNotNull().isNotEmpty();
+        checkRequiredProperties(receivedMessage, msgType);
+    }
+
+    @Then("{string} sends the location {string} as {string} to the room {string}.")
+    @Dann("{string} sendet die Location {string} als {string} an den Raum {string}")
+    public void sendLocationToRoomWithMsgType(String actorName, String location, String msgType, String roomName) {
+        Actor actor = theActorCalled(actorName);
+        actor.abilityTo(UseRoomAbility.class).setActive(roomName);
+        actor.attemptsTo(
+                sendMessage(location)
+                        .withMsgType(msgType)
+                        .withGeoUri(geoUri));
+        checkRoomMembershipState(actor, roomName);
+        checkResponseCode(actorName, OK.value());
+        MessageDTO receivedMessage = getCreatedMessage(location);
+        assertThat(receivedMessage.getBody()).isNotNull().isNotEmpty();
+        checkRequiredProperties(receivedMessage, msgType);
+    }
+
+    @Then("{string} receives the location {string} from {string} as {string}.")
+    @Dann("{string} empfängt die Location {string} von {string} als {string}")
+    public void getLocationToChatWithMsgType(String actorName, String location, String userName, String msgType) {
+        Actor actor = theActorCalled(actorName);
+        RoomDTO room = getRoomBetweenTwoActors(actor, userName);
+        String roomName = getInternalRoomNameForActor(room, actor);
+        getLocationToRoomWithMsgType(actorName, location, msgType, userName, roomName);
+    }
+
+    @Then("{string} receives a location {string} as {string} from {string} in room {string}")
+    @Dann("{string} empfängt die Location {string} als {string} von {string} im Raum {string}")
+    public void getLocationToRoomWithMsgType(String actorName, String location, String msgType, String userName, String roomName) {
+        getMessageFromRoomWithMsgType(actorName, location, msgType, userName, roomName);
+    }
 }
+
