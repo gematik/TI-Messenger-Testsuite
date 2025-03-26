@@ -16,27 +16,28 @@
 
 package de.gematik.tim.test.glue.api.authorization;
 
-import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SET_AUTHORIZATION_MODE;
+import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_BLOCKED_USERS;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.MXID_VARIABLE;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 
-import de.gematik.tim.test.models.AuthorizationModeDTO;
+import de.gematik.tim.test.models.MxIdDTO;
 import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.Task;
+import net.serenitybdd.screenplay.Question;
 
 @RequiredArgsConstructor
-public class SetAuthorizationModeTask implements Task {
+public class GetBlockedUserQuestion implements Question<MxIdDTO> {
 
-  private final String authorizationMode;
+  private final String blockedUserId;
 
-  public static SetAuthorizationModeTask setAuthorizationMode(String authorizationMode) {
-    return new SetAuthorizationModeTask(authorizationMode);
+  public static GetBlockedUserQuestion getBlockedUser(String blockedUserId) {
+    return new GetBlockedUserQuestion(blockedUserId);
   }
 
   @Override
-  public <T extends Actor> void performAs(T actor) {
+  public MxIdDTO answeredBy(Actor actor) {
     actor.attemptsTo(
-        SET_AUTHORIZATION_MODE
-            .request()
-            .with(req -> req.body(AuthorizationModeDTO.fromValue(authorizationMode))));
+        GET_BLOCKED_USERS.request().with(req -> req.pathParam(MXID_VARIABLE, blockedUserId)));
+    return parseResponse(MxIdDTO.class);
   }
 }

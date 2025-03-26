@@ -16,56 +16,57 @@
 
 package de.gematik.tim.test.glue.api.authorization;
 
-import static de.gematik.tim.test.glue.api.authorization.DeleteAllowedUsersTask.deleteAllowedUsers;
-import static de.gematik.tim.test.glue.api.authorization.DeleteBlockedUsersTask.deleteBlockedUsers;
+import static de.gematik.tim.test.glue.api.authorization.tasks.DeleteAllowListTask.deleteAllowList;
+import static de.gematik.tim.test.glue.api.authorization.tasks.DeleteBlockListTask.deleteBlockList;
+import static de.gematik.tim.test.glue.api.authorization.questions.GetAuthorizationModeQuestion.getAuthorizationMode;
+import static de.gematik.tim.test.glue.api.authorization.tasks.SetAuthorizationModeTask.setAuthorizationMode;
 import static java.util.Objects.isNull;
 
 import de.gematik.tim.test.glue.api.MultiTargetAbility;
-import java.util.Collections;
-import java.util.List;
+import de.gematik.tim.test.models.AuthorizationModeDTO;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 
 public class HasBlockAndAllowListAbility extends MultiTargetAbility<String, AuthorizationListEnum> {
 
-  private HasBlockAndAllowListAbility(
-      List<String> userMxIds, AuthorizationListEnum authorizationList) {
-    for (String userMxId : userMxIds) {
-      addAndSetActive(userMxId, authorizationList);
-    }
+  private HasBlockAndAllowListAbility(String actorMxId, AuthorizationListEnum authorizationList) {
+    addAndSetActive(actorMxId, authorizationList);
   }
 
-  public static <T extends Actor> void addBlockedUsersToActor(List<String> userMxIds, T actor) {
+  public static <T extends Actor> void actorHasBlockList(String actorMxId, T actor) {
     HasBlockAndAllowListAbility ability = actor.abilityTo(HasBlockAndAllowListAbility.class);
     if (isNull(ability)) {
-      ability = new HasBlockAndAllowListAbility(userMxIds, AuthorizationListEnum.BLOCK);
+      ability = new HasBlockAndAllowListAbility(actorMxId, AuthorizationListEnum.BLOCK);
       actor.can(ability);
     }
-    for (String userMxId : userMxIds) {
-      ability.addAndSetActive(userMxId, AuthorizationListEnum.BLOCK);
-    }
+    ability.addAndSetActive(actorMxId, AuthorizationListEnum.BLOCK);
   }
 
-  public static <T extends Actor> void addAllowedUsersToActor(List<String> userMxIds, T actor) {
+  public static <T extends Actor> void actorHasAllowList(String actorMxId, T actor) {
     HasBlockAndAllowListAbility ability = actor.abilityTo(HasBlockAndAllowListAbility.class);
     if (isNull(ability)) {
-      ability = new HasBlockAndAllowListAbility(userMxIds, AuthorizationListEnum.ALLOW);
+      ability = new HasBlockAndAllowListAbility(actorMxId, AuthorizationListEnum.ALLOW);
       actor.can(ability);
     }
-    for (String userMxId : userMxIds) {
-      ability.addAndSetActive(userMxId, AuthorizationListEnum.ALLOW);
-    }
+    ability.addAndSetActive(actorMxId, AuthorizationListEnum.ALLOW);
   }
 
   @Override
-  protected Task tearDownPerTarget(String userMxId) {
-    setActive(userMxId);
-    AuthorizationListEnum authorizationList =
+  protected Task tearDownPerTarget(String actorMxId) {
+    setActive(actorMxId);
+    AuthorizationModeDTO authorizationModeDTO = actor.asksFor(getAuthorizationMode());
+    AuthorizationListEnum authorizationListEnum =
         actor.abilityTo(HasBlockAndAllowListAbility.class).getActiveValue();
-    if (authorizationList.equals(AuthorizationListEnum.ALLOW)) {
-      return deleteAllowedUsers(Collections.singletonList(userMxId));
+    if (authorizationListEnum == AuthorizationListEnum.ALLOW) {
+      if (authorizationModeDTO.getValue().equals("AllowAll")) {
+        actor.attemptsTo(setAuthorizationMode("BlockAll"));
+      }
+      return deleteAllowList();
     } else {
-      return deleteBlockedUsers(Collections.singletonList(userMxId));
+      if (authorizationModeDTO.getValue().equals("BlockAll")) {
+        actor.attemptsTo(setAuthorizationMode("AllowAll"));
+      }
+      return deleteBlockList();
     }
   }
 }

@@ -19,7 +19,7 @@ package de.gematik.tim.test.glue.api.message;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.EDIT_MESSAGE;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.MESSAGE_ID_VARIABLE;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueMessageText;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueMessageTextWithTimestamp;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addMessage;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
@@ -51,7 +51,7 @@ public class EditMessageTask implements Task {
   @Override
   public <T extends Actor> void performAs(T actor) {
     MessageContentDTO messageBody =
-        new MessageContentDTO().body(createUniqueMessageText()).msgtype("m.text");
+        new MessageContentDTO().body(createUniqueMessageTextWithTimestamp()).msgtype("m.text");
     actor.attemptsTo(
         EDIT_MESSAGE
             .request()

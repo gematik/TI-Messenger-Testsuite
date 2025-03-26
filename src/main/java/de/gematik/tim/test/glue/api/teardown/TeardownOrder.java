@@ -17,7 +17,6 @@
 package de.gematik.tim.test.glue.api.teardown;
 
 import de.gematik.tim.test.glue.api.authorization.HasBlockAndAllowListAbility;
-import de.gematik.tim.test.glue.api.authorization.UseAuthorizationAbility;
 import de.gematik.tim.test.glue.api.contact.HasContactAbility;
 import de.gematik.tim.test.glue.api.devices.UseDeviceAbility;
 import de.gematik.tim.test.glue.api.fhir.organisation.endpoint.UseEndpointAbility;
@@ -38,7 +37,6 @@ public enum TeardownOrder {
   USE_ROOM(3, UseRoomAbility.class),
   CAN_DELETE_MXID(3, CanDeleteOwnMxidAbility.class),
   HAS_CONTACT(3, HasContactAbility.class),
-  USE_AUTHORIZATION(3, UseAuthorizationAbility.class),
   HAS_BLOCK_AND_ALLOW_LIST(3, HasBlockAndAllowListAbility.class),
   USE_ENDPOINT(4, UseEndpointAbility.class);
 

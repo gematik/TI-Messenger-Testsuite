@@ -34,6 +34,7 @@ public final class TestdriverApiPath {
   public static final String ENDPOINT_ID_VARIABLE = "endId";
   public static final String MXID_VARIABLE = "mxid";
   public static final String MEDIA_ID_VARIABLE = "mediaId";
+  public static final String SERVER_NAME_VARIABLE = "serverName";
 
   public static final String INFO_PATH = "/";
   public static final String WELL_KNOWN_HOMESERVER_PATH = "/.well-known/matrix/client";
@@ -118,4 +119,12 @@ public final class TestdriverApiPath {
   public static final String AUTHORIZATION_PATH = DEVICE_ID_PATH + "/authorizationMode";
   public static final String BLOCKED_USERS_PATH = DEVICE_ID_PATH + "/blockedUsers";
   public static final String ALLOWED_USERS_PATH = DEVICE_ID_PATH + "/allowedUsers";
+  public static final String BLOCKED_USER_MXID_PATH =
+      BLOCKED_USERS_PATH + "/" + PATH_VARIABLE.formatted(MXID_VARIABLE);
+  public static final String ALLOWED_USER_MXID_PATH =
+      ALLOWED_USERS_PATH + "/" + PATH_VARIABLE.formatted(MXID_VARIABLE);
+  public static final String BLOCKED_SERVER_PATH =
+      BLOCKED_USERS_PATH + "/serverName/" + PATH_VARIABLE.formatted(SERVER_NAME_VARIABLE);
+  public static final String ALLOWED_SERVER_PATH =
+      ALLOWED_USERS_PATH + "/serverName/" + PATH_VARIABLE.formatted(SERVER_NAME_VARIABLE);
 }

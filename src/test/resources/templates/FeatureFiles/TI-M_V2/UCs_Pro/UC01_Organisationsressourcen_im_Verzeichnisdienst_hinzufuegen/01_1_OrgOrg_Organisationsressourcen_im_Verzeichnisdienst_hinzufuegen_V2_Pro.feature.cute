@@ -24,6 +24,7 @@ Funktionalität: 5.1.1 (1) Organisationsressourcen im Verzeichnisdienst hinzufü
   TF 4 Healthcare Service anlegen, zwei Endpoints anlegen und löschen
   TF 5 Healthcare Service Endpointname aktualisieren
   TF 6 Healthcare Service mit Funktionsaccount-Endpoint anlegen
+  TF 7 Healthcare Service Endpunkt mit MXID von fremden HomeServer eintragen (Negativ)
 
   @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD
     @TCID:TIM_V2_PRO_AF_010101 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
@@ -197,3 +198,23 @@ Funktionalität: 5.1.1 (1) Organisationsressourcen im Verzeichnisdienst hinzufü
 
     Beispiele:
       | ApiName1A | ApiName1B | ApiName1C |
+
+  @WIP
+  @Ctl:OrgAdmin @Ctl:VZD
+    @TCID:TIM_V2_PRO_AF_010107 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+  Szenariogrundriss: 01.01.07 Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare Service Endpunkt mit MXID von fremden HomeServer eintragen (Negativ)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN        | <ApiName1> |
+      | B | PRO_CLIENT       | <ApiName2> |
+    Und        "A" erstellt einen Healthcare-Service "HealthcareServiceName" und setzen einen Endpunkt auf "B"
+    Dann       erhält "A" einen Responsecode 403
+
+    @Shuffle(true) ##
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("orgAdmin"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |

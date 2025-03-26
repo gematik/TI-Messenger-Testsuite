@@ -16,32 +16,26 @@
 
 package de.gematik.tim.test.glue.api.info;
 
-import de.gematik.tim.test.glue.api.TestdriverApiEndpoint.HttpMethod;
 import de.gematik.tim.test.glue.api.TestdriverApiInteraction;
 import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
-import net.serenitybdd.screenplay.rest.interactions.RestInteraction;
 
 @RequiredArgsConstructor
-public class CallMatrixApiWithoutForwardingTask implements Task {
+public class CallMatrixApiWithoutForwardingTask implements Task, BuildWithUserAgentTask {
 
-  private final String matrixUrl;
   private final String httpMethod;
+  private final String matrixUrl;
 
   public static CallMatrixApiWithoutForwardingTask callMatrixEndpointWithoutForwarding(
-      String matrixUrl, String httpMethod) {
-    return new CallMatrixApiWithoutForwardingTask(matrixUrl, httpMethod);
+      String httpMethod, String matrixUrl) {
+    return new CallMatrixApiWithoutForwardingTask(httpMethod, matrixUrl);
   }
 
   @Override
   public <T extends Actor> void performAs(T actor) {
-    actor.attemptsTo(buildApiCall());
-  }
-
-  private TestdriverApiInteraction buildApiCall() {
-    RestInteraction restInteraction = HttpMethod.valueOf(httpMethod).creator.apply(matrixUrl);
-    return new TestdriverApiInteraction(restInteraction, new ArrayList<>());
+    actor.attemptsTo(
+        new TestdriverApiInteraction(buildApiCall(httpMethod, matrixUrl), new ArrayList<>()));
   }
 }

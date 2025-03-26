@@ -85,26 +85,6 @@ public class TransferGlue {
     // implement me
   }
 
-  @Then("{string} versucht User {listOfStrings} in der Allowliste zu hinterlegen")
-  public void tryToPutUserOnAllowlist(String actorName, List<String> userName) {
-    // implement me - negativ - hier wird forbidden/400 erwartet)
-  }
-
-  @Then("{string} versucht User {listOfStrings} in der Blockliste zu hinterlegen")
-  public void tryToPutUserOnBlocklist(String actorName, List<String> userName) {
-    // implement me - negativ - hier wird forbidden/400 erwartet)
-  }
-
-  @Then("{string} versucht den Server-Namen von {listOfStrings} in der Allowliste zu hinterlegen")
-  public void tryToPutServerNameOnAllowlist(String actorName, List<String> userName) {
-    // implement me - negativ - hier wird forbidden/400 erwartet)
-  }
-
-  @Then("{string} versucht den Server-Namen von {listOfStrings} in der Blockliste zu hinterlegen")
-  public void tryToPutServerNameOnBlocklist(String actorName, List<String> userName) {
-    // implement me - negativ - hier wird forbidden/400 erwartet)
-  }
-
   @Then("{string} findet {string} nicht mehr in seiner Allowliste")
   public void dontFindUserInAllowList(int actorName, String userName) {
     // implement me
@@ -162,31 +142,6 @@ public class TransferGlue {
 
   @When("{string} prüft, dass die Gruppe {listOfStrings} in der Allowliste nicht gesetzt ist")
   public void checkGroupNotOnAllowlist(int actorName, String groupName) {
-    // implement me
-  }
-
-  @When("{string} prüft, ob User {listOfStrings} in der Blockliste gesetzt ist")
-  public void checkUserOnBlocklist(int actorName, List<String> userName) {
-    // implement me
-  }
-
-  @When("{string} prüft, ob User {listOfStrings} in der Allowliste gesetzt ist")
-  public void checkUserOnAllowlist(int actorName, List<String> userName) {
-    // implement me
-  }
-
-  @When("{string} prüft, ob die Domain von {listOfStrings} in der Blockliste gesetzt ist")
-  public void checkServerOnBlocklist(int actorName, List<String> userName) {
-    // implement me
-  }
-
-  @When("{string} prüft, ob die Domain von {listOfStrings} in der Allowliste gesetzt ist")
-  public void checkServerOnAllowlist(int actorName, List<String> userName) {
-    // implement me
-  }
-
-  @When("ist die unterstützte Matrix-Version {string}")
-  public void checkMatrixVersionInLastResponse(int matrixVersion) {
     // implement me
   }
 }

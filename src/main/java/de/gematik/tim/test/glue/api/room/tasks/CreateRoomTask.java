@@ -19,7 +19,7 @@ package de.gematik.tim.test.glue.api.room.tasks;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.CREATE_ROOM;
 import static de.gematik.tim.test.glue.api.room.UseRoomAbility.addRoomToActor;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueMessageText;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.createTopic;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueRoomName;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.models.CreateRoomRequestDTO.RoomAccessEnum.PRIVATE;
@@ -46,7 +46,7 @@ public class CreateRoomTask implements Task {
   }
 
   public CreateRoomTask withTopic() {
-    this.topic = createUniqueMessageText();
+    this.topic = createTopic();
     return this;
   }
 

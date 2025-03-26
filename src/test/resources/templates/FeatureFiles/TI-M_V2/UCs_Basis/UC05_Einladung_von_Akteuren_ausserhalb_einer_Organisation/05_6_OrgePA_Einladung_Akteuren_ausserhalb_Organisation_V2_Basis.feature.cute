@@ -679,61 +679,14 @@ Funktionalität: 5.1.5 (6) Einladung von Akteuren außerhalb einer Organisation 
     Beispiele:
       | ApiName1A | ApiName1B | ApiName2 |
 
-  @WIP
     @Ctl:AllowAll @Ctl:BP
-    @TCID:TIM_V2_BASIS_AF_050622 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+    @TCID:TIM_V2_BASIS_AF_050622 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 05.06.22 Einladung außerhalb einer Organisation - AllowAll - Eintragung in Liste von anderem Berechtigungsmodus (ePA-User)
     Angenommen Es werden folgende Clients reserviert:
       | A | EPA_CLIENT  | <ApiName1> |
       | B | PRO_CLIENT  | <ApiName2> |
     Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
     Und        "A" versucht User "B" in der Allowliste zu hinterlegen
-    Dann       erhält "A" einen Responsecode 400
-
-    @Shuffle(true) #
-    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
-    @DistinctProperty(homeserver)
-    @AllowSelfCombine(false)
-    @AllowDoubleLineup(false)
-    @Filter(ApiName1.hasTag("epaClient"))
-    @Filter(ApiName2.hasTag("proClient"))
-
-    Beispiele:
-      | ApiName1 | ApiName2 |
-
-  @WIP
-    @Ctl:AllowAll @Ctl:BP
-    @TCID:TIM_V2_BASIS_AF_050623 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
-  Szenariogrundriss: 05.06.23 Einladung außerhalb einer Organisation - AllowAll - Eintragung eines Server-Namen in Liste von anderem Berechtigungsmodus (ePA-User)
-    Angenommen Es werden folgende Clients reserviert:
-      | A | EPA_CLIENT  | <ApiName1> |
-      | B | PRO_CLIENT  | <ApiName2> |
-    Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
-    Und        "A" versucht den Server-Namen von "B" in der Allowliste zu hinterlegen
-    Dann       erhält "A" einen Responsecode 400
-
-    @Shuffle(true) #
-    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
-    @DistinctProperty(homeserver)
-    @AllowSelfCombine(false)
-    @AllowDoubleLineup(false)
-    @Filter(ApiName1.hasTag("epaClient"))
-    @Filter(ApiName2.hasTag("proClient"))
-
-    Beispiele:
-      | ApiName1 | ApiName2 |
-
-  @WIP
-    @Ctl:AllowAll @Ctl:BP
-    @TCID:TIM_V2_BASIS_AF_050624 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
-  Szenariogrundriss: 05.06.24 Einladung außerhalb einer Organisation - AllowAll - Löschen in Liste von anderem Berechtigungsmodus (ePA-User)
-    Angenommen Es werden folgende Clients reserviert:
-      | A | EPA_CLIENT  | <ApiName1> |
-      | B | PRO_CLIENT  | <ApiName2> |
-    Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
-    Und        "A" hinterlegt die User "B" in der Allowliste
-    Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
-    Und        "A" versucht User "B" in der Allowliste zu entfernen
     Dann       erhält "A" einen Responsecode 403
 
     @Shuffle(true) #
@@ -747,9 +700,52 @@ Funktionalität: 5.1.5 (6) Einladung von Akteuren außerhalb einer Organisation 
     Beispiele:
       | ApiName1 | ApiName2 |
 
-  @WIP
     @Ctl:AllowAll @Ctl:BP
-    @TCID:TIM_V2_BASIS_AF_050625 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+    @TCID:TIM_V2_BASIS_AF_050623 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  Szenariogrundriss: 05.06.23 Einladung außerhalb einer Organisation - AllowAll - Eintragung eines Server-Namen in Liste von anderem Berechtigungsmodus (ePA-User)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2> |
+    Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" versucht den Server-Namen von "B" in der Allowliste zu hinterlegen
+    Dann       erhält "A" einen Responsecode 403
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+    @Ctl:AllowAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050624 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  Szenariogrundriss: 05.06.24 Einladung außerhalb einer Organisation - AllowAll - Löschen in Liste von anderem Berechtigungsmodus (ePA-User)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2> |
+    Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" hinterlegt die User "B" in der Allowliste
+    Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" versucht die User "B" in der Allowliste zu entfernen
+    Dann       erhält "A" einen Responsecode 403
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+    @Ctl:AllowAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050625 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 05.06.25 Einladung außerhalb einer Organisation - AllowAll - Löschen eines Server-Namen in Liste von anderem Berechtigungsmodus (ePA-User)
     Angenommen Es werden folgende Clients reserviert:
       | A | EPA_CLIENT  | <ApiName1> |
@@ -771,61 +767,14 @@ Funktionalität: 5.1.5 (6) Einladung von Akteuren außerhalb einer Organisation 
     Beispiele:
       | ApiName1 | ApiName2 |
 
-  @WIP
     @Ctl:BlockAll @Ctl:BP
-    @TCID:TIM_V2_BASIS_AF_050626 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+    @TCID:TIM_V2_BASIS_AF_050626 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 05.06.26 Einladung außerhalb einer Organisation - BlockAll - Eintragung in Liste von anderem Berechtigungsmodus (ePA-User)
     Angenommen Es werden folgende Clients reserviert:
       | A | EPA_CLIENT  | <ApiName1> |
       | B | PRO_CLIENT  | <ApiName2> |
     Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
     Und        "A" versucht User "B" in der Blockliste zu hinterlegen
-    Dann       erhält "A" einen Responsecode 400
-
-    @Shuffle(true) #
-    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
-    @DistinctProperty(homeserver)
-    @AllowSelfCombine(false)
-    @AllowDoubleLineup(false)
-    @Filter(ApiName1.hasTag("epaClient"))
-    @Filter(ApiName2.hasTag("proClient"))
-
-    Beispiele:
-      | ApiName1 | ApiName2 |
-
-  @WIP
-    @Ctl:BlockAll @Ctl:BP
-    @TCID:TIM_V2_BASIS_AF_050627 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
-  Szenariogrundriss: 05.06.27 Einladung außerhalb einer Organisation - BlockAll - Eintragung eines Server-Namen in Liste von anderem Berechtigungsmodus (ePA-User)
-    Angenommen Es werden folgende Clients reserviert:
-      | A | EPA_CLIENT  | <ApiName1> |
-      | B | PRO_CLIENT  | <ApiName2> |
-    Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
-    Und        "A" versucht den Server-Namen von "B" in der Blockliste zu hinterlegen
-    Dann       erhält "A" einen Responsecode 400
-
-    @Shuffle(true) #
-    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
-    @DistinctProperty(homeserver)
-    @AllowSelfCombine(false)
-    @AllowDoubleLineup(false)
-    @Filter(ApiName1.hasTag("epaClient"))
-    @Filter(ApiName2.hasTag("proClient"))
-
-    Beispiele:
-      | ApiName1 | ApiName2 |
-
-  @WIP
-    @Ctl:BlockAll @Ctl:BP
-    @TCID:TIM_V2_BASIS_AF_050628 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
-  Szenariogrundriss: 05.06.28 Einladung außerhalb einer Organisation - BlockAll - Löschen in Liste von anderem Berechtigungsmodus (ePA-User)
-    Angenommen Es werden folgende Clients reserviert:
-      | A | EPA_CLIENT  | <ApiName1> |
-      | B | PRO_CLIENT  | <ApiName2> |
-    Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
-    Und        "A" hinterlegt die User "B" in der Blockliste
-    Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
-    Und        "A" versucht User "B" in der Blockliste zu entfernen
     Dann       erhält "A" einen Responsecode 403
 
     @Shuffle(true) #
@@ -839,9 +788,52 @@ Funktionalität: 5.1.5 (6) Einladung von Akteuren außerhalb einer Organisation 
     Beispiele:
       | ApiName1 | ApiName2 |
 
-  @WIP
     @Ctl:BlockAll @Ctl:BP
-    @TCID:TIM_V2_BASIS_AF_050629 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+    @TCID:TIM_V2_BASIS_AF_050627 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  Szenariogrundriss: 05.06.27 Einladung außerhalb einer Organisation - BlockAll - Eintragung eines Server-Namen in Liste von anderem Berechtigungsmodus (ePA-User)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2> |
+    Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" versucht den Server-Namen von "B" in der Blockliste zu hinterlegen
+    Dann       erhält "A" einen Responsecode 403
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+    @Ctl:BlockAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050628 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  Szenariogrundriss: 05.06.28 Einladung außerhalb einer Organisation - BlockAll - Löschen in Liste von anderem Berechtigungsmodus (ePA-User)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2> |
+    Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" hinterlegt die User "B" in der Blockliste
+    Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "A" versucht die User "B" in der Blockliste zu entfernen
+    Dann       erhält "A" einen Responsecode 403
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1.hasTag("epaClient"))
+    @Filter(ApiName2.hasTag("proClient"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+    @Ctl:BlockAll @Ctl:BP
+    @TCID:TIM_V2_BASIS_AF_050629 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 05.06.29 Einladung außerhalb einer Organisation - BlockAll - Löschen eines Server-Namen in Liste von anderem Berechtigungsmodus (ePA-User)
     Angenommen Es werden folgende Clients reserviert:
       | A | EPA_CLIENT  | <ApiName1> |
@@ -911,9 +903,8 @@ Funktionalität: 5.1.5 (6) Einladung von Akteuren außerhalb einer Organisation 
     Beispiele:
       | ApiName1 | ApiName2 |
 
-  @WIP
     @Ctl:AllowAll @Ctl:BP
-    @TCID:TIM_V2_BASIS_AF_050632 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+    @TCID:TIM_V2_BASIS_AF_050632 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 05.06.32 Einladung außerhalb einer Organisation - AllowAll - Einträge bleiben trotz Logout erhalten
     Angenommen Es werden folgende Clients reserviert:
       | A | EPA_CLIENT  | <ApiName1> |
@@ -925,7 +916,7 @@ Funktionalität: 5.1.5 (6) Einladung von Akteuren außerhalb einer Organisation 
     Und        "A" loggt sich im TI-Messenger ein
     Und        "A" prüft, ob der eigene Authorization Mode auf "AllowAll" gesetzt ist
     Und        "A" prüft, ob User "B" in der Blockliste gesetzt ist
-    Und        "A" prüft, ob die Domain von "B" in der Blockliste gesetzt ist
+    Und        "A" prüft, ob der Server-Name von "B" in der Blockliste gesetzt ist
 
 
     @Shuffle(true) #
@@ -939,9 +930,8 @@ Funktionalität: 5.1.5 (6) Einladung von Akteuren außerhalb einer Organisation 
     Beispiele:
       | ApiName1 | ApiName2 |
 
-  @WIP
     @Ctl:BlockAll @Ctl:BP
-    @TCID:TIM_V2_BASIS_AF_050633 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+    @TCID:TIM_V2_BASIS_AF_050633 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 05.06.33 Einladung außerhalb einer Organisation - BlockAll - Einträge bleiben trotz Logout erhalten
     Angenommen Es werden folgende Clients reserviert:
       | A | EPA_CLIENT  | <ApiName1> |
@@ -953,7 +943,7 @@ Funktionalität: 5.1.5 (6) Einladung von Akteuren außerhalb einer Organisation 
     Und        "A" loggt sich im TI-Messenger ein
     Und        "A" prüft, ob der eigene Authorization Mode auf "BlockAll" gesetzt ist
     Und        "A" prüft, ob User "B" in der Allowliste gesetzt ist
-    Und        "A" prüft, ob die Domain von "B" in der Allowliste gesetzt ist
+    Und        "A" prüft, ob der Server-Name von "B" in der Allowliste gesetzt ist
 
 
     @Shuffle(true) #
