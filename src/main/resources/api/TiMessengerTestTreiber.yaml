@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: TiMessengerTestDriver
   description: REST interface to automate the test of a TI-Messenger client implementation.
-  version: 1.1.3
+  version: 2.1.0
   contact:
     name: gematik GmbH
     email: software-development@gematik.de
@@ -109,8 +109,9 @@ paths:
       description: "Implementation is no longer optional! Testsuite sends a request to the involved endpoints
       (even to the org-admin who is not named in the feature-file).
       There will be no claiming attempt before triggering these endpoints.
-      After getting the response the testcase starts.
-      This is an opportunity to clean user/rooms/FHIR-VZD etc."
+      After getting any response the testcase starts.
+      This is an opportunity to clean user/rooms/FHIR-VZD etc.
+      Even if an error code is returned the testsuite will start the test."
       operationId: cleanUp
       responses:
         "200":
@@ -1651,23 +1652,6 @@ paths:
       - $ref: "#/components/parameters/transactionIdHeader"
       - $ref: "#/components/parameters/mxidInPath"
 
-    get:
-      tags:
-        - contactManagement
-        - TI-M_1.1.x
-
-      summary: "Returns the contact with invite setting"
-      operationId: getContact
-      responses:
-        "200":
-          description: "Retrieved the setting for the contact {mxid}"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Contact"
-        default:
-          $ref: "#/components/responses/DefaultResponse"
-
     delete:
       tags:
         - contactManagement
@@ -1840,7 +1824,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthorizationList"
-        "400":
+        "403":
           description: "Cannot get allowed users for mode AllowAll"
           content:
             application/json:
@@ -1869,7 +1853,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthorizationList"
-        "400":
+        "403":
           description: "Cannot add allowed users for mode AllowAll"
           content:
             application/json:
@@ -1890,7 +1874,7 @@ paths:
       responses:
         "204":
           description: "Allowed users list deleted"
-        "400":
+        "403":
           description: "Cannot delete allowed users for mode AllowAll"
           content:
             application/json:
@@ -1919,7 +1903,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthorizationList"
-        "400":
+        "403":
           description: "Cannot get blocked users for mode BlockAll"
           content:
             application/json:
@@ -1948,7 +1932,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthorizationList"
-        "400":
+        "403":
           description: "Cannot add blocked users for mode BlockAll"
           content:
             application/json:
@@ -1969,7 +1953,7 @@ paths:
       responses:
         "204":
           description: "Blocked users list deleted"
-        "400":
+        "403":
           description: "Cannot delete blocked users for mode BlockAll"
           content:
             application/json:
@@ -2001,8 +1985,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MxId"
-        "400":
+        "403":
           description: "Cannot get allowed user for mode AllowAll"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: "User is not found on the allow list"
           content:
             application/json:
               schema:
@@ -2020,7 +2010,7 @@ paths:
       responses:
         "204":
           description: "Allowed user mxid deleted"
-        "400":
+        "403":
           description: "Cannot delete allowed user for mode AllowAll"
           content:
             application/json:
@@ -2050,8 +2040,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ServerName"
-        "400":
+        "403":
           description: "Cannot get allowed server-name for mode AllowAll"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: "Server-name is not found on the allow list"
           content:
             application/json:
               schema:
@@ -2069,7 +2065,7 @@ paths:
       responses:
         "204":
           description: "Allowed user server-name deleted"
-        "400":
+        "403":
           description: "Cannot delete allowed server-names for mode AllowAll"
           content:
             application/json:
@@ -2100,8 +2096,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MxId"
-        "400":
+        "403":
           description: "Cannot get blocked user for mode BlockAll"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: "User is not found on the block list"
           content:
             application/json:
               schema:
@@ -2119,7 +2121,7 @@ paths:
       responses:
         "204":
           description: "Blocked user mxid deleted"
-        "400":
+        "403":
           description: "Cannot delete blocked users for mode BlockAll"
           content:
             application/json:
@@ -2149,8 +2151,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ServerName"
-        "400":
+        "403":
           description: "Cannot get blocked Matrix server for mode BlockAll"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: "server-name is not found on the block list"
           content:
             application/json:
               schema:
@@ -2168,7 +2176,7 @@ paths:
       responses:
         "204":
           description: "Blocked user server-name deleted"
-        "400":
+        "403":
           description: "Cannot delete blocked server-name for mode BlockAll"
           content:
             application/json:
@@ -3267,6 +3275,7 @@ components:
           description: "MxId of the author of this message"
         origin_server_ts:
           type: integer
+          format: int64
           description: "Timestamp (in milliseconds since the unix epoch) on originating homeserver when this event was sent."
           example: 1738838934261
         room_id:

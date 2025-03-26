@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,30 +16,52 @@
 
 package de.gematik.tim.test.glue.api.info;
 
-import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_WELL_KNOWN_HOMESERVER;
-import static net.serenitybdd.rest.SerenityRest.lastResponse;
-
-import lombok.Getter;
+import de.gematik.tim.test.glue.api.TestdriverApiInteraction;
+import java.util.ArrayList;
+import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.Task;
-import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
-import org.springframework.http.HttpStatus;
+import net.serenitybdd.screenplay.rest.interactions.RestInteraction;
 
-@Getter
-public abstract class CallMatrixApiTask implements Task {
+@RequiredArgsConstructor
+public class CallMatrixApiTask extends WithHomeserverForwardingTask
+    implements BuildWithUserAgentTask {
+
+  private final String httpMethod;
+  private final String matrixUrl;
+  private String accessToken;
+  private Map<String, String> requestParameter;
+
+  public static CallMatrixApiTask callMatrixEndpoint(String httpMethod, String matrixUrl) {
+    return new CallMatrixApiTask(httpMethod, matrixUrl);
+  }
+
+  public CallMatrixApiTask withAccessToken(String accessToken) {
+    this.accessToken = accessToken;
+    return this;
+  }
+
+  public CallMatrixApiTask withRequestParameter(Map<String, String> requestParameter) {
+    this.requestParameter = requestParameter;
+    return this;
+  }
 
   @Override
   public <T extends Actor> void performAs(T actor) {
-    actor.attemptsTo(GET_WELL_KNOWN_HOMESERVER.request());
-    if (HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful()) {
-      String url = lastResponse().jsonPath().getString("'m.homeserver'.base_url");
-      if (!url.startsWith("http://") && !url.startsWith("https://")) {
-        url = "https://" + url;
-      }
-      if (url.endsWith("/")) {
-        url = url.substring(0, url.length() - 1);
-      }
-      actor.can(CallAnApi.at(url));
+    super.performAs(actor);
+    RestInteraction matrixApiCall;
+    if (accessToken != null) {
+      matrixApiCall = buildApiCall(httpMethod, matrixUrl, accessToken);
+    } else {
+      matrixApiCall = buildApiCall(httpMethod, matrixUrl);
     }
+    if (requestParameter != null) {
+      for (Map.Entry<String, String> requestParameterEntry : requestParameter.entrySet()) {
+        matrixApiCall.with(
+            request ->
+                request.params(requestParameterEntry.getKey(), requestParameterEntry.getValue()));
+      }
+    }
+    actor.attemptsTo(new TestdriverApiInteraction(matrixApiCall, new ArrayList<>()));
   }
 }

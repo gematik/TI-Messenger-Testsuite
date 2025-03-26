@@ -2,9 +2,151 @@
 
 # Release notes
 
-## Link to TI-Messenger-testsuite [
+## Link to TI-Messenger-testsuite
 
-`docu`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc#docu)
+[
+`docu TI-Messenger Version 1.1.X`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc)
+
+[
+`docu TI-Messenger Version 2`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite_Version2.adoc)
+
+## Release 2.1.1
+
+### Features
+
+- testsuite will recognize if an authorization operation is forbidden with the currently used
+  authorization mode
+
+- Current testcases in status WIP: [`WIP-List`](doc/userguide/WIP.txt)
+
+- test suite will now send X-TIM-User-Agent header for all requests directly to homeserver
+
+- Adjusted documentation for TI-M V2 [`Testsuite_Version2`](doc/userguide/Testsuite_Version2.adoc)
+
+
+- implements tests for checking matrix version (no WIP anymore)
+
+  @TCID:TIM_V2_PRO_AF_000105
+
+  @TCID:TIM_V2_ePA_AF_000503
+
+
+- implements tests for checking if block and allowlist entries stay after logout (no WIP anymore)
+
+  @TCID:TIM_V2_BASIS_AF_050132
+
+  @TCID:TIM_V2_BASIS_AF_050133
+
+  @TCID:TIM_V2_BASIS_AF_050632
+
+  @TCID:TIM_V2_BASIS_AF_050633
+
+  @TCID:TIM_V2_PRO_AF_050132
+
+  @TCID:TIM_V2_PRO_AF_050133
+
+
+- implements tests for configuration in other permission mode (negative) (no WIP anymore)
+
+  @TCID:TIM_V2_BASIS_AF_050122 
+
+  @TCID:TIM_V2_BASIS_AF_050123
+
+  @TCID:TIM_V2_BASIS_AF_050124
+
+  @TCID:TIM_V2_BASIS_AF_050125
+
+  @TCID:TIM_V2_BASIS_AF_050126
+
+  @TCID:TIM_V2_BASIS_AF_050127
+
+  @TCID:TIM_V2_BASIS_AF_050128
+
+  @TCID:TIM_V2_BASIS_AF_050129
+
+  @TCID:TIM_V2_BASIS_AF_050622
+
+  @TCID:TIM_V2_BASIS_AF_050623
+
+  @TCID:TIM_V2_BASIS_AF_050624
+
+  @TCID:TIM_V2_BASIS_AF_050625
+
+  @TCID:TIM_V2_BASIS_AF_050626
+
+  @TCID:TIM_V2_BASIS_AF_050627
+
+  @TCID:TIM_V2_BASIS_AF_050628
+
+  @TCID:TIM_V2_BASIS_AF_050629
+
+  @TCID:TIM_V2_PRO_AF_050122
+
+  @TCID:TIM_V2_PRO_AF_050123
+
+  @TCID:TIM_V2_PRO_AF_050124
+
+  @TCID:TIM_V2_PRO_AF_050125
+
+  @TCID:TIM_V2_PRO_AF_050126
+
+  @TCID:TIM_V2_PRO_AF_050127
+
+  @TCID:TIM_V2_PRO_AF_050128
+
+  @TCID:TIM_V2_PRO_AF_050129
+
+
+- New Testcase for TI-M Pro (Status WIP)
+
+  @TCID:TIM_V2_PRO_AF_010107
+
+
+- Deleted TFs (ePA)
+
+  @TCID:TIM_V2_ePA_AF_000502
+
+  @TCID:TIM_V2_ePA_AF_000504
+
+  @TCID:TIM_V2_ePA_AF_020502
+
+### Changes
+
+- API change, non-breaking TI-M version 1.1.x: removes unused getContact by mxid endpoint
+- Checks for the specified fields of `MessageContentFile` have been extended in the glue code for sending and receiving attachments.
+
+### Bugs
+
+- bumps API file version (was forgotten during the last releases)
+
+
+- Bug in testcases fixed - adds request parameter for media thumbnail request
+
+  @TCID:TIM_V2_BASIS_AF_10X0103
+
+  @TCID:TIM_V2_BASIS_AF_10X0104
+
+  @TCID:TIM_V2_BASIS_AF_10X0503
+
+  @TCID:TIM_V2_BASIS_AF_10X0601
+
+
+- Bug in testcases fixed - Wrong actor for an endpoint
+
+  @TCID:TIM_V2_BASIS_AF_050111
+
+  @TCID:TIM_V2_BASIS_AF_050116
+
+  @TCID:TIM_V2_BASIS_AF_050117
+
+
+- Bug in testcases fixed - Step erased since room name for direct chat can be filled or empty
+
+  @TCID:TIM_V2_BASIS_AF_09X0101
+
+  @TCID:TIM_V2_BASIS_AF_09X0401
+
+  @TCID:TIM_V2_BASIS_AF_09X0501
 
 ## Release 2.1.0
 
@@ -98,33 +240,39 @@
 
 ### Features
 
-- Release Testcases TI-M_V2 (TI-M Pro, TI-M ePA) [`TI-M_V2`](src/test/resources/templates/FeatureFiles/TI-M_V2)
+- Release Testcases TI-M_V2 (TI-M Pro, TI-M ePA) [
+  `TI-M_V2`](src/test/resources/templates/FeatureFiles/TI-M_V2)
 - Documentation Testsuite V2 [`Testsuite_Version2`](doc/userguide/Testsuite_Version2.adoc)
 
-  **Note**: Please read the documentation. The handling of Testcases with the temporary tag @WIP is also described
+  **Note**: Please read the documentation. The handling of Testcases with the temporary tag @WIP is
+  also described
   there.
 
 ### Changes
 
-- API change, breaking only TI-M Version 2: adds fields to messages for better checks on media events
+- API change, breaking only TI-M Version 2: adds fields to messages for better checks on media
+  events
 - API change, breaking only TI-M Version 2: access_token is required to be provided on login
 
 ## Release 1.5.1
 
 ### Changes
 
-- moves configuration of cucumber-test-combinations-maven-plugin and related properties from pom.xml to parent-pom.xml
+- moves configuration of cucumber-test-combinations-maven-plugin and related properties from pom.xml
+  to parent-pom.xml
 
 ### Bugs
 
 - fixes assertion of room states in FeatureFile 14 to take effect
-- partly reverts changes from https://github.com/gematik/TI-Messenger-Testsuite/issues/61 by removing compileSourceRoots
+- partly reverts changes from https://github.com/gematik/TI-Messenger-Testsuite/issues/61 by
+  removing compileSourceRoots
 
 ## Release 1.5.0
 
 ### Changes
 
-- API change, breaking only ePa: renames domains under authorisation-management to server-name. More information
+- API change, breaking only ePa: renames domains under authorisation-management to server-name. More
+  information
   at [`server-name`](https://spec.matrix.org/v1.11/appendices/#server-name)
 
 ## Release 1.4.3

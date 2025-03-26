@@ -41,6 +41,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 import de.gematik.tim.test.glue.api.exceptions.TestRunException;
+import de.gematik.tim.test.glue.api.message.MessageContentFileWrapper;
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
 import de.gematik.tim.test.models.MessageContentFileDTO;
 import de.gematik.tim.test.models.MessageContentInfoDTO;
@@ -165,13 +166,15 @@ public class MediaGlue {
   private void checkRequiredFileProperties(MessageDTO receivedMessage) {
     MessageContentFileDTO receivedMessageFile = receivedMessage.getFile();
     if (receivedMessageFile != null) {
-      if (receivedMessageFile.getUrl().isEmpty()
-          || !receivedMessageFile.getUrl().startsWith("mxc://")) {
+      MessageContentFileWrapper fileWrapper = new MessageContentFileWrapper(receivedMessageFile);
+      fileWrapper.checkFileFields();
+      if (!receivedMessageFile.getUrl().startsWith("mxc://")) {
         throw new TestRunException("Url must start with 'mxc://'");
       }
       for (Actor actor : getAllActiveActors()) {
         actor.remember(MEDIA_URI, receivedMessageFile.getUrl());
       }
+      assertThat(receivedMessageFile.getV()).isEqualTo("v2");
     } else {
       throw new TestRunException("The file field must be set.");
     }
@@ -244,7 +247,6 @@ public class MediaGlue {
     checkResponseCode(actorName, OK.value());
     MessageDTO receivedMessage = getCreatedMessage(file);
     assertThat(receivedMessage.getBody()).isNotNull().isNotEmpty();
-
     checkRequiredMessageProperties(receivedMessage, msgType, mimetype);
     checkRequiredFileProperties(receivedMessage);
     checkRoomMembershipState(actor, roomName);
@@ -270,9 +272,6 @@ public class MediaGlue {
 
     checkRequiredMessageProperties(receivedMessage, msgType, mimetype);
     checkRequiredFileProperties(receivedMessage);
-    MessageContentFileDTO existingMessageFile = requireNonNull(getCreatedMessage(file).getFile());
-    assertThat(requireNonNull(receivedMessage.getFile()).getV())
-        .isEqualTo(existingMessageFile.getV());
     checkRoomMembershipState(actor, roomName);
   }
 }

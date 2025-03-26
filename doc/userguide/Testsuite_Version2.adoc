@@ -35,8 +35,10 @@ Dokumentenhistorie
 
 [cols='10%,10%,10%,60%,10%']
 |===
-| *Version*  |*Stand*      | *Kap.* | *Grund der Änderung, besondere Hinweise* | *Bearbeiter*
-| 1.0        | 11.02.2025  |        | initiale Erstellung                      | gematik
+| *Version*  |*Stand*      | *Kap.*            | *Grund der Änderung, besondere Hinweise*                            | *Bearbeiter*
+| 1.0        | 11.02.2025  |                   | initiale Erstellung                                                 | gematik
+| 1.1        | 21.03.2025  |  9.3 & 10.1/10.2  | Änderung Bereitstellungen TI-M ePA & Anpassungen Testfallliste      | gematik
+
 |===
 
 {empty} +
@@ -800,6 +802,10 @@ Ausgenommen von dieser Festlegung ist der Org-Admin, hier ist ein Gerät ausreic
 Diese Regelung gilt unabhängig davon, ob ein TI-M Pro, TI-M ePA, etc. getestet werden soll._*#
 
 [TIP]
+[black]#*_Für die Zulassungstest der Ausprägung TI-M ePA wird keine Org-Admin Testtreiberschnittstelle
+benötigt._*#
+
+[TIP]
 [black]#*_Die Clients benötigen Testidentitäten (SMC-B/HBA Karten).
 Die Kartenbestellung erfolgt über das gematik Fachportal: +
 https://fachportal.gematik.de/gematik-onlineshop/testkarten?ai%5Baction%5D=detail&ai%5Bcontroller%5D=Catalog&ai%5Bd_name%5D=Testkarte-eGK-G2&ai%5Bd_pos%5D=1_*#
@@ -847,7 +853,7 @@ Somit kann sich dann der eingeloggte und hinterlegte User auch als HBA authentif
 
 Der Start eines Testfalls sieht dann wie folgt aus:
 
-- _Post signalStartTest_ - Optionaler CleanUp vor dem Teststart
+- _Post signalStartTest_ - CleanUp vor dem Teststart
 - _Get Info_ - Abfragen der Info Schnittstelle, an der alle wichtigen Informationen des Devices hinterlegt sind
 - _Get Device_ - Liste aller Device einer Schnittstelle werden abgefragt
 - _Claim Device_ - Ein Device im Status ‘unclaimed’ wird für den Testlauf geclaimt
@@ -897,10 +903,8 @@ und die dauerhafte Erreichbarkeit sicher stellen._*#
 [cols='^6%,90%']
 |===
 |00.05.01| Abfragen der Schnittstellen-Information durch ePA-User-Client
-|00.05.02| Abfragen der Schnittstellen-Information durch Org-Admin-Client
-|00.05.03| Abfragen der Geräte-Liste durch ePA-User-Client
-|00.05.04| Abfragen der Geräte-Liste durch Org-Admin-Client
-|00.05.05| Abfrage der Matrix-Server-Version
+|00.05.02| Abfragen der Geräte-Liste durch ePA-User-Client
+|00.05.03| Abfrage der Matrix-Server-Version
 |===
 
 [.text-center]
@@ -1432,7 +1436,6 @@ und die dauerhafte Erreichbarkeit sicher stellen._*#
 [cols='^6%,90%']
 |===
 |02.05.01| Anmeldung eines Akteurs - Erfolgreiche Anmeldung eines Akteurs (ePA Client)
-|02.05.02| Anmeldung eines Akteurs - Erfolgreiche Anmeldung eines Akteurs (OrgAdmin)
 |===
 
 [.text-center]
@@ -1528,6 +1531,7 @@ und die dauerhafte Erreichbarkeit sicher stellen._*#
 |01.01.04| Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin mit zwei Endpoints anlegen und löschen
 |01.01.05| Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen und Endpointname aktualisieren
 |01.01.06| Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare Service mit Funktionsaccount-Endpointname anlegen
+|01.01.07| Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare Service Endpunkt mit MXID von fremden HomeServer eintragen (Negativ)
 |===
 
 [.text-center]

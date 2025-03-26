@@ -17,19 +17,22 @@
 package de.gematik.tim.test.glue.api.info;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MATRIX_CLIENT_VERSION;
-import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_SUPPORTED_VERSIONS;
-import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_WELL_KNOWN_HOMESERVER;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.SUPPORTED_VERSIONS_PATH;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.WELL_KNOWN_HOMESERVER_PATH;
 import static de.gematik.tim.test.glue.api.utils.IndividualLogger.individualLog;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
+import de.gematik.tim.test.glue.api.TestdriverApiInteraction;
+import java.util.ArrayList;
 import lombok.SneakyThrows;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
 import org.springframework.http.HttpStatus;
 
-public class SupportedMatrixVersionQuestion implements Question<SupportedMatrixVersionInfo> {
+public class SupportedMatrixVersionQuestion
+    implements Question<SupportedMatrixVersionInfo>, BuildWithUserAgentTask {
 
   public static SupportedMatrixVersionQuestion matrixSupportedServerVersion() {
     return new SupportedMatrixVersionQuestion();
@@ -38,7 +41,9 @@ public class SupportedMatrixVersionQuestion implements Question<SupportedMatrixV
   @Override
   @SneakyThrows
   public SupportedMatrixVersionInfo answeredBy(Actor actor) {
-    actor.attemptsTo(GET_WELL_KNOWN_HOMESERVER.request());
+    actor.attemptsTo(
+        new TestdriverApiInteraction(
+            buildApiCall("GET", WELL_KNOWN_HOMESERVER_PATH), new ArrayList<>()));
     if (HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful()) {
       String url = lastResponse().jsonPath().getString("'m.homeserver'.base_url");
       if (!url.startsWith("http://") && !url.startsWith("https://")) {
@@ -49,7 +54,9 @@ public class SupportedMatrixVersionQuestion implements Question<SupportedMatrixV
       }
       actor.can(CallAnApi.at(url));
     }
-    actor.attemptsTo(GET_SUPPORTED_VERSIONS.request());
+    actor.attemptsTo(
+        new TestdriverApiInteraction(
+            buildApiCall("GET", SUPPORTED_VERSIONS_PATH), new ArrayList<>()));
 
     SupportedMatrixVersionInfo supportedMatrixVersionInfo =
         parseResponse(SupportedMatrixVersionInfo.class);

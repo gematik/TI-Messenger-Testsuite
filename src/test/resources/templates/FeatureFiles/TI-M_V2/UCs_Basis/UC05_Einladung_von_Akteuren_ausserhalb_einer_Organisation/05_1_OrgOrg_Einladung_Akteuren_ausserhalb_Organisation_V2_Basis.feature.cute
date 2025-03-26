@@ -409,27 +409,27 @@ Funktionalität: 5.1.5 (1) Einladung von Akteuren außerhalb einer Organisation 
       | B | PRO_CLIENT  | <ApiName1B> |
       | C | PRO_CLIENT  | <ApiName2> |
     Und        "B", "C" setzt den eigenen Authorization Mode auf "BlockAll"
-    Wenn       "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
-    Dann       "B" findet "C" im Healthcare-Service "HealthcareServiceName1"
-    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
-    Und        "B" versucht "C" in Chat-Raum "TIM Testraum 1" einzuladen
-    Dann       erhält "B" einen Responsecode 403
-    Und        "C" erhält KEINE Einladung von "B" für den Raum "TIM Testraum 1" [Retry 10 - 3]
-    Und        "C" setzt den eigenen Authorization Mode auf "AllowAll"
-    Und        "B" lädt "C" in Chat-Raum "TIM Testraum 1" ein
-    Dann       "C" erhält eine Einladung in Raum "TIM Testraum 1" von "B"
-    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "B"
-    Und        "C" ist dem Raum "TIM Testraum 1" beigetreten
-    Und        "C" verlässt Raum "TIM Testraum 1"
-    Und        "C" setzt den eigenen Authorization Mode auf "BlockAll"
-    Und        "B" versucht "C" in Chat-Raum "TIM Testraum 1" einzuladen
-    Dann       erhält "B" einen Responsecode 403
-    Und        "C" erhält KEINE Einladung von "B" für den Raum "TIM Testraum 1" [Retry 10 - 3]
-    Und        "C" setzt den eigenen Authorization Mode auf "AllowAll"
-    Und        "B" lädt "C" in Chat-Raum "TIM Testraum 1" ein
-    Dann       "C" erhält eine Einladung in Raum "TIM Testraum 1" von "B"
-    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "B"
-    Und        "C" ist dem Raum "TIM Testraum 1" beigetreten
+    Wenn       "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann       "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und        "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "C" versucht "B" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann       erhält "C" einen Responsecode 403
+    Und        "B" erhält KEINE Einladung von "C" für den Raum "TIM Testraum 1" [Retry 10 - 3]
+    Und        "B" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
+    Und        "B" verlässt Raum "TIM Testraum 1"
+    Und        "B" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und        "C" versucht "B" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann       erhält "C" einen Responsecode 403
+    Und        "B" erhält KEINE Einladung von "C" für den Raum "TIM Testraum 1" [Retry 10 - 3]
+    Und        "B" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
 
     @Shuffle(true) #
     #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
@@ -588,12 +588,12 @@ Funktionalität: 5.1.5 (1) Einladung von Akteuren außerhalb einer Organisation 
       | B | PRO_CLIENT  | <ApiName1B> |
       | C | PRO_CLIENT  | <ApiName2> |
     Und        "B", "C" setzt den eigenen Authorization Mode auf "AllowAll"
-    Wenn       "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
-    Dann       "B" findet "C" im Healthcare-Service "HealthcareServiceName1"
-    Und        "B" schreibt "C" direkt "Testnachricht 1"
-    Dann       "C" erhält eine Einladung von "B"
-    Wenn       "C" lehnt eine Einladung zum Chat mit "B" ab
-    Dann       "C" ist dem Chat mit "B" nicht beigetreten [Retry 10 - 3]
+    Wenn       "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann       "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und        "C" schreibt "B" direkt "Testnachricht 1"
+    Dann       "B" erhält eine Einladung von "C"
+    Wenn       "B" lehnt eine Einladung zum Chat mit "C" ab
+    Dann       "B" ist dem Chat mit "C" nicht beigetreten [Retry 10 - 3]
 
     @Shuffle(true) #
     #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
@@ -616,13 +616,13 @@ Funktionalität: 5.1.5 (1) Einladung von Akteuren außerhalb einer Organisation 
       | B | PRO_CLIENT  | <ApiName1B> |
       | C | PRO_CLIENT  | <ApiName2> |
     Und        "B", "C" setzt den eigenen Authorization Mode auf "AllowAll"
-    Wenn       "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "C"
-    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
-    Dann       "B" findet "C" im Healthcare-Service "HealthcareServiceName1"
-    Und        "B" lädt "C" in Chat-Raum "TIM Testraum 1" ein
-    Dann       "C" erhält eine Einladung in Raum "TIM Testraum 1" von "B"
-    Wenn       "C" lehnt eine Einladung von "B" für Raum "TIM Testraum 1" ab
-    Dann       "C" ist dem Raum "TIM Testraum 1" nicht beigetreten [Retry 10 - 2]
+    Wenn       "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und        "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Dann       "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und        "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Wenn       "B" lehnt eine Einladung von "C" für Raum "TIM Testraum 1" ab
+    Dann       "B" ist dem Raum "TIM Testraum 1" nicht beigetreten [Retry 10 - 2]
 
     @Shuffle(true) #
     #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
@@ -768,9 +768,8 @@ Funktionalität: 5.1.5 (1) Einladung von Akteuren außerhalb einer Organisation 
     Beispiele:
       | ApiName1A | ApiName1B |  ApiName1C |ApiName2 |
 
-  @WIP
     @Ctl:AllowAll @Ctl:BP
-    @TCID:TIM_V2_BASIS_AF_050122 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+    @TCID:TIM_V2_BASIS_AF_050122 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 05.01.22 Einladung außerhalb einer Organisation - AllowAll - Eintragung in Liste von anderem Berechtigungsmodus
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
@@ -790,9 +789,8 @@ Funktionalität: 5.1.5 (1) Einladung von Akteuren außerhalb einer Organisation 
     Beispiele:
       | ApiName1 | ApiName2 |
 
-  @WIP
     @Ctl:AllowAll @Ctl:BP
-    @TCID:TIM_V2_BASIS_AF_050123 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+    @TCID:TIM_V2_BASIS_AF_050123 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 05.01.23 Einladung außerhalb einer Organisation - AllowAll - Eintragung eines Server-Namen in Liste von anderem Berechtigungsmodus
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
@@ -812,9 +810,8 @@ Funktionalität: 5.1.5 (1) Einladung von Akteuren außerhalb einer Organisation 
     Beispiele:
       | ApiName1 | ApiName2 |
 
-  @WIP
     @Ctl:AllowAll @Ctl:BP
-    @TCID:TIM_V2_BASIS_AF_050124 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+    @TCID:TIM_V2_BASIS_AF_050124 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 05.01.24 Einladung außerhalb einer Organisation - AllowAll - Löschen in Liste von anderem Berechtigungsmodus
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
@@ -822,7 +819,7 @@ Funktionalität: 5.1.5 (1) Einladung von Akteuren außerhalb einer Organisation 
     Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
     Und        "A" hinterlegt die User "B" in der Allowliste
     Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
-    Und        "A" versucht User "B" in der Allowliste zu entfernen
+    Und        "A" versucht die User "B" in der Allowliste zu entfernen
     Dann       erhält "A" einen Responsecode 403
 
     @Shuffle(true) #
@@ -836,9 +833,8 @@ Funktionalität: 5.1.5 (1) Einladung von Akteuren außerhalb einer Organisation 
     Beispiele:
       | ApiName1 | ApiName2 |
 
-  @WIP
     @Ctl:AllowAll @Ctl:BP
-    @TCID:TIM_V2_BASIS_AF_050125 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+    @TCID:TIM_V2_BASIS_AF_050125 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 05.01.25 Einladung außerhalb einer Organisation - AllowAll - Löschen eines Server-Namen in Liste von anderem Berechtigungsmodus
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
@@ -860,9 +856,8 @@ Funktionalität: 5.1.5 (1) Einladung von Akteuren außerhalb einer Organisation 
     Beispiele:
       | ApiName1 | ApiName2 |
 
-  @WIP
     @Ctl:BlockAll @Ctl:BP
-    @TCID:TIM_V2_BASIS_AF_050126 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+    @TCID:TIM_V2_BASIS_AF_050126 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 05.01.26 Einladung außerhalb einer Organisation - BlockAll - Eintragung in Liste von anderem Berechtigungsmodus
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
@@ -882,9 +877,8 @@ Funktionalität: 5.1.5 (1) Einladung von Akteuren außerhalb einer Organisation 
     Beispiele:
       | ApiName1 | ApiName2 |
 
-  @WIP
     @Ctl:BlockAll @Ctl:BP
-    @TCID:TIM_V2_BASIS_AF_050127 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+    @TCID:TIM_V2_BASIS_AF_050127 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 05.01.27 Einladung außerhalb einer Organisation - BlockAll - Eintragung eines Server-Namen in Liste von anderem Berechtigungsmodus
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
@@ -904,9 +898,8 @@ Funktionalität: 5.1.5 (1) Einladung von Akteuren außerhalb einer Organisation 
     Beispiele:
       | ApiName1 | ApiName2 |
 
-  @WIP
     @Ctl:BlockAll @Ctl:BP
-    @TCID:TIM_V2_BASIS_AF_050128 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+    @TCID:TIM_V2_BASIS_AF_050128 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 05.01.28 Einladung außerhalb einer Organisation - BlockAll - Löschen in Liste von anderem Berechtigungsmodus
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
@@ -914,7 +907,7 @@ Funktionalität: 5.1.5 (1) Einladung von Akteuren außerhalb einer Organisation 
     Und        "A" setzt den eigenen Authorization Mode auf "AllowAll"
     Und        "A" hinterlegt die User "B" in der Blockliste
     Und        "A" setzt den eigenen Authorization Mode auf "BlockAll"
-    Und        "A" versucht User "B" in der Blockliste zu entfernen
+    Und        "A" versucht die User "B" in der Blockliste zu entfernen
     Dann       erhält "A" einen Responsecode 403
 
     @Shuffle(true) #
@@ -928,9 +921,8 @@ Funktionalität: 5.1.5 (1) Einladung von Akteuren außerhalb einer Organisation 
     Beispiele:
       | ApiName1 | ApiName2 |
 
-  @WIP
     @Ctl:BlockAll @Ctl:BP
-    @TCID:TIM_V2_BASIS_AF_050129 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
+    @TCID:TIM_V2_BASIS_AF_050129 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
   Szenariogrundriss: 05.01.29 Einladung außerhalb einer Organisation - BlockAll - Löschen eines Server-Namen in Liste von anderem Berechtigungsmodus
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
@@ -1000,9 +992,8 @@ Funktionalität: 5.1.5 (1) Einladung von Akteuren außerhalb einer Organisation 
     Beispiele:
       | ApiName1 | ApiName2 |
 
-  @WIP
     @Ctl:AllowAll @Ctl:BP
-    @TCID:TIM_V2_BASIS_AF_050132 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+    @TCID:TIM_V2_BASIS_AF_050132 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 05.01.32 Einladung außerhalb einer Organisation - AllowAll - Einträge bleiben trotz Logout erhalten
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
@@ -1014,7 +1005,7 @@ Funktionalität: 5.1.5 (1) Einladung von Akteuren außerhalb einer Organisation 
     Und        "A" loggt sich im TI-Messenger ein
     Und        "A" prüft, ob der eigene Authorization Mode auf "AllowAll" gesetzt ist
     Und        "A" prüft, ob User "B" in der Blockliste gesetzt ist
-    Und        "A" prüft, ob die Domain von "B" in der Blockliste gesetzt ist
+    Und        "A" prüft, ob der Server-Name von "B" in der Blockliste gesetzt ist
 
     @Shuffle(true) #
     #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
@@ -1027,9 +1018,8 @@ Funktionalität: 5.1.5 (1) Einladung von Akteuren außerhalb einer Organisation 
     Beispiele:
       | ApiName1 | ApiName2 |
 
-  @WIP
     @Ctl:BlockAll @Ctl:BP
-    @TCID:TIM_V2_BASIS_AF_050133 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+    @TCID:TIM_V2_BASIS_AF_050133 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 05.01.33 Einladung außerhalb einer Organisation - BlockAll - Einträge bleiben trotz Logout erhalten
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
@@ -1041,7 +1031,7 @@ Funktionalität: 5.1.5 (1) Einladung von Akteuren außerhalb einer Organisation 
     Und        "A" loggt sich im TI-Messenger ein
     Und        "A" prüft, ob der eigene Authorization Mode auf "BlockAll" gesetzt ist
     Und        "A" prüft, ob User "B" in der Allowliste gesetzt ist
-    Und        "A" prüft, ob die Domain von "B" in der Allowliste gesetzt ist
+    Und        "A" prüft, ob der Server-Name von "B" in der Allowliste gesetzt ist
 
 
     @Shuffle(true) #

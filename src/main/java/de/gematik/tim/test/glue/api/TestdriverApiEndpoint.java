@@ -21,10 +21,14 @@ import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.HttpMethod.GET;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.HttpMethod.POST;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.HttpMethod.PUT;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ACCOUNT_PATH;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.ALLOWED_SERVER_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ALLOWED_USERS_PATH;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.ALLOWED_USER_MXID_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.AUTHENTICATED_MEDIA_DOWNLOAD_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.AUTHORIZATION_PATH;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.BLOCKED_SERVER_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.BLOCKED_USERS_PATH;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.BLOCKED_USER_MXID_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.CLAIM_DEVICE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.CONTACT_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.DELETE_CONTACT_PATH;
@@ -209,14 +213,21 @@ public enum TestdriverApiEndpoint {
   GET_AUTHORIZATION_MODE(GET, AUTHORIZATION_PATH, UseDeviceAbility.class),
   SET_AUTHORIZATION_MODE(POST, AUTHORIZATION_PATH, UseDeviceAbility.class),
 
+  GET_BLOCKED_USERS(GET, BLOCKED_USER_MXID_PATH, UseDeviceAbility.class),
+  GET_ALLOWED_USERS(GET, ALLOWED_USER_MXID_PATH, UseDeviceAbility.class),
   ADD_BLOCKED_USERS(POST, BLOCKED_USERS_PATH, UseDeviceAbility.class),
   ADD_ALLOWED_USERS(POST, ALLOWED_USERS_PATH, UseDeviceAbility.class),
+  DELETE_BLOCKED_USERS(DELETE, BLOCKED_USERS_PATH, UseDeviceAbility.class),
+  DELETE_ALLOWED_USERS(DELETE, ALLOWED_USERS_PATH, UseDeviceAbility.class),
+
+  GET_ALLOWED_SERVER_NAMES(GET, ALLOWED_SERVER_PATH, UseDeviceAbility.class),
+  GET_BLOCKED_SERVER_NAMES(GET, BLOCKED_SERVER_PATH, UseDeviceAbility.class),
   ADD_ALLOWED_SERVER_NAMES(POST, ALLOWED_USERS_PATH, UseDeviceAbility.class),
   ADD_BLOCKED_SERVER_NAMES(POST, BLOCKED_USERS_PATH, UseDeviceAbility.class),
+  DELETE_ALLOW_LIST(DELETE, ALLOWED_USERS_PATH, UseDeviceAbility.class),
+  DELETE_BLOCK_LIST(DELETE, BLOCKED_USERS_PATH, UseDeviceAbility.class),
   DELETE_ALLOWED_SERVER_NAMES(DELETE, ALLOWED_USERS_PATH, UseDeviceAbility.class),
-  DELETE_BLOCKED_SERVER_NAMES(DELETE, BLOCKED_USERS_PATH, UseDeviceAbility.class),
-  DELETE_BLOCKED_USERS(DELETE, BLOCKED_USERS_PATH, UseDeviceAbility.class),
-  DELETE_ALLOWED_USERS(DELETE, ALLOWED_USERS_PATH, UseDeviceAbility.class);
+  DELETE_BLOCKED_SERVER_NAMES(DELETE, BLOCKED_USERS_PATH, UseDeviceAbility.class);
 
   private final HttpMethod httpMethod;
   private final String path;

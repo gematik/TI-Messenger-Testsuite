@@ -24,7 +24,7 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_INFO;
 import static de.gematik.tim.test.glue.api.info.ApiInfoQuestion.apiInfo;
-import static de.gematik.tim.test.glue.api.info.CallForbiddenMatrixApiTask.callForbiddenMatrixEndpoint;
+import static de.gematik.tim.test.glue.api.info.CallMatrixApiTask.callMatrixEndpoint;
 import static de.gematik.tim.test.glue.api.info.CallMatrixApiWithoutForwardingTask.callMatrixEndpointWithoutForwarding;
 import static de.gematik.tim.test.glue.api.info.SupportedMatrixVersionQuestion.matrixSupportedServerVersion;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.prepareApiNameForHttp;
@@ -46,6 +46,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import java.util.List;
+import java.util.Map;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
 
@@ -111,20 +112,19 @@ public class InfoControllerGlue {
     Actor actor = theActorCalled(actorName);
     actor.can(CallAnApi.at(actor.recall(HOME_SERVER)));
     if (matrixUrl.startsWith("/.well-known")) {
-      pingApiWithoutForwarding(actor, matrixUrl, httpMethod);
+      pingApiWithoutForwarding(actor, httpMethod, matrixUrl);
       return;
     }
     String accessToken = actor.recall(ACCESS_TOKEN);
     if (accessToken != null) {
-      actor.attemptsTo(
-          callForbiddenMatrixEndpoint(matrixUrl, httpMethod).withAccessToken(accessToken));
+      actor.attemptsTo(callMatrixEndpoint(httpMethod, matrixUrl).withAccessToken(accessToken));
     } else {
-      actor.attemptsTo(callForbiddenMatrixEndpoint(matrixUrl, httpMethod));
+      actor.attemptsTo(callMatrixEndpoint(httpMethod, matrixUrl));
     }
   }
 
-  private void pingApiWithoutForwarding(Actor actor, String matrixUrl, String httpMethod) {
-    actor.attemptsTo(callMatrixEndpointWithoutForwarding(matrixUrl, httpMethod));
+  private void pingApiWithoutForwarding(Actor actor, String httpMethod, String matrixUrl) {
+    actor.attemptsTo(callMatrixEndpointWithoutForwarding(httpMethod, matrixUrl));
   }
 
   @When(
@@ -139,7 +139,7 @@ public class InfoControllerGlue {
     Actor actor = theActorCalled(actorName);
     actor.can(CallAnApi.at(actor.recall(HOME_SERVER)));
     String matrixUrlIncludingParameter = matrixUrl.replace("{userId}", userId);
-    actor.attemptsTo(callForbiddenMatrixEndpoint(matrixUrlIncludingParameter, httpMethod));
+    actor.attemptsTo(callMatrixEndpoint(httpMethod, matrixUrlIncludingParameter));
   }
 
   @And(
@@ -160,6 +160,48 @@ public class InfoControllerGlue {
     String urlIncludingServername = matrixUrl.replace("{serverName}", serverName);
     String urlIncludingMediaId = urlIncludingServername.replace("{mediaId}", mediaId);
     String urlIncludingFilename = urlIncludingMediaId.replace("{fileName}", "myNewFilename");
-    actor.attemptsTo(callForbiddenMatrixEndpoint(urlIncludingFilename, httpMethod));
+
+    actor.attemptsTo(callMatrixEndpoint(httpMethod, urlIncludingFilename));
+  }
+
+  @And(
+      "{word} requests at their homeserver the media thumbnail API {string} including parameters with http method {string}")
+  @Und(
+      "{word} fragt an seinem HomeServer die media thumbnail API {string} inkl Parameterbefüllung über ein {string} ab")
+  public void pingApiOnHomeserverForMediaThumbnail(
+      String actorName, String matrixUrl, String httpMethod) {
+    Actor actor = theActorCalled(actorName);
+    actor.can(CallAnApi.at(actor.recall(HOME_SERVER)));
+    String mediaUri = actor.recall(MEDIA_URI);
+    String[] uriTokens = mediaUri.split("/");
+    if (uriTokens.length != 4) {
+      throw new TestRunException("Could not parse provided media uri " + mediaUri);
+    }
+    String serverName = uriTokens[2];
+    String mediaId = uriTokens[3];
+
+    String urlIncludingServername = matrixUrl.replace("{serverName}", serverName);
+    String urlIncludingMediaId = urlIncludingServername.replace("{mediaId}", mediaId);
+    String urlIncludingFilename = urlIncludingMediaId.replace("{fileName}", "myNewFilename");
+
+    actor.attemptsTo(
+        callMatrixEndpoint(httpMethod, urlIncludingFilename)
+            .withRequestParameter(Map.of("height", "32", "width", "32")));
+  }
+
+  @When("is the supported Matrix version {string}")
+  @Wenn("ist die unterstützte Matrix-Version {string}")
+  public void checkMatrixVersionInLastResponse(String matrixVersion) {
+    SupportedMatrixVersionInfo supportedMatrixVersionInfo =
+        theActorInTheSpotlight().recall(MATRIX_CLIENT_VERSION);
+    List<String> supportedVersions =
+        supportedMatrixVersionInfo.versions().stream()
+            .map(version -> version.replaceAll("[^0-9.]", ""))
+            .toList();
+    boolean matrixVersionFound =
+        supportedVersions.stream().anyMatch(version -> version.equals(matrixVersion));
+    assertThat(matrixVersionFound)
+        .as("Expected Matrix version %s was not found", matrixVersion)
+        .isTrue();
   }
 }

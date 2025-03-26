@@ -23,7 +23,7 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.OWN_ROOM_MEMBERSHIP_S
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEND_DIRECT_MESSAGE;
 import static de.gematik.tim.test.glue.api.room.UseRoomAbility.addRoomToActor;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomQuestion.ownRoom;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueMessageText;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueMessageTextWithTimestamp;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.isSameHomeserver;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addMessage;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addRoom;
@@ -95,7 +95,7 @@ public class SendDirectMessageTask implements Task {
       directMessage.body(message);
     }
     else{
-      directMessage.body(createUniqueMessageText());
+      directMessage.body(createUniqueMessageTextWithTimestamp());
     }
     if (fileId != null) {
       directMessage.fileId(fileId);

@@ -28,7 +28,7 @@ import org.springframework.http.HttpStatus;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEND_MESSAGE;
 import static de.gematik.tim.test.glue.api.room.questions.GetCurrentRoomQuestion.currentRoom;
-import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueMessageText;
+import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueMessageTextWithTimestamp;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.isSameHomeserver;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addMessage;
 import static java.util.Objects.requireNonNull;
@@ -109,7 +109,7 @@ public class SendMessageTask implements Task {
             message.body(body);
         }
         else{
-            message.body(createUniqueMessageText());
+            message.body(createUniqueMessageTextWithTimestamp());
         }
         if (fileId != null) {
             message.fileId(fileId);

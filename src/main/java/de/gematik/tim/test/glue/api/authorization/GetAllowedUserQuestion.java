@@ -16,30 +16,28 @@
 
 package de.gematik.tim.test.glue.api.authorization;
 
-import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.DELETE_ALLOWED_USERS;
+import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_ALLOWED_USERS;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.MXID_VARIABLE;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 
-import de.gematik.tim.test.models.AuthorizationListDTO;
 import de.gematik.tim.test.models.MxIdDTO;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.Task;
+import net.serenitybdd.screenplay.Question;
 
 @RequiredArgsConstructor
-public class DeleteAllowedUsersTask implements Task {
+public class GetAllowedUserQuestion implements Question<MxIdDTO> {
 
-  private final List<String> allowedUsersMxids;
+  private final String allowedUserId;
 
-  public static DeleteAllowedUsersTask deleteAllowedUsers(List<String> allowedUsersMxids) {
-    return new DeleteAllowedUsersTask(allowedUsersMxids);
+  public static GetAllowedUserQuestion getAllowedUser(String allowedUserId) {
+    return new GetAllowedUserQuestion(allowedUserId);
   }
 
   @Override
-  public <T extends Actor> void performAs(T actor) {
-    List<MxIdDTO> mxIdDTOs =
-        allowedUsersMxids.stream().map(mxId -> new MxIdDTO().mxid(mxId)).toList();
-    AuthorizationListDTO blockedList = new AuthorizationListDTO();
-    blockedList.mxids(mxIdDTOs);
-    actor.attemptsTo(DELETE_ALLOWED_USERS.request().with(req -> req.body(blockedList)));
+  public MxIdDTO answeredBy(Actor actor) {
+    actor.attemptsTo(
+        GET_ALLOWED_USERS.request().with(req -> req.pathParam(MXID_VARIABLE, allowedUserId)));
+    return parseResponse(MxIdDTO.class);
   }
 }

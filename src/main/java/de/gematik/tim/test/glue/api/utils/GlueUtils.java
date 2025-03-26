@@ -232,14 +232,26 @@ public class GlueUtils {
 
   public static String createUniqueMessageText() {
     return switch (random.nextInt(7)) {
-      case 1 -> faker.gameOfThrones().quote() + "-" + Instant.now().toEpochMilli();
-      case 2 -> faker.friends().quote() + "-" + Instant.now().toEpochMilli();
-      case 3 -> faker.harryPotter().quote() + "-" + Instant.now().toEpochMilli();
-      case 4 -> faker.rickAndMorty().quote() + "-" + Instant.now().toEpochMilli();
-      case 5 -> faker.lebowski().quote() + "-" + Instant.now().toEpochMilli();
-      case 6 -> faker.witcher().quote() + "-" + Instant.now().toEpochMilli();
-      default -> faker.yoda().quote() + "-" + Instant.now().toEpochMilli();
+      case 1 -> faker.gameOfThrones().quote();
+      case 2 -> faker.friends().quote();
+      case 3 -> faker.harryPotter().quote();
+      case 4 -> faker.rickAndMorty().quote();
+      case 5 -> faker.lebowski().quote();
+      case 6 -> faker.witcher().quote();
+      default -> faker.yoda().quote();
     };
+  }
+
+  public static String createUniqueMessageTextWithTimestamp(){
+    return createUniqueMessageText() + "-" + Instant.now().toEpochMilli();
+  }
+
+  public static String createTopic(){
+    String topic = createUniqueMessageText();
+    if(topic.length() > 200){
+      topic = topic.substring(0, 200);
+    }
+    return topic;
   }
 
   public static List<?> getResourcesFromSearchResult(
