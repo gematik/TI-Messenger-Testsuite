@@ -231,24 +231,35 @@ public class GlueUtils {
   }
 
   public static String createUniqueMessageText() {
-    return switch (random.nextInt(7)) {
-      case 1 -> faker.gameOfThrones().quote();
-      case 2 -> faker.friends().quote();
-      case 3 -> faker.harryPotter().quote();
-      case 4 -> faker.rickAndMorty().quote();
-      case 5 -> faker.lebowski().quote();
-      case 6 -> faker.witcher().quote();
-      default -> faker.yoda().quote();
-    };
+    String quote =
+        switch (random.nextInt(7)) {
+          case 1 -> "Game of Thrones: " + faker.gameOfThrones().quote();
+          case 2 -> "Back to the future: " + faker.backToTheFuture().quote();
+          case 3 -> "Harry Potter: " + faker.harryPotter().quote();
+          case 4 -> "Twin Peaks: " + faker.twinPeaks().quote();
+          case 5 -> "The big Lebowski: " + faker.lebowski().quote();
+          case 6 -> "Buffy the vampire slayer: " + faker.buffy().quotes();
+          default -> "Yoda: " + faker.yoda().quote();
+        };
+    return "Generated text for test - " + circumventProfanityFilters(quote);
   }
 
-  public static String createUniqueMessageTextWithTimestamp(){
+  private static String circumventProfanityFilters(String quote) {
+    List<String> filterTriggers = List.of("bastards", "bitch", "jerk-off");
+    if (filterTriggers.stream().anyMatch(quote::contains)) {
+      return "Hitchhikers Guide to the galaxy: " + faker.hitchhikersGuideToTheGalaxy().quote();
+    } else {
+      return quote;
+    }
+  }
+
+  public static String createUniqueMessageTextWithTimestamp() {
     return createUniqueMessageText() + "-" + Instant.now().toEpochMilli();
   }
 
-  public static String createTopic(){
+  public static String createTopic() {
     String topic = createUniqueMessageText();
-    if(topic.length() > 200){
+    if (topic.length() > 200) {
       topic = topic.substring(0, 200);
     }
     return topic;
@@ -427,6 +438,11 @@ public class GlueUtils {
   @ParameterType(value = "(?:.*)", preferForRegexMatch = true)
   public List<String> listOfStrings(String arg) {
     return stream(arg.split(",\\s?")).map(str -> str.replace("\"", "")).toList();
+  }
+
+  @ParameterType(value = "(?:.*)", name = "listOfInts")
+  public List<Integer> listOfInts(String arg) {
+    return stream(arg.split(",\\s?")).map(str -> Integer.valueOf(str.replace("\"", ""))).toList();
   }
 
   public static <T extends Actor> String getHomeServerWithoutHttpAndPort(T actor) {

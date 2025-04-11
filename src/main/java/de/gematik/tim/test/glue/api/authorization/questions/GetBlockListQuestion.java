@@ -14,30 +14,26 @@
  * limitations under the License.
  */
 
-package de.gematik.tim.test.glue.api.authorization;
+package de.gematik.tim.test.glue.api.authorization.questions;
 
-import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_BLOCKED_USERS;
-import static de.gematik.tim.test.glue.api.TestdriverApiPath.MXID_VARIABLE;
+import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_BLOCK_LIST;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 
-import de.gematik.tim.test.models.MxIdDTO;
+import de.gematik.tim.test.models.AuthorizationListDTO;
 import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 
 @RequiredArgsConstructor
-public class GetBlockedUserQuestion implements Question<MxIdDTO> {
+public class GetBlockListQuestion implements Question<AuthorizationListDTO> {
 
-  private final String blockedUserId;
-
-  public static GetBlockedUserQuestion getBlockedUser(String blockedUserId) {
-    return new GetBlockedUserQuestion(blockedUserId);
+  public static GetBlockListQuestion getBlockList() {
+    return new GetBlockListQuestion();
   }
 
   @Override
-  public MxIdDTO answeredBy(Actor actor) {
-    actor.attemptsTo(
-        GET_BLOCKED_USERS.request().with(req -> req.pathParam(MXID_VARIABLE, blockedUserId)));
-    return parseResponse(MxIdDTO.class);
+  public AuthorizationListDTO answeredBy(Actor actor) {
+    actor.attemptsTo(GET_BLOCK_LIST.request());
+    return parseResponse(AuthorizationListDTO.class);
   }
 }

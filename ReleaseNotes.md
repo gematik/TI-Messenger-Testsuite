@@ -10,6 +10,157 @@
 [
 `docu TI-Messenger Version 2`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite_Version2.adoc)
 
+## Release 2.2.0
+
+### Bugs
+
+- fixes @TCID:TIM_V2_PRO_AF_010107 to not exit prematurely on the expected 403 status code
+
+- Adjusted Testcase - Added missing Step for leaving Chat
+
+  @TCID:TIM_V2_ePA_AF_05X0503
+
+### Changes
+
+- improves the generated message text to provide the quote source
+
+- API breaking changes, TI-M version V2:
+    - deleteAllowedUsersList and deleteBlockedUsersList expects now a list of users to delete, it will no longer delete
+      the full list!
+    - that made the DELETE endpoints on specific users obsolete, they were removed (ids:
+      deleteAllowedUserMxid/deleteBlockedUserMxid, deleteAllowedUserServerName/deleteBlockedUserServerName)
+    - to further simplify the api and reduce implementation effort also the GET endpoints on specific users were
+      removed (ids: getAllowedUserMxid/getBlockedUserMxid, getAllowedUserServerName/getBlockedUserServerName), instead
+      getAllowedUsersList and getBlockedUsersList will be used
+    - groupNames was added to the authorization list
+
+- API non-breaking changes, removal of unused endpoints:
+    - getLoginOptions
+    - orgAdminFhirHealthcareService
+    - changeRoomSettings
+
+- Testcases adjusted - comparision of topics instead of empty field
+
+  @TCID:TIM_V2_BASIS_AF_09X0101
+
+  @TCID:TIM_V2_BASIS_AF_09X0401
+
+  @TCID:TIM_V2_BASIS_AF_09X0501
+
+- Testcases adjusted - Check for deprecated media thumbnail API 400 also OK
+
+  @TCID:TIM_V2_BASIS_AF_10X0103
+
+  @TCID:TIM_V2_BASIS_AF_10X0104
+
+  @TCID:TIM_V2_BASIS_AF_10X0503
+
+  @TCID:TIM_V2_BASIS_AF_10X0601
+
+### Features
+
+- implements tests related to search in FdV (no WIP anymore)
+
+  @TCID:TIM_V2_BASIS_AF_050501
+
+  @TCID:TIM_V2_BASIS_AF_050502
+
+  @TCID:TIM_V2_BASIS_AF_050503
+
+  @TCID:TIM_V2_BASIS_AF_050701
+
+  @TCID:TIM_V2_BASIS_AF_050702
+
+  @TCID:TIM_V2_BASIS_AF_050801
+
+  @TCID:TIM_V2_BASIS_AF_050802
+
+  @TCID:TIM_V2_BASIS_AF_060501
+
+  @TCID:TIM_V2_BASIS_AF_060502
+
+  @TCID:TIM_V2_BASIS_AF_060503
+
+  @TCID:TIM_V2_BASIS_AF_060504
+
+  @TCID:TIM_V2_BASIS_AF_060505
+
+  @TCID:TIM_V2_BASIS_AF_060506
+
+  @TCID:TIM_V2_BASIS_AF_060701
+
+  @TCID:TIM_V2_BASIS_AF_060702
+
+  @TCID:TIM_V2_BASIS_AF_060801
+
+  @TCID:TIM_V2_BASIS_AF_060802
+
+  @TCID:TIM_V2_BASIS_AF_08X0501
+
+  @TCID:TIM_V2_BASIS_AF_08X0502
+
+  @TCID:TIM_V2_BASIS_AF_08X0701
+
+  @TCID:TIM_V2_BASIS_AF_08X0702
+
+  @TCID:TIM_V2_ePA_AF_04X0501
+
+  @TCID:TIM_V2_ePA_AF_04X0701
+
+- implements tests for checking behaviour when users are added twice to list (no WIP anymore)
+
+  @TCID:TIM_V2_BASIS_AF_050130
+
+  @TCID:TIM_V2_BASIS_AF_050131
+
+  @TCID:TIM_V2_BASIS_AF_050630
+
+  @TCID:TIM_V2_BASIS_AF_050631
+
+  @TCID:TIM_V2_PRO_AF_050130
+
+  @TCID:TIM_V2_PRO_AF_050131
+
+- All endpoints in the TiMessengerTestTreiber.yaml now have a note explaining, if they are used for a client, org-admin,
+  or for both.
+
+- implements tests for authorization of groups (no WIP anymore)
+
+  @TCID:TIM_V2_PRO_AF_050100C
+
+  @TCID:TIM_V2_PRO_AF_050100D
+
+  @TCID:TIM_V2_PRO_AF_06X0101
+
+  @TCID:TIM_V2_PRO_AF_06X0102
+
+  @TCID:TIM_V2_PRO_AF_06X0103
+
+  @TCID:TIM_V2_PRO_AF_06X0104
+
+  @TCID:TIM_V2_ePA_AF_05X0501
+
+  @TCID:TIM_V2_ePA_AF_05X0502
+
+  @TCID:TIM_V2_ePA_AF_05X0503
+
+  @TCID:TIM_V2_ePA_AF_05X0504
+
+
+- Deleted TFs
+
+  @TCID:TIM_V2_BASIS_AF_060112
+
+  @TCID:TIM_V2_BASIS_AF_040114
+
+  @TCID:TIM_V2_BASIS_AF_040908
+
+  @TCID:TIM_V2_BASIS_AF_060612
+
+  @TCID:TIM_V2_PRO_AF_10X0101
+
+  @TCID:TIM_V2_PRO_AF_010107 (former WIP)
+
 ## Release 2.1.1
 
 ### Features
@@ -48,7 +199,7 @@
 
 - implements tests for configuration in other permission mode (negative) (no WIP anymore)
 
-  @TCID:TIM_V2_BASIS_AF_050122 
+  @TCID:TIM_V2_BASIS_AF_050122
 
   @TCID:TIM_V2_BASIS_AF_050123
 
@@ -113,7 +264,8 @@
 ### Changes
 
 - API change, non-breaking TI-M version 1.1.x: removes unused getContact by mxid endpoint
-- Checks for the specified fields of `MessageContentFile` have been extended in the glue code for sending and receiving attachments.
+- Checks for the specified fields of `MessageContentFile` have been extended in the glue code for sending and receiving
+  attachments.
 
 ### Bugs
 

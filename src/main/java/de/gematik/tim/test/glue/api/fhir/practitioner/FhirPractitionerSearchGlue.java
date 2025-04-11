@@ -70,7 +70,7 @@ public class FhirPractitionerSearchGlue {
 
   @When("{string} can find {listOfStrings} in FHIR")
   @Wenn("{string} findet {listOfStrings} in FHIR")
-  public void findUser(String searchingActorName, List<String> searchedActorNames) {
+  public static void findUser(String searchingActorName, List<String> searchedActorNames) {
     Actor actor = theActorCalled(searchingActorName);
     searchedActorNames.forEach(
         searchedActorName -> {
@@ -88,7 +88,7 @@ public class FhirPractitionerSearchGlue {
       "{string} can find {string} by searching by name with cut {int}-{int} \\(amount front-back) char\\(s)")
   @Wenn(
       "{string} findet TI-Messenger-Nutzer {string} bei Suche nach Namen minus {int}-{int} \\(Anzahl vorne-hinten) Char\\(s) abgeschnitten")
-  public void findUserWithSearchParam(
+  public static void findUserWithSearchParam(
       String actorName, String searchedActorName, int begin, int end) {
     Actor actor = theActorCalled(actorName);
     Actor searchedActor = theActorCalled(searchedActorName);

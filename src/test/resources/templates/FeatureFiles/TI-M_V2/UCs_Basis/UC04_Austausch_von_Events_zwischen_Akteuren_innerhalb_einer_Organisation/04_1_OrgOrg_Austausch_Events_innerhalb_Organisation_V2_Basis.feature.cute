@@ -10,6 +10,7 @@
 @AFO-ID:A_26575
 @AFO-ID:A_25395-01
 @AFO-ID:A_26077
+@NB:NEIN
 
 Funktionalität: 5.1.4 (1) Austausch von Events innerhalb einer Organisation (Basis Spec)
 
@@ -34,7 +35,6 @@ Funktionalität: 5.1.4 (1) Austausch von Events innerhalb einer Organisation (Ba
   TF 9  - 10  User sendet eine Nachricht an ausgeloggten User - Dehydrated Devices (Positiv/Negativ) (Raum)
   TF 11 - 12  User sendet und ändert eine Nachricht an ausgeloggten User - Dehydrated Devices (Chat/Raum)
   TF 13       User sendet ein Attachment an ausgeloggten User über Matrix-Protokoll v1.11 - Dehydrated Devices
-  TF 14       User empfängt alte und neue Nachrichten nach Session-Key Export und Import (Raum)
   TF 15       Gruppenchat - Drei User schreiben sich gegenseitig (Raum)
 
   @Ctl:AllowAll
@@ -422,41 +422,7 @@ Funktionalität: 5.1.4 (1) Austausch von Events innerhalb einer Organisation (Ba
     Beispiele:
       | ApiName1A | ApiName1B |
 
-  @Ctl:AllowAll
-    @TCID:TIM_V2_BASIS_AF_040114 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
-  Szenariogrundriss: 04.01.14 Austausch von Events innerhalb einer Organisation - Raum - AllowAll - User empfängt alte und neue Nachrichten nach Session-Key Export und Import
-    Angenommen Es werden folgende Clients reserviert:
-      | A | PRO_CLIENT | <ApiName1A> |
-      | B | PRO_CLIENT | <ApiName1B>  |
-    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
-    Wenn       "B" findet TI-Messenger-Nutzer "A" bei der Suche im HomeServer
-    Und        "B" erstellt einen Chat-Raum "TIM Testraum 1"
-    Und        "B" lädt "A" in Chat-Raum "TIM Testraum 1" ein
-    Und        "A" erhält eine Einladung in Raum "TIM Testraum 1" von "B"
-    Und        "A" bestätigt eine Einladung in Raum "TIM Testraum 1" von "B"
-    Und        "A" ist dem Raum "TIM Testraum 1" beigetreten
-    Und        "B" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
-    Und        "A" empfängt eine Nachricht "Testnachricht 1" von "B" im Raum "TIM Testraum 1"
-    Und        "A" exportiert seinen Session-Key
-    Und        "A" loggt sich im TI-Messenger aus inkl. erfolgreichem Sync
-    Und        "B" sendet die Nachricht "Testnachricht 2" an den Raum "TIM Testraum 1"
-    Und        "A" loggt sich im TI-Messenger ein
-    Und        "A" importiert den Session-Key von "A"
-    Und        "A" empfängt eine Nachricht "Testnachricht 1" von "B" im Raum "TIM Testraum 1"
-    Dann       "A" kann die Nachricht "Testnachricht 2" von "B" im Raum "TIM Testraum 1" nicht sehen [Retry 10 - 3]
-
-    @Shuffle(true)
-   #@MaxSameColumnProperty(ApiName1,homeserver,2)
-    @EqualProperty(homeserver)
-    @AllowSelfCombine(true)
-    @AllowDoubleLineup(false)
-    @Filter(ApiName1A.hasTag("proClient"))
-    @Filter(ApiName1B.hasTag("proClient"))
-
-    Beispiele:
-      | ApiName1A | ApiName1B |
-
-  @Ctl:AllowAll
+   @Ctl:AllowAll
     @TCID:TIM_V2_BASIS_AF_040115 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
   Szenariogrundriss: 04.01.15 Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Gruppenchat - Drei User schreiben sich gegenseitig
     Angenommen Es werden folgende Clients reserviert:

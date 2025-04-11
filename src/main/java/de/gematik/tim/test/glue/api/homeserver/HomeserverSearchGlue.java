@@ -69,7 +69,7 @@ public class HomeserverSearchGlue {
     String cuttedDisplayName = displayName.substring(beginCutoff, displayName.length() - endCutoff);
 
     HomeserverSearchResultListDTO resultList =
-        actor.asksFor(userOnHomeserver().withDisplayName(cuttedDisplayName));
+            actor.asksFor(userOnHomeserver().withDisplayName(cuttedDisplayName));
     HomeserverSearchResultDTO searchResult =
         resultList.getSearchResults().stream()
             .filter(result -> result.getMxId().equals(actorToFind.recall(MX_ID)))

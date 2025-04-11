@@ -83,7 +83,9 @@ public class SendMessageTask implements Task {
         if (HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful()) {
             addMessage(body, lastResponse().as(MessageDTO.class));
         }
-
+        else if(HttpStatus.valueOf(lastResponse().statusCode()).isError()){
+            return;
+        }
         String actorId = actor.recall(MX_ID);
         actor
                 .asksFor(currentRoom())
