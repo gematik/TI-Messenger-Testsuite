@@ -21,29 +21,23 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.ADD_BLOCKED_USERS;
 import static de.gematik.tim.test.glue.api.authorization.HasBlockAndAllowListAbility.actorHasBlockList;
 
-import de.gematik.tim.test.models.AuthorizationListDTO;
-import de.gematik.tim.test.models.MxIdDTO;
-import java.util.List;
-import lombok.RequiredArgsConstructor;
+import de.gematik.tim.test.glue.api.TestdriverApiEndpoint;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 
-@RequiredArgsConstructor
-public class AddBlockedUsersTask implements Task {
+public class AddBlockedUsersTask extends AuthorizationListTask implements Task {
 
-  private final List<String> blockedUsersMxids;
+  public static AddBlockedUsersTask addBlockedUsers() {
+    return new AddBlockedUsersTask(ADD_BLOCKED_USERS);
+  }
 
-  public static AddBlockedUsersTask addBlockedUsers(List<String> blockedUsersMxids) {
-    return new AddBlockedUsersTask(blockedUsersMxids);
+  public AddBlockedUsersTask(TestdriverApiEndpoint endpoint) {
+    super(endpoint);
   }
 
   @Override
   public <T extends Actor> void performAs(T actor) {
-    List<MxIdDTO> mxIdDTOs =
-        blockedUsersMxids.stream().map(mxId -> new MxIdDTO().mxid(mxId)).toList();
-    AuthorizationListDTO blockedList = new AuthorizationListDTO();
-    blockedList.mxids(mxIdDTOs);
-    actor.attemptsTo(ADD_BLOCKED_USERS.request().with(req -> req.body(blockedList)));
+    super.performAs(actor);
     actorHasBlockList(actor.recall(MX_ID), actor);
   }
 }

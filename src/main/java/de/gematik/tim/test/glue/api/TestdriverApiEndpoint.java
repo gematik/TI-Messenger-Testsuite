@@ -21,14 +21,10 @@ import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.HttpMethod.GET;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.HttpMethod.POST;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.HttpMethod.PUT;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ACCOUNT_PATH;
-import static de.gematik.tim.test.glue.api.TestdriverApiPath.ALLOWED_SERVER_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ALLOWED_USERS_PATH;
-import static de.gematik.tim.test.glue.api.TestdriverApiPath.ALLOWED_USER_MXID_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.AUTHENTICATED_MEDIA_DOWNLOAD_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.AUTHORIZATION_PATH;
-import static de.gematik.tim.test.glue.api.TestdriverApiPath.BLOCKED_SERVER_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.BLOCKED_USERS_PATH;
-import static de.gematik.tim.test.glue.api.TestdriverApiPath.BLOCKED_USER_MXID_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.CLAIM_DEVICE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.CONTACT_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.DELETE_CONTACT_PATH;
@@ -64,9 +60,7 @@ import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_INVITE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_JOIN_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_LEAVE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_STATE_PATH;
-import static de.gematik.tim.test.glue.api.TestdriverApiPath.SUPPORTED_VERSIONS_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.UNCLAIM_DEVICE_PATH;
-import static de.gematik.tim.test.glue.api.TestdriverApiPath.WELL_KNOWN_HOMESERVER_PATH;
 import static java.util.Objects.requireNonNull;
 
 import de.gematik.tim.test.glue.api.devices.UseDeviceAbility;
@@ -91,10 +85,6 @@ import net.serenitybdd.screenplay.rest.interactions.RestInteraction;
 @Getter
 public enum TestdriverApiEndpoint {
   GET_INFO(GET, INFO_PATH),
-  CLEAN_REQUEST(POST, INFO_PATH),
-
-  GET_WELL_KNOWN_HOMESERVER(GET, WELL_KNOWN_HOMESERVER_PATH),
-  GET_SUPPORTED_VERSIONS(GET, SUPPORTED_VERSIONS_PATH),
 
   // DEVICE
   GET_DEVICES(GET, DEVICES_PATH),
@@ -103,8 +93,6 @@ public enum TestdriverApiEndpoint {
 
   // ACCOUNT
   GET_ACCOUNT(GET, ACCOUNT_PATH, UseDeviceAbility.class),
-  CREATE_ACCOUNT(POST, ACCOUNT_PATH, UseDeviceAbility.class),
-  DELETE_ACCOUNT(DELETE, ACCOUNT_PATH, UseDeviceAbility.class),
   GET_SESSION_KEY(GET, KEY_PATH, UseDeviceAbility.class),
   IMPORT_SESSION_KEY(POST, KEY_PATH, UseDeviceAbility.class),
 
@@ -117,7 +105,6 @@ public enum TestdriverApiEndpoint {
   GET_ROOMS(GET, ROOMS_PATH, UseDeviceAbility.class),
   GET_ROOM(GET, ROOM_ID_PATH, UseDeviceAbility.class, UseRoomAbility.class),
   CREATE_ROOM(POST, ROOMS_PATH, UseDeviceAbility.class),
-  UPDATE_ROOM(PUT, ROOM_ID_PATH, UseDeviceAbility.class, UseRoomAbility.class),
   FORGET_ROOM(DELETE, ROOM_ID_PATH, UseDeviceAbility.class, UseRoomAbility.class),
   INVITE_TO_ROOM(POST, ROOM_INVITE_PATH, UseDeviceAbility.class, UseRoomAbility.class),
   JOIN_ROOM(POST, ROOM_JOIN_PATH, UseDeviceAbility.class),
@@ -150,7 +137,6 @@ public enum TestdriverApiEndpoint {
   GET_OWN_ORG(GET, FHIR_ORG_PATH, UseDeviceAbility.class),
 
   // FHIR ORG_ADMIN HEALTHCARE SERVICE
-  GET_HEALTHCARE_SERVICES(GET, FHIR_HEALTHCARE_SERVICE_PATH, UseDeviceAbility.class),
   CREATE_HEALTHCARE_SERVICE(POST, FHIR_HEALTHCARE_SERVICE_PATH, UseDeviceAbility.class),
   GET_HEALTHCARE_SERVICE(
       GET, FHIR_HS_ADMIN_PATH, UseDeviceAbility.class, UseHealthcareServiceAbility.class),
@@ -213,21 +199,12 @@ public enum TestdriverApiEndpoint {
   GET_AUTHORIZATION_MODE(GET, AUTHORIZATION_PATH, UseDeviceAbility.class),
   SET_AUTHORIZATION_MODE(POST, AUTHORIZATION_PATH, UseDeviceAbility.class),
 
-  GET_BLOCKED_USERS(GET, BLOCKED_USER_MXID_PATH, UseDeviceAbility.class),
-  GET_ALLOWED_USERS(GET, ALLOWED_USER_MXID_PATH, UseDeviceAbility.class),
-  ADD_BLOCKED_USERS(POST, BLOCKED_USERS_PATH, UseDeviceAbility.class),
+  GET_ALLOW_LIST(GET, ALLOWED_USERS_PATH, UseDeviceAbility.class),
+  GET_BLOCK_LIST(GET, BLOCKED_USERS_PATH, UseDeviceAbility.class),
   ADD_ALLOWED_USERS(POST, ALLOWED_USERS_PATH, UseDeviceAbility.class),
-  DELETE_BLOCKED_USERS(DELETE, BLOCKED_USERS_PATH, UseDeviceAbility.class),
-  DELETE_ALLOWED_USERS(DELETE, ALLOWED_USERS_PATH, UseDeviceAbility.class),
-
-  GET_ALLOWED_SERVER_NAMES(GET, ALLOWED_SERVER_PATH, UseDeviceAbility.class),
-  GET_BLOCKED_SERVER_NAMES(GET, BLOCKED_SERVER_PATH, UseDeviceAbility.class),
-  ADD_ALLOWED_SERVER_NAMES(POST, ALLOWED_USERS_PATH, UseDeviceAbility.class),
-  ADD_BLOCKED_SERVER_NAMES(POST, BLOCKED_USERS_PATH, UseDeviceAbility.class),
+  ADD_BLOCKED_USERS(POST, BLOCKED_USERS_PATH, UseDeviceAbility.class),
   DELETE_ALLOW_LIST(DELETE, ALLOWED_USERS_PATH, UseDeviceAbility.class),
-  DELETE_BLOCK_LIST(DELETE, BLOCKED_USERS_PATH, UseDeviceAbility.class),
-  DELETE_ALLOWED_SERVER_NAMES(DELETE, ALLOWED_USERS_PATH, UseDeviceAbility.class),
-  DELETE_BLOCKED_SERVER_NAMES(DELETE, BLOCKED_USERS_PATH, UseDeviceAbility.class);
+  DELETE_BLOCK_LIST(DELETE, BLOCKED_USERS_PATH, UseDeviceAbility.class);
 
   private final HttpMethod httpMethod;
   private final String path;

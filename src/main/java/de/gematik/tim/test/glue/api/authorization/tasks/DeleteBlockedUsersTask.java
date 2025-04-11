@@ -17,30 +17,18 @@
 
 package de.gematik.tim.test.glue.api.authorization.tasks;
 
-import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.DELETE_BLOCKED_USERS;
+import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.DELETE_BLOCK_LIST;
 
-import de.gematik.tim.test.models.AuthorizationListDTO;
-import de.gematik.tim.test.models.MxIdDTO;
-import java.util.List;
-import lombok.RequiredArgsConstructor;
-import net.serenitybdd.screenplay.Actor;
+import de.gematik.tim.test.glue.api.TestdriverApiEndpoint;
 import net.serenitybdd.screenplay.Task;
 
-@RequiredArgsConstructor
-public class DeleteBlockedUsersTask implements Task {
+public class DeleteBlockedUsersTask extends AuthorizationListTask implements Task {
 
-  private final List<String> blockedUsersMxids;
-
-  public static DeleteBlockedUsersTask deleteBlockedUsers(List<String> blockedUsersMxids) {
-    return new DeleteBlockedUsersTask(blockedUsersMxids);
+  public static DeleteBlockedUsersTask deleteBlockedUsers() {
+    return new DeleteBlockedUsersTask(DELETE_BLOCK_LIST);
   }
 
-  @Override
-  public <T extends Actor> void performAs(T actor) {
-    List<MxIdDTO> mxIdDTOs =
-        blockedUsersMxids.stream().map(mxId -> new MxIdDTO().mxid(mxId)).toList();
-    AuthorizationListDTO blockedList = new AuthorizationListDTO();
-    blockedList.mxids(mxIdDTOs);
-    actor.attemptsTo(DELETE_BLOCKED_USERS.request().with(req -> req.body(blockedList)));
+  public DeleteBlockedUsersTask(TestdriverApiEndpoint endpoint) {
+    super(endpoint);
   }
 }

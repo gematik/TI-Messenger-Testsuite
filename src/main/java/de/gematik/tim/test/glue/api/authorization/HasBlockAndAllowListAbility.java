@@ -16,13 +16,16 @@
 
 package de.gematik.tim.test.glue.api.authorization;
 
-import static de.gematik.tim.test.glue.api.authorization.tasks.DeleteAllowListTask.deleteAllowList;
-import static de.gematik.tim.test.glue.api.authorization.tasks.DeleteBlockListTask.deleteBlockList;
+import static de.gematik.tim.test.glue.api.authorization.questions.GetAllowListQuestion.getAllowList;
 import static de.gematik.tim.test.glue.api.authorization.questions.GetAuthorizationModeQuestion.getAuthorizationMode;
+import static de.gematik.tim.test.glue.api.authorization.questions.GetBlockListQuestion.getBlockList;
+import static de.gematik.tim.test.glue.api.authorization.tasks.DeleteAllowedUsersTask.deleteAllowedUsers;
+import static de.gematik.tim.test.glue.api.authorization.tasks.DeleteBlockedUsersTask.deleteBlockedUsers;
 import static de.gematik.tim.test.glue.api.authorization.tasks.SetAuthorizationModeTask.setAuthorizationMode;
 import static java.util.Objects.isNull;
 
 import de.gematik.tim.test.glue.api.MultiTargetAbility;
+import de.gematik.tim.test.models.AuthorizationListDTO;
 import de.gematik.tim.test.models.AuthorizationModeDTO;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
@@ -61,12 +64,20 @@ public class HasBlockAndAllowListAbility extends MultiTargetAbility<String, Auth
       if (authorizationModeDTO.getValue().equals("AllowAll")) {
         actor.attemptsTo(setAuthorizationMode("BlockAll"));
       }
-      return deleteAllowList();
+      AuthorizationListDTO allowList = actor.asksFor(getAllowList());
+      return deleteAllowedUsers()
+          .withMxIdsAsDTO(allowList.getMxids())
+          .withServerNamesAsDTO(allowList.getServerNames())
+          .withGroups(allowList.getGroupNames());
     } else {
       if (authorizationModeDTO.getValue().equals("BlockAll")) {
         actor.attemptsTo(setAuthorizationMode("AllowAll"));
       }
-      return deleteBlockList();
+      AuthorizationListDTO blockList = actor.asksFor(getBlockList());
+      return deleteBlockedUsers()
+          .withMxIdsAsDTO(blockList.getMxids())
+          .withServerNamesAsDTO(blockList.getServerNames())
+          .withGroups(blockList.getGroupNames());
     }
   }
 }

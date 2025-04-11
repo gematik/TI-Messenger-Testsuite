@@ -17,30 +17,18 @@
 
 package de.gematik.tim.test.glue.api.authorization.tasks;
 
-import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.DELETE_ALLOWED_USERS;
+import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.DELETE_ALLOW_LIST;
 
-import de.gematik.tim.test.models.AuthorizationListDTO;
-import de.gematik.tim.test.models.MxIdDTO;
-import java.util.List;
-import lombok.RequiredArgsConstructor;
-import net.serenitybdd.screenplay.Actor;
+import de.gematik.tim.test.glue.api.TestdriverApiEndpoint;
 import net.serenitybdd.screenplay.Task;
 
-@RequiredArgsConstructor
-public class DeleteAllowedUsersTask implements Task {
+public class DeleteAllowedUsersTask extends AuthorizationListTask implements Task {
 
-  private final List<String> allowedUsersMxids;
-
-  public static DeleteAllowedUsersTask deleteAllowedUsers(List<String> allowedUsersMxids) {
-    return new DeleteAllowedUsersTask(allowedUsersMxids);
+  public static DeleteAllowedUsersTask deleteAllowedUsers() {
+    return new DeleteAllowedUsersTask(DELETE_ALLOW_LIST);
   }
 
-  @Override
-  public <T extends Actor> void performAs(T actor) {
-    List<MxIdDTO> mxIdDTOs =
-        allowedUsersMxids.stream().map(mxId -> new MxIdDTO().mxid(mxId)).toList();
-    AuthorizationListDTO allowedList = new AuthorizationListDTO();
-    allowedList.mxids(mxIdDTOs);
-    actor.attemptsTo(DELETE_ALLOWED_USERS.request().with(req -> req.body(allowedList)));
+  public DeleteAllowedUsersTask(TestdriverApiEndpoint endpoint) {
+    super(endpoint);
   }
 }

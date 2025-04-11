@@ -14,30 +14,26 @@
  * limitations under the License.
  */
 
-package de.gematik.tim.test.glue.api.authorization;
+package de.gematik.tim.test.glue.api.authorization.questions;
 
-import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_ALLOWED_USERS;
-import static de.gematik.tim.test.glue.api.TestdriverApiPath.MXID_VARIABLE;
+import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_ALLOW_LIST;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 
-import de.gematik.tim.test.models.MxIdDTO;
+import de.gematik.tim.test.models.AuthorizationListDTO;
 import lombok.RequiredArgsConstructor;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 
 @RequiredArgsConstructor
-public class GetAllowedUserQuestion implements Question<MxIdDTO> {
+public class GetAllowListQuestion implements Question<AuthorizationListDTO> {
 
-  private final String allowedUserId;
-
-  public static GetAllowedUserQuestion getAllowedUser(String allowedUserId) {
-    return new GetAllowedUserQuestion(allowedUserId);
+  public static GetAllowListQuestion getAllowList() {
+    return new GetAllowListQuestion();
   }
 
   @Override
-  public MxIdDTO answeredBy(Actor actor) {
-    actor.attemptsTo(
-        GET_ALLOWED_USERS.request().with(req -> req.pathParam(MXID_VARIABLE, allowedUserId)));
-    return parseResponse(MxIdDTO.class);
+  public AuthorizationListDTO answeredBy(Actor actor) {
+    actor.attemptsTo(GET_ALLOW_LIST.request());
+    return parseResponse(AuthorizationListDTO.class);
   }
 }

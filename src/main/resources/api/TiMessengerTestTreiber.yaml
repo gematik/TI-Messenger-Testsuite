@@ -1,8 +1,12 @@
 openapi: 3.0.3
 info:
   title: TiMessengerTestDriver
-  description: REST interface to automate the test of a TI-Messenger client implementation.
-  version: 2.1.0
+  description: |
+    ## REST interface to automate the test of a TI-Messenger client implementation.
+    
+    This API contains all endpoints for version 1.1.x and version 2 (TIM Pro & TIM ePA) of the TI-Messenger. The tags named accordingly can be used to find the endpoints applicable for the desired version.
+    Additionally each endpoint summary will contain a note describing whether the endpoint is used by an org-admin, a client or both.
+  version: 2.2.0
   contact:
     name: gematik GmbH
     email: software-development@gematik.de
@@ -85,7 +89,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Returns the meta data of this interface."
+      summary: "Returns the meta data of this interface. Used by Org-Admin and clients."
       operationId: getInfo
       responses:
         "200":
@@ -105,13 +109,14 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Indicates a test start, is used for clean up"
-      description: "Implementation is no longer optional! Testsuite sends a request to the involved endpoints
-      (even to the org-admin who is not named in the feature-file).
-      There will be no claiming attempt before triggering these endpoints.
-      After getting any response the testcase starts.
-      This is an opportunity to clean user/rooms/FHIR-VZD etc.
-      Even if an error code is returned the testsuite will start the test."
+      summary: "Indicates a test start, is used for clean up. Used by Org-Admin and clients."
+      description: |
+        Implementation is no longer optional! Testsuite sends a request to the involved test driver endpoints.
+        The org-admins will also be triggered, if they are not declared in the feature-file, they will be retrieved based on the homeservers of the clients involved in the test case.
+        There will be no claiming attempt before these endpoints are triggered.
+        After getting *any* response the testcase starts.
+        This is an opportunity to clean user/rooms/FHIR-VZD etc.
+        Even if an error code is returned the testsuite will start the test.
       operationId: cleanUp
       responses:
         "200":
@@ -133,7 +138,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Returns the connected devices and the information of the deposited HBA/SMC-B if existing"
+      summary: "Returns the connected devices and the information of the deposited HBA/SMC-B if existing. Used by Org-Admin and clients."
       operationId: getDevices
       responses:
         "200":
@@ -156,7 +161,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Claims a device for exclusive use."
+      summary: "Claims a device for exclusive use. Used by Org-Admin and clients."
       operationId: claimDevice
       requestBody:
         required: true
@@ -189,7 +194,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Unclaims a previously claimed device."
+      summary: "Unclaims a previously claimed device. Used by Org-Admin and clients."
       operationId: unclaimDevice
       responses:
         "200":
@@ -218,7 +223,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Returns the account data or if no account is registered returns the authentication flows supported by the homeserver."
+      summary: "Returns the account data or if no account is registered returns the authentication flows supported by the homeserver. Used by Org-Admin and clients."
       operationId: readAccount
       responses:
         "200":
@@ -243,34 +248,8 @@ paths:
       - $ref: "#/components/parameters/deviceId"
       - $ref: "#/components/parameters/transactionIdHeader"
 
-    get:
-      summary: "Retrieve list of possible authentication flows"
-      tags:
-        - login/logout
-        - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
-      operationId: getLoginOptions
-      responses:
-        "200":
-          description: "Authentication flows for login"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AuthFlows"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        default:
-          $ref: "#/components/responses/DefaultResponse"
-
     post:
-      summary: "Login to an account. If no login data is provided, a preconfigured account should be used. In case the device has a HBA/SMC-B its data should be used"
+      summary: "Login to an account. If no login data is provided, a preconfigured account should be used. In case the device has a HBA/SMC-B its data should be used. Used by Org-Admin and clients."
       tags:
         - login/logout
         - TI-M_1.1.x
@@ -306,7 +285,7 @@ paths:
       - $ref: "#/components/parameters/transactionIdHeader"
 
     post:
-      summary: "Logout of account"
+      summary: "Logout of account. Used by Org-Admin and clients."
       tags:
         - login/logout
         - TI-M_1.1.x
@@ -331,7 +310,7 @@ paths:
       - $ref: "#/components/parameters/transactionIdHeader"
 
     post:
-      summary: "Logout of an account with prolonged wait time"
+      summary: "Logout of an account with prolonged wait time. Used by clients."
       description: "This variant of the logout is used in tests, where it is important,
        that the logout is fully executed and synchronized before proceeding.
        The response must only be send, once the account is fully logged out."
@@ -363,7 +342,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Exports secret key for device synchronization. The key could be in any format but has to be understood by every provided test-driver-api per distributor!"
+      summary: "Exports secret key for device synchronization. The key could be in any format but has to be understood by every provided test-driver-api per distributor! Used by clients."
       operationId: keyExport
       responses:
         "200":
@@ -385,7 +364,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Imports secret key and executes synchronization"
+      summary: "Imports secret key and executes synchronization. Used by clients."
       operationId: keyImport
       requestBody:
         content:
@@ -412,7 +391,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Get organization from the selected device"
+      summary: "Get organization from the selected device. Used by Org-Admin."
       operationId: getOrganization
       responses:
         "200":
@@ -429,32 +408,12 @@ paths:
       - $ref: "#/components/parameters/deviceId"
       - $ref: "#/components/parameters/transactionIdHeader"
 
-    get:
-      tags:
-        - orgAdminFhirHealthcareService
-        - TI-M_1.1.x
-        - TI-M_Pro
-      summary: "Get associated healthcareService"
-      description: "Get healthcareServices regarding the organization that belongs to the claimed device 
-      (the search result could also contain all other resources that are related with it.
-      Please ensure that the searched resources are included at any time!)"
-      operationId: getHealthcareServices
-      responses:
-        "200":
-          description: "List of all healthcareServices associated with organization"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FhirSearchResult"
-        default:
-          $ref: "#/components/responses/DefaultResponse"
-
     post:
       tags:
         - orgAdminFhirHealthcareService
         - TI-M_1.1.x
         - TI-M_Pro
-      summary: "Creates new healthcare-service and returns the resource of the created healthcareService"
+      summary: "Creates new healthcare-service and returns the resource of the created healthcareService. Used by Org-Admin."
       operationId: createHealthcareService
       requestBody:
         content:
@@ -484,7 +443,7 @@ paths:
         - orgAdminFhirHealthcareService
         - TI-M_1.1.x
         - TI-M_Pro
-      summary: "Get healthcareService for this id"
+      summary: "Get healthcareService for this id. Used by Org-Admin."
       operationId: getHealthcareService
       responses:
         "200":
@@ -503,7 +462,7 @@ paths:
         - orgAdminFhirHealthcareService
         - TI-M_1.1.x
         - TI-M_Pro
-      summary: "Changes healthcareService accordingly"
+      summary: "Changes healthcareService accordingly. Used by Org-Admin."
       operationId: updateHealthcareService
       requestBody:
         content:
@@ -529,7 +488,7 @@ paths:
         - orgAdminFhirHealthcareService
         - TI-M_1.1.x
         - TI-M_Pro
-      summary: "Delete healthcareService with this id"
+      summary: "Delete healthcareService with this id. Used by Org-Admin."
       operationId: deleteHealthcareService
       responses:
         "204":
@@ -550,7 +509,7 @@ paths:
         - orgAdminFhirEndpoints
         - TI-M_1.1.x
         - TI-M_Pro
-      summary: "Get all endpoints for the healthcareService"
+      summary: "Get all endpoints for the healthcareService. Used by Org-Admin."
       description: "Get all endpoints for healthcare-service.
       (the search result could also contain all other resources that are related with it.
       Please ensure that the searched resources are included at any time!)"
@@ -572,7 +531,7 @@ paths:
         - orgAdminFhirEndpoints
         - TI-M_1.1.x
         - TI-M_Pro
-      summary: "Create endpoint"
+      summary: "Create endpoint. Used by Org-Admin."
       operationId: createEndpoint
       requestBody:
         content:
@@ -601,7 +560,7 @@ paths:
       - $ref: "#/components/parameters/endpointId"
 
     get:
-      summary: "Returns information about the requested endpoint"
+      summary: "Returns information about the requested endpoint. Used by Org-Admin."
       tags:
         - orgAdminFhirEndpoints
         - TI-M_1.1.x
@@ -624,7 +583,7 @@ paths:
         - orgAdminFhirEndpoints
         - TI-M_1.1.x
         - TI-M_Pro
-      summary: "Updates an endpoint"
+      summary: "Updates an endpoint. Used by Org-Admin."
       operationId: updateEndpoint
       requestBody:
         content:
@@ -650,7 +609,7 @@ paths:
         - orgAdminFhirEndpoints
         - TI-M_1.1.x
         - TI-M_Pro
-      summary: "Deletes an endpoint"
+      summary: "Deletes an endpoint. Used by Org-Admin."
       operationId: deleteEndpoint
       responses:
         "204":
@@ -671,7 +630,7 @@ paths:
       tags:
         - orgAdminFhirEndpoints
         - TI-M_Pro
-      summary: "Set the endpointVisibility of the endpoint of the healthcare service to hide-versichert"
+      summary: "Set the endpointVisibility of the endpoint of the healthcare service to hide-versichert. Used by Org-Admin."
       operationId: setEndpointVisibilityOfHealthcareService
       responses:
         "201":
@@ -697,7 +656,7 @@ paths:
       tags:
         - orgAdminFhirEndpoints
         - TI-M_Pro
-      summary: "Remove the endpointVisibility of the endpoint of the healthcare service."
+      summary: "Remove the endpointVisibility of the endpoint of the healthcare service. Used by Org-Admin."
       operationId: removeEndpointVisibilityOfHealthcareService
       responses:
         "204":
@@ -722,7 +681,7 @@ paths:
       tags:
         - practitionerFhirAdministration
         - TI-M_Pro
-      summary: "Set the endpointVisibility in the own practitioner FHIR resource to hide-versichert"
+      summary: "Set the endpointVisibility in the own practitioner FHIR resource to hide-versichert. Used by clients."
       operationId: setEndpointVisibility
       responses:
         "201":
@@ -748,7 +707,7 @@ paths:
       tags:
         - practitionerFhirAdministration
         - TI-M_Pro
-      summary: "Remove the endpointVisibility in the own Practitioner FHIR resource."
+      summary: "Remove the endpointVisibility in the own Practitioner FHIR resource. Used by clients."
       operationId: removeEndpointVisibility
       responses:
         "204":
@@ -774,7 +733,7 @@ paths:
         - practitionerFhirAdministration
         - TI-M_1.1.x
         - TI-M_Pro
-      summary: "This request starts the OIDC authentication for getting access to change the own FHIR entry."
+      summary: "This request starts the OIDC authentication for getting access to change the own FHIR entry. Used by clients."
       operationId: authenticateOnFhirDirectory
       responses:
         "200":
@@ -800,7 +759,7 @@ paths:
         - practitionerFhirAdministration
         - TI-M_1.1.x
         - TI-M_Pro
-      summary: "Set the MXID in the own practitioner FHIR resource and the created endpoint"
+      summary: "Set the MXID in the own practitioner FHIR resource and the created endpoint. Used by clients."
       operationId: setMxidInFhirDirectory
       responses:
         "201":
@@ -827,7 +786,7 @@ paths:
         - practitionerFhirAdministration
         - TI-M_1.1.x
         - TI-M_Pro
-      summary: "Returns the own practitioner entry with belonging resources from the FHIR Directory."
+      summary: "Returns the own practitioner entry with belonging resources from the FHIR Directory. Used by clients."
       operationId: readMxidInFhirDirectory
       responses:
         "200":
@@ -852,7 +811,7 @@ paths:
         - practitionerFhirAdministration
         - TI-M_1.1.x
         - TI-M_Pro
-      summary: "Remove the MXID in the own Practitioner FHIR resource."
+      summary: "Remove the MXID in the own Practitioner FHIR resource. Used by clients."
       operationId: removeMxidInFhirDirectory
       responses:
         "204":
@@ -878,7 +837,7 @@ paths:
         - searchOnHomeserver
         - TI-M_1.1.x
         - TI-M_Pro
-      summary: "Returns a list of users on same homeserver that matches search parameters"
+      summary: "Returns a list of users on same homeserver that matches search parameters. Used by clients."
       operationId: searchOnHomeserver
       parameters:
         - name: displayName
@@ -918,7 +877,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Returns all belonging resources of an organization"
+      summary: "Returns all belonging resources of an organization. Used by clients."
       operationId: searchOrganizationInFhirDirectory
       parameters:
         - name: healthcareServiceName
@@ -993,7 +952,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Returns the found endpoints of the healthcare services matching the query"
+      summary: "Returns the found endpoints of the healthcare services matching the query. Used by clients."
       description: "Returns the found endpoints of the healthcare services matching the query.
       (the search result could also contain all other resources that are related with it.
       Please ensure that the searched resources are included at any time!)"
@@ -1036,7 +995,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Returns the found Practitioner entries and its belonging location, endpoints and practitioner roles"
+      summary: "Returns the found Practitioner entries and its belonging location, endpoints and practitioner roles. Used by clients."
       operationId: searchPractitionerInFhirDirectory
       parameters:
         - name: name
@@ -1096,7 +1055,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Send a direct message"
+      summary: "Send a direct message. Used by clients."
       description: "Send a direct message to another user.
       Should work without creating a dedicated room first.
       The recipients MxId is received through a searchInFhirDirectory-Request."
@@ -1136,7 +1095,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Lists messages in room"
+      summary: "Lists messages in room. Used by clients."
       operationId: getMessages
       responses:
         "200":
@@ -1160,7 +1119,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Sends a new message"
+      summary: "Sends a new message. Used by clients."
       operationId: sendMessage
       requestBody:
         content:
@@ -1193,7 +1152,7 @@ paths:
       - $ref: "#/components/parameters/messageId"
 
     get:
-      summary: "Get single message"
+      summary: "Get single message. Used by clients."
       tags:
         - message
         - TI-M_1.1.x
@@ -1216,7 +1175,7 @@ paths:
         default:
           $ref: "#/components/responses/DefaultResponse"
     put:
-      summary: "Edit an existing message"
+      summary: "Edit an existing message. Used by clients."
       tags:
         - message
         - TI-M_1.1.x
@@ -1247,7 +1206,7 @@ paths:
           $ref: "#/components/responses/DefaultResponse"
 
     delete:
-      summary: "Deletes a message"
+      summary: "Deletes a message. Used by clients."
       tags:
         - message
         - TI-M_1.1.x
@@ -1280,7 +1239,7 @@ paths:
         - TI-M_Pro
         - TI-M_ePA
       operationId: getRooms
-      summary: "Get list of all rooms your account is associated with"
+      summary: "Get list of all rooms your account is associated with. Used by clients."
       responses:
         "200":
           description: "All associated rooms of the logged in account"
@@ -1303,7 +1262,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Create a room."
+      summary: "Create a room. Used by clients."
       operationId: createRoom
       requestBody:
         content:
@@ -1339,7 +1298,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Get public rooms matching params"
+      summary: "Get public rooms matching params. Used by clients."
       operationId: getPublicRooms
       parameters:
         - name: name
@@ -1375,7 +1334,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Get the room settings"
+      summary: "Get the room settings. Used by clients."
       operationId: getRoomSettings
       responses:
         "200":
@@ -1393,44 +1352,13 @@ paths:
         default:
           $ref: "#/components/responses/DefaultResponse"
 
-    put:
-      tags:
-        - room
-        - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
-      summary: "Changes the room settings"
-      operationId: changeRoomSettings
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/RoomProperties"
-      responses:
-        "200":
-          description: "Successfully changed room settings"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Room"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        default:
-          $ref: "#/components/responses/DefaultResponse"
-
     delete:
       tags:
         - room
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Forget this room"
+      summary: "Forget this room. Used by clients."
       operationId: forgetRoom
       responses:
         "204":
@@ -1456,7 +1384,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Invite a user into the room"
+      summary: "Invite a user into the room. Used by clients."
       operationId: inviteIntoRoom
       requestBody:
         content:
@@ -1493,7 +1421,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Join the room"
+      summary: "Join the room. Used by clients."
       operationId: joinRoom
       responses:
         "200":
@@ -1523,7 +1451,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Leave the room"
+      summary: "Leave the room. Used by clients."
       operationId: leaveRoom
       responses:
         "200":
@@ -1553,7 +1481,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Returns all state events of the room"
+      summary: "Returns all state events of the room. Used by clients."
       operationId: getStateEvents
       responses:
         "200":
@@ -1580,7 +1508,7 @@ paths:
       tags:
         - contactManagement
 
-      summary: "Returns the contacts with invite settings"
+      summary: "Returns the contacts with invite settings. Used by clients."
       operationId: getContacts
       responses:
         "200":
@@ -1597,7 +1525,7 @@ paths:
         - contactManagement
         - TI-M_1.1.x
 
-      summary: "Creates the setting for the contact"
+      summary: "Creates the setting for the contact. Used by clients."
       operationId: createContactSetting
       requestBody:
         required: true
@@ -1624,7 +1552,7 @@ paths:
         - contactManagement
         - TI-M_1.1.x
 
-      summary: "Updates the setting for the contact"
+      summary: "Updates the setting for the contact. Used by clients."
       operationId: updateContactSetting
       requestBody:
         required: true
@@ -1657,7 +1585,7 @@ paths:
         - contactManagement
         - TI-M_1.1.x
 
-      summary: "Deletes the setting for the contact {mxid}"
+      summary: "Deletes the setting for the contact {mxid}. Used by clients."
       operationId: deleteContactSetting
       responses:
         "204":
@@ -1681,7 +1609,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Uploads a file and returns its fileId"
+      summary: "Uploads a file and returns its fileId. Used by clients."
       operationId: postMediaFile
       parameters:
         - in: header
@@ -1714,7 +1642,7 @@ paths:
       tags:
         - media
         - TI-M_1.1.x
-      summary: "Returns a previously uploaded file with given id"
+      summary: "Returns a previously uploaded file with given id. Used by clients."
       operationId: getMediaFile
       responses:
         "200":
@@ -1739,7 +1667,7 @@ paths:
         - media
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Returns a previously uploaded file with authentication"
+      summary: "Returns a previously uploaded file with authentication. Used by clients."
       description:
         "Since Matrix version 1.11 the download of media files is authenticated.
         This endpoint is used to test the new authenticated download,
@@ -1767,7 +1695,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Returns the currently active authorization mode"
+      summary: "Returns the currently active authorization mode. Used by clients."
       operationId: getAuthorizationMode
       responses:
         "200":
@@ -1784,7 +1712,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Selects the authorization mode"
+      summary: "Selects the authorization mode. Used by clients."
       operationId: setAuthorizationMode
       requestBody:
         required: true
@@ -1815,11 +1743,11 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Returns a list of all users and server-names, which are allowed to contact the client"
+      summary: "Returns a list of all mxids, server-names and groups, which are allowed to contact the client. Used by clients."
       operationId: getAllowedUsersList
       responses:
         "200":
-          description: "List of allowed users and/or server-names"
+          description: "List of allowed users"
           content:
             application/json:
               schema:
@@ -1838,7 +1766,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Adds the users and/or server-names in the provided list to the list of allowed users and server-names"
+      summary: "Adds the users in the provided list to the list of allowed users. Used by clients."
       operationId: addAllowedUsersList
       requestBody:
         required: true
@@ -1848,7 +1776,7 @@ paths:
               $ref: "#/components/schemas/AuthorizationList"
       responses:
         "200":
-          description: "Allowed users and/or server-names added"
+          description: "Allowed users added"
           content:
             application/json:
               schema:
@@ -1869,11 +1797,17 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Deletes all users and server-names allowed to contact the client"
+      summary: "Deletes the provided users from the list of users allowed to contact the client. Used by clients."
       operationId: deleteAllowedUsersList
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthorizationList"
       responses:
         "204":
-          description: "Allowed users list deleted"
+          description: "Allowed users deleted"
         "403":
           description: "Cannot delete allowed users for mode AllowAll"
           content:
@@ -1894,7 +1828,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Returns a list of all users and server-names, which are not allowed to contact the client"
+      summary: "Returns a list of all users, which are not allowed to contact the client. Used by clients."
       operationId: getBlockedUsersList
       responses:
         "200":
@@ -1917,7 +1851,7 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Adds the users and/or server-names in the provided list to the list of blocked users and server-names"
+      summary: "Adds the users in the provided list to the list of blocked users and server-names. Used by clients."
       operationId: addBlockedUsersList
       requestBody:
         required: true
@@ -1927,7 +1861,7 @@ paths:
               $ref: "#/components/schemas/AuthorizationList"
       responses:
         "200":
-          description: "Blocked users and/or server-names added"
+          description: "Blocked users added"
           content:
             application/json:
               schema:
@@ -1948,8 +1882,14 @@ paths:
         - authorizationManagement
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Deletes all users and server-names not allowed to contact the client"
+      summary: "Deletes the provided users from the list of users not allowed to contact the client. Used by clients."
       operationId: deleteBlockedUsersList
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthorizationList"
       responses:
         "204":
           description: "Blocked users list deleted"
@@ -1966,226 +1906,6 @@ paths:
         default:
           $ref: "#/components/responses/DefaultResponse"
 
-  /devices/{deviceId}/allowedUsers/{mxid}:
-    parameters:
-      - $ref: "#/components/parameters/deviceId"
-      - $ref: "#/components/parameters/transactionIdHeader"
-      - $ref: "#/components/parameters/mxidInPath"
-    get:
-      tags:
-        - authorizationManagement
-        - TI-M_Pro
-        - TI-M_ePA
-      summary: "Returns the mxid of the user, if this user is allowed to contact the client"
-      operationId: getAllowedUserMxid
-      responses:
-        "200":
-          description: "Get allowed user mxid"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/MxId"
-        "403":
-          description: "Cannot get allowed user for mode AllowAll"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "404":
-          description: "User is not found on the allow list"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        default:
-          $ref: "#/components/responses/DefaultResponse"
-
-    delete:
-      tags:
-        - authorizationManagement
-        - TI-M_Pro
-        - TI-M_ePA
-      summary: "Deletes the user with this mxid from the list of users allowed to contact the client"
-      operationId: deleteAllowedUserMxid
-      responses:
-        "204":
-          description: "Allowed user mxid deleted"
-        "403":
-          description: "Cannot delete allowed user for mode AllowAll"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        default:
-          $ref: "#/components/responses/DefaultResponse"
-
-  /devices/{deviceId}/allowedUsers/serverName/{serverName}:
-    parameters:
-      - $ref: "#/components/parameters/deviceId"
-      - $ref: "#/components/parameters/transactionIdHeader"
-      - $ref: "#/components/parameters/serverNameInPath"
-    get:
-      tags:
-        - authorizationManagement
-        - TI-M_Pro
-        - TI-M_ePA
-      summary: "Returns the server-name, if users from this server are allowed to contact the client"
-      operationId: getAllowedUserServerName
-      responses:
-        "200":
-          description: "Get allowed user server-name"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ServerName"
-        "403":
-          description: "Cannot get allowed server-name for mode AllowAll"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "404":
-          description: "Server-name is not found on the allow list"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        default:
-          $ref: "#/components/responses/DefaultResponse"
-
-    delete:
-      tags:
-        - authorizationManagement
-        - TI-M_Pro
-        - TI-M_ePA
-      summary: "Deletes the server-name from the list of users and server-names allowed to contact the client"
-      operationId: deleteAllowedUserServerName
-      responses:
-        "204":
-          description: "Allowed user server-name deleted"
-        "403":
-          description: "Cannot delete allowed server-names for mode AllowAll"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        default:
-          $ref: "#/components/responses/DefaultResponse"
-
-
-  /devices/{deviceId}/blockedUsers/{mxid}:
-    parameters:
-      - $ref: "#/components/parameters/deviceId"
-      - $ref: "#/components/parameters/transactionIdHeader"
-      - $ref: "#/components/parameters/mxidInPath"
-    get:
-      tags:
-        - authorizationManagement
-        - TI-M_Pro
-        - TI-M_ePA
-      summary: "Returns the mxid of the user, if this user is not allowed to contact the client"
-      operationId: getBlockedUserMxid
-      responses:
-        "200":
-          description: "Get blocked user mxid"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/MxId"
-        "403":
-          description: "Cannot get blocked user for mode BlockAll"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "404":
-          description: "User is not found on the block list"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        default:
-          $ref: "#/components/responses/DefaultResponse"
-
-    delete:
-      tags:
-        - authorizationManagement
-        - TI-M_Pro
-        - TI-M_ePA
-      summary: "Deletes the user with this mxid from the list of users not allowed to contact the client"
-      operationId: deleteBlockedUserMxid
-      responses:
-        "204":
-          description: "Blocked user mxid deleted"
-        "403":
-          description: "Cannot delete blocked users for mode BlockAll"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        default:
-          $ref: "#/components/responses/DefaultResponse"
-
-  /devices/{deviceId}/blockedUsers/serverName/{serverName}:
-    parameters:
-      - $ref: "#/components/parameters/deviceId"
-      - $ref: "#/components/parameters/transactionIdHeader"
-      - $ref: "#/components/parameters/serverNameInPath"
-    get:
-      tags:
-        - authorizationManagement
-        - TI-M_Pro
-        - TI-M_ePA
-      summary: "Returns the server-name, if users from this Matrix server are not allowed to contact the client"
-      operationId: getBlockedUserServerName
-      responses:
-        "200":
-          description: "Get blocked user Matrix server"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ServerName"
-        "403":
-          description: "Cannot get blocked Matrix server for mode BlockAll"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "404":
-          description: "server-name is not found on the block list"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        default:
-          $ref: "#/components/responses/DefaultResponse"
-
-    delete:
-      tags:
-        - authorizationManagement
-        - TI-M_Pro
-        - TI-M_ePA
-      summary: "Deletes the server-name from the list of users and server-names not allowed to contact the client"
-      operationId: deleteBlockedUserServerName
-      responses:
-        "204":
-          description: "Blocked user server-name deleted"
-        "403":
-          description: "Cannot delete blocked server-name for mode BlockAll"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        default:
-          $ref: "#/components/responses/DefaultResponse"
 
 components:
 
@@ -2398,8 +2118,14 @@ components:
       required:
         - mxids
         - serverNames
+        - groupNames
       type: object
       properties:
+        groupNames:
+          description: "The list of groups"
+          type: array
+          items:
+            $ref: "#/components/schemas/GroupName"
         mxids:
           description: "The list of mxids"
           type: array
@@ -3136,6 +2862,12 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/FhirCoding"
+
+    GroupName:
+      description: "The name of the group to be allowed or blocked"
+      type: string
+      enum: [ isInsuredPerson ]
+      example: "isInsuredPerson"
 
     HomeserverSearchResult:
       description: "A flat description of an endpoint with belonging healthcare-service and organization"

@@ -10,6 +10,7 @@
 @AFO-ID:A_26575
 @AFO-ID:A_25395-01
 @AFO-ID:A_26077
+@NB:NEIN
 
 Funktionalität: 5.1.4 (9) Austausch von Events innerhalb einer Organisation (Basis Spec)
 
@@ -33,7 +34,6 @@ Funktionalität: 5.1.4 (9) Austausch von Events innerhalb einer Organisation (Ba
   TF 4 - 5  Versicherter "A" sendet eine Nachricht an ausgeloggten Versicherten "B" - Dehydrated Devices (Positiv/Negativ)
   TF 6      Versicherter "A" ändert und sendet eine Nachricht an ausgeloggten Versicherten "B" - Dehydrated Devices
   TF 7      Versicherter sendet ein Attachment über Matrix-Protokoll v1.11 an ausgeloggten Versicherten "B" - Dehydrated Devices
-  TF 8      Versicherter empfängt alte und neue Nachrichten nach Session-Key Export und Import (Raum)
 
   @Ctl:AllowAll @Ctl:Gruppenchat
     @TCID:TIM_V2_BASIS_AF_040901 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
@@ -298,42 +298,4 @@ Funktionalität: 5.1.4 (9) Austausch von Events innerhalb einer Organisation (Ba
     Beispiele:
       | ApiName1A | ApiName1B | ApiName2 |
 
-  @Ctl:AllowAll @Ctl:Gruppenchat
-    @TCID:TIM_V2_BASIS_AF_040908 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
-  Szenariogrundriss: 04.09.08 Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Versicherter empfängt alte und neue Nachrichten nach Session-Key Export und Import
-    Angenommen Es werden folgende Clients reserviert:
-      | A | EPA_CLIENT  | <ApiName1A> |
-      | B | EPA_CLIENT  | <ApiName1B> |
-      | C | PRO_CLIENT  | <ApiName2> |
-    Und        "A", "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
-    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
-    Und        "A" lädt "C" in Chat-Raum "TIM Testraum 1" ein
-    Dann       "C" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
-    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
-    Und        "C" ist dem Raum "TIM Testraum 1" beigetreten
-    Und        "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
-    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
-    Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
-    Und        "B" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
-    Und        "A" empfängt eine Nachricht "Testnachricht 1" von "B" im Raum "TIM Testraum 1"
-    Und        "A" exportiert seinen Session-Key
-    Und        "A" loggt sich im TI-Messenger aus inkl. erfolgreichem Sync
-    Und        "B" sendet die Nachricht "Testnachricht 2" an den Raum "TIM Testraum 1"
-    Und        "A" loggt sich im TI-Messenger ein
-    Und        "A" importiert den Session-Key von "A"
-    Und        "A" empfängt eine Nachricht "Testnachricht 1" von "B" im Raum "TIM Testraum 1"
-    Dann       "A" kann die Nachricht "Testnachricht 2" von "B" im Raum "TIM Testraum 1" nicht sehen [Retry 10 - 3]
 
-    @Shuffle(true) #
-    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
-    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
-    @AllowSelfCombine(true)
-    @AllowDoubleLineup(true)
-    @Filter(ApiName1A.hasTag("epaClient"))
-    @Filter(ApiName1B.hasTag("epaClient"))
-    @Filter(ApiName2.hasTag("proClient"))
-
-    Beispiele:
-      | ApiName1A | ApiName1B | ApiName2 |

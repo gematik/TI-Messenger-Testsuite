@@ -98,7 +98,7 @@ public class FhirOrgAdminGlue {
       "{string} can find healthcare service {string} by searching by name with cut {int}-{int} \\(amount front-back) char\\(s)")
   @Und(
       "{string} findet Healthcare-Service {string} bei Suche nach Namen minus {int}-{int} \\(Anzahl vorne-hinten) Char\\(s) abgeschnitten")
-  public void findHealthcareServiceWithSearchParam(
+  public static void findHealthcareServiceWithSearchParam(
       String actorName, String healthcareServiceName, int begin, int end) {
     Actor actor = theActorCalled(actorName);
 
@@ -158,6 +158,22 @@ public class FhirOrgAdminGlue {
       String orgAdmin, String hcsName, String client) {
     createHealthcareServiceWithName(orgAdmin, hcsName);
     createEndpointForHealthcareService(orgAdmin, client, hcsName);
+  }
+
+  @And(
+      "{string} creates a healthcare service {string} and tries to configure the endpoint for {string}")
+  @Und(
+      "{string} erstellt einen Healthcare-Service {string} und versucht einen Endpunkt auf {string} zu setzen")
+  public void tryToCreateFalseEndpointHcs(
+      String orgAdminName, String healthCareServiceName, String userName) {
+    createHealthcareServiceWithName(orgAdminName, healthCareServiceName);
+    Actor admin = theActorCalled(orgAdminName);
+    Actor endpointActor = theActorCalled(userName);
+    String endpointMxId = endpointActor.recall(MX_ID);
+    admin.attemptsTo(
+        addHealthcareServiceEndpoint(endpointActor.recall(DISPLAY_NAME))
+            .withMxIdAsUri(mxidToUri(endpointMxId))
+            .forHealthcareService(healthCareServiceName));
   }
 
   @When(
@@ -279,7 +295,7 @@ public class FhirOrgAdminGlue {
       "no endpoint exists for {string} in the health-care-service {string} [Retry {long} - {long}]")
   @Dann(
       "existiert kein Endpoint von {string} für den Healthcare-Service {string} [Retry {long} - {long}]")
-  public void noHealthcareServiceEndpointWithNameTiming(
+  public static void noHealthcareServiceEndpointWithNameTiming(
       String actorName, String hcsName, Long timeout, Long pollInterval) {
     Actor actor = theActorCalled(actorName);
     FhirSearchResultDTO result =
