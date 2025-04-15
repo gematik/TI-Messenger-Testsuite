@@ -315,6 +315,11 @@ Somit kann sich dann der eingeloggte und hinterlegte User auch als HBA authentif
 
 *Der hinterlegte User muss auf dem Homeserver bzw. der TI-M Instanz registriert sein*, sodass eine Anmeldung im TI-M über die Testtreiber Schnittstelle mittels POST Login möglich wird.
 
+Vor dem Start eines Testfalls wird eine Anfrage an den POST /-Endpunkt (signalTestStart) gesendet.
+Diese dient dazu, einen Clean-up durchzuführen – zum Beispiel das Aufräumen von Nutzern, Räumen und FHIR-Ressourcen im VZD.
+Die Ausführung des Testfalls beginnt erst nach dem Erhalt eines erfolgreichen Statuscodes (2xx).
+Auf diese Weise wird sichergestellt, dass wiederholte Tests zwischen Systemen nicht aufgrund versehentlich zurückgelassener Ressourcen fehlschlagen.
+
 Der Start eines Testfalls sieht dann wie folgt aus:
 
 - Get Info - Abfragen der Info Schnittstelle, an der alle wichtigen Informationen des Devices hinterlegt sind

@@ -42,6 +42,7 @@ import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.setPa
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.startTest;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.CLAIM_PARALLEL;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.NO_PARALLEL_TAG;
+import static de.gematik.tim.test.glue.api.utils.cleaning.CleanupTrigger.sendCleanupRequest;
 import static java.lang.Boolean.TRUE;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static net.serenitybdd.screenplay.actors.OnStage.stage;
@@ -50,10 +51,12 @@ import static net.serenitybdd.screenplay.actors.OnStage.withCurrentActor;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.springframework.http.HttpStatus.OK;
 
+import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.glue.api.threading.ParallelExecutor;
 import de.gematik.tim.test.glue.api.utils.IndividualLogger;
 import de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager;
+import de.gematik.tim.test.glue.api.utils.cleaning.TestCaseContext;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -70,6 +73,8 @@ import io.cucumber.junit.CucumberOptions;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
+
+import io.cucumber.plugin.event.TestCase;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -93,6 +98,11 @@ public class DevicesControllerGlue {
     setAllowParallelClaim(!scenario.getSourceTagNames().contains(NO_PARALLEL_TAG));
     if (TRUE.equals(CLAIM_PARALLEL) && allowParallelClaim) {
       setParallelFlag(true);
+    }
+    TestCase testCase = TestCaseContext.getTestCase();
+    boolean cleanUpSuccess = sendCleanupRequest(testCase.getTestSteps());
+    if(!cleanUpSuccess){
+      throw new TestRunException("Cleanup failed - scenario will be skipped");
     }
   }
 
