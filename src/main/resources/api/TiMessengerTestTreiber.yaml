@@ -114,9 +114,9 @@ paths:
         Implementation is no longer optional! Testsuite sends a request to the involved test driver endpoints.
         The org-admins will also be triggered, if they are not declared in the feature-file, they will be retrieved based on the homeservers of the clients involved in the test case.
         There will be no claiming attempt before these endpoints are triggered.
-        After getting *any* response the testcase starts.
+        The test case will start only after a successful response is received.
         This is an opportunity to clean user/rooms/FHIR-VZD etc.
-        Even if an error code is returned the testsuite will start the test.
+        If the endpoint does not return a successful status code, the testsuite will not proceed.
       operationId: cleanUp
       responses:
         "200":

@@ -10,6 +10,15 @@
 [
 `docu TI-Messenger Version 2`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite_Version2.adoc)
 
+## Release 2.2.1
+
+### Changes
+
+- Implementing the CleanUp endpoint (POST /) is now required. It must return a successful status code,
+  otherwise the tests will fail.
+- The CleanUp will no longer be sent to OrgAdmins not defined in the tiger.yaml/combine-items.json. This accommodates to
+  the fact, that an automated OrgAdmin might not be needed for ePA.
+
 ## Release 2.2.0
 
 ### Bugs
@@ -39,7 +48,7 @@
     - orgAdminFhirHealthcareService
     - changeRoomSettings
 
-- Testcases adjusted - comparision of topics instead of empty field
+- Testcases adjusted - comparison of topics instead of empty field
 
   @TCID:TIM_V2_BASIS_AF_09X0101
 

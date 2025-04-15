@@ -22,7 +22,6 @@ import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTe
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.COMBINE_ITEMS_FILE_NAME;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.COMBINE_ITEMS_FILE_URL;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -53,6 +52,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.http.HttpStatus;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -91,16 +91,21 @@ public class CleanupTrigger {
 
   @SneakyThrows
   @SuppressWarnings("java:S2142")
-  public static void sendCleanupRequest(List<TestStep> testSteps) {
+  public static boolean sendCleanupRequest(List<TestStep> testSteps) {
     Set<String> urlsToTrigger = getAllApisUsedInTestSteps(testSteps);
     List<Callable<Integer>> calls = createCalls(urlsToTrigger);
     for (Future<Integer> future : executorService.invokeAll(calls)) {
       try {
-        future.get();
+        HttpStatus status = HttpStatus.valueOf(future.get());
+        if (!status.is2xxSuccessful()) {
+          return false;
+        }
       } catch (InterruptedException | ExecutionException e) {
         log.error("Was not able to clean up before test.", e);
+        return false;
       }
     }
+    return true;
   }
 
   public static void removeClientOnCleanupTrigger() {
@@ -139,11 +144,15 @@ public class CleanupTrigger {
   }
 
   private static @NotNull Set<String> getOrgAdminApis(List<String> apiUrls) {
-    return apiUrls.stream()
-        .map(CleanupTrigger::toCombineItem)
-        .map(combineItem -> combineItem.getProperties().get(HOME_SERVER_PROPERTY))
-        .map(CleanupTrigger::getOrgAdminForHomeServer)
-        .collect(toSet());
+    Set<String> orgAdminApis = new HashSet<>();
+    for (String apiUrl : apiUrls) {
+      CombineItem apiInformation = toCombineItem(apiUrl);
+      Optional<CombineItem> orgAdminInformation =
+          getOrgAdminForHomeServer(apiInformation.getProperties().get(HOME_SERVER_PROPERTY));
+      orgAdminInformation.ifPresent(
+          combineItem -> orgAdminApis.add(prepareApiNameForHttp(combineItem.getValue())));
+    }
+    return orgAdminApis;
   }
 
   private static Optional<DataTableArgument> getDataTable(List<TestStep> testSteps) {
@@ -164,17 +173,13 @@ public class CleanupTrigger {
     return dataTable.cells().stream().map(cell -> cell.get(2)).toList();
   }
 
-  private static String getOrgAdminForHomeServer(String homeServer) {
-    CombineItem orgAdmin =
-        combineItems.stream()
-            .filter(
-                item ->
-                    item.getProperties().get(HOME_SERVER_PROPERTY).equals(homeServer)
-                        && item.getTags().contains(ORG_ADMIN_TAG))
-            .findFirst()
-            .orElseThrow(
-                () -> new InitializationException("Did not find any OrgAdmin for " + homeServer));
-    return prepareApiNameForHttp(orgAdmin.getValue());
+  private static Optional<CombineItem> getOrgAdminForHomeServer(String homeServer) {
+    return combineItems.stream()
+        .filter(
+            item ->
+                item.getProperties().get(HOME_SERVER_PROPERTY).equals(homeServer)
+                    && item.getTags().contains(ORG_ADMIN_TAG))
+        .findFirst();
   }
 
   private static CombineItem toCombineItem(String apiUrl) {
