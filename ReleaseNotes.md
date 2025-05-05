@@ -10,6 +10,19 @@
 [
 `docu TI-Messenger Version 2`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite_Version2.adoc)
 
+## Release 2.2.2
+
+## Bugs
+
+- @TCID:TIM_V2_BASIS_AF_10X0103 and @TCID:TIM_V2_BASIS_AF_10X0104 will no longer try to run the teardown calls against
+  the Matrix homeserver, and instead will call against the test driver as intended
+
+## Changes
+
+- A GET request to the /.well-known/matrix/support endpoint can now return either a 200 or a 404 status code.
+- There are now separate test cases for API calls that require an access token and those that do not require an access
+  token. These are refactoring changes.
+
 ## Release 2.2.1
 
 ### Changes

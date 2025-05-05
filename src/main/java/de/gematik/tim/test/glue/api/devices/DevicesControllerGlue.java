@@ -23,6 +23,7 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_DEVICES;
+import static de.gematik.tim.test.glue.api.cleanup.CleanupTrigger.sendCleanupRequest;
 import static de.gematik.tim.test.glue.api.devices.CheckClientKindTask.checkIs;
 import static de.gematik.tim.test.glue.api.devices.ClaimDeviceTask.claimDevice;
 import static de.gematik.tim.test.glue.api.devices.ClientKind.CLIENT;
@@ -42,7 +43,6 @@ import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.setPa
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.startTest;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.CLAIM_PARALLEL;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.NO_PARALLEL_TAG;
-import static de.gematik.tim.test.glue.api.utils.cleaning.CleanupTrigger.sendCleanupRequest;
 import static java.lang.Boolean.TRUE;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static net.serenitybdd.screenplay.actors.OnStage.stage;
@@ -51,12 +51,12 @@ import static net.serenitybdd.screenplay.actors.OnStage.withCurrentActor;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.springframework.http.HttpStatus.OK;
 
+import de.gematik.tim.test.glue.api.cleanup.TestCaseContext;
 import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
 import de.gematik.tim.test.glue.api.threading.ParallelExecutor;
 import de.gematik.tim.test.glue.api.utils.IndividualLogger;
 import de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager;
-import de.gematik.tim.test.glue.api.utils.cleaning.TestCaseContext;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -70,11 +70,10 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.junit.CucumberOptions;
+import io.cucumber.plugin.event.TestCase;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
-
-import io.cucumber.plugin.event.TestCase;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -101,7 +100,7 @@ public class DevicesControllerGlue {
     }
     TestCase testCase = TestCaseContext.getTestCase();
     boolean cleanUpSuccess = sendCleanupRequest(testCase.getTestSteps());
-    if(!cleanUpSuccess){
+    if (!cleanUpSuccess) {
       throw new TestRunException("Cleanup failed - scenario will be skipped");
     }
   }

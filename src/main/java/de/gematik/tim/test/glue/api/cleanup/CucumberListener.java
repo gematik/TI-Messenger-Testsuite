@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package de.gematik.tim.test.glue.api.utils.cleaning;
+package de.gematik.tim.test.glue.api.cleanup;
 
+import static de.gematik.tim.test.glue.api.cleanup.CleanupTrigger.removeClientOnCleanupTrigger;
 import static de.gematik.tim.test.glue.api.threading.ParallelExecutor.removeClientOnParallelExecutor;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.createTestcaseId;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.setDryRun;
-import static de.gematik.tim.test.glue.api.utils.cleaning.CleanupTrigger.removeClientOnCleanupTrigger;
 
 import io.cucumber.core.plugin.SerenityReporterParallel;
 import io.cucumber.core.runner.TestCaseDelegate;
@@ -41,7 +41,7 @@ public class CucumberListener extends SerenityReporterParallel {
     TestCaseContext.clear();
   }
 
-  private  void startTest(TestCaseStarted tcs) {
+  private void startTest(TestCaseStarted tcs) {
     if (TestCaseDelegate.of(tcs.getTestCase()).isDryRun()) {
       setDryRun(true);
     } else {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.gematik.tim.test.glue.api.utils.cleaning;
+package de.gematik.tim.test.glue.api.cleanup;
 
 import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.TEST_CASE_ID_HEADER;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.prepareApiNameForHttp;
