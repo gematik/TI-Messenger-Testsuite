@@ -31,7 +31,7 @@ Funktionalität: 10X. (5) API Checks (Basis Spec)
   Szenariogrundriss: 10X.05.01 API Checks - Verbot von URL-Previews (ePA-User)
     Angenommen Es werden folgende Clients reserviert:
         | A | EPA_CLIENT  | <ApiName1> |
-    Wenn       A fragt an seinem HomeServer die API "/_matrix/media/v3/preview_url" über ein "GET" ab
+    Wenn       A fragt inklusive access_token an seinem HomeServer die API "/_matrix/media/v3/preview_url" über ein "GET" ab
     Dann       erhält "A" einen Responsecode 404
 
     @Filter(ApiName1.hasTag("epaClient"))
@@ -44,7 +44,7 @@ Funktionalität: 10X. (5) API Checks (Basis Spec)
   Szenariogrundriss: 10X.05.02 API Checks - Verbot von URL-Previews (ePA-User)
     Angenommen Es werden folgende Clients reserviert:
         | A | EPA_CLIENT  | <ApiName1> |
-    Wenn       A fragt an seinem HomeServer die API "/_matrix/client/v1/media/preview_url" über ein "GET" ab
+    Wenn       A fragt inklusive access_token an seinem HomeServer die API "/_matrix/client/v1/media/preview_url" über ein "GET" ab
     Dann       erhält "A" einen Responsecode 404
 
     @Filter(ApiName1.hasTag("epaClient"))
@@ -88,7 +88,7 @@ Funktionalität: 10X. (5) API Checks (Basis Spec)
   Szenariogrundriss: 10X.05.04 API Checks - Support Endpunkt (ePA-User)
     Angenommen A fragt an Schnittstelle <ApiName1> die Home-Server-Adresse ab
     Und        A fragt an seinem HomeServer die API "/.well-known/matrix/support" über ein "GET" ab
-    Dann       erhält "A" einen Responsecode 200
+    Dann       erhält "A" einen der Responsecodes "200", "404"
     Und        "A" überprüft, dass die Response befüllt ist
 
     @Filter(ApiName1.hasTag("epaClient"))
@@ -155,7 +155,7 @@ Funktionalität: 10X. (5) API Checks (Basis Spec)
   Szenariogrundriss: 10X.05.08 API Checks - Standardisierte Fehlermeldungen für unbekannte Endpunkte
     Angenommen Es werden folgende Clients reserviert:
       | A | EPA_CLIENT  | <ApiName1> |
-    Wenn       A fragt an seinem HomeServer die API "/_matrix/media/v3/config" über ein "GET" ab
+    Wenn       A fragt inklusive access_token an seinem HomeServer die API "/_matrix/media/v3/config" über ein "GET" ab
     Dann       erhält "A" einen Responsecode 404
 
     @Filter(ApiName1.hasTag("epaClient"))

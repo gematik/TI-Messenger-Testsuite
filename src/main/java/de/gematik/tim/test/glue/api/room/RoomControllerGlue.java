@@ -551,23 +551,6 @@ public class RoomControllerGlue {
         return true;
     }
 
-    @Then("{string} checks whether the parameters in the room states {listOfStrings} in the chat with {string} are empty")
-    @Dann("{string} prüft, ob die Parameter in den Room States {listOfStrings} im Chat mit {string} leer sind")
-    public void checkParameterNotExistentForRoomStatesOfChat(String actorName, List<String> requestedRoomStates, String chatPartner){
-        String roomName = DIRECT_CHAT_NAME + theActorCalled(chatPartner).recall(MX_ID);
-        Actor actor = theActorCalled(actorName);
-        actor.abilityTo(UseRoomAbility.class).setActive(roomName);
-        List<RoomStateDTO> roomStates = actor.asksFor(roomStates());
-        Set<RoomState> expectedRoomStates =
-                requestedRoomStates.stream().map(RoomState::valueOf).collect(Collectors.toSet());
-        for (RoomState expectedRoomState : expectedRoomStates) {
-            assertThat(!isRoomStateFilled(expectedRoomState, roomStates))
-                    .as(format("Expected roomState %s is not empty", expectedRoomState))
-                    .isTrue();
-        }
-        checkRoomMembershipState(actor, roomName);
-    }
-
     @Then("{string} checks whether the parameter in the room states {string} in the room {string} is filled with the value of {string}")
     @Dann("{string} prüft, ob der Parameter in den Room States {string} im Raum {string} mit dem Wert von {string} befüllt ist")
     public void compareParameterForRoomStatesOfRoom(String actorName, String requestedValue, String roomName, String compareValue) {

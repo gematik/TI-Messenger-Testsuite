@@ -20,22 +20,23 @@ public final class ActorMemoryKeys {
 
   private ActorMemoryKeys() {}
 
+  public static final String ACCESS_TOKEN = "accessToken";
+  public static final String ACCOUNT_PASSWORD = "accountPassword";
   public static final String CLAIMER_NAME = "claimerName";
   public static final String DEVICE_ID = "deviceId";
-  public static final String MX_ID = "mxid";
-  public static final String SESSION_KEY = "sessionKey";
-  public static final String ACCOUNT_PASSWORD = "accountPassword";
-  public static final String DISPLAY_NAME = "displayName";
-  public static final String LAST_RESPONSE = "lastResponse";
   public static final String DIRECT_CHAT_NAME = "directChatWith-";
-  public static final String MEDIA_ID = "mediaId";
-  public static final String IS_LOGGED_IN = "isLoggedIn";
+  public static final String DISPLAY_NAME = "displayName";
   public static final String HAS_REG_SERVICE_TOKEN = "hasRegServiceToken";
+  public static final String HOME_SERVER = "homeServer";
+  public static final String IS_LOGGED_IN = "isLoggedIn";
   public static final String IS_ORG_ADMIN = "isOrgAdmin";
+  public static final String LAST_RESPONSE = "lastResponse";
+  public static final String MATRIX_CLIENT_VERSION = "matrixClientVersion";
+  public static final String MEDIA_ID = "mediaId";
+  public static final String MEDIA_URI = "matrixMediaContentUri";
+  public static final String MX_ID = "mxid";
   public static final String OWN_ENDPOINT_ID = "ownEndpointId";
   public static final String OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX = "_ownStatusInRoom";
-  public static final String HOME_SERVER = "homeServer";
-  public static final String MATRIX_CLIENT_VERSION = "matrixClientVersion";
-  public static final String ACCESS_TOKEN = "accessToken";
-  public static final String MEDIA_URI = "matrixMediaContentUri";
+  public static final String SESSION_KEY = "sessionKey";
+  public static final String TEST_DRIVER_URL = "testDriverUrl";
 }

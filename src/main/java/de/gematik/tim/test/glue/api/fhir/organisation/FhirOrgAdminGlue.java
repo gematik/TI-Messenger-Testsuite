@@ -160,22 +160,6 @@ public class FhirOrgAdminGlue {
     createEndpointForHealthcareService(orgAdmin, client, hcsName);
   }
 
-  @And(
-      "{string} creates a healthcare service {string} and tries to configure the endpoint for {string}")
-  @Und(
-      "{string} erstellt einen Healthcare-Service {string} und versucht einen Endpunkt auf {string} zu setzen")
-  public void tryToCreateFalseEndpointHcs(
-      String orgAdminName, String healthCareServiceName, String userName) {
-    createHealthcareServiceWithName(orgAdminName, healthCareServiceName);
-    Actor admin = theActorCalled(orgAdminName);
-    Actor endpointActor = theActorCalled(userName);
-    String endpointMxId = endpointActor.recall(MX_ID);
-    admin.attemptsTo(
-        addHealthcareServiceEndpoint(endpointActor.recall(DISPLAY_NAME))
-            .withMxIdAsUri(mxidToUri(endpointMxId))
-            .forHealthcareService(healthCareServiceName));
-  }
-
   @When(
       "{string} can see, that {listOfStrings} have exactly one endpoint in the healthcare service {string}")
   @Wenn(

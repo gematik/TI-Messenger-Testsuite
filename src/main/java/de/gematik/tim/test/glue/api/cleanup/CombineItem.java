@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.gematik.tim.test.glue.api.utils.cleaning;
+package de.gematik.tim.test.glue.api.cleanup;
 
 import java.util.HashMap;
 import java.util.HashSet;

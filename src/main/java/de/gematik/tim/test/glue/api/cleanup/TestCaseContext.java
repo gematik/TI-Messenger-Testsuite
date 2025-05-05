@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package de.gematik.tim.test.glue.api.utils.cleaning;
+package de.gematik.tim.test.glue.api.cleanup;
 
 import io.cucumber.plugin.event.TestCase;
 
 public class TestCaseContext {
 
-    private static final ThreadLocal<TestCase> currentTestCase = new ThreadLocal<>();
+  private static final ThreadLocal<TestCase> currentTestCase = new ThreadLocal<>();
 
-    public static void setTestCase(TestCase testCase) {
-        currentTestCase.set(testCase);
-    }
+  public static void setTestCase(TestCase testCase) {
+    currentTestCase.set(testCase);
+  }
 
-    public static TestCase getTestCase() {
-        return currentTestCase.get();
-    }
+  public static TestCase getTestCase() {
+    return currentTestCase.get();
+  }
 
-    public static void clear() {
-        currentTestCase.remove();
-    }
+  public static void clear() {
+    currentTestCase.remove();
+  }
 }

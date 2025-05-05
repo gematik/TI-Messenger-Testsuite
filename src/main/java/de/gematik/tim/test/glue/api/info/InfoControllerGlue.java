@@ -21,6 +21,7 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HOME_SERVER;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MATRIX_CLIENT_VERSION;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MEDIA_URI;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
+import static de.gematik.tim.test.glue.api.ActorMemoryKeys.TEST_DRIVER_URL;
 import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_INFO;
 import static de.gematik.tim.test.glue.api.info.ApiInfoQuestion.apiInfo;
@@ -89,8 +90,19 @@ public class InfoControllerGlue {
   public void requestMatrixVersionFromHomeServer(String actorName) {
     Actor actor = theActorCalled(actorName);
 
-    actor.can(CallAnApi.at(actor.recall(HOME_SERVER)));
+    registerHomeserverAsApi(actor);
     actor.asksFor(matrixSupportedServerVersion());
+    registerTestDriverAsApi(actor);
+  }
+
+  private void registerHomeserverAsApi(Actor actor) {
+    String testDriverUrl = actor.abilityTo(CallAnApi.class).resolve("");
+    actor.remember(TEST_DRIVER_URL, testDriverUrl);
+    actor.can(CallAnApi.at(actor.recall(HOME_SERVER)));
+  }
+
+  private void registerTestDriverAsApi(Actor actor) {
+    actor.can(CallAnApi.at(actor.recall(TEST_DRIVER_URL)));
   }
 
   @Then("no version is higher than {string}")
@@ -110,17 +122,29 @@ public class InfoControllerGlue {
   @Und("{word} fragt an seinem HomeServer die API {string} über ein {string} ab")
   public void pingApiOnHomeserver(String actorName, String matrixUrl, String httpMethod) {
     Actor actor = theActorCalled(actorName);
-    actor.can(CallAnApi.at(actor.recall(HOME_SERVER)));
+    registerHomeserverAsApi(actor);
     if (matrixUrl.startsWith("/.well-known")) {
       pingApiWithoutForwarding(actor, httpMethod, matrixUrl);
       return;
     }
+    actor.attemptsTo(callMatrixEndpoint(httpMethod, matrixUrl));
+    registerTestDriverAsApi(actor);
+  }
+
+  @And(
+      "{word} requests at their homeserver the API {string} with http method {string}, including the access_token")
+  @Und(
+      "{word} fragt inklusive access_token an seinem HomeServer die API {string} über ein {string} ab")
+  public void pingApiOnHomeserverWithAccessToken(
+      String actorName, String matrixUrl, String httpMethod) {
+    Actor actor = theActorCalled(actorName);
+    registerHomeserverAsApi(actor);
     String accessToken = actor.recall(ACCESS_TOKEN);
-    if (accessToken != null) {
-      actor.attemptsTo(callMatrixEndpoint(httpMethod, matrixUrl).withAccessToken(accessToken));
-    } else {
-      actor.attemptsTo(callMatrixEndpoint(httpMethod, matrixUrl));
+    if (accessToken == null || accessToken.isEmpty()) {
+      throw new TestRunException("An access token is required for this API call.");
     }
+    actor.attemptsTo(callMatrixEndpoint(httpMethod, matrixUrl).withAccessToken(accessToken));
+    registerTestDriverAsApi(actor);
   }
 
   private void pingApiWithoutForwarding(Actor actor, String httpMethod, String matrixUrl) {
@@ -137,9 +161,10 @@ public class InfoControllerGlue {
     String userId = user.recall(MX_ID);
 
     Actor actor = theActorCalled(actorName);
-    actor.can(CallAnApi.at(actor.recall(HOME_SERVER)));
+    registerHomeserverAsApi(actor);
     String matrixUrlIncludingParameter = matrixUrl.replace("{userId}", userId);
     actor.attemptsTo(callMatrixEndpoint(httpMethod, matrixUrlIncludingParameter));
+    registerTestDriverAsApi(actor);
   }
 
   @And(
@@ -148,7 +173,7 @@ public class InfoControllerGlue {
       "{word} fragt an seinem HomeServer die media API {string} inkl Parameterbefüllung über ein {string} ab")
   public void pingApiOnHomeserverForMedia(String actorName, String matrixUrl, String httpMethod) {
     Actor actor = theActorCalled(actorName);
-    actor.can(CallAnApi.at(actor.recall(HOME_SERVER)));
+    registerHomeserverAsApi(actor);
     String mediaUri = actor.recall(MEDIA_URI);
     String[] uriTokens = mediaUri.split("/");
     if (uriTokens.length != 4) {
@@ -162,6 +187,7 @@ public class InfoControllerGlue {
     String urlIncludingFilename = urlIncludingMediaId.replace("{fileName}", "myNewFilename");
 
     actor.attemptsTo(callMatrixEndpoint(httpMethod, urlIncludingFilename));
+    registerTestDriverAsApi(actor);
   }
 
   @And(
@@ -171,7 +197,7 @@ public class InfoControllerGlue {
   public void pingApiOnHomeserverForMediaThumbnail(
       String actorName, String matrixUrl, String httpMethod) {
     Actor actor = theActorCalled(actorName);
-    actor.can(CallAnApi.at(actor.recall(HOME_SERVER)));
+    registerHomeserverAsApi(actor);
     String mediaUri = actor.recall(MEDIA_URI);
     String[] uriTokens = mediaUri.split("/");
     if (uriTokens.length != 4) {
@@ -187,6 +213,7 @@ public class InfoControllerGlue {
     actor.attemptsTo(
         callMatrixEndpoint(httpMethod, urlIncludingFilename)
             .withRequestParameter(Map.of("height", "32", "width", "32")));
+    registerTestDriverAsApi(actor);
   }
 
   @When("is the supported Matrix version {string}")

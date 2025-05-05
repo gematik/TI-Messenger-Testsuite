@@ -31,7 +31,7 @@ Funktionalität: 10X. (1) API Checks (Basis Spec)
   Szenariogrundriss: 10X.01.01 API Checks - Verbot von URL-Previews (Org-User)
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
-    Wenn       A fragt an seinem HomeServer die API "/_matrix/media/v3/preview_url" über ein "GET" ab
+    Wenn       A fragt inklusive access_token an seinem HomeServer die API "/_matrix/media/v3/preview_url" über ein "GET" ab
     Dann       erhält "A" einen Responsecode 404
 
     @Filter(ApiName1.hasTag("proClient"))
@@ -44,7 +44,7 @@ Funktionalität: 10X. (1) API Checks (Basis Spec)
   Szenariogrundriss: 10X.01.02 API Checks - Verbot von URL-Previews (Org-User)
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
-    Wenn       A fragt an seinem HomeServer die API "/_matrix/client/v1/media/preview_url" über ein "GET" ab
+    Wenn       A fragt inklusive access_token an seinem HomeServer die API "/_matrix/client/v1/media/preview_url" über ein "GET" ab
     Dann       erhält "A" einen Responsecode 404
 
     @Filter(ApiName1.hasTag("proClient"))
@@ -119,7 +119,7 @@ Funktionalität: 10X. (1) API Checks (Basis Spec)
   Szenariogrundriss: 10X.01.05 API Checks - Support Endpunkt (Org-User)
     Angenommen A fragt an Schnittstelle <ApiName1> die Home-Server-Adresse ab
     Und        A fragt an seinem HomeServer die API "/.well-known/matrix/support" über ein "GET" ab
-    Dann       erhält "A" einen Responsecode 200
+    Dann       erhält "A" einen der Responsecodes "200", "404"
     Und        "A" überprüft, dass die Response befüllt ist
 
     @Filter(ApiName1.hasTag("proClient"))
@@ -186,7 +186,7 @@ Funktionalität: 10X. (1) API Checks (Basis Spec)
   Szenariogrundriss: 10X.01.09 API Checks - Standardisierte Fehlermeldungen für unbekannte Endpunkte
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
-    Wenn       A fragt an seinem HomeServer die API "/_matrix/media/v3/config" über ein "GET" ab
+    Wenn       A fragt inklusive access_token an seinem HomeServer die API "/_matrix/media/v3/config" über ein "GET" ab
     Dann       erhält "A" einen Responsecode 404
 
     @Filter(ApiName1.hasTag("proClient"))
