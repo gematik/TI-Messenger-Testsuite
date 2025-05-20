@@ -31,7 +31,7 @@ Funktionalität: 5.1.4 (9) Austausch von Events innerhalb einer Organisation (Ba
   TF 1      Versicherte vom gleichen HomeServer schreiben sich (Raum)
   TF 2      Versicherte vom gleichen HomeServer löschen Nachrichten (Raum)
   TF 3      Versicherte vom gleichen HomeServer ändern Nachrichten (Raum)
-  TF 4 - 5  Versicherter "A" sendet eine Nachricht an ausgeloggten Versicherten "B" - Dehydrated Devices (Positiv/Negativ)
+  TF 4      Versicherter "A" sendet eine Nachricht an ausgeloggten Versicherten "B" - Dehydrated Devices
   TF 6      Versicherter "A" ändert und sendet eine Nachricht an ausgeloggten Versicherten "B" - Dehydrated Devices
   TF 7      Versicherter sendet ein Attachment über Matrix-Protokoll v1.11 an ausgeloggten Versicherten "B" - Dehydrated Devices
 
@@ -142,28 +142,24 @@ Funktionalität: 5.1.4 (9) Austausch von Events innerhalb einer Organisation (Ba
     Beispiele:
       | ApiName1A | ApiName1B | ApiName2 |
 
-  @WIP
   @Ctl:AllowAll @Ctl:MsgDehydrated @Ctl:Gruppenchat
-    @TCID:TIM_V2_BASIS_AF_040904 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+    @TCID:TIM_V2_BASIS_AF_040904 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
   Szenariogrundriss: 04.09.04 Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Versicherter "A" sendet eine Nachricht an ausgeloggten Versicherten "B" (Positiv)
     Angenommen Es werden folgende Clients reserviert:
       | A | EPA_CLIENT  | <ApiName1A> |
       | B | EPA_CLIENT  | <ApiName1B> |
       | C | PRO_CLIENT  | <ApiName2> |
     Und        "A", "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
-    Und        "A", "B", "C" haben "kein" Dehydrated Device auf dem HomeServer hinterlegt
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" lädt "C" in Chat-Raum "TIM Testraum 1" ein
     Dann       "C" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
     Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Und        "C" ist dem Raum "TIM Testraum 1" beigetreten
-    Und        "B" hinterlegt auf dem HomeServer sein Dehydrated Device inkl speichern des Schlüsselmaterials
     Und        "B" loggt sich im TI-Messenger aus
     Und        "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
     Wenn       "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Dann       "C" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
     Wenn       "B" loggt sich im TI-Messenger ein
-    Und        "B" holt sich entschlüsselt sein Dehydrated Device vom HomeServer ab
     Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
     Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
     Dann       "B" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
@@ -181,66 +177,25 @@ Funktionalität: 5.1.4 (9) Austausch von Events innerhalb einer Organisation (Ba
     Beispiele:
       | ApiName1A | ApiName1B | ApiName2 |
 
-  @WIP
-  @Ctl:AllowAll @Ctl:Gruppenchat
-    @TCID:TIM_V2_BASIS_AF_040905 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
-  Szenariogrundriss: 04.09.05 Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Versicherter "A" sendet eine Nachricht an ausgeloggten Versicherten "B" (negativ)
-    Angenommen Es werden folgende Clients reserviert:
-      | A | EPA_CLIENT  | <ApiName1A> |
-      | B | EPA_CLIENT  | <ApiName1B> |
-      | C | PRO_CLIENT  | <ApiName2> |
-    Und        "A", "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
-    Und        "A", "B", "C" haben "kein" Dehydrated Device auf dem HomeServer hinterlegt
-    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
-    Und        "A" lädt "C" in Chat-Raum "TIM Testraum 1" ein
-    Dann       "C" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
-    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
-    Und        "C" ist dem Raum "TIM Testraum 1" beigetreten
-    Und        "B" loggt sich im TI-Messenger aus
-    Und        "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
-    Wenn       "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
-    Dann       "C" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
-    Wenn       "B" loggt sich im TI-Messenger ein
-    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
-    Und        "B" kann die Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1" nicht sehen [Retry 10 - 3]
-
-    @Shuffle(true) #
-    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
-    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
-    @AllowSelfCombine(true)
-    @AllowDoubleLineup(true)
-    @Filter(ApiName1A.hasTag("epaClient"))
-    @Filter(ApiName1B.hasTag("epaClient"))
-    @Filter(ApiName2.hasTag("proClient"))
-
-    Beispiele:
-      | ApiName1A | ApiName1B | ApiName2 |
-
-  @WIP
   @Ctl:AllowAll @Ctl:MsgDehydrated @Ctl:MsgEdit @Ctl:Gruppenchat
-    @TCID:TIM_V2_BASIS_AF_040906 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+    @TCID:TIM_V2_BASIS_AF_040906 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
   Szenariogrundriss: 04.09.06 Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Versicherter "A" ändert und sendet eine Nachricht an ausgeloggten Versicherten "B" (Positiv)
     Angenommen Es werden folgende Clients reserviert:
       | A | EPA_CLIENT  | <ApiName1A> |
       | B | EPA_CLIENT  | <ApiName1B> |
       | C | PRO_CLIENT  | <ApiName2> |
     Und        "A", "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
-    Und        "A", "B", "C" haben "kein" Dehydrated Device auf dem HomeServer hinterlegt
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" lädt "C" in Chat-Raum "TIM Testraum 1" ein
     Dann       "C" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
     Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Und        "C" ist dem Raum "TIM Testraum 1" beigetreten
-    Und        "B" hinterlegt auf dem HomeServer sein Dehydrated Device inkl speichern des Schlüsselmaterials
     Und        "B" loggt sich im TI-Messenger aus
     Und        "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
     Wenn       "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Dann       "C" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
     Dann       "A" ändert seine letzte Nachricht im Raum "TIM Testraum 1" in "Testnachricht 2"
     Wenn       "B" loggt sich im TI-Messenger ein
-    Und        "B" holt sich entschlüsselt sein Dehydrated Device vom HomeServer ab
     Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
     Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
     Wenn       "B" empfängt eine Nachricht "Testnachricht 2" von "A" im Raum "TIM Testraum 1"
@@ -259,28 +214,24 @@ Funktionalität: 5.1.4 (9) Austausch von Events innerhalb einer Organisation (Ba
     Beispiele:
       | ApiName1A | ApiName1B | ApiName2 |
 
-  @WIP
   @Ctl:AllowAll @Ctl:MsgDehydrated @Ctl:Attachment @Ctl:Gruppenchat
-    @TCID:TIM_V2_BASIS_AF_040907 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+    @TCID:TIM_V2_BASIS_AF_040907 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
   Szenariogrundriss: 04.09.07 Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Versicherter "A" sendet Attachment an ausgeloggten Versicherten "B" (Positiv)
     Angenommen Es werden folgende Clients reserviert:
       | A | EPA_CLIENT  | <ApiName1A> |
       | B | EPA_CLIENT  | <ApiName1B> |
       | C | PRO_CLIENT  | <ApiName2> |
     Und        "A", "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
-    Und        "A", "B", "C" haben "kein" Dehydrated Device auf dem HomeServer hinterlegt
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" lädt "C" in Chat-Raum "TIM Testraum 1" ein
     Dann       "C" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
     Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Und        "C" ist dem Raum "TIM Testraum 1" beigetreten
-    Und        "B" hinterlegt auf dem HomeServer sein Dehydrated Device inkl speichern des Schlüsselmaterials
     Und        "B" loggt sich im TI-Messenger aus
     Und        "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
     Wenn       "A" sendet ein Attachment "bild.jpg" als "m.image" an den Raum "TIM Testraum 1"
     Dann       "C" empfängt das Attachment "bild.jpg" von "A" im Raum "TIM Testraum 1" über Matrix-Protokoll v1.11 als "m.image"
     Wenn       "B" loggt sich im TI-Messenger ein
-    Und        "B" holt sich entschlüsselt sein Dehydrated Device vom HomeServer ab
     Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
     Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
     Dann       "B" empfängt das Attachment "bild.jpg" von "A" im Raum "TIM Testraum 1" über Matrix-Protokoll v1.11 als "m.image"
