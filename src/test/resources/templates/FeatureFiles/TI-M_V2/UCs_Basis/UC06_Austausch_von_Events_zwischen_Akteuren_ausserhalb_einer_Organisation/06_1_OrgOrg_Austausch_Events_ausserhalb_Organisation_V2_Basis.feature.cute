@@ -33,7 +33,7 @@ Funktionalität: 5.1.6 (1) Austausch von Events zwischen Akteuren außerhalb ein
   TF 1 - 2    User sendet Nachricht an anderen User über Healthcareservice (Chat/Raum)
   TF 3 - 4    Löschen einer Nachricht durch User (Chat/Raum)
   TF 5 - 6    Ändern einer Nachricht durch User (Chat/Raum)
-  TF 7 - 8    User sendet eine Nachricht an ausgeloggten User - Dehydrated Devices (Positiv/Negativ) (Raum)
+  TF 7        User sendet eine Nachricht an ausgeloggten User - Dehydrated Devices (Raum)
   TF 9 - 10   User sendet und ändert eine Nachricht an ausgeloggten User - Dehydrated Devices (Chat/Raum)
   TF 11       User sendet ein Attachment an ausgeloggten User über Matrix-Protokoll v1.11 - Dehydrated Devices
   TF 13       Gruppenchat - Drei User schreiben sich gegenseitig (Raum)
@@ -232,17 +232,14 @@ Funktionalität: 5.1.6 (1) Austausch von Events zwischen Akteuren außerhalb ein
     Beispiele:
       | ApiName1A | ApiName1B | ApiName2 |
 
-  @WIP
   @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD @Ctl:MsgDehydrated
-    @TCID:TIM_V2_BASIS_AF_060107 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung @NB:NEIN
+    @TCID:TIM_V2_BASIS_AF_060107 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
   Szenariogrundriss: 06.01.07 Austausch von Events außerhalb einer Organisation - Raum - AllowAll - User sendet eine Nachricht an ausgeloggten User (Positiv)
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN  | <ApiName1A> |
       | B | PRO_CLIENT  | <ApiName1B> |
       | C | PRO_CLIENT  | <ApiName2>  |
     Und        "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
-    Und        "B", "C" haben "kein" Dehydrated Device auf dem HomeServer hinterlegt
-    Und        "B" hinterlegt auf dem HomeServer sein Dehydrated Device inkl speichern des Schlüsselmaterials
     Und        "B" loggt sich im TI-Messenger aus
     Wenn       "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
     Dann       "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
@@ -250,7 +247,6 @@ Funktionalität: 5.1.6 (1) Austausch von Events zwischen Akteuren außerhalb ein
     Und        "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
     Und        "C" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Wenn       "B" loggt sich im TI-Messenger ein
-    Und        "B" holt sich entschlüsselt sein Dehydrated Device vom HomeServer ab
     Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
     Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
     Und        "B" empfängt eine Nachricht "Testnachricht 1" von "C" im Raum "TIM Testraum 1"
@@ -268,58 +264,20 @@ Funktionalität: 5.1.6 (1) Austausch von Events zwischen Akteuren außerhalb ein
     Beispiele:
       | ApiName1A | ApiName1B | ApiName2 |
 
-  @WIP
-  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD
-    @TCID:TIM_V2_BASIS_AF_060108 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung @NB:NEIN
-  Szenariogrundriss: 06.01.08 Austausch von Events außerhalb einer Organisation - Raum - AllowAll - User sendet eine Nachricht an ausgeloggten User (Negativ)
-    Angenommen Es werden folgende Clients reserviert:
-      | A | ORG_ADMIN  | <ApiName1A> |
-      | B | PRO_CLIENT  | <ApiName1B> |
-      | C | PRO_CLIENT  | <ApiName2>  |
-    Und        "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
-    Und        "B", "C" haben "kein" Dehydrated Device auf dem HomeServer hinterlegt
-    Und        "B" loggt sich im TI-Messenger aus
-    Wenn       "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
-    Dann       "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
-    Und        "C" erstellt einen Chat-Raum "TIM Testraum 1"
-    Und        "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
-    Und        "C" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
-    Wenn       "B" loggt sich im TI-Messenger ein
-    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
-    Und        "B" kann die Nachricht "Testnachricht 1" von "C" im Raum "TIM Testraum 1" nicht sehen [Retry 10 - 3]
-
-    @Shuffle(true) #
-    #@MaxSameColumnProperty(ApiName2,homeserver,1) #
-    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
-    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
-    @AllowSelfCombine(false)
-    @AllowDoubleLineup(true)
-    @Filter(ApiName1A.hasTag("orgAdmin"))
-    @Filter(ApiName1B.hasTag("proClient"))
-    @Filter(ApiName2.hasTag("proClient"))
-
-    Beispiele:
-      | ApiName1A | ApiName1B | ApiName2 |
-
-  @WIP
   @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD @Ctl:MsgDehydrated @Ctl:MsgEdit
-    @TCID:TIM_V2_BASIS_AF_060109 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung @NB:NEIN
+    @TCID:TIM_V2_BASIS_AF_060109 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
   Szenariogrundriss: 06.01.09 Austausch von Events außerhalb einer Organisation - Chat - AllowAll - User sendet und ändert eine Nachricht an ausgeloggten User (Positiv)
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN  | <ApiName1A> |
       | B | PRO_CLIENT  | <ApiName1B> |
       | C | PRO_CLIENT  | <ApiName2>  |
     Und        "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
-    Und        "B", "C" haben "kein" Dehydrated Device auf dem HomeServer hinterlegt
-    Und        "B" hinterlegt auf dem HomeServer sein Dehydrated Device inkl speichern des Schlüsselmaterials
     Und        "B" loggt sich im TI-Messenger aus
     Wenn       "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
     Dann       "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
     Und        "C" schreibt "B" direkt "Testnachricht 1"
     Dann       "C" ändert seine letzte Nachricht im Chat mit "B" in "Testnachricht 2"
     Wenn       "B" loggt sich im TI-Messenger ein
-    Und        "B" holt sich entschlüsselt sein Dehydrated Device vom HomeServer ab
     Und        "B" erhält eine Einladung von "C"
     Und        "B" bestätigt eine Einladung von "C"
     Wenn       "B" empfängt eine Nachricht "Testnachricht 2" von "C"
@@ -338,17 +296,14 @@ Funktionalität: 5.1.6 (1) Austausch von Events zwischen Akteuren außerhalb ein
     Beispiele:
       | ApiName1A | ApiName1B | ApiName2 |
 
-  @WIP
   @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD @Ctl:MsgDehydrated @Ctl:MsgEdit
-    @TCID:TIM_V2_BASIS_AF_060110 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung @NB:NEIN
+    @TCID:TIM_V2_BASIS_AF_060110 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
   Szenariogrundriss: 06.01.10 Austausch von Events außerhalb einer Organisation - Raum - AllowAll - User sendet und ändert eine Nachricht an ausgeloggten User (Positiv)
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN  | <ApiName1A> |
       | B | PRO_CLIENT  | <ApiName1B> |
       | C | PRO_CLIENT  | <ApiName2>  |
     Und        "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
-    Und        "B", "C" haben "kein" Dehydrated Device auf dem HomeServer hinterlegt
-    Und        "B" hinterlegt auf dem HomeServer sein Dehydrated Device inkl speichern des Schlüsselmaterials
     Und        "B" loggt sich im TI-Messenger aus
     Wenn       "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
     Dann       "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
@@ -357,7 +312,6 @@ Funktionalität: 5.1.6 (1) Austausch von Events zwischen Akteuren außerhalb ein
     Und        "C" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Und        "C" ändert seine letzte Nachricht im Raum "TIM Testraum 1" in "Testnachricht 2"
     Wenn       "B" loggt sich im TI-Messenger ein
-    Und        "B" holt sich entschlüsselt sein Dehydrated Device vom HomeServer ab
     Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
     Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
     Und        "B" empfängt eine Nachricht "Testnachricht 2" von "C" im Raum "TIM Testraum 1"
@@ -376,9 +330,8 @@ Funktionalität: 5.1.6 (1) Austausch von Events zwischen Akteuren außerhalb ein
     Beispiele:
       | ApiName1A | ApiName1B | ApiName2 |
 
-  @WIP
   @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD @Ctl:Attachment @Ctl:MsgDehydrated
-    @TCID:TIM_V2_BASIS_AF_060111 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung @NB:NEIN
+    @TCID:TIM_V2_BASIS_AF_060111 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
   Szenariogrundriss: 06.01.11 Austausch von Events außerhalb einer Organisation - Raum - AllowAll - User sendet ein Attachment an ausgeloggten User über Matrix-Protokoll v1.11
     Angenommen Es werden folgende Clients reserviert:
       | A | ORG_ADMIN  | <ApiName1A> |
@@ -388,12 +341,10 @@ Funktionalität: 5.1.6 (1) Austausch von Events zwischen Akteuren außerhalb ein
     Wenn       "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
     Dann       "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
     Und        "C" erstellt einen Chat-Raum "TIM Testraum 1"
-    Und        "B" hinterlegt auf dem HomeServer sein Dehydrated Device inkl speichern des Schlüsselmaterials
     Und        "B" loggt sich im TI-Messenger aus
     Und        "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
     Wenn       "C" sendet ein Attachment "bild.jpg" als "m.image" an den Raum "TIM Testraum 1"
     Wenn       "B" loggt sich im TI-Messenger ein
-    Und        "B" holt sich entschlüsselt sein Dehydrated Device vom HomeServer ab
     Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
     Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
     Und        "B" ist dem Raum "TIM Testraum 1" beigetreten

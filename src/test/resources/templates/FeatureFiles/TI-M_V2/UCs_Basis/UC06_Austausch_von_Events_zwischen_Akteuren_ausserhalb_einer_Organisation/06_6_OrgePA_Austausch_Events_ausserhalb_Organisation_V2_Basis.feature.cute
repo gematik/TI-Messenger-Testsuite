@@ -34,7 +34,7 @@ Funktionalität: 5.1.6 (6) Austausch von Events zwischen Akteuren außerhalb ein
   TF 1  - 2   Org-User sendet Nachricht an ePA-User (Chat/Raum)
   TF 3  - 4   Löschen einer Nachricht durch Org-User im Chat/Raum mit ePA-User (Chat/Raum)
   TF 5  - 6   Ändern einer Nachricht durch ePA-User (Chat/Raum)
-  TF 7  - 8   Org-User sendet eine Nachricht an ausgeloggten ePA-User - Dehydrated Devices (Positiv/Negativ)
+  TF 7        Org-User sendet eine Nachricht an ausgeloggten ePA-User - Dehydrated Devices
   TF 9  - 10  Org-User sendet und ändert eine Nachricht an ausgeloggten ePA-User - Dehydrated Devices (Chat/Raum)
   TF 11       Org-User sendet ein Attachment an ausgeloggten User über Matrix-Protokoll an ePA-User v1.11 - Dehydrated Devices
 
@@ -198,22 +198,18 @@ Funktionalität: 5.1.6 (6) Austausch von Events zwischen Akteuren außerhalb ein
     Beispiele:
       | ApiName1 | ApiName2 |
 
-  @WIP
   @Ctl:AllowAll @Ctl:MsgDehydrated
-    @TCID:TIM_V2_BASIS_AF_060607 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+    @TCID:TIM_V2_BASIS_AF_060607 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
   Szenariogrundriss: 06.06.07 Austausch von Events außerhalb einer Organisation - Raum - AllowAll - Org-User sendet eine Nachricht an ausgeloggten ePA-User (Positiv)
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
       | B | EPA_CLIENT  | <ApiName2>  |
     Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
-    Und        "A", "B" haben "kein" Dehydrated Device auf dem HomeServer hinterlegt
-    Und        "B" hinterlegt auf dem HomeServer sein Dehydrated Device inkl speichern des Schlüsselmaterials
     Und        "B" loggt sich im TI-Messenger aus
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
     Und        "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Wenn       "B" loggt sich im TI-Messenger ein
-    Und        "B" holt sich entschlüsselt sein Dehydrated Device vom HomeServer ab
     Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
     Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Und        "B" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
@@ -229,54 +225,21 @@ Funktionalität: 5.1.6 (6) Austausch von Events zwischen Akteuren außerhalb ein
     Beispiele:
       | ApiName1 | ApiName2 |
 
-  @WIP
-  @Ctl:AllowAll
-    @TCID:TIM_V2_BASIS_AF_060608 @PRIO:1 @TESTFALL:Negativ @STATUS:InBearbeitung
-  Szenariogrundriss: 06.06.08 Austausch von Events außerhalb einer Organisation - Raum - AllowAll - Org-User sendet eine Nachricht an ausgeloggten ePA-User (negativ)
-    Angenommen Es werden folgende Clients reserviert:
-      | A | PRO_CLIENT  | <ApiName1> |
-      | B | EPA_CLIENT  | <ApiName2>  |
-    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
-    Und        "A", "B" haben "kein" Dehydrated Device auf dem HomeServer hinterlegt
-    Und        "B" loggt sich im TI-Messenger aus
-    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
-    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
-    Und        "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
-    Wenn       "B" loggt sich im TI-Messenger ein
-    Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
-    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
-    Und        "B" kann die Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1" nicht sehen [Retry 10 - 3]
-
-    @Shuffle(true) #
-    #@MaxSameColumnProperty(ApiName2,homeserver,1) #
-    @DistinctProperty(homeserver)
-    @AllowSelfCombine(false)
-    @AllowDoubleLineup(false)
-    @Filter(ApiName1.hasTag("proClient"))
-    @Filter(ApiName2.hasTag("epaClient"))
-
-    Beispiele:
-      | ApiName1 | ApiName2 |
-
-  @WIP
   @Ctl:AllowAll @Ctl:MsgDehydrated @Ctl:MsgEdit
-    @TCID:TIM_V2_BASIS_AF_060609 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+    @TCID:TIM_V2_BASIS_AF_060609 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
   Szenariogrundriss: 06.06.09 Austausch von Events außerhalb einer Organisation - Chat - AllowAll - Org-User sendet und ändert eine Nachricht an ausgeloggten ePA-User (Positiv)
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
       | B | EPA_CLIENT  | <ApiName2>  |
     Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
-    Und        "A", "B" haben "kein" Dehydrated Device auf dem HomeServer hinterlegt
-    Und        "B" hinterlegt auf dem HomeServer sein Dehydrated Device inkl speichern des Schlüsselmaterials
     Und        "B" loggt sich im TI-Messenger aus
     Und        "A" schreibt "B" direkt "Testnachricht 1"
     Dann       "A" ändert seine letzte Nachricht im Chat mit "B" in "Testnachricht 2"
     Wenn       "B" loggt sich im TI-Messenger ein
-    Und        "B" holt sich entschlüsselt sein Dehydrated Device vom HomeServer ab
     Und        "B" erhält eine Einladung von "A"
     Und        "B" bestätigt eine Einladung von "A"
     Wenn       "B" empfängt eine Nachricht "Testnachricht 2" von "A"
-    Dann       "B" kann die Nachricht "Testnachricht 1" von "A" im Chat mit "C" nicht mehr sehen [Retry 10 - 3]
+    Dann       "B" kann die Nachricht "Testnachricht 1" von "A" im Chat mit "A" nicht mehr sehen [Retry 10 - 3]
 
     @Shuffle(true) #
     #@MaxSameColumnProperty(ApiName2,homeserver,1) #
@@ -289,23 +252,19 @@ Funktionalität: 5.1.6 (6) Austausch von Events zwischen Akteuren außerhalb ein
     Beispiele:
       | ApiName1 | ApiName2 |
 
-  @WIP
   @Ctl:AllowAll @Ctl:MsgDehydrated @Ctl:MsgEdit
-    @TCID:TIM_V2_BASIS_AF_060610 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+    @TCID:TIM_V2_BASIS_AF_060610 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
   Szenariogrundriss: 06.06.10 Austausch von Events außerhalb einer Organisation - Raum - AllowAll - Org-User sendet und ändert eine Nachricht an ausgeloggten ePA-User (Positiv)
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
       | B | EPA_CLIENT  | <ApiName2>  |
     Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
-    Und        "A", "B" haben "kein" Dehydrated Device auf dem HomeServer hinterlegt
-    Und        "B" hinterlegt auf dem HomeServer sein Dehydrated Device inkl speichern des Schlüsselmaterials
     Und        "B" loggt sich im TI-Messenger aus
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
     Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
     Und        "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
     Und        "A" ändert seine letzte Nachricht im Raum "TIM Testraum 1" in "Testnachricht 2"
     Wenn       "B" loggt sich im TI-Messenger ein
-    Und        "B" holt sich entschlüsselt sein Dehydrated Device vom HomeServer ab
     Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
     Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Und        "B" empfängt eine Nachricht "Testnachricht 2" von "A" im Raum "TIM Testraum 1"
@@ -322,21 +281,18 @@ Funktionalität: 5.1.6 (6) Austausch von Events zwischen Akteuren außerhalb ein
     Beispiele:
       | ApiName1 | ApiName2 |
 
-  @WIP
   @Ctl:AllowAll @Ctl:Attachment @Ctl:MsgDehydrated
-    @TCID:TIM_V2_BASIS_AF_060611 @PRIO:1 @TESTFALL:Positiv @STATUS:InBearbeitung
+    @TCID:TIM_V2_BASIS_AF_060611 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
   Szenariogrundriss: 06.06.11 Austausch von Events außerhalb einer Organisation - Raum - AllowAll - Org-User sendet ein Attachment an ausgeloggten User über Matrix-Protokoll an ePA-User v1.11
     Angenommen Es werden folgende Clients reserviert:
       | A | PRO_CLIENT  | <ApiName1> |
       | B | EPA_CLIENT  | <ApiName2>  |
     Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
     Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
-    Und        "B" hinterlegt auf dem HomeServer sein Dehydrated Device inkl speichern des Schlüsselmaterials
     Und        "B" loggt sich im TI-Messenger aus
     Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
     Wenn       "A" sendet ein Attachment "bild.jpg" als "m.image" an den Raum "TIM Testraum 1"
     Wenn       "B" loggt sich im TI-Messenger ein
-    Und        "B" holt sich entschlüsselt sein Dehydrated Device vom HomeServer ab
     Dann       "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
     Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
     Und        "B" ist dem Raum "TIM Testraum 1" beigetreten

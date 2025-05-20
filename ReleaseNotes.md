@@ -10,6 +10,68 @@
 [
 `docu TI-Messenger Version 2`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite_Version2.adoc)
 
+## Release 2.2.3
+
+### Features
+
+- Testcases enabled - Dehydrated Devices (no WIP anymore)
+
+Find details about testing with the reference implementation in the chapter 7.4 dehydrated devices in [
+`docu TI-Messenger Version 2`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite_Version2.adoc)
+
+@TCID:TIM_V2_BASIS_AF_040109
+
+@TCID:TIM_V2_BASIS_AF_040111
+
+@TCID:TIM_V2_BASIS_AF_040112
+
+@TCID:TIM_V2_BASIS_AF_040113
+
+@TCID:TIM_V2_BASIS_AF_040904
+
+@TCID:TIM_V2_BASIS_AF_040906
+
+@TCID:TIM_V2_BASIS_AF_040907
+
+@TCID:TIM_V2_BASIS_AF_060107
+
+@TCID:TIM_V2_BASIS_AF_060109
+
+@TCID:TIM_V2_BASIS_AF_060110
+
+@TCID:TIM_V2_BASIS_AF_060111
+
+@TCID:TIM_V2_BASIS_AF_060507
+
+@TCID:TIM_V2_BASIS_AF_060509
+
+@TCID:TIM_V2_BASIS_AF_060510
+
+@TCID:TIM_V2_BASIS_AF_060511
+
+@TCID:TIM_V2_BASIS_AF_060607
+
+@TCID:TIM_V2_BASIS_AF_060609
+
+@TCID:TIM_V2_BASIS_AF_060610
+
+@TCID:TIM_V2_BASIS_AF_060611
+
+- Testcases deleted - Dehydrated Devices (former WIP)
+
+@TCID:TIM_V2_BASIS_AF_040110
+
+@TCID:TIM_V2_BASIS_AF_040905
+
+@TCID:TIM_V2_BASIS_AF_060108
+
+@TCID:TIM_V2_BASIS_AF_060508
+
+@TCID:TIM_V2_BASIS_AF_060608
+
+- doc/userguide/WIP.txt deleted - there are no WIP Tests anymore
+- updates CONTRIBUTING.md to clarify how to open a PR
+
 ## Release 2.2.2
 
 ## Bugs
