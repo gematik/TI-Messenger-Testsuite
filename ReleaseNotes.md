@@ -10,6 +10,33 @@
 [
 `docu TI-Messenger Version 2`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite_Version2.adoc)
 
+## Release 2.3.0
+
+### Bugs
+
+- will now correctly serialize the authorization mode as json,
+  solving https://github.com/gematik/TI-Messenger-Testsuite/issues/81
+
+### Changes
+
+- test driver API: clarified claim duration to be refreshed on each device interaction
+- test driver API: added missing ePA tag for searchOnHomeserver
+- test driver API: removes unused endpoint syncedLogout
+- test driver API: removes unused endpoint getPublicRooms
+- test driver API: removes a great amount of currently unused query parameters for FHIR searches
+
+### Features
+
+- test driver API: adds request examples for operationId login to clarify
+  for https://github.com/gematik/TI-Messenger-Testsuite/issues/66
+- test driver API: adds two examples for operationId getDevices to
+  solve https://github.com/gematik/TI-Messenger-Testsuite/issues/64
+- adjusted Testcases for valid response code 200
+
+@TCID:TIM_V2_BASIS_AF_10X0109
+
+@TCID:TIM_V2_BASIS_AF_10X0508
+
 ## Release 2.2.3
 
 ### Features

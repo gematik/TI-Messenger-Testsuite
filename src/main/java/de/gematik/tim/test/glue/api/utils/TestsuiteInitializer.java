@@ -1,24 +1,27 @@
 /*
- * Copyright 2023 gematik GmbH
+ * Copyright (Change Date see Readme), gematik GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * ******
+ *
+ * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
  */
 
 package de.gematik.tim.test.glue.api.utils;
 
 import static com.nimbusds.jose.util.X509CertUtils.parse;
 import static io.cucumber.messages.types.SourceMediaType.TEXT_X_CUCUMBER_GHERKIN_PLAIN;
-import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
 import static lombok.AccessLevel.PRIVATE;
@@ -149,14 +152,17 @@ public class TestsuiteInitializer {
       TIMEOUT = TIMEOUT_DEFAULT;
       pollInterval = POLL_INTERVAL_DEFAULT;
       log.info(
-          format(
-              "Could not parse timeout (%s) or pollInterval (%s). Will use default -> timeout: %s, pollInterval: %s",
-              timeoutString, pollIntervalString, TIMEOUT, pollInterval));
+          "Could not parse timeout ({}) or pollInterval ({}). Will use default -> timeout: {}, pollInterval: {}",
+          timeoutString,
+          pollIntervalString,
+          TIMEOUT,
+          pollInterval);
     }
+
     mapper = createMapper();
-    ObjectMapperConfig config = RestAssured.config().getObjectMapperConfig();
-    config.defaultObjectMapper(getMapper());
-    RestAssured.config().objectMapperConfig(config);
+    ObjectMapperConfig mapperConfig = RestAssured.config().getObjectMapperConfig();
+    mapperConfig.defaultObjectMapper(getMapper());
+    RestAssured.config().objectMapperConfig(mapperConfig);
     addHostsToTigerProxy();
     configRestAssured();
     saveMavenProperties(properties);
@@ -206,9 +212,9 @@ public class TestsuiteInitializer {
   private static Jackson2Mapper createMapper() {
     return new Jackson2Mapper(
         (type, s) -> {
-          ObjectMapper om = new ObjectMapper().registerModule(new JavaTimeModule());
-          om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-          return om;
+          ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+          objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+          return objectMapper;
         });
   }
 
