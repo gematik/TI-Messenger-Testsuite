@@ -6,7 +6,7 @@ info:
     
     This API contains all endpoints for version 1.1.x and version 2 (TIM Pro & TIM ePA) of the TI-Messenger. The tags named accordingly can be used to find the endpoints applicable for the desired version.
     Additionally each endpoint summary will contain a note describing whether the endpoint is used by an org-admin, a client or both.
-  version: 2.2.0
+  version: 2.2.1
   contact:
     name: gematik GmbH
     email: software-development@gematik.de
@@ -147,6 +147,11 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Devices"
+              examples:
+                claimed:
+                  $ref: "#/components/examples/ClaimedDevice"
+                free:
+                  $ref: "#/components/examples/FreeDevice"
         default:
           $ref: "#/components/responses/DefaultResponse"
 
@@ -162,6 +167,9 @@ paths:
         - TI-M_Pro
         - TI-M_ePA
       summary: "Claims a device for exclusive use. Used by Org-Admin and clients."
+      description: |
+        The claim duration (parameter: claimFor) needs to be reset at each call to the device
+        to keep the claim alive until the test finished.
       operationId: claimDevice
       requestBody:
         required: true
@@ -223,7 +231,7 @@ paths:
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
-      summary: "Returns the account data or if no account is registered returns the authentication flows supported by the homeserver. Used by Org-Admin and clients."
+      summary: "Returns the account data. Used by Org-Admin and clients."
       operationId: readAccount
       responses:
         "200":
@@ -257,10 +265,16 @@ paths:
         - TI-M_ePA
       operationId: login
       requestBody:
+        required: false
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/Login"
+            examples:
+              emptyRequest:
+                $ref: "#/components/examples/EmptyBody"
+              multiDevice:
+                $ref: "#/components/examples/MultiDeviceLogin"
       responses:
         "200":
           description: "Account data of the logged in account"
@@ -295,33 +309,6 @@ paths:
       responses:
         "200":
           description: "Logout successful"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-        default:
-          $ref: "#/components/responses/DefaultResponse"
-
-  /devices/{deviceId}/logout/synced:
-    parameters:
-      - $ref: "#/components/parameters/deviceId"
-      - $ref: "#/components/parameters/transactionIdHeader"
-
-    post:
-      summary: "Logout of an account with prolonged wait time. Used by clients."
-      description: "This variant of the logout is used in tests, where it is important,
-       that the logout is fully executed and synchronized before proceeding.
-       The response must only be send, once the account is fully logged out."
-      tags:
-        - login/logout
-        - TI-M_Pro
-        - TI-M_ePA
-      operationId: syncedLogout
-      responses:
-        "200":
-          description: "Logout fully executed"
         "400":
           $ref: "#/components/responses/BadRequest"
         "404":
@@ -837,6 +824,7 @@ paths:
         - searchOnHomeserver
         - TI-M_1.1.x
         - TI-M_Pro
+        - TI-M_ePA
       summary: "Returns a list of users on same homeserver that matches search parameters. Used by clients."
       operationId: searchOnHomeserver
       parameters:
@@ -885,47 +873,6 @@ paths:
           description: "Name of the healthcare service"
           schema:
             type: string
-        - name: name
-          in: query
-          description: "Name of the Organization"
-          schema:
-            type: string
-        - name: address
-          in: query
-          description: "Address of the Organization."
-          schema:
-            type: string
-        - name: telematikId
-          in: query
-          description: "The telematikId of the Organization."
-          schema:
-            type: string
-        - name: typeCode
-          in: query
-          description: "The type of the Organization (OrganizationTypeVS.Code)."
-          schema:
-            type: string
-        - name: typeDisplay
-          in: query
-          description: "The type of the Organization (OrganizationTypeVS.Display)."
-          schema:
-            type: string
-        - name: contactMxid
-          in: query
-          description: "MXID of the Organization.contact in uri scheme."
-          schema:
-            type: string
-            example: matrix:u/someone:gematik.de
-        - name: contactName
-          in: query
-          description: "Name of the Organization.contact."
-          schema:
-            type: string
-        - name: contactPurpose
-          in: query
-          description: "Purpose of the Organization.contact."
-          schema:
-            type: string
 
       responses:
         "200":
@@ -958,11 +905,6 @@ paths:
       Please ensure that the searched resources are included at any time!)"
       operationId: searchHsEndpointInFhirDirectory
       parameters:
-        - name: name
-          in: query
-          description: "The name of the endpoint"
-          schema:
-            type: string
         - name: mxId
           in: query
           description: "MxId (in uri scheme) standing in address field of the endpoint"
@@ -1001,26 +943,6 @@ paths:
         - name: name
           in: query
           description: "Name of the Practitioner"
-          schema:
-            type: string
-        - name: address
-          in: query
-          description: "Address of the Practitioner."
-          schema:
-            type: string
-        - name: telematikId
-          in: query
-          description: "The telematikId of the Practitioner."
-          schema:
-            type: string
-        - name: typeCode
-          in: query
-          description: "The type of the Practitioner (PractitionerQualificationProfessionOidVS.Code)."
-          schema:
-            type: string
-        - name: typeDisplay
-          in: query
-          description: "The type of the Practitioner (PractitionerQualificationProfessionOidVS.Display)."
           schema:
             type: string
         - name: mxid
@@ -1174,6 +1096,7 @@ paths:
           $ref: "#/components/responses/NotFound"
         default:
           $ref: "#/components/responses/DefaultResponse"
+
     put:
       summary: "Edit an existing message. Used by clients."
       tags:
@@ -1278,42 +1201,6 @@ paths:
                 $ref: "#/components/schemas/Room"
         "400":
           $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        default:
-          $ref: "#/components/responses/DefaultResponse"
-
-  /devices/{deviceId}/rooms/public:
-    parameters:
-      - $ref: "#/components/parameters/deviceId"
-      - $ref: "#/components/parameters/transactionIdHeader"
-
-    get:
-      tags:
-        - room
-        - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
-      summary: "Get public rooms matching params. Used by clients."
-      operationId: getPublicRooms
-      parameters:
-        - name: name
-          in: query
-          description: "Full- or partial name of the Room"
-          schema:
-            type: string
-
-      responses:
-        "200":
-          description: "All associated public rooms of the logged in account"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Rooms"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -1507,6 +1394,7 @@ paths:
     get:
       tags:
         - contactManagement
+        - TI-M_1.1.x
 
       summary: "Returns the contacts with invite settings. Used by clients."
       operationId: getContacts
@@ -1536,33 +1424,6 @@ paths:
       responses:
         "200":
           description: "Contact setting successfully created"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Contact"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        default:
-          $ref: "#/components/responses/DefaultResponse"
-
-    put:
-      tags:
-        - contactManagement
-        - TI-M_1.1.x
-
-      summary: "Updates the setting for the contact. Used by clients."
-      operationId: updateContactSetting
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Contact"
-      responses:
-        "200":
-          description: "Contact setting successfully updated"
           content:
             application/json:
               schema:
@@ -1909,6 +1770,40 @@ paths:
 
 components:
 
+  examples:
+    ClaimedDevice:
+      value:
+        "deviceId": 1
+        "deviceName": "F_WIN_8090 - Practitioner: true - Nr: 0"
+        "deviceStatus": "claimed"
+        "claimerName": "TIM_CLIENT_CA"
+        "claimerCn": "TIM_CLIENT_CA"
+        "cn": "Goyle Sr."
+        "telematikId": "498-87-6145"
+        "claimedUntil": "2025-06-10T07:51:17.70503+02:00"
+
+    EmptyBody:
+      value:
+        { }
+
+    FreeDevice:
+      value:
+        "deviceId": 1
+        "deviceName": "F_WIN_8090 - Practitioner: true - Nr: 0"
+        "deviceStatus": "free"
+        "claimerName": null
+        "claimerCn": null
+        "cn": "Goyle Sr."
+        "telematikId": "498-87-6145"
+        "claimedUntil": null
+
+    MultiDeviceLogin:
+      value:
+        "authStage": "basicAuth"
+        "username": "@423-mxId:localhost8090"
+        "password": "b7f2-5dfc72d4c14a"
+
+  
   parameters:
 
     deviceId:
@@ -1948,15 +1843,6 @@ components:
         type: string
         example: "@you:example.org"
 
-    serverNameInPath:
-      name: serverName
-      in: path
-      description: "Server-Name: https://spec.matrix.org/v1.11/appendices/#server-name"
-      required: true
-      schema:
-        type: string
-        example: "matrix.org"
-
     healthcareServiceId:
       name: hsId
       in: path
@@ -1965,15 +1851,6 @@ components:
       schema:
         type: string
         example: 1a62648f-55a7-42d5-ab7f-841e78be390e
-
-    locationId:
-      name: locId
-      in: path
-      description: "ID of the location"
-      required: true
-      schema:
-        type: string
-        example: c8632e61-b04d-4c3f-9818-ab9a641ef18a
 
     endpointId:
       name: endId
@@ -2185,7 +2062,7 @@ components:
           example: "some name"
         claimFor:
           type: integer
-          description: "Duration in seconds this device should be exclusively claimed for. Resets after using device."
+          description: "Duration in seconds this device should be exclusively claimed for. Must be reset after each operation on the device."
           minimum: 60
           example: 180
 

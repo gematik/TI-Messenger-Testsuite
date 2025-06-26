@@ -1,3 +1,3 @@
 #!/bin/sh
 
-mvn install -P oneonly,reference-ci -DpoolGroupString=Ref -DskipTests
+mvn install -P prod -DpoolGroupString='RUDEV' -Dcucumber.filter.tags='@Zul:Pro' --no-transfer-progress
