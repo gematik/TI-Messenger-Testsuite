@@ -28,11 +28,11 @@ import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
 import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
-import kong.unirest.Empty;
-import kong.unirest.HttpResponse;
-import kong.unirest.UnirestInstance;
+import lombok.SneakyThrows;
 import net.serenitybdd.screenplay.Actor;
-import org.springframework.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.impl.client.CloseableHttpClient;
 
 public class ForgetRoomTask extends RoomSpecificTask {
 
@@ -44,27 +44,30 @@ public class ForgetRoomTask extends RoomSpecificTask {
     return forRoomName(roomName);
   }
 
+  private static final int NO_CONTENT = 204;
+
   @Override
   public <T extends Actor> void performAs(T actor) {
     actor.attemptsTo(FORGET_ROOM.request());
-    if (lastResponse().statusCode() == HttpStatus.NO_CONTENT.value()) {
+    if (lastResponse().statusCode() == NO_CONTENT) {
       actor.abilityTo(UseRoomAbility.class).removeCurrent();
     }
   }
 
   @Override
+  @SneakyThrows
   public void runParallel() {
-    UnirestInstance client = getClient();
-    HttpResponse<Empty> res =
-        client
-            .delete(FORGET_ROOM.getResolvedPath(actor))
-            .header(TEST_CASE_ID_HEADER, getTestcaseId())
-            .asEmpty();
-    if (res.isSuccess()) {
-      actor.abilityTo(UseRoomAbility.class).removeCurrent();
-    } else {
-      throw new TestRunException(
-          "Could not forget room, response code was %d".formatted(res.getStatus()));
+    final CloseableHttpClient client = getClient();
+    final HttpDelete delete = new HttpDelete(FORGET_ROOM.getResolvedPath(actor));
+    delete.addHeader(TEST_CASE_ID_HEADER, getTestcaseId());
+    try (final CloseableHttpResponse response = client.execute(delete)) {
+      final int statusCode = response.getStatusLine().getStatusCode();
+      if (statusCode >= 200 && statusCode < 300) {
+        actor.abilityTo(UseRoomAbility.class).removeCurrent();
+      } else {
+        throw new TestRunException(
+            "Could not forget room, response code was %d".formatted(statusCode));
+      }
     }
   }
 }

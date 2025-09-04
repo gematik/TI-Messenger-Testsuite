@@ -18,7 +18,7 @@
   </parent>
 
   <properties>
-    <jacoco.version>0.8.12</jacoco.version>
+    <jacoco.version>0.8.13</jacoco.version>
     <maven.source.plugin.version>3.3.1</maven.source.plugin.version>
     <maven.javadoc.plugin.version>3.11.2</maven.javadoc.plugin.version>
     <tiger.config.file>tiger.yml</tiger.config.file>
@@ -38,7 +38,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.13.0</version>
+        <version>3.14.0</version>
         <configuration>
           <encoding>${project.build.sourceEncoding}</encoding>
           <source>${java.version}</source>
@@ -109,62 +109,9 @@
         </executions>
       </plugin>
       <plugin>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.2.2</version>
-        <configuration>
-          <environmentVariables>
-            <TIGER_TESTENV_CFGFILE>${tiger.config.file}</TIGER_TESTENV_CFGFILE>
-          </environmentVariables>
-          <systemPropertyVariables>
-            <cucumber.filter.tags>${cucumber.filter.tags}</cucumber.filter.tags>
-            <cucumber.plugin>${custom.plugin}</cucumber.plugin>
-          </systemPropertyVariables>
-          <forkedProcessExitTimeoutInSeconds>120</forkedProcessExitTimeoutInSeconds>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.openapitools</groupId>
-        <artifactId>openapi-generator-maven-plugin</artifactId>
-        <version>6.6.0</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-            <configuration>
-              <inputSpec>
-                ${project.basedir}/src/main/resources/api/TiMessengerTestTreiber.yaml
-              </inputSpec>
-              <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
-              <generatorName>java</generatorName>
-              <modelPackage>de.gematik.tim.test.models</modelPackage>
-              <modelNameSuffix>DTO</modelNameSuffix>
-              <generateApis>false</generateApis>
-              <generateApiTests>false</generateApiTests>
-              <generateModelTests>false</generateModelTests>
-              <generateSupportingFiles>false</generateSupportingFiles>
-              <configOptions>
-                <library>resttemplate</library>
-                <serializationLibrary>jackson</serializationLibrary>
-                <dateLibrary>java8</dateLibrary>
-                <sourceFolder>src/generated/java/main</sourceFolder>
-              </configOptions>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.3.0</version>
+        <version>3.6.1</version>
         <executions>
           <execution>
             <id>local-timestamp-property</id>
@@ -219,7 +166,7 @@
       <plugin>
         <groupId>com.coderplus.maven.plugins</groupId>
         <artifactId>copy-rename-maven-plugin</artifactId>
-        <version>1.0</version>
+        <version>1.0.1</version>
         <executions>
           <execution>
             <id>rename-index-file</id>
@@ -261,6 +208,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+              <skip>false</skip>
               <outputDirectory>${basedir}/reports/${build.time}/report/additional-data/raw-data</outputDirectory>
               <resources>
                 <resource>
@@ -276,6 +224,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+              <skip>false</skip>
               <outputDirectory>${basedir}/reports/${build.time}/report/additional-data/features</outputDirectory>
               <resources>
                 <resource>
@@ -291,6 +240,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+              <skip>false</skip>
               <outputDirectory>${basedir}/reports/${build.time}/report/additional-data/combine-items</outputDirectory>
               <resources>
                 <resource>
@@ -325,6 +275,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+              <skip>false</skip>
               <outputDirectory>${basedir}/reports/${build.time}/report/additional-data/versions</outputDirectory>
               <resources>
                 <resource>
@@ -343,6 +294,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+              <skip>false</skip>
               <outputDirectory>${basedir}/reports/${build.time}/report/additional-data</outputDirectory>
               <resources>
                 <resource>
@@ -361,6 +313,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+              <skip>false</skip>
               <outputDirectory>${basedir}/reports/${build.time}/report/additional-data/mvn-properties</outputDirectory>
               <resources>
                 <resource>
@@ -377,7 +330,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>properties-maven-plugin</artifactId>
-        <version>1.0.0</version>
+        <version>1.2.1</version>
         <executions>
           <execution>
             <phase>generate-resources</phase>
@@ -402,7 +355,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
-            <version>3.3.0</version>
+            <version>3.8.1</version>
             <executions>
               <execution>
                 <id>get-resources-for-prod</id>
@@ -434,7 +387,7 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
-            <version>3.0.0</version>
+            <version>3.5.1</version>
             <configuration>
               <skip>${skip.saving.reports}</skip>
             </configuration>
@@ -490,6 +443,44 @@
     </profile>
     <profile>
       <id>reference-ci</id>
+      <build>
+        <resources>
+          <resource>
+            <directory>src/main/resources</directory>
+            <filtering>true</filtering>
+            <includes>
+              <include>**/versions.txt</include>
+            </includes>
+          </resource>
+        </resources>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.5.1</version>
+            <configuration>
+              <skip>${skip.saving.reports}</skip>
+            </configuration>
+            <executions>
+              <execution>
+                <id>save_reports</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>cp</executable>
+                  <arguments>
+                    <argument>-a</argument>
+                    <argument>${project.build.directory}/site/serenity/.</argument>
+                    <argument>${basedir}/reports/${build.time}/report/</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
       <properties>
         <combine.items.file>
           ${ti.m.mtls.output.directory}/combine_items_prod.json
@@ -510,7 +501,7 @@
         <claimDuration>300</claimDuration>
         <soft-filter.to.hard>true</soft-filter.to.hard>
         <cutest.count.format>txt,json</cutest.count.format>
-        <skip.saving.reports>true</skip.saving.reports>
+        <skip.saving.reports>false</skip.saving.reports>
       </properties>
     </profile>
     <profile>
@@ -590,7 +581,7 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
-            <version>3.0.0</version>
+            <version>3.5.1</version>
             <configuration>
               <skip>${skip.saving.reports}</skip>
             </configuration>

@@ -23,7 +23,6 @@ package de.gematik.tim.test.glue.api.utils;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addFailedActor;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.RUN_WITHOUT_RETRY;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.TIMEOUT;
-import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.getMapper;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.pollInterval;
 import static java.lang.String.format;
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -144,7 +143,7 @@ public class RequestResponseUtils {
     try {
       if (FhirBaseResourceDTO.class.isAssignableFrom(clazz)
           || clazz.isInstance(new FhirSearchResultDTO())) {
-        return lastResponse().as(clazz, getMapper());
+        return lastResponse().as(clazz, TestsuiteInitializer.getFhirMapper());
       }
       return lastResponse().as(clazz);
     } catch (Exception e) {

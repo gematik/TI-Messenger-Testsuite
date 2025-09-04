@@ -21,11 +21,9 @@
 === Windows Set Up
 
 Due to long file- and path names you have to take action before checking out the test suite repository.
-If you want to run and work with the test suite on a windows computer you have to enable GIT in Windows to deal with long
-file- and pathnames:
+If you want to run and work with the test suite on a Windows computer you have to enable GIT in Windows to deal with long file- and pathnames:
 
-1. Run Git Bash as administrator (right-clicking the app shortcut will show the option to Run as Administrator )
-Run the following command:
+1. Run Git Bash as administrator (right-clicking the app shortcut will show the option to Run as Administrator ) Run the following command:
 
 2. git config --system core.longpaths true
 
@@ -89,12 +87,12 @@ This does not have to match the password in the provided `password`file.#
 A precise guide is not possible here.
 The setup may vary depending on the technology used.
 The certificate and its verification can be handled directly in the application or through a proxy server placed in front.
+
 [IMPORTANT]
 [red]#*The interface must support TLSv1.2!*#
 
 An example configuration with a nginx proxy as it might appear under `_/etc/nginx/default.conf_` is provided here.
 At the same time, the extracted
-
 
 * Server Key
 * Server Certificate
@@ -147,6 +145,16 @@ The respective stores should be in .p12 format.
 
 For local/internal development, the use of TLS can be bypassed.
 Instructions for this can be found link:DevGuide.adoc#Disable-TLS[here].
+
+==== Configure the certificate revocation list for mTLS
+
+We provide and maintain a certificate revocation list (CRL) for the mTLS connection between the test drivers: link:{sourcedir}/src/main/resources/tiMessengerTestDriver.crl[tiMessengerTestDriver.crl].
+Up until now no certificates were compromised, but we strongly recommend to configure your connection with the provided list to be ready in case it's ever needed.
+At the moment the list contains several certificates that were revoked due to a domain change or technical issues.
+
+In case you want to report a compromised certificate, please follow the instructions at link:https://github.com/gematik/TI-Messenger-Testsuite/blob/main/SECURITY.md[SECURITY.md].
+
+In case we update the CRL and the reason is a compromised certificate, we will announce this in the link:{sourcedir}/ReleaseNotes.md[ReleaseNotes.md] and on our link:https://wiki.gematik.de/spaces/TIMCOMP/pages/604603166/TI-Messenger+Compass+-+The+TI-M+Blog[Blog].
 
 === Add test driver interface
 
@@ -201,25 +209,23 @@ Make sure that the specified URL ends with a trailing '/', otherwise the connect
 
 === Correct Completion of the Metadata for the Interface
 
-IMPORTANT: Please ensure that the interface metadata is populated with all
-required parameters accurately.
+IMPORTANT: Please ensure that the interface metadata is populated with all required parameters accurately.
 
-One of these parameters is the information interface, which requires the
-OS information. This parameter must be filled with the corresponding
-operating system. This applies equally to both the TI-M client interface
-(`clientInfo`) and the organization admin interface (`fachdienstInfo`).
+One of these parameters is the information interface, which requires the OS information.
+This parameter must be filled with the corresponding operating system.
+This applies equally to both the TI-M client interface (`clientInfo`) and the organization admin interface (`fachdienstInfo`).
 
 For the TI-M client interface, the operating system must be differentiated between:
 
--   Mobile clients (e.g., Android, iOS)
--   Native clients (e.g., Windows, macOS)
--   Web clients (e.g., Linux Server, Windows Server)
+- Mobile clients (e.g., Android, iOS)
+- Native clients (e.g., Windows, macOS)
+- Web clients (e.g., Linux Server, Windows Server)
 
-The same applies to the organization admin interface. If it is
-integrated into a TI-M client (e.g., within a native app), the operating
-system should be specified similarly to TI-M clients (e.g., Windows, macOS).
+The same applies to the organization admin interface.
+If it is integrated into a TI-M client (e.g., within a native app), the operating system should be specified similarly to TI-M clients (e.g., Windows, macOS).
 
 Client interface example:
+
 ----
 "clientInfo": {
         "osInfo": {
@@ -228,7 +234,9 @@ Client interface example:
         }
     }
 ----
+
 Organisation admin interface example:
+
 ----
 "fachdienstInfo": {
         "osInfo": {
@@ -237,11 +245,11 @@ Organisation admin interface example:
         }
     }
 ----
+
 Please ensure that all required parameters are filled in, not just the `osInfo` field!
 
-Additionally, this parameter must also be populated when using the same codebase for
-multiple products requiring approval. It must align with the information
-provided in the submitted application for approval documents.
+Additionally, this parameter must also be populated when using the same codebase for multiple products requiring approval.
+It must align with the information provided in the submitted application for approval documents.
 
 Example: In the application for approval: TI-M Client Android -> `"operatingSystem": "Android"`.
 
@@ -277,14 +285,12 @@ Effect|defaultValue
 
 === Evaluating the test results
 
-
 After the test execution, the current report is located in the build directory under link:{rootdir}target/site/serenity/index.html[target/site/serenity/index.html].
 Repeated executions are summarized in a common report.
 
 Additionally, each run is saved in the root directory in the link:{rootdir}reports[reports] folder along with its report and the feature files used.
 
-
-
-
-
-
+You can find an example of a Serenity report in the folder link:{rootdir}serenityReportExample[serenityReportExample].
+This report contains successful Pro tests executed against the reference implementation.
+Test cases for dehydrated devices are not yet available.
+More information about dehydrated devices: link:https://github.com/gematik/TI-Messenger-Testsuite/blob/main/doc/userguide/Testsuite_Version2.adoc#7-4-dehydrated-devices[Dehydrated Devices]

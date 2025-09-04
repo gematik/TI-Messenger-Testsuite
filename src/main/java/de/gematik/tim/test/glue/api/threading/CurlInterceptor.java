@@ -1,5 +1,5 @@
 /*
- * Copyright (Change Date see Readme), gematik GmbH
+ * Copyright (Change Date see Readme) gematik GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,45 +20,42 @@
 
 package de.gematik.tim.test.glue.api.threading;
 
-import kong.unirest.Config;
-import kong.unirest.HttpRequest;
-import kong.unirest.Interceptor;
+import java.io.IOException;
+import java.io.InputStream;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpRequestInterceptor;
+import org.apache.http.protocol.HttpContext;
 
 @Slf4j
-public class CurlInterceptor implements Interceptor {
+public class CurlInterceptor implements HttpRequestInterceptor {
 
   @Override
-  public void onRequest(HttpRequest<?> request, Config config) {
-    String headers = extractHeadersFrom(request);
-    String body = extractBody(request);
-    log.info(
-        "PARALLEL cURL command: curl -v {}{} -X {} {}",
-        headers,
-        body,
-        request.getHttpMethod(),
-        request.getUrl());
-  }
-
-  @NotNull
-  private static String extractHeadersFrom(HttpRequest<?> request) {
-    StringBuilder headers = new StringBuilder();
-    request
-        .getHeaders()
-        .all()
-        .forEach(
-            header ->
-                headers
-                    .append("-H \"")
-                    .append(header.getName())
-                    .append(": ")
-                    .append(header.getValue())
-                    .append("\" "));
-    return headers.toString();
-  }
-
-  private String extractBody(HttpRequest<?> request) {
-    return request.getBody().map(body -> "-d " + body.uniPart().getValue()).orElse("");
+  public void process(final HttpRequest request, final HttpContext context) {
+    final StringBuilder curl = new StringBuilder("curl -v ");
+    for (final Header header : request.getAllHeaders()) {
+      curl.append("-H \"")
+          .append(header.getName())
+          .append(": ")
+          .append(header.getValue())
+          .append("\" ");
+    }
+    if (request instanceof final HttpEntityEnclosingRequest entityEnclosingRequest) {
+      final HttpEntity entity = entityEnclosingRequest.getEntity();
+      if (entity != null) {
+        try (final InputStream is = entity.getContent()) {
+          final String body = new String(is.readAllBytes());
+          curl.append("-d '").append(body).append("' ");
+        } catch (final IOException e) {
+          log.warn("couldn't read request body", e);
+        }
+      }
+    }
+    curl.append("-X ").append(request.getRequestLine().getMethod()).append(" ");
+    curl.append(request.getRequestLine().getUri());
+    log.info("PARALLEL cURL command: {}", curl);
   }
 }

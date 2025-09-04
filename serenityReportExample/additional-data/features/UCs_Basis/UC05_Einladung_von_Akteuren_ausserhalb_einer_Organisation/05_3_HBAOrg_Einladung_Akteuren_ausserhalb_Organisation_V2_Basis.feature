@@ -1,0 +1,105 @@
+# language: de
+@File:FeatureFile_05_03_V2_Basis @Ctl:UseCaseV2_05_Basis @PRODUKT:TI-M_Client_Basis @PRODUKT:TI-M_FD_Basis @PRODUKT:VZD_FHIR @Zul:Pro @AF-ID:AF_10061-04 @AFO-ID:A_25045-01 @AFO-ID:A_25046 @NB:JA
+Funktionalität: 5.1.5 (3) Einladung von Akteuren außerhalb einer Organisation (Basis Spec)
+  In diesem Anwendungsfall wird ein Akteur außerhalb einer Organisation eingeladen. Für die Suche nach Akteuren
+  außerhalb der Organisation kann das VZD-FHIR-Directory verwendet werden. Ist die MXID des gesuchten Akteurs dort nicht
+  vorhanden, muss es die Möglichkeit geben, die Kontaktaufnahme auch auf anderen Wegen zu ermöglichen,
+  mindestens mittels manueller Eingabe der MXID. Weitere Optionen wie z. B. QR-Code-Scans sind zulässig.
+
+  COMMENT: Basis
+  AF_10061-04 Einladung von Akteuren außerhalb einer Organisation
+  A_25045-01  Funktionsumfang der Berechtigungskonfiguration
+  A_25046     Durchsetzung der Berechtigungskonfiguration - Client
+
+  Inhalt
+  TF 1  - 2  User (AllowAll) wird in Chat/Raum eingeladen
+  TF 3  - 4  User (BlockAll) wird in Chat/Raum eingeladen - Negativ
+
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD @Ctl:BP @TCID:TIM_V2_BASIS_AF_050301 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.03.01 Einladung außerhalb einer Organisation - AllowAll - Chat - HBA-User sucht anderen User
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN        | <ApiName1A> |
+      | B | PRO_CLIENT       | <ApiName1B> |
+      | C | PRO_PRACTITIONER | <ApiName2>  |
+    Und "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und "C" hinterlegt seine MXID im Verzeichnis Dienst
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" schreibt "B" über den Healthcare-Service "HealthcareServiceName1" direkt "Testnachricht 1"
+    Und "B" bestätigt eine Einladung von "C"
+    Und "B" empfängt eine Nachricht "Testnachricht 1" von "C"
+    Und "B" schreibt "C" direkt "Testnachricht 2"
+    Und "C" empfängt eine Nachricht "Testnachricht 2" von "B"
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("practitioner"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS3 | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD @Ctl:BP @TCID:TIM_V2_BASIS_AF_050302 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.03.02 Einladung außerhalb einer Organisation - AllowAll - Raum - HBA-User sucht anderen User
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN        | <ApiName1A> |
+      | B | PRO_CLIENT       | <ApiName1B> |
+      | C | PRO_PRACTITIONER | <ApiName2>  |
+    Und "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und "C" hinterlegt seine MXID im Verzeichnis Dienst
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" ist dem Raum "TIM Testraum 1" beigetreten
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("practitioner"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS4 | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD @Ctl:BP @TCID:TIM_V2_BASIS_AF_050303 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.03.03 Einladung außerhalb einer Organisation - BlockAll - Chat - HBA-User sucht anderen User
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN        | <ApiName1A> |
+      | B | PRO_CLIENT       | <ApiName1B> |
+      | C | PRO_PRACTITIONER | <ApiName2>  |
+    Und "B", "C" setzen den eigenen Authorization Mode auf "BlockAll"
+    Und "C" hinterlegt seine MXID im Verzeichnis Dienst
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" versucht "B" direkt "Testnachricht 1" zu schreiben
+    Dann erhält "C" einen Responsecode 403
+    Und "B" erhält KEINE Einladung von "C" [Retry 6 - 1]
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("practitioner"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS3 | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD @Ctl:BP @TCID:TIM_V2_BASIS_AF_050304 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.03.04 Einladung außerhalb einer Organisation - BlockAll - Raum - HBA-User sucht anderen User
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN        | <ApiName1A> |
+      | B | PRO_CLIENT       | <ApiName1B> |
+      | C | PRO_PRACTITIONER | <ApiName2>  |
+    Und "B", "C" setzen den eigenen Authorization Mode auf "BlockAll"
+    Und "C" hinterlegt seine MXID im Verzeichnis Dienst
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und "C" versucht "B" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann erhält "C" einen Responsecode 403
+    Und "B" erhält KEINE Einladung von "C" für den Raum "TIM Testraum 1" [Retry 6 - 1]
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("practitioner"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS3 | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #

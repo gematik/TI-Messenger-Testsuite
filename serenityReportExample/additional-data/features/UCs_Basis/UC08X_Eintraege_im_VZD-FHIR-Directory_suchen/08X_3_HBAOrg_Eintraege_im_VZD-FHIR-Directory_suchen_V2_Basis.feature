@@ -1,0 +1,53 @@
+# language: de
+@File:FeatureFile_08X_03_V2_Basis @Ctl:UseCaseV2_08X_Basis @PRODUKT:TI-M_Client_Basis @Zul:Pro @AFO-ID:A_25479 @AFO-ID:A_25428 @NB:JA
+Funktionalität: 08X. (3) Einträge im VZD-FHIR-Directory suchen (Basis Spec)
+  Der Anwendungsfall beschreibt, wie ein Akteur im VZD-FHIR-Directory nach HealthcareService- undPractitionerRole-
+  Ressourcen sucht. Dies setzt eine erfolgreiche Anmeldung des Akteurs an einem Messenger-Service voraus.
+
+  COMMENT: Basis
+  A_25479     Search Token
+  A_25428     VZD-FHIR-Directory Inhalte
+
+  Inhalt
+  TF 1     HBA-User sucht Healthcareservice im VZD
+  TF 2     HBA-User sucht Healthcareservice teilqualifiziert im VZD
+
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD @TCID:TIM_V2_BASIS_AF_08X0301 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 08X.03.01 Einträge im VZD-FHIR-Directory suchen - AllowAll - HBA-User sucht Healthcareservice im VZD
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN        | <ApiName1A> |
+      | B | PRO_CLIENT       | <ApiName1B> |
+      | C | PRO_PRACTITIONER | <ApiName2>  |
+    Und "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und "C" hinterlegt seine MXID im Verzeichnis Dienst
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    # @DistinctProperty(homeserver)
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName2.properties["homeserver"].equals(ApiName1A.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("practitioner"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS3 | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD @TCID:TIM_V2_BASIS_AF_08X0302 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 08X.03.02 Einträge im VZD-FHIR-Directory suchen - AllowAll - HBA-User sucht Healthcareservice teilqualifiziert im VZD
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN        | <ApiName1A> |
+      | B | PRO_CLIENT       | <ApiName1B> |
+      | C | PRO_PRACTITIONER | <ApiName2>  |
+    Und "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und "C" hinterlegt seine MXID im Verzeichnis Dienst
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet Healthcare-Service "HealthcareServiceName1" bei Suche nach Namen minus 0-1 (Anzahl vorne-hinten) Char(s) abgeschnitten
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    # @DistinctProperty(homeserver)
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName2.properties["homeserver"].equals(ApiName1A.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("practitioner"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS4 | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @DistinctProperty(homeserver)
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @DistinctProperty(homeserver)

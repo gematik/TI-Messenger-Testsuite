@@ -1,0 +1,312 @@
+# language: de
+@File:FeatureFile_06_01_V2_Basis @Ctl:UseCaseV2_06_Basis @PRODUKT:TI-M_Client_Basis @PRODUKT:TI-M_FD_Basis @PRODUKT:VZD_FHIR @Zul:Pro @Zul:ProKK @AF-ID:AF_10062-03 @AFO-ID:A_25575 @AFO-ID:A_25576 @AFO-ID:A_25492 @AFO-ID:A_26574 @AFO-ID:A_26575 @AFO-ID:A_25395-01 @AFO-ID:A_26077
+Funktionalität: 5.1.6 (1) Austausch von Events zwischen Akteuren außerhalb einer Organisation (Basis Spec)
+  In diesem Anwendungsfall können Akteure, welche sich in einem gemeinsamen Raum befinden, Nachrichten austauschen und
+  weitere in der Matrix-Spezifikation festgelegte Aktionen ausführen. Dieser Anwendungsfall setzt die erfolgreiche
+  Annahme eines Invite-Events durch einen oder mehrere beteiligte Akteure voraus. Die Prüfung auf Domainzugehörigkeit
+  findet bei jedem Event der Server-Server Kommunikation statt. In diesem Anwendungsfall sind die beteiligten Akteure
+  in einem gemeinsamen Chatraum und auf unterschiedlichen Messenger-Services verteilt.
+
+  COMMENT: Basis
+  AF_10062-03 Austausch von Events zwischen Akteuren außerhalb einer Organisation
+  A_25575     Löschung von Nachrichten
+  A_25576     Lokales Löschen bei Entfernung von Nachrichten aus dem Room State
+  A_25492     Löschfunktion des Clients
+  A_26574     Entschlüsseln von Nachrichten nach Wiederanmeldung
+  A_26575     Ablage von Schlüsseln zum Entschlüsseln von Nachrichten nach Wiederanmeldung
+  A_25395-01  Matrix Module - Direct Messaging/Event Replacements
+  A_26077     Server-seitiges Schlüssel-Backup
+
+  Inhalt
+  TF 1 - 2    User sendet Nachricht an anderen User über Healthcareservice (Chat/Raum)
+  TF 3 - 4    Löschen einer Nachricht durch User (Chat/Raum)
+  TF 5 - 6    Ändern einer Nachricht durch User (Chat/Raum)
+  TF 7        User sendet eine Nachricht an ausgeloggten User - Dehydrated Devices (Raum)
+  TF 9 - 10   User sendet und ändert eine Nachricht an ausgeloggten User - Dehydrated Devices (Chat/Raum)
+  TF 11       User sendet ein Attachment an ausgeloggten User über Matrix-Protokoll v1.11 - Dehydrated Devices
+  TF 13       Gruppenchat - Drei User schreiben sich gegenseitig (Raum)
+
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD @TCID:TIM_V2_BASIS_AF_060101 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:JA
+  Szenariogrundriss: 06.01.01 Austausch von Events außerhalb einer Organisation - Chat - AllowAll - User sendet Nachricht an anderen User über Healthcareservice
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Wenn "C" schreibt "B" direkt "Testnachricht 1"
+    Und "B" erhält eine Einladung von "C"
+    Und "B" bestätigt eine Einladung von "C"
+    Dann "B" empfängt eine Nachricht "Testnachricht 1" von "C"
+    Wenn "B" schreibt "C" direkt "Testnachricht 2"
+    Dann "C" empfängt eine Nachricht "Testnachricht 2" von "B"
+
+    # @MaxSameColumnProperty(ApiName2,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS3 | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD @TCID:TIM_V2_BASIS_AF_060102 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 06.01.02 Austausch von Events außerhalb einer Organisation - Raum - AllowAll - User sendet Nachricht an anderen User über Healthcareservice
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Wenn "C" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Dann "B" empfängt eine Nachricht "Testnachricht 1" von "C" im Raum "TIM Testraum 1"
+
+    # @MaxSameColumnProperty(ApiName2,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS3 | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD @Ctl:MsgDelete @TCID:TIM_V2_BASIS_AF_060103 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 06.01.03 Austausch von Events außerhalb einer Organisation - Chat - AllowAll - Löschen einer Nachricht durch User
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" schreibt "B" direkt "Testnachricht 1"
+    Und "B" erhält eine Einladung von "C"
+    Und "B" bestätigt eine Einladung von "C"
+    Und "B" empfängt eine Nachricht "Testnachricht 1" von "C"
+    Wenn "C" löscht seine Nachricht "Testnachricht 1" im Chat mit "B"
+    Dann "B" kann die Nachricht "Testnachricht 1" von "C" im Chat mit "C" nicht mehr sehen [Retry 6 - 1]
+    Und "C" kann die Nachricht "Testnachricht 1" von "C" im Chat mit "B" nicht mehr sehen [Retry 6 - 1]
+
+    # @MaxSameColumnProperty(ApiName2,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS4 | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD @Ctl:MsgDelete @TCID:TIM_V2_BASIS_AF_060104 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 06.01.04 Austausch von Events außerhalb einer Organisation - Raum - AllowAll - Löschen einer Nachricht durch User
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "C" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Und "B" empfängt eine Nachricht "Testnachricht 1" von "C" im Raum "TIM Testraum 1"
+    Wenn "C" löscht seine Nachricht "Testnachricht 1" im Raum "TIM Testraum 1"
+    Dann "B" kann die Nachricht "Testnachricht 1" von "C" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+    Und "C" kann die Nachricht "Testnachricht 1" von "C" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+
+    # @MaxSameColumnProperty(ApiName2,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS3 | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD @Ctl:MsgEdit @TCID:TIM_V2_BASIS_AF_060105 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 06.01.05 Austausch von Events außerhalb einer Organisation - Chat - AllowAll - Ändern einer Nachricht durch User
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" schreibt "B" direkt "Testnachricht 1"
+    Und "B" erhält eine Einladung von "C"
+    Und "B" bestätigt eine Einladung von "C"
+    Und "B" empfängt eine Nachricht "Testnachricht 1" von "C"
+    Dann "C" ändert seine letzte Nachricht im Chat mit "B" in "Testnachricht 2"
+    Wenn "B" empfängt eine Nachricht "Testnachricht 2" von "C"
+    Dann "B" kann die Nachricht "Testnachricht 1" von "C" im Chat mit "C" nicht mehr sehen [Retry 6 - 1]
+    Und "C" kann die Nachricht "Testnachricht 1" von "C" im Chat mit "B" nicht mehr sehen [Retry 6 - 1]
+
+    # @MaxSameColumnProperty(ApiName2,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS4 | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD @Ctl:MsgEdit @TCID:TIM_V2_BASIS_AF_060106 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 06.01.06 Austausch von Events außerhalb einer Organisation - Raum - AllowAll - Ändern einer Nachricht durch User
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "C" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Und "B" empfängt eine Nachricht "Testnachricht 1" von "C" im Raum "TIM Testraum 1"
+    Dann "C" ändert seine letzte Nachricht im Raum "TIM Testraum 1" in "Testnachricht 2"
+    Wenn "B" empfängt eine Nachricht "Testnachricht 2" von "C" im Raum "TIM Testraum 1"
+    Und "B" kann die Nachricht "Testnachricht 1" von "C" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+    Und "C" kann die Nachricht "Testnachricht 1" von "C" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+
+    # @MaxSameColumnProperty(ApiName2,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS4 | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD @Ctl:MsgDehydrated @TCID:TIM_V2_BASIS_AF_060107 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 06.01.07 Austausch von Events außerhalb einer Organisation - Raum - AllowAll - User sendet eine Nachricht an ausgeloggten User (Positiv)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und "B" loggt sich im TI-Messenger aus
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und "C" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Wenn "B" loggt sich im TI-Messenger ein
+    Dann "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" empfängt eine Nachricht "Testnachricht 1" von "C" im Raum "TIM Testraum 1"
+
+    # @MaxSameColumnProperty(ApiName2,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS4 | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD @Ctl:MsgDehydrated @Ctl:MsgEdit @TCID:TIM_V2_BASIS_AF_060109 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 06.01.09 Austausch von Events außerhalb einer Organisation - Chat - AllowAll - User sendet und ändert eine Nachricht an ausgeloggten User (Positiv)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und "B" loggt sich im TI-Messenger aus
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" schreibt "B" direkt "Testnachricht 1"
+    Dann "C" ändert seine letzte Nachricht im Chat mit "B" in "Testnachricht 2"
+    Wenn "B" loggt sich im TI-Messenger ein
+    Und "B" erhält eine Einladung von "C"
+    Und "B" bestätigt eine Einladung von "C"
+    Wenn "B" empfängt eine Nachricht "Testnachricht 2" von "C"
+    Dann "B" kann die Nachricht "Testnachricht 1" von "C" im Chat mit "C" nicht mehr sehen [Retry 6 - 1]
+
+    # @MaxSameColumnProperty(ApiName2,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS4 | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD @Ctl:MsgDehydrated @Ctl:MsgEdit @TCID:TIM_V2_BASIS_AF_060110 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 06.01.10 Austausch von Events außerhalb einer Organisation - Raum - AllowAll - User sendet und ändert eine Nachricht an ausgeloggten User (Positiv)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und "B" loggt sich im TI-Messenger aus
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und "C" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Und "C" ändert seine letzte Nachricht im Raum "TIM Testraum 1" in "Testnachricht 2"
+    Wenn "B" loggt sich im TI-Messenger ein
+    Dann "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" empfängt eine Nachricht "Testnachricht 2" von "C" im Raum "TIM Testraum 1"
+    Und "B" kann die Nachricht "Testnachricht 1" von "C" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+
+    # @MaxSameColumnProperty(ApiName2,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS3 | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD @Ctl:Attachment @Ctl:MsgDehydrated @TCID:TIM_V2_BASIS_AF_060111 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 06.01.11 Austausch von Events außerhalb einer Organisation - Raum - AllowAll - User sendet ein Attachment an ausgeloggten User über Matrix-Protokoll v1.11
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und "B" loggt sich im TI-Messenger aus
+    Und "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Wenn "C" sendet ein Attachment "bild.jpg" als "m.image" an den Raum "TIM Testraum 1"
+    Wenn "B" loggt sich im TI-Messenger ein
+    Dann "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" ist dem Raum "TIM Testraum 1" beigetreten
+    Dann "B" empfängt das Attachment "bild.jpg" von "C" im Raum "TIM Testraum 1" über Matrix-Protokoll v1.11 als "m.image"
+
+    # @MaxSameColumnProperty(ApiName2,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS3 | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:AllowAll @TCID:TIM_V2_BASIS_AF_060113 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 06.01.13 Austausch von Events außerhalb einer Organisation - Raum - AllowAll - Gruppenchat - Drei User schreiben sich gegenseitig
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2A> |
+      | D | PRO_CLIENT | <ApiName2B> |
+    Und "B", "C", "D" setzen den eigenen Authorization Mode auf "AllowAll"
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" ist dem Raum "TIM Testraum 1" beigetreten
+    Wenn "C" findet TI-Messenger-Nutzer "D" bei der Suche im HomeServer
+    Und "C" lädt "D" in Chat-Raum "TIM Testraum 1" ein
+    Und "D" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "D" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "D" ist dem Raum "TIM Testraum 1" beigetreten
+    Und "C" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Und "B", "D" empfangen eine Nachricht "Testnachricht 1" von "C" im Raum "TIM Testraum 1"
+    Und "B" sendet die Nachricht "Testnachricht 2" an den Raum "TIM Testraum 1"
+    Und "C", "D" empfangen eine Nachricht "Testnachricht 2" von "B" im Raum "TIM Testraum 1"
+    Und "D" sendet die Nachricht "Testnachricht 3" an den Raum "TIM Testraum 1"
+    Und "B", "C" empfangen eine Nachricht "Testnachricht 3" von "D" im Raum "TIM Testraum 1"
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"])) @Plugin:Filter(!ApiName1A.properties["homeserver"].equals(ApiName2A.properties["homeserver"])) @Plugin:AllowSelfCombine(true) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2A.hasTag("proClient")) @Plugin:Filter(ApiName2B.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2A             | ApiName2B             |
+      | RU2-Ref-ORG-Web-HS3 | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS4 |
+# @MaxSameColumnProperty(ApiName2,homeserver,1) #
+# @MaxSameColumnProperty(ApiName2,homeserver,1) #
+# @MaxSameColumnProperty(ApiName2,homeserver,1) #
+# @MaxSameColumnProperty(ApiName2,homeserver,1) #
+# @MaxSameColumnProperty(ApiName2,homeserver,1) #
+# @MaxSameColumnProperty(ApiName2,homeserver,1) #
+# @MaxSameColumnProperty(ApiName2,homeserver,1) #
+# @MaxSameColumnProperty(ApiName2,homeserver,1) #
+# @MaxSameColumnProperty(ApiName2,homeserver,1) #
+# @MaxSameColumnProperty(ApiName2,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #

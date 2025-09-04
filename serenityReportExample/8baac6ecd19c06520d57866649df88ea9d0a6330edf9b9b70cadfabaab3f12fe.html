@@ -1,0 +1,1939 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Serenity Reports</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+<link rel="apple-touch-icon" sizes="57x57" href="apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">
+<link rel="stylesheet" href="bootstrap-icons/bootstrap-icons.css">
+<!-- JQuery -->
+<script type="text/javascript" src="scripts/jquery-3.7.1.min.js"></script><!-- Required Stylesheets -->
+<link href="bootstrap-treeview/dist/bootstrap-treeview.min.css" rel="stylesheet">
+
+<!-- Required Javascript -->
+<script src="bootstrap-treeview/dist/bootstrap-treeview.min.js"></script><!-- DataTables -->
+<link type="text/css" href="datatables/1.13.1/datatables.min.css" rel="stylesheet" />
+<script type="text/javascript" src="datatables/1.13.1/datatables.min.js"></script>
+<script type="text/javascript" src="datatables/1.13.1/time-elapsed-dhms.js"></script>
+
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script src="bootstrap/js/bootstrap.min.js"></script>
+
+
+<script>
+    jQuery.fn.dataTable.ext.type.order['time-elapsed-dhms-pre'] = function(data) {
+
+        var matches = data.match(/^(\d+(?:\.\d+)?)\s*([a-z]+)/i);
+        var multipliers = {
+            ms: 1,
+            s: 1000,
+            m: 60000,
+            h: 3600000,
+            d: 86400000
+        };
+
+        if (matches) {
+            var multiplier = multipliers[matches[2].toLowerCase()];
+            return parseFloat(matches[1]) * multiplier;
+        } else {
+            return -1;
+        };
+    };
+</script>
+<link rel="stylesheet" href="css/core.css"/>
+<link rel="stylesheet" href="css/link.css"/>
+<link type="text/css" media="screen" href="css/screen.css" rel="Stylesheet"/>
+<!--CHART.JS-->
+<script src="chartjs/chart.js"></script>
+<script src="chartjs/chartjs-plugin-datalabels@2.0.0.min.js"></script>
+<script src="chartjs/patternomaly.min.js"></script>
+<script>
+    // Register the plugin to all charts:
+    Chart.register(ChartDataLabels);
+</script>
+<!-- JQuery-UI -->
+<link type="text/css" href="jqueryui/1.13.2/jquery-ui.css" rel="Stylesheet" />
+<script type="text/javascript" src="jqueryui/1.13.2/jquery-ui.js"></script><!-- DataTables -->
+<link type="text/css" href="datatables/1.13.1/datatables.min.css" rel="stylesheet" />
+<script type="text/javascript" src="datatables/1.13.1/datatables.min.js"></script>
+<script type="text/javascript" src="datatables/1.13.1/time-elapsed-dhms.js"></script>
+
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script src="bootstrap/js/bootstrap.min.js"></script>
+
+
+<script>
+    jQuery.fn.dataTable.ext.type.order['time-elapsed-dhms-pre'] = function(data) {
+
+        var matches = data.match(/^(\d+(?:\.\d+)?)\s*([a-z]+)/i);
+        var multipliers = {
+            ms: 1,
+            s: 1000,
+            m: 60000,
+            h: 3600000,
+            d: 86400000
+        };
+
+        if (matches) {
+            var multiplier = multipliers[matches[2].toLowerCase()];
+            return parseFloat(matches[1]) * multiplier;
+        } else {
+            return -1;
+        };
+    };
+</script>
+
+
+
+
+    <script class="code" type="text/javascript">$(document).ready(function () {
+
+            $("#scenario-results").DataTable({
+                "order": [[0, "asc",], [1, "asc",], [2, "asc",]],
+                "language": {
+                    searchPlaceholder: "Filter",
+                    search: ""
+                },
+                columnDefs: [
+                    {
+                        targets: 4,
+                        visible: false
+                    },
+                    {type: 'time-elapsed-dhms', targets: 6}
+                ]
+            })
+            $("#manual-scenario-results").DataTable({
+                "order": [[0, "asc",], [1, "asc",]],
+                "language": {
+                    searchPlaceholder: "Filter",
+                    search: ""
+                },
+                columnDefs: [
+                    {
+                        targets: 4,
+                        visible: false
+                    },
+                ]
+            })
+
+            // Results table
+            $('#test-results-table').DataTable({
+                "order": [[0, "asc",], [3, "asc",]],
+                "pageLength": 10,
+                "lengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]]
+            });
+
+            $('#evidence-table').DataTable({
+            });
+
+            $(".feature-coverage-table").DataTable({
+                searching: true,
+                paging: false,
+                info: false,
+                language: {
+                    searchPlaceholder: "Filter",
+                    search: ""
+                },
+                columnDefs: [
+                    {
+                        targets: 2,
+                        visible: false
+                    },
+                ]
+            });
+
+            $(".feature-coverage-table-with-pagination").DataTable({
+                searching: true,
+                order: [[0, "asc",]],
+                pageLength: 10,
+                language: {
+                    searchPlaceholder: "Filter",
+                    search: ""
+                },
+                columnDefs: [
+                    {
+                        targets: 2,
+                        visible: false
+                    },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body class="results-page">
+<div id="topheader">
+    <div id="topbanner">
+        <div id="logo"><a href="index.html"><img src="images/serenity-logo.png" border="0"/></a></div>
+        <div id="projectname-banner" style="float:right">
+            <span class="projectname">
+                <span class="projecttitle">Serenity BDD Report</span>
+                <span class="projectsubtitle"></span>
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="middlecontent">
+
+
+    <div id="contenttop">
+        <div class="middlebg">
+        <span class="breadcrumbs"><a href="index.html">Home</a>
+                    > Ctl 
+                > <span class="truncate-60">
+                UseCaseV2 04 Basis
+            </span>
+        </span>
+        </div>
+        <div class="rightbg"></div>
+    </div>
+
+    <div class="clr"></div>
+    <!--/* starts second table*/-->
+        <div>
+            <table class="table environment">
+                <tr>
+                        <th class="custom-title">
+                            Pool group string
+                        </th>
+                        <th class="custom-title">
+                            Used items
+                        </th>
+                        <th class="custom-title">
+                            Used groups
+                        </th>
+                </tr>
+                <tr>
+                        <td class="custom-value">
+                            <div>RU2,0,WILDCARD</div>
+                        </td>
+                        <td class="custom-value">
+                            <div>RU2-Ref-ORG-Web-HS4 ---> https://oapub-d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev/ti-messenger-testdriver/</div><div>RU2-Ref-Pract-SDK-HS4 ---> https://ctdpub-d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev</div><div>RU2-Ref-ORG-Web-HS3 ---> https://oapub-10c810c7-6cc5-4e3f-b878-950b3b293644.ru.timref.akquinet.nx2.dev/ti-messenger-testdriver/</div><div>RU2-Ref-Pract-SDK-HS3 ---> https://ctdpub-10c810c7-6cc5-4e3f-b878-950b3b293644.ru.timref.akquinet.nx2.dev</div>
+                        </td>
+                        <td class="custom-value">
+                             [RU2]: <div>RU2-Ref-ORG-Web-HS4 ---> https://oapub-d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev/ti-messenger-testdriver/</div><div>RU2-Ref-Pract-SDK-HS4 ---> https://ctdpub-d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev</div><div>RU2-Ref-ORG-Web-HS3 ---> https://oapub-10c810c7-6cc5-4e3f-b878-950b3b293644.ru.timref.akquinet.nx2.dev/ti-messenger-testdriver/</div><div>RU2-Ref-Pract-SDK-HS3 ---> https://ctdpub-10c810c7-6cc5-4e3f-b878-950b3b293644.ru.timref.akquinet.nx2.dev</div>
+                        </td>
+                </tr>
+            </table>
+        </div>
+<div>
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#"><i class="bi bi-journal-check"></i> Overall Test Results</a>
+        </li>
+        <li >
+            <a href="capabilities.html"><i class="bi bi-journal-text"></i> Requirements</a>
+        </li>
+    </ul>
+    <span class="date-and-time"><a href="build-info.html"><i class="bi bi-info-circle"></i></a> Report generated 12-08-2025 23:05:53</span>
+    <br style="clear:left"/>
+</div>
+    <div class="clr"></div>
+    <div id="beforetable"></div>
+    <div id="results-dashboard">
+        <div class="middlb">
+            <div class="table">
+
+                <h2><i class='bi bi-tags'></i> Ctl: UseCaseV2 04 Basis</h2>
+                <table class='overview'>
+                    <tr>
+                        <td width="375px" valign="top">
+                            <div class="test-count-summary">
+                                <div class="test-count-title">
+                                    11 tests
+
+                                     |
+                                        <a href="8baac6ecd19c06520d57866649df88ea9d0a6330edf9b9b70cadfabaab3f12fe.csv" title="Download CSV"> <i class="bi bi-cloud-arrow-down"
+                                                                                        title="Download CSV"></i></a>
+
+
+                                </div>
+                            </div>
+
+                            <div>
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a data-toggle="tab" href="#summary"><i class="bi bi-house-door"></i>
+                                            Summary</a>
+                                    </li>
+                                    <li>
+                                        <a data-toggle="tab" href="#tests"><i class="bi bi-speedometer"></i> Test
+                                            Results</a>
+                                    </li>
+                                        <li>
+                                            <a data-toggle="tab" href="#evidence"><i class="bi bi-download"></i>Evidence</a>
+                                        </li>
+                                </ul>
+
+
+                                <div class="card border">
+                                    <div class="tab-content" id="pills-tabContent">
+                                        <div id="summary" class="tab-pane fade in active">
+                                            <div class="container-fluid">
+                                                <div class="dashboard-charts row">
+                                                    <div class="col-lg-4 col-md-6 col-sm-9">
+                                                        <!-- PIE CHART -->
+                                                        <h4><i class="bi bi-pie-chart"></i> Overview</h4>
+                                                            <div class="chart-container">
+                                                                <canvas id="resultChart" height="200px"></canvas>
+                                                            </div>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-6 col-sm-9">
+                                                        <h4><i class="bi bi-check-square"></i> Test Outcomes</h4>
+                                                        <!-- Severity bar chart -->
+                                                        <div class="chart-container">
+                                                            <canvas id="severityChart" height="200px"></canvas>
+                                                        </div>
+                                                    </div>
+                                                        <div class="col-lg-4 col-md-6 col-sm-9">
+                                                            <h4><i class="bi bi-graph-up"></i> Test Performance</h4>
+
+                                                            <!-- Duration bar chart -->
+                                                            <div class="chart-container">
+                                                                <canvas id="durationChart" height="200px"></canvas>
+                                                            </div>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    <div class="col-lg-4 col-md-4 col-sm-6">
+    <div>
+        <h3><i class="bi bi-speedometer2"></i> Key Statistics</h3>
+        <div>
+            <table class="table table-striped table-hover">
+                <tbody>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-card-checklist"></i> Number of Scenarios
+                    </td>
+                    <td>11</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-caret-right"></i> Total Number of Test Cases
+                    </td>
+                    <td>11</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-flag-fill"></i> Tests Started
+                    </td>
+                    <td>Aug 12, 2025 20:25:22</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-stop-circle"></i> Tests
+                        Finished
+                    </td>
+                    <td>Aug 12, 2025 22:52:19</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-stopwatch"></i> Total
+                        Duration
+                    </td>
+                    <td> 2h  26m 56s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-trophy"></i> Fastest Test
+                    </td>
+                    <td> 1m 21s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-skip-start"></i> Slowest
+                        Test
+                    </td>
+                    <td> 2m 23s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-stopwatch"></i> Average
+                        Execution Time
+                    </td>
+                    <td> 1m 38s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-stopwatch-fill"></i> Total
+                        Execution Time
+                    </td>
+                    <td> 18m 1s</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container-fluid">
+
+                                            </div>
+                                            <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Tags</h3>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">AF-ID</h5>
+                            <div>
+                                    <a href="ad9bee07d5b5e89a7f16aea15d4d47517b6334321ebeee142e728f83a8f027ce.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> AF 10063-01&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">AFO-ID</h5>
+                            <div>
+                                    <a href="0c2b5548eef5d769e73b9ddb7eaf80f7139d920fc6c24a2746c632e91a441a7e.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 25492&nbsp;&nbsp;&nbsp;9
+                                    </span>
+                                    </a>
+                                    <a href="ed73ad3d3d3cb682c07e7b751cbdef194aa1d5cedd96a2968ac11ce5e5a6583d.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 26077&nbsp;&nbsp;&nbsp;9
+                                    </span>
+                                    </a>
+                                    <a href="750f765838001ffdac991f379e5c1a0f5bbce6777ce71954d9c5df0633d10973.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 26574&nbsp;&nbsp;&nbsp;9
+                                    </span>
+                                    </a>
+                                    <a href="b87e031c5b4cfb211a0a3cb638b26838dc24510b22fe99725eb9ae03f1023894.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 25395-01&nbsp;&nbsp;&nbsp;9
+                                    </span>
+                                    </a>
+                                    <a href="669bdcab69147275f2999f8490ac4620a01a2078c991d4d79a2da84d1cbee41e.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 25575&nbsp;&nbsp;&nbsp;9
+                                    </span>
+                                    </a>
+                                    <a href="10096cc08d4efe7673015f82f5bdf4df10ac1760bf4f9dc103125b9cffb7e4e2.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 26575&nbsp;&nbsp;&nbsp;9
+                                    </span>
+                                    </a>
+                                    <a href="25168b7dbe1d88ceebb8aa396f218d7ffd016c34e103d38185065f0c4ac9a403.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 25576&nbsp;&nbsp;&nbsp;9
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Ctl</h5>
+                            <div>
+                                    <a href="433dbdec7099d55cccf447b0660d9b06722888e8a312338bd37145a955698b51.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Msg Delete&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                                    <a href="dd5437ee92562e21292e2b7f5d26ec43c47771dec3a806979b99b8c6978ade10.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Msg Edit&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                                    <a href="c5debdec3046d0fc0e04b05f94c4aae3fb490b5db5c5241253a221f076b98273.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Vzd&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="d0b32cf5c2573baf79c3489637157238d8bdb5da84eec2db1357506a1e11c1fb.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Allow All&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                                    <a href="5a1118d148f28f694ba9248bccbe65242f88731bd1f49ed0d53d91acc6fef0b2.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> One Home Server&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                                    <a href="6298e1dac1eeddff79fb6e5c5a0bf02547c050d530adedf2cad58474e749506d.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Org Admin&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                                    <a href="8baac6ecd19c06520d57866649df88ea9d0a6330edf9b9b70cadfabaab3f12fe.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> UseCaseV2 04 Basis&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">File</h5>
+                            <div>
+                                    <a href="5ae9e05731dc13af07df9900fdf12d2fe1d4a74b697da733b18b596dc9198aa2.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Featurefile 04 01 V2 Basis&nbsp;&nbsp;&nbsp;9
+                                    </span>
+                                    </a>
+                                    <a href="a4ce789710e842d11b435371baf7b992312cffcd88c2e34f53cb22ce089ef595.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Featurefile 04 04 V2 Basis&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Nb</h5>
+                            <div>
+                                    <a href="6c3176dab12e20d3f33b521cd28e4287e04cca162711c2a46ee6d6270be51c18.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Nein&nbsp;&nbsp;&nbsp;9
+                                    </span>
+                                    </a>
+                                    <a href="061e0d44c3842a1a3e1a6c42a92321448d2e09caa7a933a2e16e48aedadc765c.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Ja&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Prio</h5>
+                            <div>
+                                    <a href="7748df88f2c56a8cb6f2fb2e9c999c5782b6158037eec2da2975d7b7a25436d8.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> 1&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Produkt</h5>
+                            <div>
+                                    <a href="f7ec57d495a4882eb70ab1bf9636e653a9800e0f0c080dfc217938ad7721c248.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TI-M FD Basis&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                                    <a href="77e3e49441a15427e6dfa1d7c22dfb483bf88791320a2d3fa6dfb87cd322cf71.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TI-M Client Basis&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Plugin</h5>
+                            <div>
+                                    <a href="53d6c90d53a8107d99f4c02654c164a4ec2ecbfeae7bc3d947b1f20ea4742dd5.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Filter(ApiName1A.hastag("practitioner"))&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                                    <a href="77ddf50bc41eb16183856021c4678620ddbdb9465f6787486e455f3b6e8548c0.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Filter(ApiName1C.hastag("proclient"))&nbsp;&nbsp;&nbsp;3
+                                    </span>
+                                    </a>
+                                    <a href="045d390b85b61c0375fc56b7d71e640ab460d9defd6b39290708a73426934e51.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Shuffle(True)&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                                    <a href="2f6192b3ba5dac37cc7455f5d365e30b4ab7da93eee92d0de351522e7095f1be.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Filter(ApiName1A.hastag("orgadmin"))&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                                    <a href="c3d11e62b65a7d2eef87865fb53dad673ccf92da2396d4a92a5bfb7d6a9cc0b0.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Filter(ApiName1B.hastag("proclient"))&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                                    <a href="b30e52c31e801a3ee8179b16dc44c7d1c2050eb7f829d718e6d535e40063bd2e.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Filter(ApiName1A.hastag("proclient"))&nbsp;&nbsp;&nbsp;9
+                                    </span>
+                                    </a>
+                                    <a href="fa8963e64f67ab2303c1a4c5678e612ac776c31c4b8a6d04bf3c3976a18cdade.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Equalproperty(Homeserver)&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                                    <a href="21cc247afa3fdfe6be75f029dee3024d706344f8d861a9b7e5601fde1f0897fb.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Filter(ApiName1B.hastag("practitioner"))&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                                    <a href="04794a5ed960fc5e469a40bd2b884fa31e50607bbf1941403bbe56008edf5d83.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Allowdoublelineup(False)&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                                    <a href="19beb0144b3a38e9d778fca7596fe5da635d6cce390659672a0abbfa06374401.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Allowselfcombine(True)&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Status</h5>
+                            <div>
+                                    <a href="16b36824af0423c8594aa55c340a5be9a21ff049608858e50f41700f9f05ac68.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Implementiert&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Tcid</h5>
+                            <div>
+                                    <a href="e19f4c87ec2b0022f0075d2021e71619c81767b0f4c563ea8458c118ab948256.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 040115&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="39630aabe067c057fb8ab311f2790fdad3918bdb6ae56d069bc9ff9073814163.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 040103&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="ac60b4b881961928d2539bf998f0dab6658ced71ef048b46080fe9aec04db1ee.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 040107&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="29a1c991e00cfde70acb372dac3785773e217977732b11407b4d59b4b81a5de1.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 040402&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="e1a326897e9225445385a14c98b5d626b9ca1f3996aa4904ada50bd190525a79.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 040104&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="961afe7849e16db3908733306e45debf3d9a39a961f22d4e21e5e2937796e03a.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 040108&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="3f0a50e8513e2761c9f998657d69a443cc6f38873c7f40651aa8fe391bcae5db.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 040101&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="e727cc3bf08dbd4e6f3dc980bb79015527755fcffbd951176b214379d5c46ea5.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 040105&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="241e4842252bf7707496ceb7052c1904bc90edde7a6ce100e481c26c43cf4d1e.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 040102&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="5fdbdaec83490ecc31cdcf589a77a28d843d4a82cf81b941d7042ba5c8340003.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 040401&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="2a48326325f856eb1017d4d967e4162ce22890a49cc4098f14323efbd1a551cd.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 040106&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Testfall</h5>
+                            <div>
+                                    <a href="b4cbf857506990c596fb50faff38a3afd018e4657602837e3869c8ea75d140e1.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Positiv&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Zul</h5>
+                            <div>
+                                    <a href="e11fe88c90e04b74aacca98c4911cfd5d8e24be4d55e026531948bb3883f1dbc.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Pro&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                                    <a href="f696a82952b18ab3ef913d09362e4c385161759145754f7bb48fc927b902d1b4.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Pro Kk&nbsp;&nbsp;&nbsp;9
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+                                            </div>
+                                        </div>
+                                        <div id="tests" class="tab-pane fade">
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+    <div>
+        <h3><i class="bi bi-speedometer2"></i> Key Statistics</h3>
+        <div>
+            <table class="table table-striped table-hover">
+                <tbody>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-card-checklist"></i> Number of Scenarios
+                    </td>
+                    <td>11</td>
+                    <td>
+                        <i class="bi bi-stopwatch"></i> Total
+                        Duration
+                    </td>
+                    <td> 2h  26m 56s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-caret-right"></i> Total Number of Test Cases
+                    </td>
+                    <td>11</td>
+                    <td>
+                        <i class="bi bi-trophy"></i> Fastest Test
+                    </td>
+                    <td> 1m 21s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-person"></i> Number of Manual Test Cases
+                    </td>
+                    <td>0</td>
+                    <td>
+                        <i class="bi bi-skip-start"></i> Slowest
+                        Test
+                    </td>
+                    <td> 2m 23s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-flag-fill"></i> Tests Started
+                    </td>
+                    <td>Aug 12, 2025 20:25:22</td>
+                    <td>
+                        <i class="bi bi-stopwatch"></i> Average
+                        Execution Time
+                    </td>
+                    <td> 1m 38s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-stop-circle"></i> Tests
+                        Finished
+                    </td>
+                    <td>Aug 12, 2025 22:52:19</td>
+                    <td>
+                        <i class="bi bi-stopwatch-fill"></i> Total
+                        Execution Time
+                    </td>
+                    <td> 18m 1s</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+                                                        <h3><i class="bi bi-gear"></i> Automated Scenarios</h3>
+
+                                                            <table class="scenario-result-table table" id="scenario-results" style="width:100%">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>Feature</th>
+                                                                    <th class="test-name-column">Scenario</th>
+                                                                    <th>Context</th>
+                                                                    <th>Steps</th>
+                                                                    <th>StepsText</th>
+                                                                    <th>Started</th>
+                                                                    <th>Total Duration</th>
+                                                                    <th>Result</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr class="scenario-result SUCCESS">
+                                                                        <td>
+                                                                                <a href="#">5.1.4 (1) Austausch von Events innerhalb einer Organisation (Basis Spec)</a>
+                                                                        </td>
+                                                                        <td data-order="04.01.01 Austausch von Events innerhalb einer Organisation - Chat - User sendet Nachricht an anderen User über HomeServer">
+                                                                            <i class="bi bi-table"
+                                                                               title="Data Driven Scenario"> <a
+                                                                                        href="76d078ac10f43d325b102acdfaa480b6f9b63475f261696b4553aff56ad2b93b.html">04.01.01 Austausch von Events innerhalb einer Organisation - Chat - User sendet Nachricht an anderen User über HomeServer</a>
+                                                                                <br/>
+                                                                                    <a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> 1 passing test case
+                                                                                    <br/>
+                                                                        </td>
+                                                                        <td><span style="display:none"></span>
+                                                                        </td>
+                                                                        <td>9</td>
+                                                                        <td>Angenommen Es werden folgende Clients reserviert:
+
+
+|A | PRO_CLIENT | &lt;ApiName1A&gt;|
+|---|---|---|
+|B | PRO_CLIENT | &lt;ApiName1B&gt;|
+
+Und &quot;A&quot;, &quot;B&quot; setzen den eigenen Authorization Mode auf &quot;AllowAll&quot;
+Wenn &quot;A&quot; findet TI-Messenger-Nutzer &quot;B&quot; bei der Suche im HomeServer
+Wenn &quot;A&quot; schreibt &quot;B&quot; direkt &quot;Testnachricht 1&quot;
+Und &quot;B&quot; erhält eine Einladung von &quot;A&quot;
+Und &quot;B&quot; bestätigt eine Einladung von &quot;A&quot;
+Dann &quot;B&quot; empfängt eine Nachricht &quot;Testnachricht 1&quot; von &quot;A&quot;
+Wenn &quot;B&quot; schreibt &quot;A&quot; direkt &quot;Testnachricht 2&quot;
+Dann &quot;A&quot; empfängt eine Nachricht &quot;Testnachricht 2&quot; von &quot;B&quot;
+</td>
+                                                                        <td data-order="1755031046">22:37:26</td>
+                                                                        <td>1m 21s</td>
+                                                                        <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span
+                                                                                    style="display:none">SUCCESS</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr class="scenario-result SUCCESS">
+                                                                        <td>
+                                                                                <a href="#">5.1.4 (1) Austausch von Events innerhalb einer Organisation (Basis Spec)</a>
+                                                                        </td>
+                                                                        <td data-order="04.01.02 Austausch von Events innerhalb einer Organisation - Raum - User sendet Nachricht an anderen User über HomeServer">
+                                                                            <i class="bi bi-table"
+                                                                               title="Data Driven Scenario"> <a
+                                                                                        href="2018944b7433e19ff6f23a3bf67a5cb81951bc0a3e20fcb2a2b8e010938a5999.html">04.01.02 Austausch von Events innerhalb einer Organisation - Raum - User sendet Nachricht an anderen User über HomeServer</a>
+                                                                                <br/>
+                                                                                    <a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> 1 passing test case
+                                                                                    <br/>
+                                                                        </td>
+                                                                        <td><span style="display:none"></span>
+                                                                        </td>
+                                                                        <td>9</td>
+                                                                        <td>Angenommen Es werden folgende Clients reserviert:
+
+
+|A | PRO_CLIENT | &lt;ApiName1A&gt;|
+|---|---|---|
+|B | PRO_CLIENT | &lt;ApiName1B&gt;|
+
+Und &quot;A&quot;, &quot;B&quot; setzen den eigenen Authorization Mode auf &quot;AllowAll&quot;
+Wenn &quot;A&quot; findet TI-Messenger-Nutzer &quot;B&quot; bei der Suche im HomeServer
+Und &quot;A&quot; erstellt einen Chat-Raum &quot;TIM Testraum 1&quot;
+Und &quot;A&quot; lädt &quot;B&quot; in Chat-Raum &quot;TIM Testraum 1&quot; ein
+Und &quot;B&quot; erhält eine Einladung in Raum &quot;TIM Testraum 1&quot; von &quot;A&quot;
+Und &quot;B&quot; bestätigt eine Einladung in Raum &quot;TIM Testraum 1&quot; von &quot;A&quot;
+Wenn &quot;A&quot; sendet die Nachricht &quot;Testnachricht 1&quot; an den Raum &quot;TIM Testraum 1&quot;
+Dann &quot;B&quot; empfängt eine Nachricht &quot;Testnachricht 1&quot; von &quot;A&quot; im Raum &quot;TIM Testraum 1&quot;
+</td>
+                                                                        <td data-order="1755031128">22:38:48</td>
+                                                                        <td>1m 28s</td>
+                                                                        <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span
+                                                                                    style="display:none">SUCCESS</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr class="scenario-result SUCCESS">
+                                                                        <td>
+                                                                                <a href="#">5.1.4 (1) Austausch von Events innerhalb einer Organisation (Basis Spec)</a>
+                                                                        </td>
+                                                                        <td data-order="04.01.03 Austausch von Events innerhalb einer Organisation - Chat - User sendet Nachricht an anderen User über Healthcareservice">
+                                                                            <i class="bi bi-table"
+                                                                               title="Data Driven Scenario"> <a
+                                                                                        href="d1f040f765fe078475b0a4ab8db17ad1dd0591c2d4ae08ecbf68675a61427fd7.html">04.01.03 Austausch von Events innerhalb einer Organisation - Chat - User sendet Nachricht an anderen User über Healthcareservice</a>
+                                                                                <br/>
+                                                                                    <a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> 1 passing test case
+                                                                                    <br/>
+                                                                        </td>
+                                                                        <td><span style="display:none"></span>
+                                                                        </td>
+                                                                        <td>10</td>
+                                                                        <td>Angenommen Es werden folgende Clients reserviert:
+
+
+|A | ORG_ADMIN | &lt;ApiName1A&gt;|
+|---|---|---|
+|B | PRO_CLIENT | &lt;ApiName1B&gt;|
+|C | PRO_CLIENT | &lt;ApiName1C&gt;|
+
+Und &quot;B&quot;, &quot;C&quot; setzen den eigenen Authorization Mode auf &quot;AllowAll&quot;
+Wenn &quot;A&quot; erstellt einen Healthcare-Service &quot;HealthcareServiceName1&quot; und setzen einen Endpunkt auf &quot;B&quot;
+Dann &quot;C&quot; findet &quot;B&quot; im Healthcare-Service &quot;HealthcareServiceName1&quot;
+Wenn &quot;C&quot; schreibt &quot;B&quot; direkt &quot;Testnachricht 1&quot;
+Und &quot;B&quot; erhält eine Einladung von &quot;C&quot;
+Und &quot;B&quot; bestätigt eine Einladung von &quot;C&quot;
+Dann &quot;B&quot; empfängt eine Nachricht &quot;Testnachricht 1&quot; von &quot;C&quot;
+Wenn &quot;B&quot; schreibt &quot;C&quot; direkt &quot;Testnachricht 2&quot;
+Dann &quot;C&quot; empfängt eine Nachricht &quot;Testnachricht 2&quot; von &quot;B&quot;
+</td>
+                                                                        <td data-order="1755031215">22:40:15</td>
+                                                                        <td>1m 41s</td>
+                                                                        <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span
+                                                                                    style="display:none">SUCCESS</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr class="scenario-result SUCCESS">
+                                                                        <td>
+                                                                                <a href="#">5.1.4 (1) Austausch von Events innerhalb einer Organisation (Basis Spec)</a>
+                                                                        </td>
+                                                                        <td data-order="04.01.04 Austausch von Events innerhalb einer Organisation - Raum - User sendet Nachricht an anderen User über Healthcareservice">
+                                                                            <i class="bi bi-table"
+                                                                               title="Data Driven Scenario"> <a
+                                                                                        href="af6cb66947f34d9bbc58835517a32b36c7fbd77d2d386fa83f00291e072f445d.html">04.01.04 Austausch von Events innerhalb einer Organisation - Raum - User sendet Nachricht an anderen User über Healthcareservice</a>
+                                                                                <br/>
+                                                                                    <a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> 1 passing test case
+                                                                                    <br/>
+                                                                        </td>
+                                                                        <td><span style="display:none"></span>
+                                                                        </td>
+                                                                        <td>10</td>
+                                                                        <td>Angenommen Es werden folgende Clients reserviert:
+
+
+|A | ORG_ADMIN | &lt;ApiName1A&gt;|
+|---|---|---|
+|B | PRO_CLIENT | &lt;ApiName1B&gt;|
+|C | PRO_CLIENT | &lt;ApiName1C&gt;|
+
+Und &quot;B&quot;, &quot;C&quot; setzen den eigenen Authorization Mode auf &quot;AllowAll&quot;
+Wenn &quot;A&quot; erstellt einen Healthcare-Service &quot;HealthcareServiceName1&quot; und setzen einen Endpunkt auf &quot;B&quot;
+Dann &quot;C&quot; findet &quot;B&quot; im Healthcare-Service &quot;HealthcareServiceName1&quot;
+Und &quot;C&quot; erstellt einen Chat-Raum &quot;TIM Testraum 1&quot;
+Und &quot;C&quot; lädt &quot;B&quot; in Chat-Raum &quot;TIM Testraum 1&quot; ein
+Und &quot;B&quot; erhält eine Einladung in Raum &quot;TIM Testraum 1&quot; von &quot;C&quot;
+Und &quot;B&quot; bestätigt eine Einladung in Raum &quot;TIM Testraum 1&quot; von &quot;C&quot;
+Wenn &quot;C&quot; sendet die Nachricht &quot;Testnachricht 1&quot; an den Raum &quot;TIM Testraum 1&quot;
+Dann &quot;B&quot; empfängt eine Nachricht &quot;Testnachricht 1&quot; von &quot;C&quot; im Raum &quot;TIM Testraum 1&quot;
+</td>
+                                                                        <td data-order="1755031316">22:41:56</td>
+                                                                        <td>1m 48s</td>
+                                                                        <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span
+                                                                                    style="display:none">SUCCESS</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr class="scenario-result SUCCESS">
+                                                                        <td>
+                                                                                <a href="#">5.1.4 (1) Austausch von Events innerhalb einer Organisation (Basis Spec)</a>
+                                                                        </td>
+                                                                        <td data-order="04.01.05 Austausch von Events innerhalb einer Organisation - Chat - Löschen einer Nachricht durch User">
+                                                                            <i class="bi bi-table"
+                                                                               title="Data Driven Scenario"> <a
+                                                                                        href="83d14b060d47eec1f524de1ef2f88cfe49a15ac93343ecf62a986a529e765838.html">04.01.05 Austausch von Events innerhalb einer Organisation - Chat - Löschen einer Nachricht durch User</a>
+                                                                                <br/>
+                                                                                    <a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> 1 passing test case
+                                                                                    <br/>
+                                                                        </td>
+                                                                        <td><span style="display:none"></span>
+                                                                        </td>
+                                                                        <td>12</td>
+                                                                        <td>Angenommen Es werden folgende Clients reserviert:
+
+
+|A | PRO_CLIENT | &lt;ApiName1A&gt;|
+|---|---|---|
+|B | PRO_CLIENT | &lt;ApiName1B&gt;|
+
+Und &quot;A&quot;, &quot;B&quot; setzen den eigenen Authorization Mode auf &quot;AllowAll&quot;
+Wenn &quot;A&quot; findet TI-Messenger-Nutzer &quot;B&quot; bei der Suche im HomeServer
+Und &quot;A&quot; schreibt &quot;B&quot; direkt &quot;Testnachricht 1&quot;
+Und &quot;B&quot; erhält eine Einladung von &quot;A&quot;
+Und &quot;B&quot; bestätigt eine Einladung von &quot;A&quot;
+Und &quot;B&quot; empfängt eine Nachricht &quot;Testnachricht 1&quot; von &quot;A&quot;
+Und &quot;B&quot; schreibt &quot;A&quot; direkt &quot;Testnachricht 2&quot;
+Und &quot;A&quot; empfängt eine Nachricht &quot;Testnachricht 2&quot; von &quot;B&quot;
+Wenn &quot;B&quot; löscht seine Nachricht &quot;Testnachricht 2&quot; im Chat mit &quot;A&quot;
+Dann &quot;A&quot; kann die Nachricht &quot;Testnachricht 2&quot; von &quot;B&quot; im Chat mit &quot;B&quot; nicht mehr sehen [Retry 6 - 1]
+Und &quot;B&quot; kann die Nachricht &quot;Testnachricht 2&quot; von &quot;B&quot; im Chat mit &quot;A&quot; nicht mehr sehen [Retry 6 - 1]
+</td>
+                                                                        <td data-order="1755031424">22:43:44</td>
+                                                                        <td>1m 23s</td>
+                                                                        <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span
+                                                                                    style="display:none">SUCCESS</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr class="scenario-result SUCCESS">
+                                                                        <td>
+                                                                                <a href="#">5.1.4 (1) Austausch von Events innerhalb einer Organisation (Basis Spec)</a>
+                                                                        </td>
+                                                                        <td data-order="04.01.06 Austausch von Events innerhalb einer Organisation - Raum - Löschen einer Nachricht durch User">
+                                                                            <i class="bi bi-table"
+                                                                               title="Data Driven Scenario"> <a
+                                                                                        href="8fbbf7f5cb872c0e313353ca7444398712cf21844b5ed5b601130b2d7b8fe225.html">04.01.06 Austausch von Events innerhalb einer Organisation - Raum - Löschen einer Nachricht durch User</a>
+                                                                                <br/>
+                                                                                    <a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> 1 passing test case
+                                                                                    <br/>
+                                                                        </td>
+                                                                        <td><span style="display:none"></span>
+                                                                        </td>
+                                                                        <td>12</td>
+                                                                        <td>Angenommen Es werden folgende Clients reserviert:
+
+
+|A | PRO_CLIENT | &lt;ApiName1A&gt;|
+|---|---|---|
+|B | PRO_CLIENT | &lt;ApiName1B&gt;|
+
+Und &quot;A&quot;, &quot;B&quot; setzen den eigenen Authorization Mode auf &quot;AllowAll&quot;
+Wenn &quot;A&quot; findet TI-Messenger-Nutzer &quot;B&quot; bei der Suche im HomeServer
+Und &quot;A&quot; erstellt einen Chat-Raum &quot;TIM Testraum 1&quot;
+Und &quot;A&quot; lädt &quot;B&quot; in Chat-Raum &quot;TIM Testraum 1&quot; ein
+Und &quot;B&quot; erhält eine Einladung in Raum &quot;TIM Testraum 1&quot; von &quot;A&quot;
+Und &quot;B&quot; bestätigt eine Einladung in Raum &quot;TIM Testraum 1&quot; von &quot;A&quot;
+Und &quot;A&quot; sendet die Nachricht &quot;Testnachricht 1&quot; an den Raum &quot;TIM Testraum 1&quot;
+Und &quot;B&quot; empfängt eine Nachricht &quot;Testnachricht 1&quot; von &quot;A&quot; im Raum &quot;TIM Testraum 1&quot;
+Wenn &quot;A&quot; löscht seine Nachricht &quot;Testnachricht 1&quot; im Raum &quot;TIM Testraum 1&quot;
+Dann &quot;B&quot; kann die Nachricht &quot;Testnachricht 1&quot; von &quot;A&quot; im Raum &quot;TIM Testraum 1&quot; nicht mehr sehen [Retry 6 - 1]
+Und &quot;A&quot; kann die Nachricht &quot;Testnachricht 1&quot; von &quot;A&quot; im Raum &quot;TIM Testraum 1&quot; nicht mehr sehen [Retry 6 - 1]
+</td>
+                                                                        <td data-order="1755031507">22:45:07</td>
+                                                                        <td>1m 41s</td>
+                                                                        <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span
+                                                                                    style="display:none">SUCCESS</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr class="scenario-result SUCCESS">
+                                                                        <td>
+                                                                                <a href="#">5.1.4 (1) Austausch von Events innerhalb einer Organisation (Basis Spec)</a>
+                                                                        </td>
+                                                                        <td data-order="04.01.07 Austausch von Events innerhalb einer Organisation - Chat - Ändern einer Nachricht durch User">
+                                                                            <i class="bi bi-table"
+                                                                               title="Data Driven Scenario"> <a
+                                                                                        href="391ff51efb95505a45a3d8fdaea065d3991fdc19745b437c863f3331e34fd1c2.html">04.01.07 Austausch von Events innerhalb einer Organisation - Chat - Ändern einer Nachricht durch User</a>
+                                                                                <br/>
+                                                                                    <a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> 1 passing test case
+                                                                                    <br/>
+                                                                        </td>
+                                                                        <td><span style="display:none"></span>
+                                                                        </td>
+                                                                        <td>11</td>
+                                                                        <td>Angenommen Es werden folgende Clients reserviert:
+
+
+|A | PRO_CLIENT | &lt;ApiName1A&gt;|
+|---|---|---|
+|B | PRO_CLIENT | &lt;ApiName1B&gt;|
+
+Und &quot;A&quot;, &quot;B&quot; setzen den eigenen Authorization Mode auf &quot;AllowAll&quot;
+Wenn &quot;A&quot; findet TI-Messenger-Nutzer &quot;B&quot; bei der Suche im HomeServer
+Und &quot;A&quot; schreibt &quot;B&quot; direkt &quot;Testnachricht 1&quot;
+Und &quot;B&quot; erhält eine Einladung von &quot;A&quot;
+Und &quot;B&quot; bestätigt eine Einladung von &quot;A&quot;
+Und &quot;B&quot; empfängt eine Nachricht &quot;Testnachricht 1&quot; von &quot;A&quot;
+Dann &quot;A&quot; ändert seine letzte Nachricht im Chat mit &quot;B&quot; in &quot;Testnachricht 2&quot;
+Wenn &quot;B&quot; empfängt eine Nachricht &quot;Testnachricht 2&quot; von &quot;A&quot;
+Dann &quot;B&quot; kann die Nachricht &quot;Testnachricht 1&quot; von &quot;A&quot; im Chat mit &quot;A&quot; nicht mehr sehen [Retry 6 - 1]
+Und &quot;A&quot; kann die Nachricht &quot;Testnachricht 1&quot; von &quot;A&quot; im Chat mit &quot;B&quot; nicht mehr sehen [Retry 6 - 1]
+</td>
+                                                                        <td data-order="1755031608">22:46:48</td>
+                                                                        <td>1m 23s</td>
+                                                                        <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span
+                                                                                    style="display:none">SUCCESS</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr class="scenario-result SUCCESS">
+                                                                        <td>
+                                                                                <a href="#">5.1.4 (1) Austausch von Events innerhalb einer Organisation (Basis Spec)</a>
+                                                                        </td>
+                                                                        <td data-order="04.01.08 Austausch von Events innerhalb einer Organisation - Raum - Ändern einer Nachricht durch User">
+                                                                            <i class="bi bi-table"
+                                                                               title="Data Driven Scenario"> <a
+                                                                                        href="3be65eb677b0569c5bdb3c3abcc9324d2e47d75974adab42565d6896deb3a9d5.html">04.01.08 Austausch von Events innerhalb einer Organisation - Raum - Ändern einer Nachricht durch User</a>
+                                                                                <br/>
+                                                                                    <a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> 1 passing test case
+                                                                                    <br/>
+                                                                        </td>
+                                                                        <td><span style="display:none"></span>
+                                                                        </td>
+                                                                        <td>12</td>
+                                                                        <td>Angenommen Es werden folgende Clients reserviert:
+
+
+|A | PRO_CLIENT | &lt;ApiName1A&gt;|
+|---|---|---|
+|B | PRO_CLIENT | &lt;ApiName1B&gt;|
+
+Und &quot;A&quot;, &quot;B&quot; setzen den eigenen Authorization Mode auf &quot;AllowAll&quot;
+Wenn &quot;A&quot; findet TI-Messenger-Nutzer &quot;B&quot; bei der Suche im HomeServer
+Und &quot;A&quot; erstellt einen Chat-Raum &quot;TIM Testraum 1&quot;
+Und &quot;A&quot; lädt &quot;B&quot; in Chat-Raum &quot;TIM Testraum 1&quot; ein
+Und &quot;B&quot; erhält eine Einladung in Raum &quot;TIM Testraum 1&quot; von &quot;A&quot;
+Und &quot;B&quot; bestätigt eine Einladung in Raum &quot;TIM Testraum 1&quot; von &quot;A&quot;
+Und &quot;A&quot; sendet die Nachricht &quot;Testnachricht 1&quot; an den Raum &quot;TIM Testraum 1&quot;
+Und &quot;B&quot; empfängt eine Nachricht &quot;Testnachricht 1&quot; von &quot;A&quot; im Raum &quot;TIM Testraum 1&quot;
+Dann &quot;A&quot; ändert seine letzte Nachricht im Raum &quot;TIM Testraum 1&quot; in &quot;Testnachricht 2&quot;
+Wenn &quot;B&quot; empfängt eine Nachricht &quot;Testnachricht 2&quot; von &quot;A&quot; im Raum &quot;TIM Testraum 1&quot;
+Und &quot;B&quot; kann die Nachricht &quot;Testnachricht 1&quot; von &quot;A&quot; im Raum &quot;TIM Testraum 1&quot; nicht mehr sehen [Retry 6 - 1]
+</td>
+                                                                        <td data-order="1755031691">22:48:11</td>
+                                                                        <td>1m 45s</td>
+                                                                        <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span
+                                                                                    style="display:none">SUCCESS</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr class="scenario-result SUCCESS">
+                                                                        <td>
+                                                                                <a href="#">5.1.4 (1) Austausch von Events innerhalb einer Organisation (Basis Spec)</a>
+                                                                        </td>
+                                                                        <td data-order="04.01.15 Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Gruppenchat - Drei User schreiben sich gegenseitig">
+                                                                            <i class="bi bi-table"
+                                                                               title="Data Driven Scenario"> <a
+                                                                                        href="2194a2d86e54c9da8f4a5571df23f849544a42c7a526e686128f39031d362460.html">04.01.15 Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Gruppenchat - Drei User schreiben sich gegenseitig</a>
+                                                                                <br/>
+                                                                                    <a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> 1 passing test case
+                                                                                    <br/>
+                                                                        </td>
+                                                                        <td><span style="display:none"></span>
+                                                                        </td>
+                                                                        <td>19</td>
+                                                                        <td>Angenommen Es werden folgende Clients reserviert:
+
+
+|A | PRO_CLIENT | &lt;ApiName1A&gt;|
+|---|---|---|
+|B | PRO_CLIENT | &lt;ApiName1B&gt;|
+|C | PRO_CLIENT | &lt;ApiName1C&gt;|
+
+Und &quot;A&quot;, &quot;B&quot;, &quot;C&quot; setzen den eigenen Authorization Mode auf &quot;AllowAll&quot;
+Wenn &quot;A&quot; findet TI-Messenger-Nutzer &quot;B&quot; bei der Suche im HomeServer
+Und &quot;A&quot; erstellt einen Chat-Raum &quot;TIM Testraum 1&quot;
+Und &quot;A&quot; lädt &quot;B&quot; in Chat-Raum &quot;TIM Testraum 1&quot; ein
+Und &quot;B&quot; erhält eine Einladung in Raum &quot;TIM Testraum 1&quot; von &quot;A&quot;
+Und &quot;B&quot; bestätigt eine Einladung in Raum &quot;TIM Testraum 1&quot; von &quot;A&quot;
+Und &quot;B&quot; ist dem Raum &quot;TIM Testraum 1&quot; beigetreten
+Wenn &quot;A&quot; findet TI-Messenger-Nutzer &quot;C&quot; bei der Suche im HomeServer
+Und &quot;A&quot; lädt &quot;C&quot; in Chat-Raum &quot;TIM Testraum 1&quot; ein
+Und &quot;C&quot; erhält eine Einladung in Raum &quot;TIM Testraum 1&quot; von &quot;A&quot;
+Und &quot;C&quot; bestätigt eine Einladung in Raum &quot;TIM Testraum 1&quot; von &quot;A&quot;
+Und &quot;C&quot; ist dem Raum &quot;TIM Testraum 1&quot; beigetreten
+Und &quot;A&quot; sendet die Nachricht &quot;Testnachricht 1&quot; an den Raum &quot;TIM Testraum 1&quot;
+Und &quot;B&quot;, &quot;C&quot; empfangen eine Nachricht &quot;Testnachricht 1&quot; von &quot;A&quot; im Raum &quot;TIM Testraum 1&quot;
+Und &quot;B&quot; sendet die Nachricht &quot;Testnachricht 2&quot; an den Raum &quot;TIM Testraum 1&quot;
+Und &quot;A&quot;, &quot;C&quot; empfangen eine Nachricht &quot;Testnachricht 2&quot; von &quot;B&quot; im Raum &quot;TIM Testraum 1&quot;
+Und &quot;C&quot; sendet die Nachricht &quot;Testnachricht 3&quot; an den Raum &quot;TIM Testraum 1&quot;
+Und &quot;A&quot;, &quot;B&quot; empfangen eine Nachricht &quot;Testnachricht 3&quot; von &quot;C&quot; im Raum &quot;TIM Testraum 1&quot;
+</td>
+                                                                        <td data-order="1755031795">22:49:55</td>
+                                                                        <td>2m 23s</td>
+                                                                        <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span
+                                                                                    style="display:none">SUCCESS</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr class="scenario-result SUCCESS">
+                                                                        <td>
+                                                                                <a href="#">5.1.4 (4) Austausch von Events innerhalb einer Organisation (Basis Spec)</a>
+                                                                        </td>
+                                                                        <td data-order="04.04.01 Austausch von Events innerhalb einer Organisation - Chat - AllowAll - HBA User schreibt HBA User">
+                                                                            <i class="bi bi-table"
+                                                                               title="Data Driven Scenario"> <a
+                                                                                        href="a8fd461667c55f94e38c07706ba291be6cc1c908a46d5f90b6d7b878cbfbb0bc.html">04.04.01 Austausch von Events innerhalb einer Organisation - Chat - AllowAll - HBA User schreibt HBA User</a>
+                                                                                <br/>
+                                                                                    <a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> 1 passing test case
+                                                                                    <br/>
+                                                                        </td>
+                                                                        <td><span style="display:none"></span>
+                                                                        </td>
+                                                                        <td>10</td>
+                                                                        <td>Angenommen Es werden folgende Clients reserviert:
+
+
+|A | PRO_PRACTITIONER | &lt;ApiName1A&gt;|
+|---|---|---|
+|B | PRO_PRACTITIONER | &lt;ApiName1B&gt;|
+
+Und &quot;A&quot;, &quot;B&quot; setzen den eigenen Authorization Mode auf &quot;AllowAll&quot;
+Und &quot;A&quot;, &quot;B&quot; hinterlegen ihre MXIDs im Verzeichnis Dienst
+Und &quot;A&quot; findet &quot;B&quot; in FHIR
+Und &quot;A&quot; schreibt &quot;B&quot; direkt &quot;Testnachricht 1&quot;
+Dann &quot;B&quot; erhält eine Einladung von &quot;A&quot;
+Und &quot;B&quot; bestätigt eine Einladung von &quot;A&quot;
+Und &quot;B&quot; empfängt eine Nachricht &quot;Testnachricht 1&quot; von &quot;A&quot;
+Und &quot;B&quot; schreibt &quot;A&quot; direkt &quot;Testnachricht 2&quot;
+Und &quot;A&quot; empfängt eine Nachricht &quot;Testnachricht 2&quot; von &quot;B&quot;
+</td>
+                                                                        <td data-order="1755023122">20:25:22</td>
+                                                                        <td>1m 28s</td>
+                                                                        <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span
+                                                                                    style="display:none">SUCCESS</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr class="scenario-result SUCCESS">
+                                                                        <td>
+                                                                                <a href="#">5.1.4 (4) Austausch von Events innerhalb einer Organisation (Basis Spec)</a>
+                                                                        </td>
+                                                                        <td data-order="04.04.02 Austausch von Events innerhalb einer Organisation - Raum - AllowAll - HBA User schreibt HBA User">
+                                                                            <i class="bi bi-table"
+                                                                               title="Data Driven Scenario"> <a
+                                                                                        href="df0a9a68851dee11f3161b42583f817f35f5f25f06488f59239d4bbb7520c671.html">04.04.02 Austausch von Events innerhalb einer Organisation - Raum - AllowAll - HBA User schreibt HBA User</a>
+                                                                                <br/>
+                                                                                    <a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> 1 passing test case
+                                                                                    <br/>
+                                                                        </td>
+                                                                        <td><span style="display:none"></span>
+                                                                        </td>
+                                                                        <td>13</td>
+                                                                        <td>Angenommen Es werden folgende Clients reserviert:
+
+
+|A | PRO_PRACTITIONER | &lt;ApiName1A&gt;|
+|---|---|---|
+|B | PRO_PRACTITIONER | &lt;ApiName1B&gt;|
+
+Und &quot;A&quot;, &quot;B&quot; setzen den eigenen Authorization Mode auf &quot;AllowAll&quot;
+Und &quot;A&quot;, &quot;B&quot; hinterlegen ihre MXIDs im Verzeichnis Dienst
+Und &quot;A&quot; findet &quot;B&quot; in FHIR
+Und &quot;A&quot; erstellt einen Chat-Raum &quot;TIM Testraum 1&quot;
+Und &quot;A&quot; lädt &quot;B&quot; in Chat-Raum &quot;TIM Testraum 1&quot; ein
+Dann &quot;B&quot; erhält eine Einladung in Raum &quot;TIM Testraum 1&quot; von &quot;A&quot;
+Und &quot;B&quot; bestätigt eine Einladung in Raum &quot;TIM Testraum 1&quot; von &quot;A&quot;
+Und &quot;B&quot; ist dem Raum &quot;TIM Testraum 1&quot; beigetreten
+Wenn &quot;A&quot; sendet die Nachricht &quot;Testnachricht 1&quot; an den Raum &quot;TIM Testraum 1&quot;
+Dann &quot;B&quot; empfängt eine Nachricht &quot;Testnachricht 1&quot; von &quot;A&quot; im Raum &quot;TIM Testraum 1&quot;
+Wenn &quot;B&quot; sendet die Nachricht &quot;Testnachricht 2&quot; an den Raum &quot;TIM Testraum 1&quot;
+Dann &quot;A&quot; empfängt eine Nachricht &quot;Testnachricht 2&quot; von &quot;B&quot; im Raum &quot;TIM Testraum 1&quot;
+</td>
+                                                                        <td data-order="1755023210">20:26:50</td>
+                                                                        <td>1m 41s</td>
+                                                                        <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span
+                                                                                    style="display:none">SUCCESS</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <h3><i class="bi bi-hand-index-thumb"></i> Manual Tests</h3>
+
+                                                            No manual tests were recorded
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Tags</h3>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">AF-ID</h5>
+                            <div>
+                                    <a href="ad9bee07d5b5e89a7f16aea15d4d47517b6334321ebeee142e728f83a8f027ce.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> AF 10063-01&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">AFO-ID</h5>
+                            <div>
+                                    <a href="0c2b5548eef5d769e73b9ddb7eaf80f7139d920fc6c24a2746c632e91a441a7e.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 25492&nbsp;&nbsp;&nbsp;9
+                                    </span>
+                                    </a>
+                                    <a href="ed73ad3d3d3cb682c07e7b751cbdef194aa1d5cedd96a2968ac11ce5e5a6583d.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 26077&nbsp;&nbsp;&nbsp;9
+                                    </span>
+                                    </a>
+                                    <a href="750f765838001ffdac991f379e5c1a0f5bbce6777ce71954d9c5df0633d10973.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 26574&nbsp;&nbsp;&nbsp;9
+                                    </span>
+                                    </a>
+                                    <a href="b87e031c5b4cfb211a0a3cb638b26838dc24510b22fe99725eb9ae03f1023894.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 25395-01&nbsp;&nbsp;&nbsp;9
+                                    </span>
+                                    </a>
+                                    <a href="669bdcab69147275f2999f8490ac4620a01a2078c991d4d79a2da84d1cbee41e.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 25575&nbsp;&nbsp;&nbsp;9
+                                    </span>
+                                    </a>
+                                    <a href="10096cc08d4efe7673015f82f5bdf4df10ac1760bf4f9dc103125b9cffb7e4e2.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 26575&nbsp;&nbsp;&nbsp;9
+                                    </span>
+                                    </a>
+                                    <a href="25168b7dbe1d88ceebb8aa396f218d7ffd016c34e103d38185065f0c4ac9a403.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 25576&nbsp;&nbsp;&nbsp;9
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Ctl</h5>
+                            <div>
+                                    <a href="433dbdec7099d55cccf447b0660d9b06722888e8a312338bd37145a955698b51.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Msg Delete&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                                    <a href="dd5437ee92562e21292e2b7f5d26ec43c47771dec3a806979b99b8c6978ade10.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Msg Edit&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                                    <a href="c5debdec3046d0fc0e04b05f94c4aae3fb490b5db5c5241253a221f076b98273.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Vzd&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="d0b32cf5c2573baf79c3489637157238d8bdb5da84eec2db1357506a1e11c1fb.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Allow All&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                                    <a href="5a1118d148f28f694ba9248bccbe65242f88731bd1f49ed0d53d91acc6fef0b2.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> One Home Server&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                                    <a href="6298e1dac1eeddff79fb6e5c5a0bf02547c050d530adedf2cad58474e749506d.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Org Admin&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                                    <a href="8baac6ecd19c06520d57866649df88ea9d0a6330edf9b9b70cadfabaab3f12fe.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> UseCaseV2 04 Basis&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">File</h5>
+                            <div>
+                                    <a href="5ae9e05731dc13af07df9900fdf12d2fe1d4a74b697da733b18b596dc9198aa2.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Featurefile 04 01 V2 Basis&nbsp;&nbsp;&nbsp;9
+                                    </span>
+                                    </a>
+                                    <a href="a4ce789710e842d11b435371baf7b992312cffcd88c2e34f53cb22ce089ef595.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Featurefile 04 04 V2 Basis&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Nb</h5>
+                            <div>
+                                    <a href="6c3176dab12e20d3f33b521cd28e4287e04cca162711c2a46ee6d6270be51c18.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Nein&nbsp;&nbsp;&nbsp;9
+                                    </span>
+                                    </a>
+                                    <a href="061e0d44c3842a1a3e1a6c42a92321448d2e09caa7a933a2e16e48aedadc765c.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Ja&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Prio</h5>
+                            <div>
+                                    <a href="7748df88f2c56a8cb6f2fb2e9c999c5782b6158037eec2da2975d7b7a25436d8.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> 1&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Produkt</h5>
+                            <div>
+                                    <a href="f7ec57d495a4882eb70ab1bf9636e653a9800e0f0c080dfc217938ad7721c248.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TI-M FD Basis&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                                    <a href="77e3e49441a15427e6dfa1d7c22dfb483bf88791320a2d3fa6dfb87cd322cf71.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TI-M Client Basis&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Plugin</h5>
+                            <div>
+                                    <a href="53d6c90d53a8107d99f4c02654c164a4ec2ecbfeae7bc3d947b1f20ea4742dd5.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Filter(ApiName1A.hastag("practitioner"))&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                                    <a href="77ddf50bc41eb16183856021c4678620ddbdb9465f6787486e455f3b6e8548c0.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Filter(ApiName1C.hastag("proclient"))&nbsp;&nbsp;&nbsp;3
+                                    </span>
+                                    </a>
+                                    <a href="045d390b85b61c0375fc56b7d71e640ab460d9defd6b39290708a73426934e51.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Shuffle(True)&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                                    <a href="2f6192b3ba5dac37cc7455f5d365e30b4ab7da93eee92d0de351522e7095f1be.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Filter(ApiName1A.hastag("orgadmin"))&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                                    <a href="c3d11e62b65a7d2eef87865fb53dad673ccf92da2396d4a92a5bfb7d6a9cc0b0.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Filter(ApiName1B.hastag("proclient"))&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                                    <a href="b30e52c31e801a3ee8179b16dc44c7d1c2050eb7f829d718e6d535e40063bd2e.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Filter(ApiName1A.hastag("proclient"))&nbsp;&nbsp;&nbsp;9
+                                    </span>
+                                    </a>
+                                    <a href="fa8963e64f67ab2303c1a4c5678e612ac776c31c4b8a6d04bf3c3976a18cdade.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Equalproperty(Homeserver)&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                                    <a href="21cc247afa3fdfe6be75f029dee3024d706344f8d861a9b7e5601fde1f0897fb.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Filter(ApiName1B.hastag("practitioner"))&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                                    <a href="04794a5ed960fc5e469a40bd2b884fa31e50607bbf1941403bbe56008edf5d83.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Allowdoublelineup(False)&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                                    <a href="19beb0144b3a38e9d778fca7596fe5da635d6cce390659672a0abbfa06374401.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Allowselfcombine(True)&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Status</h5>
+                            <div>
+                                    <a href="16b36824af0423c8594aa55c340a5be9a21ff049608858e50f41700f9f05ac68.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Implementiert&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Tcid</h5>
+                            <div>
+                                    <a href="e19f4c87ec2b0022f0075d2021e71619c81767b0f4c563ea8458c118ab948256.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 040115&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="39630aabe067c057fb8ab311f2790fdad3918bdb6ae56d069bc9ff9073814163.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 040103&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="ac60b4b881961928d2539bf998f0dab6658ced71ef048b46080fe9aec04db1ee.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 040107&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="29a1c991e00cfde70acb372dac3785773e217977732b11407b4d59b4b81a5de1.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 040402&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="e1a326897e9225445385a14c98b5d626b9ca1f3996aa4904ada50bd190525a79.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 040104&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="961afe7849e16db3908733306e45debf3d9a39a961f22d4e21e5e2937796e03a.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 040108&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="3f0a50e8513e2761c9f998657d69a443cc6f38873c7f40651aa8fe391bcae5db.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 040101&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="e727cc3bf08dbd4e6f3dc980bb79015527755fcffbd951176b214379d5c46ea5.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 040105&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="241e4842252bf7707496ceb7052c1904bc90edde7a6ce100e481c26c43cf4d1e.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 040102&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="5fdbdaec83490ecc31cdcf589a77a28d843d4a82cf81b941d7042ba5c8340003.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 040401&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="2a48326325f856eb1017d4d967e4162ce22890a49cc4098f14323efbd1a551cd.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 040106&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Testfall</h5>
+                            <div>
+                                    <a href="b4cbf857506990c596fb50faff38a3afd018e4657602837e3869c8ea75d140e1.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Positiv&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Zul</h5>
+                            <div>
+                                    <a href="e11fe88c90e04b74aacca98c4911cfd5d8e24be4d55e026531948bb3883f1dbc.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Pro&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                                    <a href="f696a82952b18ab3ef913d09362e4c385161759145754f7bb48fc927b902d1b4.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Pro Kk&nbsp;&nbsp;&nbsp;9
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+                                            </div>
+                                        </div>
+
+                                            <div id="evidence" class="tab-pane fade">
+                                                <div class="container-fluid">
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <h3><i class="bi bi-download"></i> Evidence</h3>
+                                                            <table id="evidence-table" class="table table-bordered">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>Scenario</th>
+                                                                    <th>Title</th>
+                                                                    <th>Details</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>04.01.01 Austausch von Events innerhalb einer Organisation - Chat - User sendet Nachricht an anderen User über HomeServer</td>
+                                                                        <td>RBellog 1</td>
+                                                                        <td><a role='button' target='_blank' class='btn btn-success btn-sm' href='downloadable/downloadable-25e617b7-9ff9-41ff-9f6a-9d57f6a34fa0-rbel_04.01.01_Austausch_von_Events_29946ddc-9ef3-37dd-ac1f-f02352b96c54_1_2025-08-12_22-38-48.html'><i class='fas fa-download'></i>&nbsp;Download Evidence</a></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>04.01.02 Austausch von Events innerhalb einer Organisation - Raum - User sendet Nachricht an anderen User über HomeServer</td>
+                                                                        <td>RBellog 1</td>
+                                                                        <td><a role='button' target='_blank' class='btn btn-success btn-sm' href='downloadable/downloadable-473e222e-070c-4ab5-85c1-b6ae2bc0612e-rbel_04.01.02_Austausch_von_Events_6ca1c016-3004-397f-bb46-f8968b6b2c57_1_2025-08-12_22-40-15.html'><i class='fas fa-download'></i>&nbsp;Download Evidence</a></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>04.01.03 Austausch von Events innerhalb einer Organisation - Chat - User sendet Nachricht an anderen User über Healthcareservice</td>
+                                                                        <td>RBellog 1</td>
+                                                                        <td><a role='button' target='_blank' class='btn btn-success btn-sm' href='downloadable/downloadable-04abd2de-6f94-4299-8dc2-7a816f74344d-rbel_04.01.03_Austausch_von_Events_fde019de-c334-3534-ac1f-edd6e6a14417_1_2025-08-12_22-41-56.html'><i class='fas fa-download'></i>&nbsp;Download Evidence</a></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>04.01.04 Austausch von Events innerhalb einer Organisation - Raum - User sendet Nachricht an anderen User über Healthcareservice</td>
+                                                                        <td>RBellog 1</td>
+                                                                        <td><a role='button' target='_blank' class='btn btn-success btn-sm' href='downloadable/downloadable-4cac356c-4dbb-4f33-93b4-2449300e7fad-rbel_04.01.04_Austausch_von_Events_45166b9b-028d-3278-82f4-5ea8d1909a3c_1_2025-08-12_22-43-44.html'><i class='fas fa-download'></i>&nbsp;Download Evidence</a></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>04.01.05 Austausch von Events innerhalb einer Organisation - Chat - Löschen einer Nachricht durch User</td>
+                                                                        <td>RBellog 1</td>
+                                                                        <td><a role='button' target='_blank' class='btn btn-success btn-sm' href='downloadable/downloadable-f91ae03e-e446-4b38-a2f6-8dcec75b3334-rbel_04.01.05_Austausch_von_Events_f6ee6aab-9e22-349f-9f21-8ff481108715_1_2025-08-12_22-45-07.html'><i class='fas fa-download'></i>&nbsp;Download Evidence</a></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>04.01.06 Austausch von Events innerhalb einer Organisation - Raum - Löschen einer Nachricht durch User</td>
+                                                                        <td>RBellog 1</td>
+                                                                        <td><a role='button' target='_blank' class='btn btn-success btn-sm' href='downloadable/downloadable-dc4bb8d8-06ae-4595-8fd2-4c3f83b574e7-rbel_04.01.06_Austausch_von_Events_5a586fd0-4459-3397-a175-878532e05a1a_1_2025-08-12_22-46-48.html'><i class='fas fa-download'></i>&nbsp;Download Evidence</a></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>04.01.07 Austausch von Events innerhalb einer Organisation - Chat - Ändern einer Nachricht durch User</td>
+                                                                        <td>RBellog 1</td>
+                                                                        <td><a role='button' target='_blank' class='btn btn-success btn-sm' href='downloadable/downloadable-23acaa97-f99c-4aa3-97d5-35f97d61efa3-rbel_04.01.07_Austausch_von_Events_ac0371c9-803d-36c7-af05-03900eeb63c5_1_2025-08-12_22-48-11.html'><i class='fas fa-download'></i>&nbsp;Download Evidence</a></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>04.01.08 Austausch von Events innerhalb einer Organisation - Raum - Ändern einer Nachricht durch User</td>
+                                                                        <td>RBellog 1</td>
+                                                                        <td><a role='button' target='_blank' class='btn btn-success btn-sm' href='downloadable/downloadable-cf36348c-034b-4320-afff-1c12315ac407-rbel_04.01.08_Austausch_von_Events_b20e40aa-fa53-3f80-a9b2-d0d4f84d2bb5_1_2025-08-12_22-49-55.html'><i class='fas fa-download'></i>&nbsp;Download Evidence</a></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>04.01.15 Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Gruppenchat - Drei User schreiben sich gegenseitig</td>
+                                                                        <td>RBellog 1</td>
+                                                                        <td><a role='button' target='_blank' class='btn btn-success btn-sm' href='downloadable/downloadable-42c8c51e-f0c2-4720-a13a-0cced529de22-rbel_04.01.15_Austausch_von_Events_5351e2f6-5e1e-3d37-95be-e3277bf41e46_1_2025-08-12_22-52-19.html'><i class='fas fa-download'></i>&nbsp;Download Evidence</a></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>04.04.01 Austausch von Events innerhalb einer Organisation - Chat - AllowAll - HBA User schreibt HBA User</td>
+                                                                        <td>RBellog 1</td>
+                                                                        <td><a role='button' target='_blank' class='btn btn-success btn-sm' href='downloadable/downloadable-7b64309d-f14f-494f-a838-cccb6c8f7e5b-rbel_04.04.01_Austausch_von_Events_27ba2af2-5d05-30fe-aa00-0037eb2dd91c_1_2025-08-12_20-26-50.html'><i class='fas fa-download'></i>&nbsp;Download Evidence</a></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>04.04.02 Austausch von Events innerhalb einer Organisation - Raum - AllowAll - HBA User schreibt HBA User</td>
+                                                                        <td>RBellog 1</td>
+                                                                        <td><a role='button' target='_blank' class='btn btn-success btn-sm' href='downloadable/downloadable-e4c33a9a-8d49-4491-9d6a-fc4ba2e3a63f-rbel_04.04.02_Austausch_von_Events_70f6ff42-7d9b-3dd4-bf84-9c7073901de1_1_2025-08-12_20-28-32.html'><i class='fas fa-download'></i>&nbsp;Download Evidence</a></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="beforefooter"></div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <span class="version">Serenity BDD version 4.2.30</span>
+        </div>
+    </div>
+</div>
+
+<!-- Chart data -->
+    <!-- PIE CHART -->
+    <script>
+
+        // The results pie chart
+        const outcomeChartCtx = document.getElementById('resultChart');
+
+        // Options define for display value on top of bars
+        const outcomeDetailsReports = [
+            { title: 'Passing Test Cases', link: "7fd1b22592007a498e4e2354bae4188e72474818759042bfdf7973be7abefbf2.html" },
+            { title: 'Pending Test Cases', link: "1ee60148fb73245fa27c60cf3466b4c37110fc337c1fed856f22d870ee109ef1.html" },
+            { title: 'Ignored Test Cases', link: "5ede43445dd53aa4d9f91eda1a4308ada1c17123d0d6ad286065c916138d8703.html" },
+            { title: 'Skipped Test Cases', link: "60a391580e06ba49d8d11e828e13a7a75dc2983c2dbafb53a5325776684105e8.html" },
+            { title: 'Aborted Test Cases',  link: "c17b3698507785586bbac7cf62860918fe91d570de9fa4c04c0b50bc0fc2bb5c.html"},
+            { title: 'Failed Test Cases', link: "5aea04a457d5ca126f7332b063daf9adce3de90fd8e2181362a90a1c0efb8dbb.html"  },
+            { title: 'Broken Test Cases', link: "6c12d289f8e8cb6721c5c887fcf75574a80d0196fafee06edefedc9591c190a5.html"    },
+            { title: 'Compromised Test Cases',  link: "9d53fbc2a9e2db55a7924d8e497b94272a1011b01296b078606801723172377c.html" },
+        ]
+        const outcomeData = {
+            labels: ['Passing Test Cases', 'Pending Test Cases', 'Ignored Test Cases', 'Skipped Test Cases', 'Aborted Test Cases', 'Failed Test Cases', 'Broken Test Cases', 'Compromised Test Cases','Undefined Test Cases'],
+            datasets: [{
+                label: 'Test Results',
+                fill: false,
+                data: [11,0,0,0,0,0,0,0],
+                backgroundColor: ['rgba(153,204,51,0.5)','rgba(165, 199, 238, 0.5)','rgba(168, 168, 168, 0.5)','rgba(238, 224, 152, 0.75)','rgba(255, 153, 102, 0.5)','rgba(255, 22, 49, 0.5)','rgba(255, 97, 8, 0.5)','rgba(255, 104, 255, 0.5)','rgba(83, 50, 168, 0.5)'],
+                borderColor: ['rgba(153,204,51,1)','rgba(165, 199, 238, 1)','rgba(168, 168, 168, 1)','rgba(238, 224, 152, 1)','rgba(255, 153, 102, 1)','rgba(255, 22, 49, 1)','rgba(255, 97, 8, 1)','rgba(255, 104, 255, 1)','rgba(83, 50, 168, 1)'],
+                borderWidth: 1,
+            }]
+        }
+        const outcomeOptions = {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom'
+                },
+                // Change options for ALL labels of THIS CHART
+                datalabels: {
+                    color: '#444444',
+                    'font.weight': 'bold',
+                    formatter: (value, ctx) => {
+                        let sum = 0;
+                        let dataArr = ctx.chart.data.datasets[0].data;
+                        dataArr.map(data => {
+                            sum += data;
+                        });
+                        let percentage = (value * 100 / sum).toFixed(0) + "%";
+                        if (percentage === '0%' || percentage === 'NaN%') {
+                            return '';
+                        } else {
+                            return percentage;
+                        }
+                    },
+                },
+            }
+        }
+
+        const outcomeChart = new Chart(outcomeChartCtx, {
+            type: 'doughnut',
+            data: outcomeData,
+            options: outcomeOptions,
+            plugins: [
+                {
+                    id: 'text',
+                    beforeDraw: function (chart, a, b) {
+                        var width = chart.width,
+                            height = chart.height,
+                            ctx = chart.ctx;
+
+                        ctx.restore();
+                        var fontSize = (height / 200).toFixed(1);
+                        ctx.font = fontSize + "em sans-serif";
+                        ctx.textBaseline = "middle";
+
+                        var text = "100%"
+                        textX = 10 + Math.round((width - ctx.measureText(text).width) / 2);
+                        textY = (height / 2) - 40;
+
+                        ctx.fillText(text, textX, textY);
+                        ctx.save();
+                    }
+                }]
+        });
+
+        function clickHandler(click) {
+            const points = outcomeChart.getElementsAtEventForMode(click, 'nearest', {intersect: true}, true);
+            if (points.length) {
+                const firstPoint = points[0];
+                window.open(outcomeDetailsReports[firstPoint.index].link, "_self")
+
+            }
+        }
+        outcomeChartCtx.onclick = clickHandler;
+    </script>
+    <!-- END PIE CHART -->
+
+    <!-- SUMMARY BAR CHART -->
+    <script>
+
+        // The Severity bar chart
+        const severityChartCtx = document.getElementById('severityChart');
+
+        // Options define for display value on top of bars
+
+        const severityDetailsReports = [
+            { title: 'Passing Scenarios', link: "7fd1b22592007a498e4e2354bae4188e72474818759042bfdf7973be7abefbf2.html" },
+            { title: 'Pending Scenarios', link: "1ee60148fb73245fa27c60cf3466b4c37110fc337c1fed856f22d870ee109ef1.html" },
+            { title: 'Ignored Scenarios', link: "5ede43445dd53aa4d9f91eda1a4308ada1c17123d0d6ad286065c916138d8703.html" },
+            { title: 'Skipped Scenarios', link: "60a391580e06ba49d8d11e828e13a7a75dc2983c2dbafb53a5325776684105e8.html" },
+            { title: 'Aborted Scenarios',  link: "c17b3698507785586bbac7cf62860918fe91d570de9fa4c04c0b50bc0fc2bb5c.html"},
+            { title: 'Failed Scenarios', link: "5aea04a457d5ca126f7332b063daf9adce3de90fd8e2181362a90a1c0efb8dbb.html"  },
+            { title: 'Broken Scenarios', link: "6c12d289f8e8cb6721c5c887fcf75574a80d0196fafee06edefedc9591c190a5.html"    },
+            { title: 'Compromised Scenarios',  link: "9d53fbc2a9e2db55a7924d8e497b94272a1011b01296b078606801723172377c.html" },
+        ]
+        const severityData = {
+            labels: ['Passing', 'Pending', 'Ignored', 'Skipped', 'Aborted', 'Failed', 'Broken', 'Compromised'],
+            datasets: [
+                {
+                    label: 'Automated',
+                    data: [11,0,0,0,0,0,0,0],
+                    backgroundColor: ['rgba(153,204,51,0.5)','rgba(165, 199, 238, 0.5)','rgba(168, 168, 168, 0.5)','rgba(238, 224, 152, 0.75)','rgba(255, 153, 102, 0.5)','rgba(255, 22, 49, 0.5)','rgba(255, 97, 8, 0.5)','rgba(255, 104, 255, 0.5)','rgba(83, 50, 168, 0.5)'],
+                    borderColor: ['rgba(153,204,51,1)','rgba(165, 199, 238, 1)','rgba(168, 168, 168, 1)','rgba(238, 224, 152, 1)','rgba(255, 153, 102, 1)','rgba(255, 22, 49, 1)','rgba(255, 97, 8, 1)','rgba(255, 104, 255, 1)','rgba(83, 50, 168, 1)'],
+                    borderWidth: 1
+                },
+                {
+                    label: 'Manual',
+                    data: [0,0,0,0,0,0,0,0],
+                    backgroundColor: ['rgba(153,204,51,0.25)','rgba(165, 199, 238, 0.25)','rgba(168, 168, 168, 0.25)','rgba(238, 224, 152, 0.375)','rgba(255, 153, 102, 0.25)','rgba(255, 22, 49, 0.25)','rgba(255, 97, 8, 0.25)','rgba(255, 104, 255, 0.25)','rgba(83, 50, 168, 0.25)'],
+                    borderColor: ['rgba(153,204,51,1)','rgba(165, 199, 238, 1)','rgba(168, 168, 168, 1)','rgba(238, 224, 152, 1)','rgba(255, 153, 102, 1)','rgba(255, 22, 49, 1)','rgba(255, 97, 8, 1)','rgba(255, 104, 255, 1)','rgba(83, 50, 168, 1)'],
+                    borderWidth: 1
+                },
+
+            ]
+        }
+        const severityOptions = {
+            responsive: true,
+            skipNull: true,
+            scales: {
+                x: {
+                    stacked: true,
+                },
+                y: {
+                    stacked: true,
+                }
+            },
+            plugins: {
+                // Change options for ALL labels of THIS CHART
+                datalabels: {
+                    color: '#444444',
+                    'font.weight': 'bold',
+                    formatter: (value, ctx) => {
+                        if (value === 0) {
+                            return '';
+                        } else {
+                            return value;
+                        }
+                    },
+                }
+            }
+        }
+        const severityChart = new Chart(severityChartCtx, {
+            type: 'bar',
+            data: severityData,
+            options: severityOptions
+        });
+
+        function clickHandler(click) {
+            const points = severityChart.getElementsAtEventForMode(click, 'nearest', {intersect: true}, true);
+            if (points.length) {
+                const firstPoint = points[0];
+                window.open(severityDetailsReports[firstPoint.index].link, "_self")
+
+            }
+        }
+        severityChartCtx.onclick = clickHandler;
+    </script>
+    <!-- END SUMMARY CHART -->
+
+    <!-- DURATION CHART -->
+    <script>
+
+        // Options define for display value on top of bars
+        const durationDetailsReports = [
+                {title: "Under 1 second", link: "4968a8bf941f1aa1aeca15a74e3d9d4734f79e66cac47083fed3a0632eb92c66.html"},
+                {title: "1 to 10 seconds", link: "8aac3a45a66672167a8a6bc86782eb0f8d01c05a5ed26867c2773eebb11207a7.html"},
+                {title: "10 to 30 seconds", link: "d3f69c04e309700de14a01784e2cea647b93b19056fd2e7b584ca616c94a9d3c.html"},
+                {title: "30 to 60 seconds", link: "038fae5b4ec6d2ee79d4db35b7f5d5a1249b15ffa675c8ff4364127614a5f1fe.html"},
+                {title: "1 to 2 minutes", link: "fd5b84d35bf963022ebe7548d5103b34747a90242ebf1022e44ee2e42c240e30.html"},
+                {title: "2 to 5 minutes", link: "1f5be9e615d0a117da9b7b3e0e990f522d9709e452cb9569599406c6ebaa5f6f.html"},
+                {title: "5 to 10 minutes", link: "4f51ad181196e5e1efc82d347b502ddbc0a6bdda799b8050c21314c762d95323.html"},
+                {title: "10 minutes or over", link: "1142127917859aaef5d1938eb037f8224d7d99df51714212c008dda27134825d.html"},
+        ]
+        // The Severity bar chart
+        const durationChartCtx = document.getElementById('durationChart');
+
+        // Options define for display value on top of bars
+
+        const durationData = {
+            labels: ['Under 1 second','1 to 10 seconds','10 to 30 seconds','30 to 60 seconds','1 to 2 minutes','2 to 5 minutes','5 to 10 minutes','10 minutes or over'],
+            datasets: [{
+                label: 'Number of tests per duration',
+                fill: false,
+                data: ['0','0','0','0','10','1','0','0'],
+                backgroundColor: 'rgba(83, 146, 255,0.5)',
+                borderColor: 'rgba(83, 146, 255, 1)',
+            }]
+        }
+        const durationOptions = {
+            responsive: true,
+            plugins: {
+                // Change options for ALL labels of THIS CHART
+                datalabels: {
+                    color: '#444444',
+                    'font.weight': 'bold',
+                    formatter: (value, ctx) => {
+                        if (value > 0) {
+                            return value;
+                        } else {
+                            return '';
+                        }
+                    },
+                },
+                tooltip: {
+                    enabled: true,
+                    usePointStyle: true,
+                    callbacks: {
+                        label: (data) => {
+                            return data.parsed.y + ' tests'
+                        }
+                    },
+                },
+            },
+        }
+
+        const durationChart = new Chart(durationChartCtx, {
+            type: 'bar',
+            data: durationData,
+            options: durationOptions
+        });
+
+        function durationClickHandler(click) {
+            const points = durationChart.getElementsAtEventForMode(click, 'nearest', {intersect: true}, true);
+            if (points.length) {
+                const firstPoint = points[0];
+                window.open(durationDetailsReports[firstPoint.index].link, "_self")
+
+            }
+        }
+
+        durationChartCtx.onclick = durationClickHandler;
+    </script>
+    <!-- END DURATION CHART -->
+
+
+</body>
+</html>

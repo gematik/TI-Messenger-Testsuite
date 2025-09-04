@@ -24,11 +24,13 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.HAS_REG_SERVICE_TOKEN
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.CREATE_HEALTHCARE_SERVICE;
 import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility.addHsToActor;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueHsName;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.CREATED;
 
 import de.gematik.tim.test.glue.api.rawdata.RawDataStatistics;
+import de.gematik.tim.test.glue.api.utils.TestsuiteInitializer;
 import de.gematik.tim.test.models.FhirHealthcareServiceDTO;
 import io.restassured.response.Response;
 import lombok.RequiredArgsConstructor;
@@ -60,11 +62,16 @@ public class CreateHealthcareServiceTask implements Task {
 
     Response response = lastResponse();
     if (response.statusCode() == CREATED.value()) {
-      FhirHealthcareServiceDTO hsDTO = response.body().as(FhirHealthcareServiceDTO.class);
-      assertThat(hsDTO.getId())
-          .as("Healthcare-Service %s id is empty".formatted(hsDTO.getName()))
+      FhirHealthcareServiceDTO createdHealthcareServiceDTO =
+          parseResponse(FhirHealthcareServiceDTO.class);
+      assertThat(createdHealthcareServiceDTO.getId())
+          .as("Healthcare-Service %s id is empty".formatted(createdHealthcareServiceDTO.getName()))
           .isNotBlank();
-      addHsToActor(hsName, new HealthcareServiceInfo(hsDTO.getName(), hsDTO.getId()), actor);
+      addHsToActor(
+          hsName,
+          new HealthcareServiceInfo(
+              createdHealthcareServiceDTO.getName(), createdHealthcareServiceDTO.getId()),
+          actor);
     }
   }
 }

@@ -62,6 +62,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -105,7 +106,7 @@ public class TestsuiteInitializer {
   public static final Long TIMEOUT_DEFAULT = 10L;
   public static final Long POLL_INTERVAL_DEFAULT = 1L;
   public static final Integer HTTP_TIMEOUT;
-  private static final Jackson2Mapper mapper;
+  @Getter private static final Jackson2Mapper fhirMapper;
   public static Long TIMEOUT;
   static Long pollInterval;
 
@@ -159,9 +160,9 @@ public class TestsuiteInitializer {
           pollInterval);
     }
 
-    mapper = createMapper();
+    fhirMapper = createMapper();
     ObjectMapperConfig mapperConfig = RestAssured.config().getObjectMapperConfig();
-    mapperConfig.defaultObjectMapper(getMapper());
+    mapperConfig.defaultObjectMapper(getFhirMapper());
     RestAssured.config().objectMapperConfig(mapperConfig);
     addHostsToTigerProxy();
     configRestAssured();
@@ -203,10 +204,6 @@ public class TestsuiteInitializer {
             .setParam("http.connection.timout", HTTP_TIMEOUT * 1000);
 
     RestAssured.config = RestAssured.config().httpClient(httpClientFactory);
-  }
-
-  static Jackson2Mapper getMapper() {
-    return mapper;
   }
 
   private static Jackson2Mapper createMapper() {

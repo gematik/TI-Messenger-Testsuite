@@ -51,12 +51,15 @@ import de.gematik.tim.test.glue.api.threading.ParallelTaskRunner;
 import de.gematik.tim.test.models.ClaimDeviceRequestDTO;
 import de.gematik.tim.test.models.DeviceInfoDTO;
 import java.util.Optional;
-import kong.unirest.UnirestInstance;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.SneakyThrows;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.http.HttpStatus;
 
 @SuppressWarnings("BusyWait")
@@ -64,6 +67,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor(access = PRIVATE)
 public class ClaimDeviceTask extends ParallelTaskRunner {
   private static final String FAIL_CLAIM_LOG = "Claiming device at api %s failed!";
+  private static final String APPLICATION_JSON = "application/json";
 
   private static final int FACTOR_WAIT_FOR_FREE_DEVICE = 2;
 
@@ -108,16 +112,20 @@ public class ClaimDeviceTask extends ParallelTaskRunner {
     }
   }
 
+  @SneakyThrows
   private int getParallelClientStatus() {
-    ClaimDeviceRequestDTO claimRequest = getClaimDeviceRequestDTO();
+    final ClaimDeviceRequestDTO claimRequest = getClaimDeviceRequestDTO();
     actor.remember(CLAIMER_NAME, claimRequest.getClaimerName());
-    UnirestInstance client = getParallelClient().get();
-    return client
-        .post(CLAIM_DEVICE.getResolvedPath(actor))
-        .header(TEST_CASE_ID_HEADER, getTestcaseId())
-        .body(toJson(claimRequest))
-        .asEmpty()
-        .getStatus();
+    final CloseableHttpClient client = getParallelClient().get();
+    final HttpPost post = new HttpPost(CLAIM_DEVICE.getResolvedPath(actor));
+    post.addHeader(TEST_CASE_ID_HEADER, getTestcaseId());
+    post.addHeader("Content-Type", APPLICATION_JSON);
+    post.addHeader("Accept", APPLICATION_JSON);
+    final StringEntity entity = new StringEntity(toJson(claimRequest));
+    post.setEntity(entity);
+    try (final CloseableHttpResponse response = client.execute(post)) {
+      return response.getStatusLine().getStatusCode();
+    }
   }
 
   @Override
@@ -171,8 +179,8 @@ public class ClaimDeviceTask extends ParallelTaskRunner {
                 request ->
                     request
                         .pathParam("deviceId", useDeviceId)
-                        .header("Accept", "application/json")
-                        .header("Content-Type", "application/json")
+                        .header("Accept", APPLICATION_JSON)
+                        .header("Content-Type", APPLICATION_JSON)
                         .body(claimRequest)));
   }
 

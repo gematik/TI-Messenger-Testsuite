@@ -273,12 +273,12 @@ public class GlueUtils {
       FhirSearchResultDTO result, FhirResourceTypeDTO type) {
     return switch (type) {
       case PRACTITIONER -> getResourcesFromSearchResult(result, type, FhirPractitionerDTO.class);
-      case PRACTITIONERROLE ->
+      case PRACTITIONER_ROLE ->
           getResourcesFromSearchResult(result, type, FhirPractitionerRoleDTO.class);
       case ORGANIZATION -> getResourcesFromSearchResult(result, type, FhirOrganizationDTO.class);
       case ENDPOINT -> getResourcesFromSearchResult(result, type, FhirEndpointDTO.class);
       case LOCATION -> getResourcesFromSearchResult(result, type, FhirLocationDTO.class);
-      case HEALTHCARESERVICE ->
+      case HEALTHCARE_SERVICE ->
           getResourcesFromSearchResult(result, type, FhirHealthcareServiceDTO.class);
     };
   }

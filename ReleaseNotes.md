@@ -10,6 +10,37 @@
 [
 `docu TI-Messenger Version 2`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite_Version2.adoc)
 
+## Release 2.3.1
+
+### Features
+
+- A sample Serenity report can be found in the folder: [serenityReportExample](./serenityReportExample/). Find more
+  information
+  at [
+  `GettingStarted`](https://github.com/gematik/TI-Messenger-Testsuite/blob/main/doc/userguide/GettingStarted.adoc#evaluating-the-test-results)
+- provides a certificate revocation list for the test driver mTLS connection. Find more information at [
+  `GettingStarted`](https://github.com/gematik/TI-Messenger-Testsuite/blob/main/doc/userguide/GettingStarted.adoc#configure-the-certificate-revocation-list-for-mtls)
+
+### Changes
+
+- updates dependencies
+- Change all retry parameters to [6 - 1] in all test steps
+- test driver API: removes unused tag orgAdminFhirLocations
+- clarifies on the fact, that a separate orgAdmin test driver is needed,
+  solving https://github.com/gematik/TI-Messenger-Testsuite/issues/76
+
+### Bugs
+
+- changing a healthcare service endpoint will no longer fail, when the field extension is [] instead of null
+
+@TCID:TIM_V2_PRO_AF_010103
+
+- changing a healthcare service will no longer require an empty location, since location cannot be changed
+
+@TCID:TIM_V2_PRO_AF_010103
+
+- creating and updating a healthcare service will now use the lenient fhir mapper
+
 ## Release 2.3.0
 
 ### Bugs

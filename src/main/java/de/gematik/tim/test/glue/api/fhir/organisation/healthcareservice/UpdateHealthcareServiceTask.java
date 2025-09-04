@@ -26,6 +26,7 @@ import static de.gematik.tim.test.glue.api.fhir.organisation.FhirOwnOrganization
 import static de.gematik.tim.test.glue.api.fhir.organisation.healthcareservice.UseHealthcareServiceAbility.addHsToActor;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueHsName;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.readJsonFile;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static java.util.Objects.requireNonNull;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import static org.springframework.http.HttpStatus.OK;
@@ -86,8 +87,8 @@ public class UpdateHealthcareServiceTask extends HealthcareSpecificTask {
 
     Response response = lastResponse();
     if (response.statusCode() == OK.value()) {
-      FhirHealthcareServiceDTO hsDTO = response.body().as(FhirHealthcareServiceDTO.class);
-      addHsToActor(hsName, new HealthcareServiceInfo(hsDTO.getName(), hsDTO.getId()), actor);
+      FhirHealthcareServiceDTO updatedHealthcareServiceDTO = parseResponse(FhirHealthcareServiceDTO.class);
+      addHsToActor(hsName, new HealthcareServiceInfo(updatedHealthcareServiceDTO.getName(), updatedHealthcareServiceDTO.getId()), actor);
     }
   }
 }

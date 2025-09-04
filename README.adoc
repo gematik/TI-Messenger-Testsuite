@@ -3,6 +3,19 @@
 :toclevels: 1
 :source-highlighter: rouge
 
+[TIP]
+====
+TI-Messenger will start having biweekly forums 🎉
+
+First kick-off will happen Friday the 19th September.
+We will give a short overview over the published example report and the certificate revocation list.
+
+To sign up, visit our link:https://fachportal.gematik.de/veranstaltungen[Fachportal].
+
+Although most of the questions and answers will probably be in German, information concerning the test suite will be presented in English.
+We're happy to take questions in either language.
+====
+
 image::doc/images/Gematik_Logo_Flag.png[logo,width=200,height=37,role=right]
 = TI-Messenger-Testsuite
 
@@ -17,34 +30,35 @@ image::https://sonar.prod.ccs.gematik.solutions/api/project_badges/measure?branc
 image::https://sonar.prod.ccs.gematik.solutions/api/project_badges/measure?branch=main&project=de.gematik.tim.test%3ATI-Messenger-Testsuite&metric=duplicated_lines_density&token=75af72d73770b4fcd87d66c954ce1264533e88ad[role="right"]
 
 
-== Über das Projekt
+== About
 
-Mit der TI-Messenger-Testsuite werden Instanzen von TI-Messengern über die https://github.com/gematik/TI-Messenger-Testsuite/blob/main/src/main/resources/api/TiMessengerTestTreiber.yaml[Testtreiberschnittstelle] gegeneinander getestet.
+The TI-Messenger-Testsuite is testing TI-Messenger instances via a https://github.com/gematik/TI-Messenger-Testsuite/blob/main/src/main/resources/api/TiMessengerTestTreiber.yaml[test driver interface] against each other.
 
-Der Schwerpunkt der Testsuite liegt auf Interoperabilitätstests verschiedener TI-Messenger-Instanzen.
-Eine Beschreibung des Testkonzepts befindet sich
-link:doc/userguide/Testsuite.adoc[hier]
+Focus of the test suite is testing the interoperability between different TI-Messenger instances.
+In depth information about set-up and test are documented
+link:doc/userguide/Testsuite.adoc[here].
 
-Die Testsuite nutzt https://maven.apache.org/[Maven] und https://github.com/gematik/app-Tiger[Tiger] für die Ausführung der https://serenity-bdd.github.io/[Serenity-BDD]-Tests.
+The test suite uses https://maven.apache.org/[Maven] and https://github.com/gematik/app-Tiger[Tiger] for the execution of https://serenity-bdd.github.io/[Serenity-BDD] tests.
 
-Für die Ausführung der Tests werden aus einer Liste von link:src/test/resources/combine_items.json[Testinstanzen] mittels eines link:https://github.com/gematik/cucumber-test-combinations-maven-plugin[Maven-Plugins] Testkombinationen erstellt und in den link:src/test/resources/templates[Cucumber-Templates] eingetragen.
+For test execution a list of link:src/test/resources/combine_items.json[test instances] will be compiled into a list of test combinations using our link:https://github.com/gematik/cucumber-test-combinations-maven-plugin[maven plugin].
+This filtered combination list will then be used in the tests of the   link:src/test/resources/templates[cucumber templates].
 
-=== Releaseinformationen
+=== Release information
 
-In link:ReleaseNotes.md[ReleaseNotes.md] befinden sich alle Informationen zu unseren (neuesten) Releases.
+In link:ReleaseNotes.md[ReleaseNotes.md] all information about our (newest) releases can be found.
 
-== Verwendung
+== Usage
 
-Die Testsuite führt die Tests als Maven-Integrationstests aus.
-Nach der initialen Konfiguration können die Tests mit `mvn verify` ausgeführt werden.
-Eine Beschreibung der benötigten initialen Konfiguration befindet sich link:doc/userguide/GettingStarted.adoc[hier].
-Erweiterte Konfigurationen sind im link:doc/userguide/DevGuide.adoc[Entwicklerguide] zu finden.
+The test suite runs the tests as maven integration tests.
+After initial configuration the tests can be run with the command `mvn verify`.
+More details about the necessary configuration before the first run can be found in link:doc/userguide/GettingStarted.adoc[GettingStarted].
+Additional configuration possibilities are described in link:doc/userguide/DevGuide.adoc[DevGuide].
 
-Nach der Testausführung befindet sich die Auswertung unter link:target/site/serenity/index.html[target/site/serenity/index.html]
+After test execution the test report and additional information can be found at link:target/site/serenity/index.html[target/site/serenity/index.html].
 
-== Mitwirken
+== Contributing
 
-Unsere Regeln für das Mitwirken an unserem Projekt befinden sich link:CONTRIBUTING.md[hier].
+The guideline for contributing to the project can be found at link:CONTRIBUTING.md[CONTRIBUTING.md].
 
 == License
 
@@ -56,10 +70,16 @@ See the link:./LICENSE[LICENSE] for the specific language governing permissions 
 
 == Additional Notes and Disclaimer from gematik GmbH
 
-. Copyright notice: Each published work result is accompanied by an explicit statement of the license conditions for use. These are regularly typical conditions in connection with open source or free software. Programs described/provided/linked here are free software, unless otherwise stated.
+. Copyright notice: Each published work result is accompanied by an explicit statement of the license conditions for use.
+These are regularly typical conditions in connection with open source or free software.
+Programs described/provided/linked here are free software, unless otherwise stated.
 . Permission notice: Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 .. The copyright notice (Item 1) and the permission notice (Item 2) shall be included in all copies or substantial portions of the Software.
-.. The software is provided "as is" without warranty of any kind, either express or implied, including, but not limited to, the warranties of fitness for a particular purpose, merchantability, and/or non-infringement. The authors or copyright holders shall not be liable in any manner whatsoever for any damages or other claims arising from, out of or in connection with the software or the use or other dealings with the software, whether in an action of contract, tort, or otherwise.
-.. The software is the result of research and development activities, therefore not necessarily quality assured and without the character of a liable product. For this reason, gematik does not provide any support or other user assistance (unless otherwise stated in individual cases and without justification of a legal obligation). Furthermore, there is no claim to further development and adaptation of the results to a more current state of the art.
+.. The software is provided "as is" without warranty of any kind, either express or implied, including, but not limited to, the warranties of fitness for a particular purpose, merchantability, and/or non-infringement.
+The authors or copyright holders shall not be liable in any manner whatsoever for any damages or other claims arising from, out of or in connection with the software or the use or other dealings with the software, whether in an action of contract, tort, or otherwise.
+.. The software is the result of research and development activities, therefore not necessarily quality assured and without the character of a liable product.
+For this reason, gematik does not provide any support or other user assistance (unless otherwise stated in individual cases and without justification of a legal obligation).
+Furthermore, there is no claim to further development and adaptation of the results to a more current state of the art.
 . Gematik may remove published results temporarily or permanently from the place of publication at any time without prior notice or justification.
-. Please note: Parts of this code may have been generated using AI-supported technology. Please take this into account, especially when troubleshooting, for security analyses and possible adjustments.
+. Please note: Parts of this code may have been generated using AI-supported technology.
+Please take this into account, especially when troubleshooting, for security analyses and possible adjustments.

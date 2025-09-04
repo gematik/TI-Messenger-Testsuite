@@ -30,8 +30,12 @@ import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTe
 
 import de.gematik.tim.test.glue.api.threading.ParallelQuestionRunner;
 import de.gematik.tim.test.models.InfoObjectDTO;
-import kong.unirest.UnirestInstance;
+import lombok.SneakyThrows;
 import net.serenitybdd.screenplay.Actor;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.jetbrains.annotations.NotNull;
 
 public class ApiInfoQuestion extends ParallelQuestionRunner<InfoObjectDTO> {
@@ -52,16 +56,17 @@ public class ApiInfoQuestion extends ParallelQuestionRunner<InfoObjectDTO> {
   }
 
   @Override
+  @SneakyThrows
   public InfoObjectDTO searchParallel() {
-    UnirestInstance client = getClient();
-    InfoObjectDTO info =
-        fromJson(
-            client
-                .get(GET_INFO.getResolvedPath(actor))
-                .header(TEST_CASE_ID_HEADER, getTestcaseId())
-                .asString()
-                .getBody(),
-            InfoObjectDTO.class);
+    final CloseableHttpClient client = getClient();
+    final HttpGet request = new HttpGet(GET_INFO.getResolvedPath(actor));
+    request.addHeader(TEST_CASE_ID_HEADER, getTestcaseId());
+    String jsonString;
+    try (final CloseableHttpResponse response = client.execute(request)) {
+      final HttpEntity entity = response.getEntity();
+      jsonString = entity != null ? new String(entity.getContent().readAllBytes()) : "";
+    }
+    final InfoObjectDTO info = fromJson(jsonString, InfoObjectDTO.class);
     String homeserver = info.getHomeserver();
     homeserver = addHttpsIfNotSet(homeserver);
     actor.remember(HOME_SERVER, homeserver);

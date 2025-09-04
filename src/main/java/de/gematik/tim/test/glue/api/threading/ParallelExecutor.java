@@ -31,14 +31,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import kong.unirest.UnirestInstance;
 import lombok.NoArgsConstructor;
+import org.apache.http.impl.client.CloseableHttpClient;
 
 @NoArgsConstructor(access = PRIVATE)
 public class ParallelExecutor {
 
   private static final ExecutorService executor = newFixedThreadPool(10);
-  private static final ThreadLocal<UnirestInstance> client =
+  private static final ThreadLocal<CloseableHttpClient> client =
       ThreadLocal.withInitial(ClientFactory::getClient);
   private static final ConcurrentHashMap<String, ConcurrentSkipListSet<Long>> devicesMap =
       new ConcurrentHashMap<>();
@@ -71,7 +71,7 @@ public class ParallelExecutor {
     }
   }
 
-  public static ThreadLocal<UnirestInstance> getParallelClient() {
+  public static ThreadLocal<CloseableHttpClient> getParallelClient() {
     return client;
   }
 

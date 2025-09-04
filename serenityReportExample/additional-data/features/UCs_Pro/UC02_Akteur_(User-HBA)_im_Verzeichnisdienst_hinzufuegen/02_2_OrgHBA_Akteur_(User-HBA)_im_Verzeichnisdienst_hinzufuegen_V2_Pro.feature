@@ -1,0 +1,30 @@
+# language: de
+@File:FeatureFile_02_02_V2_Pro @Ctl:UseCaseV2_02_Pro @PRODUKT:TI-M_Client_Pro @PRODUKT:VZD_FHIR @Zul:Pro @Zul:ProKK @AF-ID:AF_10058-02 @NB:JA
+Funktionalität: 5.1.2 (2) Akteur (User-HBA) im Verzeichnisdienst hinzufügen (Pro Spec)
+  Mit diesem Anwendungsfall wird ein Akteur in der Rolle "User-HBA" für Akteure anderer Messenger-Services auffindbar
+  und erreichbar gemacht. Dafür werden FHIR-Ressourcen mit ihrer jeweiligen MXID des Akteurs im Personenverzeichnis
+  (PractitionerRole) des VZD-FHIR-Directory hinterlegt.
+
+  COMMENT: Pro
+  AF_10058-02 - Akteur (User-HBA) im Verzeichnisdienst hinzufügen
+
+  Inhalt
+  TF 1    User im VZD hinzufügen & löschen (Suche ausserhalb der Organisation)
+
+  @Ctl:AllowAll @Ctl:VZD @TCID:TIM_V2_PRO_AF_020201 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 02.02.01 Akteur im Verzeichnisdienst - Hinzufügen/Löschen - HBA-User löscht Eintrag und ist nicht auffindbar für HBA-User anderer Organisation
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_PRACTITIONER | <ApiName1> |
+      | B | PRO_CLIENT       | <ApiName2> |
+    Und "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und "A" hinterlegt seine MXID im Verzeichnis Dienst
+    Und "B" findet "A" in FHIR
+    Wenn "A" löscht seine MXID im Verzeichnis Dienst
+    Dann "B" kann "A" nicht mehr finden in FHIR [Retry 6 - 1]
+
+    # @DistinctColumn(ApiName2) #
+    @Plugin:Shuffle(true) @Plugin:DistinctProperty(homeserver) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient")) @Plugin:Filter(ApiName1.hasTag("practitioner"))
+    Beispiele:
+      | ApiName1              | ApiName2              |
+      | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+# @DistinctColumn(ApiName2) #
