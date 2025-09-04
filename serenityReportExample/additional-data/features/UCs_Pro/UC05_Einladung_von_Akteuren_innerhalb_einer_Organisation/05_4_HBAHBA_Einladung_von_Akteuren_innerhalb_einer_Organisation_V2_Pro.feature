@@ -1,0 +1,60 @@
+# language: de
+@File:FeatureFile_05_04_V2_Pro @Ctl:UseCaseV2_05_Pro @Ctl:OneHomeServer @PRODUKT:TI-M_Client_Pro @PRODUKT:TI-M_FD_Pro @PRODUKT:TI-M_Client_Basis @PRODUKT:TI-M_FD_Basis @Zul:Pro @AF-ID:AF_10104-03 @AFO-ID:A_25045-01 @AFO-ID:A_25046 @NB:JA
+Funktionalität: 5.1.5 (4) Einladung von Akteuren innerhalb einer Organisation (Pro Spec)
+  In diesem Anwendungsfall wird ein Akteur, der zu einer gemeinsamen Organisation gehört, in einen Raum eingeladen,
+  um Aktionen auszuführen. Für die Suche nach Akteuren innerhalb einer gemeinsamen Organisation durchsucht ein TI-M
+  Client das Nutzerverzeichnis seiner Organisation auf dem Matrix-Homeserver. Anschließend wird die Einladung vom
+  Einladenden an den Messenger-Proxy übermittelt. Dieser prüft, ob die beteiligten Akteure bei ihm registriert sind.
+  Ist dies der Fall, erfolgt die Weiterleitung an den Matrix-Homeserver der Akteure. Ist dies nicht der Fall, handelt
+  es sich bei dem einzuladenden Akteur nicht um einen Akteur innerhalb der Organisation und die Einladung wird für die
+  externe Zustellung weitergeleitet.
+
+  COMMENT: Pro
+  AF_10104-03 Einladung von Akteuren innerhalb einer Organisation
+  COMMENT: Basis
+  A_25045-01  Funktionsumfang der Berechtigungskonfiguration
+  A_25046     Durchsetzung der Berechtigungskonfiguration - Client
+
+  Inhalt
+  TF 1 - 2 HBA User lädt anderen HBA User ein (Chat/Raum) (AllowAll)
+
+  @Ctl:AllowAll @Ctl:VZD @Ctl:BP @TCID:TIM_V2_PRO_AF_050401 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.04.01 Einladung innerhalb einer Organisation - Chat - AllowAll - HBA User lädt anderen HBA User ein
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_PRACTITIONER | <ApiName1A> |
+      | B | PRO_PRACTITIONER | <ApiName1B> |
+    Und "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und "A" findet "B" in FHIR
+    Und "A" schreibt "B" direkt "Testnachricht 1"
+    Dann "B" erhält eine Einladung von "A"
+    Und "B" bestätigt eine Einladung von "A"
+    Und "B" empfängt eine Nachricht "Testnachricht 1" von "A"
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:EqualProperty(homeserver) @Plugin:AllowSelfCombine(true) @Plugin:AllowDoubleLineup(false) @Plugin:Filter(ApiName1A.hasTag("proClient")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName1A.hasTag("practitioner")) @Plugin:Filter(ApiName1B.hasTag("practitioner"))
+    Beispiele:
+      | ApiName1A             | ApiName1B             |
+      | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:AllowAll @Ctl:VZD @Ctl:BP @TCID:TIM_V2_PRO_AF_050402 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 05.04.02 Einladung innerhalb einer Organisation - Raum - AllowAll - HBA User lädt anderen HBA User ein
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_PRACTITIONER | <ApiName1A> |
+      | B | PRO_PRACTITIONER | <ApiName1B> |
+    Und "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und "A" findet "B" in FHIR
+    Und "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und "B" ist dem Raum "TIM Testraum 1" beigetreten
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:EqualProperty(homeserver) @Plugin:AllowSelfCombine(true) @Plugin:AllowDoubleLineup(false) @Plugin:Filter(ApiName1A.hasTag("proClient")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName1A.hasTag("practitioner")) @Plugin:Filter(ApiName1B.hasTag("practitioner"))
+    Beispiele:
+      | ApiName1A             | ApiName1B             |
+      | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS3 |
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #

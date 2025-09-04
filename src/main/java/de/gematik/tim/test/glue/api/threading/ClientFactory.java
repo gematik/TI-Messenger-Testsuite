@@ -25,50 +25,61 @@ import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.TIMEOUT;
 
 import de.gematik.test.tiger.lib.TigerDirector;
 import de.gematik.test.tiger.proxy.TigerProxy;
-import kong.unirest.Unirest;
-import kong.unirest.UnirestInstance;
+import java.util.Arrays;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.HttpHost;
+import org.apache.http.message.BasicHeader;
 
 public class ClientFactory {
+  private ClientFactory() {}
 
   private static final String ACCEPT = "*/*";
   private static final String CONTENT_TYPE = "application/json";
-  private static ClientFactory instance;
-  private static final UnirestInstance client = Unirest.spawnInstance();
-  private static final UnirestInstance cleanUpClient = Unirest.spawnInstance();
+  private static final CloseableHttpClient client;
+  private static final CloseableHttpClient cleanUpClient;
 
-  private ClientFactory() {
-    TigerProxy proxy = TigerDirector.getTigerTestEnvMgr().getLocalTigerProxyOrFail();
-    client
-        .config()
-        .proxy("localhost", proxy.getProxyPort())
-        .addDefaultHeader("Accept", ACCEPT)
-        .addDefaultHeader("Content-Type", CONTENT_TYPE)
-        .interceptor(new CurlInterceptor())
-        .connectTimeout(HTTP_TIMEOUT * 1000)
-        .socketTimeout(HTTP_TIMEOUT * 1000)
-        .sslContext(proxy.buildSslContext());
-    cleanUpClient
-        .config()
-        .proxy("localhost", proxy.getProxyPort())
-        .addDefaultHeader("Accept", ACCEPT)
-        .addDefaultHeader("Content-Type", CONTENT_TYPE)
-        .interceptor(new CurlInterceptor())
-        .connectTimeout((int) (TIMEOUT * 2000))
-        .socketTimeout((int) (TIMEOUT * 2000))
-        .sslContext(proxy.buildSslContext());
+  static {
+    final TigerProxy proxy = TigerDirector.getTigerTestEnvMgr().getLocalTigerProxyOrFail();
+    client = HttpClients.custom()
+        .setDefaultRequestConfig(
+            RequestConfig.custom()
+                .setConnectTimeout(HTTP_TIMEOUT * 1000)
+                .setSocketTimeout(HTTP_TIMEOUT * 1000)
+                .setProxy(new HttpHost("localhost", proxy.getProxyPort()))
+                .build())
+        .setSSLContext(proxy.buildSslContext())
+        .setDefaultHeaders(Arrays.asList(
+            new BasicHeader("Accept", ACCEPT),
+            new BasicHeader("Content-Type", CONTENT_TYPE)
+        ))
+        .addInterceptorLast(new CurlInterceptor())
+        .build();
+
+    cleanUpClient =
+        HttpClients.custom()
+            .setDefaultRequestConfig(
+                RequestConfig.custom()
+                    .setConnectTimeout(TIMEOUT.intValue() * 2000)
+                    .setSocketTimeout(TIMEOUT.intValue() * 2000)
+                    .setProxy(new HttpHost("localhost", proxy.getProxyPort()))
+                    .build())
+            .setSSLContext(proxy.buildSslContext())
+            .setDefaultHeaders(
+                Arrays.asList(
+                    new BasicHeader("Accept", ACCEPT),
+                    new BasicHeader("Content-Type", CONTENT_TYPE)
+                    ))
+            .addInterceptorLast(new CurlInterceptor())
+            .build();
   }
 
-  public static synchronized UnirestInstance getClient() {
-    if (instance == null) {
-      instance = new ClientFactory();
-    }
+  public static CloseableHttpClient getClient() {
     return ClientFactory.client;
   }
 
-  public static synchronized UnirestInstance getCleanUpClient() {
-    if (instance == null) {
-      instance = new ClientFactory();
-    }
+  public static CloseableHttpClient getCleanUpClient() {
     return ClientFactory.cleanUpClient;
   }
 }

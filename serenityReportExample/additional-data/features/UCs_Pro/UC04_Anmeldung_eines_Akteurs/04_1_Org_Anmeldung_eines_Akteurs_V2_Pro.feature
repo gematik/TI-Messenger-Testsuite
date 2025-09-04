@@ -1,0 +1,33 @@
+# language: de
+@File:FeatureFile_04_01_V2_Pro @Ctl:UseCaseV2_04_Pro @Ctl:OneHomeServer @PRODUKT:TI-M_Client_Pro @PRODUKT:TI-M_FD_Pro @Zul:Pro @Zul:ProKK @AF-ID:AF_10057-04 @NB:NEIN
+Funktionalität: 04. (1) Anmeldung eines Akteurs am Messenger-Service (Pro Spec)
+  Mit diesem Anwendungsfall meldet sich ein Akteur an einen in der TI-Föderation zuständigen Messenger-Service an.
+
+  COMMENT: Pro
+  AF_10057-04 - Anmeldung eines Akteurs am Messenger-Service
+
+  Inhalt
+  TF 1     Anmeldung eines Akteurs (Pro CLient)
+  TF 2     Anmeldung eines Akteurs (OrgAdmin)
+
+  @TCID:TIM_V2_PRO_AF_040101 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 04.01.01 Anmeldung eines Akteurs - Erfolgreiche Anmeldung eines Akteurs (ProClient)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1> |
+    Dann ist das Login für "A" erfolgreich
+
+    @Plugin:Filter(ApiName1.hasTag("proClient"))
+    Beispiele:
+      | ApiName1              |
+      | RU2-Ref-Pract-SDK-HS4 |
+
+  @TCID:TIM_V2_PRO_AF_040102 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 04.01.02 Anmeldung eines Akteurs - Erfolgreiche Anmeldung eines Akteurs (OrgAdmin)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN | <ApiName1> |
+    Dann ist das Login für "A" erfolgreich
+
+    @Plugin:Filter(ApiName1.hasTag("orgAdmin"))
+    Beispiele:
+      | ApiName1            |
+      | RU2-Ref-ORG-Web-HS4 |

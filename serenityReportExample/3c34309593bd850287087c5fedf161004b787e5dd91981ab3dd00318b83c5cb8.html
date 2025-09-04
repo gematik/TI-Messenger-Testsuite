@@ -1,0 +1,2910 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>06X.01.03 Berechtigungskonfiguration Benutzergruppen - AllowAll - GruppenBlock - Einträge bleiben trotz Logout erhalten</title>
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+<link rel="apple-touch-icon" sizes="57x57" href="apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff"><link rel="stylesheet" href="bootstrap-icons/bootstrap-icons.css">
+<!-- JQuery -->
+<script type="text/javascript" src="scripts/jquery-3.7.1.min.js"></script><!-- Required Stylesheets -->
+<link href="bootstrap-treeview/dist/bootstrap-treeview.min.css" rel="stylesheet">
+
+<!-- Required Javascript -->
+<script src="bootstrap-treeview/dist/bootstrap-treeview.min.js"></script><!-- DataTables -->
+<link type="text/css" href="datatables/1.13.1/datatables.min.css" rel="stylesheet" />
+<script type="text/javascript" src="datatables/1.13.1/datatables.min.js"></script>
+<script type="text/javascript" src="datatables/1.13.1/time-elapsed-dhms.js"></script>
+
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script src="bootstrap/js/bootstrap.min.js"></script>
+
+
+<script>
+    jQuery.fn.dataTable.ext.type.order['time-elapsed-dhms-pre'] = function(data) {
+
+        var matches = data.match(/^(\d+(?:\.\d+)?)\s*([a-z]+)/i);
+        var multipliers = {
+            ms: 1,
+            s: 1000,
+            m: 60000,
+            h: 3600000,
+            d: 86400000
+        };
+
+        if (matches) {
+            var multiplier = multipliers[matches[2].toLowerCase()];
+            return parseFloat(matches[1]) * multiplier;
+        } else {
+            return -1;
+        };
+    };
+</script>
+<link rel="stylesheet" href="css/core.css"/>
+<link rel="stylesheet" href="css/link.css"/>
+<link type="text/css" media="screen" href="css/screen.css" rel="Stylesheet"/>
+<!--CHART.JS-->
+<script src="chartjs/chart.js"></script>
+<script src="chartjs/chartjs-plugin-datalabels@2.0.0.min.js"></script>
+<script src="chartjs/patternomaly.min.js"></script>
+<script>
+    // Register the plugin to all charts:
+    Chart.register(ChartDataLabels);
+</script>
+<!-- JQuery-UI -->
+<link type="text/css" href="jqueryui/1.13.2/jquery-ui.css" rel="Stylesheet" />
+<script type="text/javascript" src="jqueryui/1.13.2/jquery-ui.js"></script><!-- DataTables -->
+<link type="text/css" href="datatables/1.13.1/datatables.min.css" rel="stylesheet" />
+<script type="text/javascript" src="datatables/1.13.1/datatables.min.js"></script>
+<script type="text/javascript" src="datatables/1.13.1/time-elapsed-dhms.js"></script>
+
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script src="bootstrap/js/bootstrap.min.js"></script>
+
+
+<script>
+    jQuery.fn.dataTable.ext.type.order['time-elapsed-dhms-pre'] = function(data) {
+
+        var matches = data.match(/^(\d+(?:\.\d+)?)\s*([a-z]+)/i);
+        var multipliers = {
+            ms: 1,
+            s: 1000,
+            m: 60000,
+            h: 3600000,
+            d: 86400000
+        };
+
+        if (matches) {
+            var multiplier = multipliers[matches[2].toLowerCase()];
+            return parseFloat(matches[1]) * multiplier;
+        } else {
+            return -1;
+        };
+    };
+</script>
+<!-- ImgPreview -->
+<script src="scripts/imgpreview.full.jquery.js" type="text/javascript"></script>
+</head>
+
+<body class="results-page">
+
+
+<div id="topheader">
+    <div id="topbanner">
+        <div id="logo"><a href="index.html"><img src="images/serenity-logo.png" border="0"/></a></div>
+        <div id="projectname-banner" style="float:right">
+            <span class="projectname">
+                <span class="projecttitle">Serenity BDD Report</span>
+                <span class="projectsubtitle"></span>
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="middlecontent">
+    <div id="contenttop">
+        <div class="middlebg">
+        <span class="breadcrumbs">
+            <a href="index.html" class="breadcrumbs">Home</a>
+
+        >
+            06X.01.03 berechtigungskonfiguration benutzergruppen - allowall - gruppenblock - eintr&auml;ge bleiben trotz logout erhalten
+        </span>
+        </div>
+        <div class="rightbg"></div>
+    </div>
+
+    <div class="clr"></div>
+
+    <!--/* starts second table*/-->
+<div>
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#"><i class="bi bi-journal-check"></i> Overall Test Results</a>
+        </li>
+        <li >
+            <a href="capabilities.html"><i class="bi bi-journal-text"></i> Requirements</a>
+        </li>
+    </ul>
+    <span class="date-and-time"><a href="build-info.html"><i class="bi bi-info-circle"></i></a> Report generated 12-08-2025 22:53</span>
+    <br style="clear:left"/>
+</div>
+    <div class="clr"></div>
+
+
+    <div id="contentbody">
+        <div class="titlebar">
+            <div class="story-title">
+                <table class="outcome-header">
+                    <tr>
+                        <td>
+                                <div>
+                                    <h3 class="discreet-story-header">
+                                        <i class="fs-2 bi bi-chat-left-quote large-icon"></i>
+                                        <span class="story-header-title">06X. (1) Berechtigungskonfiguration Benutzergruppen (pro Spec)</span>
+                                    </h3>
+                                </div>
+
+                        </td>
+                        <td valign="top">
+                            <p class="tag">
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="1472a22c5e07dd69accb46dc29ce24ef59f791125696df27c3058241d97f58ab.html">UseCaseV2 06 Basis
+                                              (Ctl)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="1e7ce955d2ceeed8c1835578a93ca8d1f73d0bd4c4211b7936384b109e009ce7.html">Filter(Apiname1.hastag("proclient"))
+                                              (Plugin)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="7748df88f2c56a8cb6f2fb2e9c999c5782b6158037eec2da2975d7b7a25436d8.html">1
+                                              (PRIO)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="d29c7c11eba50c2fc671cacd274b724a98a4d9114c0dc094b471e538bf1fa9fe.html">Negativ
+                                              (TESTFALL)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="937c64b0b4d5e71d977e4510db3d072df454ba8b3060de3c6e3453f53cf864c1.html">TIM V2 PRO AF 06X0103
+                                              (TCID)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="c68fd6639ab29c4b0ac02a78bc39f4e22557bcaa40ef14c903ac0e584626edfe.html">1 To 2 Minutes
+                                              (Duration)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="e11fe88c90e04b74aacca98c4911cfd5d8e24be4d55e026531948bb3883f1dbc.html">Pro
+                                              (Zul)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="28634279d25fba92afbe2e9136c7209ac00f599d6368c35855569ece5c67062f.html">Featurefile 06 01 V2 Basis
+                                              (File)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="42f57fe4afe684cfa4294a39123d3069604423191b213120cf03954cef7bfd03.html">TI-M FD Pro
+                                              (PRODUKT)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="c261c0c890b3bd80b0c209f758095001513faae0ef761a9b9eb9d37f0caaa1ea.html">Gruppen Bp
+                                              (Ctl)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="d0b32cf5c2573baf79c3489637157238d8bdb5da84eec2db1357506a1e11c1fb.html">Allow All
+                                              (Ctl)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="b1d13d9ab0b4421623dd61b18a621a1af725631e917f2c2d2321064d4e4fcd9a.html">TI-M Client Pro
+                                              (PRODUKT)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="cde2ca4511077f35a70c227b81be0d0945242572f372784c7bf6321620624468.html">A 26390
+                                              (AFO-ID)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="061e0d44c3842a1a3e1a6c42a92321448d2e09caa7a933a2e16e48aedadc765c.html">Ja
+                                              (NB)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="16b36824af0423c8594aa55c340a5be9a21ff049608858e50f41700f9f05ac68.html">Implementiert
+                                              (STATUS)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="f696a82952b18ab3ef913d09362e4c385161759145754f7bb48fc927b902d1b4.html">Pro Kk
+                                              (Zul)
+                                        </a>
+                                </span>
+                                    
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="story-title">
+                <table class="outcome-header">
+                    <tr>
+                        <td colspan="2" class="test-title-bar">
+                            <span class="outcome-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon fa-2x' title='SUCCESS'></i></a></span>
+                            <span class="test-case-title">
+                                <span class="success-color">
+                                    06X.01.03 Berechtigungskonfiguration Benutzergruppen - AllowAll - GruppenBlock - Eintr&auml;ge bleiben trotz Logout erhalten
+                                        <span class="related-issue-title"></span>
+                                </span>
+                            </span>
+
+
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+
+            <!-- CAST MEMBERS -->
+            <div>&nbsp;</div>
+            <div>
+                <h3 class="discreet-story-header">
+                    <i class="fs-2 bi bi-people large-icon"></i>
+                    <span class="story-header-title">
+                        <a class="btn btn-primary" data-toggle="collapse" href="#castDetails"
+                           role="button" aria-expanded="true" aria-controls="castDetails">Cast</a>
+                    </span>
+                </h3>
+            </div>
+            <div class="collapse multi-collapse" id="castDetails">
+                <table class="cast">
+                    <tr>
+                            <td width="100%">
+                                <h4>
+                                    <i class="fs-2 bi bi-person"></i>&nbsp;
+                                    <span>
+                                        <a data-toggle="collapse" href="#abilities-A"
+                                           aria-expanded="false" aria-controls="abilities">A</a>
+                                        
+                                    </span>
+                                </h4>
+                                <div class="collapse multi-collapse" id="abilities-A">
+                                        <div>
+                                            <span class="cast-description">A can:</span>
+                                            <ul>
+                                                    <li>call an API at http://RU2-Ref-Pract-SDK-HS4</li>
+                                                    <li>de.gematik.tim.test.glue.api.devices.UseDeviceAbility@415f75e9</li>
+                                                    <li>de.gematik.tim.test.glue.api.login.IsLoggedInAbility@629cb8f4</li>
+                                                    <li>de.gematik.tim.test.glue.api.authorization.HasBlockAndAllowListAbility@1b1e4e9b</li>
+                                                    <li>de.gematik.tim.test.glue.api.login.IsLoggedInAbility@6f47f1c6</li>
+                                            </ul>
+                                        </div>
+                                </div>
+                            </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        </td>
+        </tr>
+        </table>
+    </div>
+    <!-- END CAST MEMBERS -->
+
+
+</div>
+</div>
+
+<div class="clr"></div>
+
+    <div class="story-title">
+        <h3 class="story-header">Scenario Outline</h3>
+
+        <div class="scenario">Angenommen Es werden folgende Clients reserviert:<br><table class='embedded'><tbody><tr><td>A</td><td>PRO_CLIENT</td><td>&lt;ApiName1&gt;</td></tr></tbody></table><br>Und "A" setzen den eigenen Authorization Mode auf "AllowAll"<br>Und "A" hinterlegt die Gruppe "Versicherte" in der Blockliste<br>Und "A" prüft, dass die Gruppe "Versicherte" in der Blockliste gesetzt ist<br>Und "A" loggt sich im TI-Messenger aus<br>Und "A" loggt sich im TI-Messenger ein<br>Und "A" prüft, ob der eigene Authorization Mode auf "AllowAll" gesetzt ist<br>Und "A" prüft, dass die Gruppe "Versicherte" in der Blockliste gesetzt ist</div>
+
+    </div>
+
+<div id="beforetable"></div>
+
+
+        <h3 class="story-header">Examples:&nbsp;</h3>
+            <div class="requirementNarrative"></div>
+
+
+            <p class="example-tag">
+                    <span class="badge example-tag tag-badge" style="">
+                    <i class="bi bi-tag"></i>&nbsp;<a class="tagLink" style=" style=""
+                                                      href="1e7ce955d2ceeed8c1835578a93ca8d1f73d0bd4c4211b7936384b109e009ce7.html">Filter(Apiname1.hastag("proclient"))
+                    (Plugin)</a>
+                </span>
+            </p>
+
+        <div class="example-table test-report">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                        <th>Api Name1</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="test-SUCCESS"><a href="#0">1</a></td>
+                            <td class="test-SUCCESS"><a
+                                        href="#0">RU2-Ref-Pract-SDK-HS4</a>
+                            </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+<div id="tablecontents">
+    <div>
+        <table class="step-table">
+            <tr class="step-titles">
+                <th width="65">
+                </th>
+                <th class="step-description-column greentext">
+                    Steps
+                </th>
+
+                <th width="130" class="greentext">Outcome</th>
+                <th width="100" class="greentext"><i title="Duration" class="bi bi-stopwatch"></i></th>
+            </tr>
+            <tr class="step-table-separator">
+                <td colspan="5"></td>
+            </tr>
+
+                <tr class="test-SUCCESS">
+
+                    <td width="50" class="step-icon">
+                        <a name="0"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0 success-icon"
+                                   style="margin-left: 20px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0')"
+                               style="display:block;">
+                                <span class="top-level-step">
+                                                1: 06X.01.03 Berechtigungskonfiguration Benutzergruppen - AllowAll - GruppenBlock - Einträge bleiben trotz Logout erhalten ({ApiName1=RU2-Ref-Pract-SDK-HS4})
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-fe96d15a-4fa5-4d5a-87d8-1055f43944ec"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-1-0">
+                        TestcaseId
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-1-0" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                TestcaseId
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-1-0')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-1-0">@TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26</pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="top-level-step">SUCCESS</span></td>
+                    <td width="100"><span class="top-level-step">1m 1s</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="70" class="step-icon">
+                        <a name="0-0"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-0')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-0 success-icon"
+                                   style="margin-left: 40px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-0')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                Angenommen Es werden folgende Clients reserviert:<br><table class='embedded'><tbody><tr><td>A</td><td>PRO_CLIENT</td><td>RU2-Ref-Pract-SDK-HS4</td></tr></tbody></table>
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">25s 854ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-0" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="90" class="step-icon">
+                        <a name="0-0-0"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-0-0')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-0-0 success-icon"
+                                   style="margin-left: 60px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-0-0')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                A executes a GET on the resource /devices
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">040ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-0-0" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="110" class="step-icon">
+                        <a name="0-0-0-0"></a>
+                            <span style="margin-left: 80px;"
+                                  class="nested-group-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a>
+                                </span>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                                <span class="nested-group-step">
+                                                GET http://RU2-Ref-Pract-SDK-HS4/devices
+                                        </span>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+                <span>
+                        <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                                data-target="#restModal-REST-4">
+                            REST Query
+                        </button>
+                    </span>
+                <!-- Modal -->
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="restModal-REST-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Response</h4>
+                                    <p>URL: http://RU2-Ref-Pract-SDK-HS4/devices</p>
+                                    <p>Status code: 200</p>
+                                    <p>Content Type: application/json</p>
+                                    <h4>Request Headers</h4>
+                                    <pre>Transaction-Id=@TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26<br>Accept=*/*<br>Content-Type=application/json</pre>
+                                    <h4>Response Headers</h4>
+                                    <pre>Date: Tue, 12 Aug 2025 20:53:41 GMT<br>Content-Type: application/json<br>Content-Length: 301<br>Strict-Transport-Security: max-age=31536000; includeSubDomains<br>connection: keep-alive</pre>
+                                <h4>Response Body</h4>
+                                    <pre>{<br>    &quot;devices&quot;: [<br>        {<br>            &quot;deviceId&quot;: 1,<br>            &quot;deviceName&quot;: &quot;device-1&quot;,<br>            &quot;deviceStatus&quot;: &quot;free&quot;,<br>            &quot;claimerName&quot;: &quot;&quot;,<br>            &quot;claimedUntil&quot;: &quot;&quot;<br>        },<br>        {<br>            &quot;deviceId&quot;: 3,<br>            &quot;deviceName&quot;: &quot;device-3&quot;,<br>            &quot;deviceStatus&quot;: &quot;free&quot;,<br>            &quot;claimerName&quot;: &quot;&quot;,<br>            &quot;claimedUntil&quot;: &quot;&quot;<br>        },<br>        {<br>            &quot;deviceId&quot;: 2,<br>            &quot;deviceName&quot;: &quot;device-2&quot;,<br>            &quot;deviceStatus&quot;: &quot;free&quot;,<br>            &quot;claimerName&quot;: &quot;&quot;,<br>            &quot;claimedUntil&quot;: &quot;&quot;<br>        }<br>    ]<br>}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                        </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-group-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-group-step"></span></td>
+                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+                <tr class="test-SUCCESS">
+
+                    <td width="90" class="step-icon">
+                        <a name="0-0-1"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-0-1')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-0-1 success-icon"
+                                   style="margin-left: 60px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-0-1')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                A executes a POST on the resource /devices/{deviceId}/claim
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">073ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-0-1" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="110" class="step-icon">
+                        <a name="0-0-1-0"></a>
+                            <span style="margin-left: 80px;"
+                                  class="nested-group-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a>
+                                </span>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                                <span class="nested-group-step">
+                                                POST http://RU2-Ref-Pract-SDK-HS4/devices/1/claim
+                                        </span>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+                <span>
+                        <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                                data-target="#restModal-REST-6">
+                            REST Query
+                        </button>
+                    </span>
+                <!-- Modal -->
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="restModal-REST-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Response</h4>
+                                    <p>URL: http://RU2-Ref-Pract-SDK-HS4/devices/1/claim</p>
+                                    <p>Status code: 200</p>
+                                    <p>Content Type: application/json</p>
+                                    <h4>Request Headers</h4>
+                                    <pre>Accept=application/json<br>Transaction-Id=@TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26<br>Content-Type=application/json</pre>
+                                    <h4>Content Body</h4>
+                                    <pre>{<br>    &quot;claimerName&quot;: &quot;no configured cert found&quot;,<br>    &quot;claimFor&quot;: 300<br>}</pre>
+                                    <h4>Response Headers</h4>
+                                    <pre>Date: Tue, 12 Aug 2025 20:53:41 GMT<br>Content-Type: application/json<br>Content-Length: 152<br>Strict-Transport-Security: max-age=31536000; includeSubDomains<br>connection: keep-alive</pre>
+                                <h4>Response Body</h4>
+                                    <pre>{<br>    &quot;deviceId&quot;: 1,<br>    &quot;deviceName&quot;: &quot;device-1&quot;,<br>    &quot;deviceStatus&quot;: &quot;claimed&quot;,<br>    &quot;claimerName&quot;: &quot;no configured cert found&quot;,<br>    &quot;claimedUntil&quot;: &quot;2025-08-12T20:58:41.934866609Z&quot;<br>}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                        </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-group-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-group-step"></span></td>
+                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+                <tr class="test-SUCCESS">
+
+                    <td width="90" class="step-icon">
+                        <a name="0-0-2"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-0-2')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-0-2 success-icon"
+                                   style="margin-left: 60px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-0-2')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                A executes a GET on the resource /
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">073ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-0-2" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="110" class="step-icon">
+                        <a name="0-0-2-0"></a>
+                            <span style="margin-left: 80px;"
+                                  class="nested-group-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a>
+                                </span>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                                <span class="nested-group-step">
+                                                GET http://RU2-Ref-Pract-SDK-HS4/
+                                        </span>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+                <span>
+                        <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                                data-target="#restModal-REST-8">
+                            REST Query
+                        </button>
+                    </span>
+                <!-- Modal -->
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="restModal-REST-8">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Response</h4>
+                                    <p>URL: http://RU2-Ref-Pract-SDK-HS4/</p>
+                                    <p>Status code: 200</p>
+                                    <p>Content Type: application/json</p>
+                                    <h4>Request Headers</h4>
+                                    <pre>Transaction-Id=@TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26<br>Accept=*/*<br>Content-Type=application/json</pre>
+                                    <h4>Response Headers</h4>
+                                    <pre>Date: Tue, 12 Aug 2025 20:53:42 GMT<br>Content-Type: application/json<br>Content-Length: 588<br>Strict-Transport-Security: max-age=31536000; includeSubDomains<br>connection: keep-alive</pre>
+                                <h4>Response Body</h4>
+                                    <pre>{<br>    &quot;title&quot;: &quot;Timmy test-driver client&quot;,<br>    &quot;description&quot;: &quot;TIM test-driver based on trixnity-messenger SDK&quot;,<br>    &quot;homeserver&quot;: &quot;https://d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev&quot;,<br>    &quot;contact&quot;: {<br>        &quot;name&quot;: &quot;Michael Thiele&quot;,<br>        &quot;url&quot;: &quot;https://timmy-messenger.de&quot;,<br>        &quot;email&quot;: &quot;michael.thiele@connect2x.de&quot;<br>    },<br>    &quot;clientInfo&quot;: {<br>        &quot;name&quot;: &quot;Timmy test-driver client&quot;,<br>        &quot;version&quot;: &quot;0.7.11&quot;,<br>        &quot;osInfo&quot;: {<br>            &quot;operatingSystem&quot;: &quot;Linux&quot;<br>        },<br>        &quot;canAdministrateFhirPractitioner&quot;: true,<br>        &quot;canSendMessages&quot;: true,<br>        &quot;isInsurance&quot;: false,<br>        &quot;isPro&quot;: true<br>    },<br>    &quot;fachdienstInfo&quot;: {<br>        &quot;name&quot;: &quot;Timmy Fachdienst&quot;,<br>        &quot;version&quot;: &quot;0.0.1&quot;<br>    },<br>    &quot;testDriverVersion&quot;: &quot;0.14.9&quot;<br>}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                        </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-group-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-group-step"></span></td>
+                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+                <tr class="test-SUCCESS">
+
+                    <td width="90" class="step-icon">
+                        <a name="0-0-3"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-0-3')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-0-3 success-icon"
+                                   style="margin-left: 60px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-0-3')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                A login task
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-e972850c-c391-42da-a38a-138ac245970e"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-9-0">
+                        cURL   0
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-9-0" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                cURL   0
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-9-0')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-9-0">curl -v -H &quot;Transaction-Id: @TCID:TIM_V2_PRO_AF_06X0102/91340255-4567-4f55-9322-95ccebf909bd&quot; -H &quot;Accept: */*&quot; -H &quot;Content-Type: application/json&quot; -X GET &quot;http://RU2-Ref-Pract-SDK-HS4/devices/2/authorizationMode&quot; </pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-9e108f9a-1052-4953-a5a0-e8b72efc49ed"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-9-1">
+                        cURL   1
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-9-1" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                cURL   1
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-9-1')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-9-1">curl -v -H &quot;Transaction-Id: @TCID:TIM_V2_PRO_AF_06X0102/91340255-4567-4f55-9322-95ccebf909bd&quot; -H &quot;Accept: */*&quot; -H &quot;Content-Type: application/json&quot; -X GET &quot;http://RU2-Ref-Pract-SDK-HS4/devices/2/allowedUsers&quot; </pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-584dca1b-11da-4145-b5f3-e9b0d083f14f"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-9-2">
+                        cURL   2
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-9-2" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                cURL   2
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-9-2')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-9-2">curl -v -H &quot;Transaction-Id: @TCID:TIM_V2_PRO_AF_06X0102/91340255-4567-4f55-9322-95ccebf909bd&quot; -H &quot;Accept: */*&quot; -H &quot;Content-Type: application/json&quot; -X DELETE &quot;http://RU2-Ref-Pract-SDK-HS4/devices/2/allowedUsers&quot; </pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-16a76ab5-5196-4050-bdd1-edb0a5770259"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-9-3">
+                        cURL   3
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-9-3" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                cURL   3
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-9-3')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-9-3">curl -v -H &quot;Transaction-Id: @TCID:TIM_V2_PRO_AF_06X0102/91340255-4567-4f55-9322-95ccebf909bd&quot; -H &quot;Accept: */*&quot; -H &quot;Content-Type: application/json&quot; -X POST &quot;http://RU2-Ref-Pract-SDK-HS4/devices/2/logout&quot; </pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-1b22ad79-9f63-47c3-92f3-d844c6387316"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-9-4">
+                        cURL   4
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-9-4" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                cURL   4
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-9-4')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-9-4">curl -v -H &quot;Transaction-Id: @TCID:TIM_V2_PRO_AF_06X0102/91340255-4567-4f55-9322-95ccebf909bd&quot; -H &quot;Accept: */*&quot; -H &quot;Content-Type: application/json&quot; -X POST &quot;http://RU2-Ref-Pract-SDK-HS4/devices/2/unclaim&quot; </pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-45b68f8c-4387-45a1-a3ea-c9b09a230ac4"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-9-5">
+                        cURL   5
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-9-5" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                cURL   5
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-9-5')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-9-5">curl -v -H &quot;Transaction-Id: @TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26&quot; -H &quot;Accept: */*&quot; -H &quot;Content-Type: application/json&quot; -X GET &quot;http://RU2-Ref-Pract-SDK-HS4/devices&quot; </pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-b31a87da-217d-44fa-a0b8-9554b35c8aab"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-9-6">
+                        cURL   6
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-9-6" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                cURL   6
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-9-6')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-9-6">curl -v -H &quot;Accept: application/json&quot; -H &quot;Transaction-Id: @TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26&quot; -H &quot;Content-Type: application/json&quot; -X POST &quot;http://RU2-Ref-Pract-SDK-HS4/devices/1/claim&quot; </pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-7e66ed0c-6028-4f1d-a07e-fc07e90e7e7f"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-9-7">
+                        cURL   7
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-9-7" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                cURL   7
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-9-7')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-9-7">curl -v -H &quot;Transaction-Id: @TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26&quot; -H &quot;Accept: */*&quot; -H &quot;Content-Type: application/json&quot; -X GET &quot;http://RU2-Ref-Pract-SDK-HS4/&quot; </pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-521407ef-7b91-45d1-895e-703938843086"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-9-8">
+                        cURL   8
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-9-8" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                cURL   8
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-9-8')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-9-8">curl -v -H &quot;Transaction-Id: @TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26&quot; -H &quot;Accept: */*&quot; -H &quot;Content-Type: application/json&quot; -X POST &quot;http://RU2-Ref-Pract-SDK-HS4/devices/1/login&quot; </pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">25s 440ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-0-3" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="110" class="step-icon">
+                        <a name="0-0-3-0"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-0-3-0')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-0-3-0 success-icon"
+                                   style="margin-left: 80px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-0-3-0')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                A executes a POST on the resource /devices/{deviceId}/login
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">25s 429ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-0-3-0" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="130" class="step-icon">
+                        <a name="0-0-3-0-0"></a>
+                            <span style="margin-left: 100px;"
+                                  class="nested-group-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a>
+                                </span>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                                <span class="nested-group-step">
+                                                POST http://RU2-Ref-Pract-SDK-HS4/devices/1/login
+                                        </span>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+                <span>
+                        <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                                data-target="#restModal-REST-11">
+                            REST Query
+                        </button>
+                    </span>
+                <!-- Modal -->
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="restModal-REST-11">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Response</h4>
+                                    <p>URL: http://RU2-Ref-Pract-SDK-HS4/devices/1/login</p>
+                                    <p>Status code: 200</p>
+                                    <p>Content Type: application/json</p>
+                                    <h4>Request Headers</h4>
+                                    <pre>Transaction-Id=@TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26<br>Accept=*/*<br>Content-Type=application/json</pre>
+                                    <h4>Response Headers</h4>
+                                    <pre>Date: Tue, 12 Aug 2025 20:54:07 GMT<br>Content-Type: application/json<br>Content-Length: 308<br>Strict-Transport-Security: max-age=31536000; includeSubDomains<br>connection: keep-alive</pre>
+                                <h4>Response Body</h4>
+                                    <pre>{<br>    &quot;mxid&quot;: &quot;@tst_generated_mlaunhxqhi:d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev&quot;,<br>    &quot;accessToken&quot;: &quot;syt_dHN0X2dlbmVyYXRlZF9tbGF1bmh4cWhp_MSeoRCqkmcdasGshPvGE_0z3bEr&quot;,<br>    &quot;username&quot;: &quot;tst_generated_mlaunhxqhi&quot;,<br>    &quot;password&quot;: &quot;91ee3a42-cd8f-434b-8f80-37da9934579d&quot;,<br>    &quot;displayName&quot;: &quot;Wesseltoft, Torben-Tom&quot;<br>}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                        </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-group-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-group-step"></span></td>
+                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+                <tr class="test-SUCCESS">
+
+                    <td width="70" class="step-icon">
+                        <a name="0-1"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-1')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-1 success-icon"
+                                   style="margin-left: 40px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-1')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                Und "A" setzen den eigenen Authorization Mode auf "AllowAll"
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">4s 003ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-1" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="90" class="step-icon">
+                        <a name="0-1-0"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-1-0')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-1-0 success-icon"
+                                   style="margin-left: 60px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-1-0')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                A executes a POST on the resource /devices/{deviceId}/authorizationMode
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-799dd06a-5143-4aa3-b8bc-7be90bb188c0"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-13-0">
+                        cURL
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-13-0" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                cURL
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-13-0')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-13-0">curl -v -H &quot;Transaction-Id: @TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26&quot; -H &quot;Accept: */*&quot; -H &quot;Content-Type: application/json&quot; -X POST &quot;http://RU2-Ref-Pract-SDK-HS4/devices/1/authorizationMode&quot; </pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">3s 792ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-1-0" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="110" class="step-icon">
+                        <a name="0-1-0-0"></a>
+                            <span style="margin-left: 80px;"
+                                  class="nested-group-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a>
+                                </span>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                                <span class="nested-group-step">
+                                                POST http://RU2-Ref-Pract-SDK-HS4/devices/1/authorizationMode
+                                        </span>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+                <span>
+                        <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                                data-target="#restModal-REST-14">
+                            REST Query
+                        </button>
+                    </span>
+                <!-- Modal -->
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="restModal-REST-14">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Response</h4>
+                                    <p>URL: http://RU2-Ref-Pract-SDK-HS4/devices/1/authorizationMode</p>
+                                    <p>Status code: 200</p>
+                                    <p>Content Type: application/json</p>
+                                    <h4>Request Headers</h4>
+                                    <pre>Transaction-Id=@TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26<br>Accept=*/*<br>Content-Type=application/json</pre>
+                                    <h4>Content Body</h4>
+                                    <pre>&quot;AllowAll&quot;</pre>
+                                    <h4>Response Headers</h4>
+                                    <pre>Date: Tue, 12 Aug 2025 20:54:11 GMT<br>Content-Type: application/json<br>Content-Length: 10<br>Strict-Transport-Security: max-age=31536000; includeSubDomains<br>connection: keep-alive</pre>
+                                <h4>Response Body</h4>
+                                    <pre>&quot;AllowAll&quot;</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                        </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-group-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-group-step"></span></td>
+                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+                <tr class="test-SUCCESS">
+
+                    <td width="70" class="step-icon">
+                        <a name="0-2"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-2')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-2 success-icon"
+                                   style="margin-left: 40px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-2')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                Und "A" hinterlegt die Gruppe "Versicherte" in der Blockliste
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">2s 251ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-2" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="90" class="step-icon">
+                        <a name="0-2-0"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-2-0')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-2-0 success-icon"
+                                   style="margin-left: 60px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-2-0')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                A executes a POST on the resource /devices/{deviceId}/blockedUsers
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-ca453d70-9e21-46a4-afbb-faf8d4cb7161"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-16-0">
+                        cURL
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-16-0" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                cURL
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-16-0')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-16-0">curl -v -H &quot;Transaction-Id: @TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26&quot; -H &quot;Accept: */*&quot; -H &quot;Content-Type: application/json&quot; -X POST &quot;http://RU2-Ref-Pract-SDK-HS4/devices/1/blockedUsers&quot; </pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">2s 043ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-2-0" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="110" class="step-icon">
+                        <a name="0-2-0-0"></a>
+                            <span style="margin-left: 80px;"
+                                  class="nested-group-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a>
+                                </span>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                                <span class="nested-group-step">
+                                                POST http://RU2-Ref-Pract-SDK-HS4/devices/1/blockedUsers
+                                        </span>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+                <span>
+                        <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                                data-target="#restModal-REST-17">
+                            REST Query
+                        </button>
+                    </span>
+                <!-- Modal -->
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="restModal-REST-17">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Response</h4>
+                                    <p>URL: http://RU2-Ref-Pract-SDK-HS4/devices/1/blockedUsers</p>
+                                    <p>Status code: 200</p>
+                                    <p>Content Type: application/json</p>
+                                    <h4>Request Headers</h4>
+                                    <pre>Transaction-Id=@TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26<br>Accept=*/*<br>Content-Type=application/json</pre>
+                                    <h4>Content Body</h4>
+                                    <pre>{<br>    &quot;groupNames&quot;: [<br>        &quot;isInsuredPerson&quot;<br>    ],<br>    &quot;mxids&quot;: [<br>        <br>    ],<br>    &quot;serverNames&quot;: [<br>        <br>    ]<br>}</pre>
+                                    <h4>Response Headers</h4>
+                                    <pre>Date: Tue, 12 Aug 2025 20:54:13 GMT<br>Content-Type: application/json<br>Content-Length: 45<br>Strict-Transport-Security: max-age=31536000; includeSubDomains<br>connection: keep-alive</pre>
+                                <h4>Response Body</h4>
+                                    <pre>{<br>    &quot;groupNames&quot;: [<br>        <br>    ],<br>    &quot;mxids&quot;: [<br>        <br>    ],<br>    &quot;serverNames&quot;: [<br>        <br>    ]<br>}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                        </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-group-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-group-step"></span></td>
+                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+                <tr class="test-SUCCESS">
+
+                    <td width="70" class="step-icon">
+                        <a name="0-3"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-3')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-3 success-icon"
+                                   style="margin-left: 40px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-3')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                Und "A" prüft, dass die Gruppe "Versicherte" in der Blockliste gesetzt ist
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">290ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-3" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="90" class="step-icon">
+                        <a name="0-3-0"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-3-0')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-3-0 success-icon"
+                                   style="margin-left: 60px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-3-0')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                A executes a GET on the resource /devices/{deviceId}/blockedUsers
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-90fb262a-2240-41be-84f2-bed6880e2d93"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-19-0">
+                        cURL
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-19-0" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                cURL
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-19-0')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-19-0">curl -v -H &quot;Transaction-Id: @TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26&quot; -H &quot;Accept: */*&quot; -H &quot;Content-Type: application/json&quot; -X GET &quot;http://RU2-Ref-Pract-SDK-HS4/devices/1/blockedUsers&quot; </pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">081ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-3-0" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="110" class="step-icon">
+                        <a name="0-3-0-0"></a>
+                            <span style="margin-left: 80px;"
+                                  class="nested-group-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a>
+                                </span>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                                <span class="nested-group-step">
+                                                GET http://RU2-Ref-Pract-SDK-HS4/devices/1/blockedUsers
+                                        </span>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+                <span>
+                        <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                                data-target="#restModal-REST-20">
+                            REST Query
+                        </button>
+                    </span>
+                <!-- Modal -->
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="restModal-REST-20">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Response</h4>
+                                    <p>URL: http://RU2-Ref-Pract-SDK-HS4/devices/1/blockedUsers</p>
+                                    <p>Status code: 200</p>
+                                    <p>Content Type: application/json</p>
+                                    <h4>Request Headers</h4>
+                                    <pre>Transaction-Id=@TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26<br>Accept=*/*<br>Content-Type=application/json</pre>
+                                    <h4>Response Headers</h4>
+                                    <pre>Date: Tue, 12 Aug 2025 20:54:14 GMT<br>Content-Type: application/json<br>Content-Length: 62<br>Strict-Transport-Security: max-age=31536000; includeSubDomains<br>connection: keep-alive</pre>
+                                <h4>Response Body</h4>
+                                    <pre>{<br>    &quot;groupNames&quot;: [<br>        &quot;isInsuredPerson&quot;<br>    ],<br>    &quot;mxids&quot;: [<br>        <br>    ],<br>    &quot;serverNames&quot;: [<br>        <br>    ]<br>}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                        </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-group-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-group-step"></span></td>
+                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+                <tr class="test-SUCCESS">
+
+                    <td width="70" class="step-icon">
+                        <a name="0-4"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-4')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-4 success-icon"
+                                   style="margin-left: 40px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-4')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                Und "A" loggt sich im TI-Messenger aus
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">318ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-4" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="90" class="step-icon">
+                        <a name="0-4-0"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-4-0')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-4-0 success-icon"
+                                   style="margin-left: 60px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-4-0')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                A logout task
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-978d8024-09f9-4231-9d4d-1f322a34a34f"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-22-0">
+                        cURL
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-22-0" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                cURL
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-22-0')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-22-0">curl -v -H &quot;Transaction-Id: @TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26&quot; -H &quot;Accept: */*&quot; -H &quot;Content-Type: application/json&quot; -X POST &quot;http://RU2-Ref-Pract-SDK-HS4/devices/1/logout&quot; </pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">111ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-4-0" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="110" class="step-icon">
+                        <a name="0-4-0-0"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-4-0-0')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-4-0-0 success-icon"
+                                   style="margin-left: 80px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-4-0-0')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                A executes a POST on the resource /devices/{deviceId}/logout
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">110ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-4-0-0" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="130" class="step-icon">
+                        <a name="0-4-0-0-0"></a>
+                            <span style="margin-left: 100px;"
+                                  class="nested-group-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a>
+                                </span>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                                <span class="nested-group-step">
+                                                POST http://RU2-Ref-Pract-SDK-HS4/devices/1/logout
+                                        </span>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+                <span>
+                        <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                                data-target="#restModal-REST-24">
+                            REST Query
+                        </button>
+                    </span>
+                <!-- Modal -->
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="restModal-REST-24">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Response</h4>
+                                    <p>URL: http://RU2-Ref-Pract-SDK-HS4/devices/1/logout</p>
+                                    <p>Status code: 200</p>
+                                    <p>Content Type: application/json</p>
+                                    <h4>Request Headers</h4>
+                                    <pre>Transaction-Id=@TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26<br>Accept=*/*<br>Content-Type=application/json</pre>
+                                    <h4>Response Headers</h4>
+                                    <pre>Date: Tue, 12 Aug 2025 20:54:14 GMT<br>Content-Length: 0<br>Strict-Transport-Security: max-age=31536000; includeSubDomains<br>connection: keep-alive</pre>
+                                <h4>Response Body</h4>
+                                    <pre></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                        </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-group-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-group-step"></span></td>
+                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+                <tr class="test-SUCCESS">
+
+                    <td width="70" class="step-icon">
+                        <a name="0-5"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-5')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-5 success-icon"
+                                   style="margin-left: 40px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-5')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                Und "A" loggt sich im TI-Messenger ein
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">22s 487ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-5" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="90" class="step-icon">
+                        <a name="0-5-0"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-5-0')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-5-0 success-icon"
+                                   style="margin-left: 60px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-5-0')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                A login task
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-c00ca87c-1b56-491f-880a-2bd9b273a34d"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-26-0">
+                        cURL
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-26-0" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                cURL
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-26-0')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-26-0">curl -v -H &quot;Transaction-Id: @TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26&quot; -H &quot;Accept: */*&quot; -H &quot;Content-Type: application/json&quot; -X POST &quot;http://RU2-Ref-Pract-SDK-HS4/devices/1/login&quot; </pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">22s 280ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-5-0" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="110" class="step-icon">
+                        <a name="0-5-0-0"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-5-0-0')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-5-0-0 success-icon"
+                                   style="margin-left: 80px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-5-0-0')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                A executes a POST on the resource /devices/{deviceId}/login
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">22s 276ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-5-0-0" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="130" class="step-icon">
+                        <a name="0-5-0-0-0"></a>
+                            <span style="margin-left: 100px;"
+                                  class="nested-group-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a>
+                                </span>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                                <span class="nested-group-step">
+                                                POST http://RU2-Ref-Pract-SDK-HS4/devices/1/login
+                                        </span>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+                <span>
+                        <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                                data-target="#restModal-REST-28">
+                            REST Query
+                        </button>
+                    </span>
+                <!-- Modal -->
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="restModal-REST-28">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Response</h4>
+                                    <p>URL: http://RU2-Ref-Pract-SDK-HS4/devices/1/login</p>
+                                    <p>Status code: 200</p>
+                                    <p>Content Type: application/json</p>
+                                    <h4>Request Headers</h4>
+                                    <pre>Transaction-Id=@TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26<br>Accept=*/*<br>Content-Type=application/json</pre>
+                                    <h4>Content Body</h4>
+                                    <pre>{<br>    &quot;authStage&quot;: &quot;basicAuth&quot;,<br>    &quot;username&quot;: &quot;@tst_generated_mlaunhxqhi:d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev&quot;,<br>    &quot;password&quot;: &quot;91ee3a42-cd8f-434b-8f80-37da9934579d&quot;<br>}</pre>
+                                    <h4>Response Headers</h4>
+                                    <pre>Date: Tue, 12 Aug 2025 20:54:36 GMT<br>Content-Type: application/json<br>Content-Length: 308<br>Strict-Transport-Security: max-age=31536000; includeSubDomains<br>connection: keep-alive</pre>
+                                <h4>Response Body</h4>
+                                    <pre>{<br>    &quot;mxid&quot;: &quot;@tst_generated_mlaunhxqhi:d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev&quot;,<br>    &quot;accessToken&quot;: &quot;syt_dHN0X2dlbmVyYXRlZF9tbGF1bmh4cWhp_kijrIYKdXzmMRyQmfxrG_3k2cQY&quot;,<br>    &quot;username&quot;: &quot;tst_generated_mlaunhxqhi&quot;,<br>    &quot;password&quot;: &quot;91ee3a42-cd8f-434b-8f80-37da9934579d&quot;,<br>    &quot;displayName&quot;: &quot;Wesseltoft, Torben-Tom&quot;<br>}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                        </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-group-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-group-step"></span></td>
+                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+                <tr class="test-SUCCESS">
+
+                    <td width="70" class="step-icon">
+                        <a name="0-6"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-6')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-6 success-icon"
+                                   style="margin-left: 40px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-6')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                Und "A" prüft, ob der eigene Authorization Mode auf "AllowAll" gesetzt ist
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">251ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-6" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="90" class="step-icon">
+                        <a name="0-6-0"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-6-0')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-6-0 success-icon"
+                                   style="margin-left: 60px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-6-0')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                A executes a GET on the resource /devices/{deviceId}/authorizationMode
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-82261bd0-f950-4791-acbb-ec5a26d9ba27"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-30-0">
+                        cURL
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-30-0" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                cURL
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-30-0')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-30-0">curl -v -H &quot;Transaction-Id: @TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26&quot; -H &quot;Accept: */*&quot; -H &quot;Content-Type: application/json&quot; -X GET &quot;http://RU2-Ref-Pract-SDK-HS4/devices/1/authorizationMode&quot; </pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">042ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-6-0" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="110" class="step-icon">
+                        <a name="0-6-0-0"></a>
+                            <span style="margin-left: 80px;"
+                                  class="nested-group-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a>
+                                </span>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                                <span class="nested-group-step">
+                                                GET http://RU2-Ref-Pract-SDK-HS4/devices/1/authorizationMode
+                                        </span>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+                <span>
+                        <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                                data-target="#restModal-REST-31">
+                            REST Query
+                        </button>
+                    </span>
+                <!-- Modal -->
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="restModal-REST-31">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Response</h4>
+                                    <p>URL: http://RU2-Ref-Pract-SDK-HS4/devices/1/authorizationMode</p>
+                                    <p>Status code: 200</p>
+                                    <p>Content Type: application/json</p>
+                                    <h4>Request Headers</h4>
+                                    <pre>Transaction-Id=@TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26<br>Accept=*/*<br>Content-Type=application/json</pre>
+                                    <h4>Response Headers</h4>
+                                    <pre>Date: Tue, 12 Aug 2025 20:54:37 GMT<br>Content-Type: application/json<br>Content-Length: 10<br>Strict-Transport-Security: max-age=31536000; includeSubDomains<br>connection: keep-alive</pre>
+                                <h4>Response Body</h4>
+                                    <pre>&quot;AllowAll&quot;</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                        </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-group-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-group-step"></span></td>
+                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+                <tr class="test-SUCCESS">
+
+                    <td width="70" class="step-icon">
+                        <a name="0-7"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-7')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-7 success-icon"
+                                   style="margin-left: 40px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-7')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                Und "A" prüft, dass die Gruppe "Versicherte" in der Blockliste gesetzt ist
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">248ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-7" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="90" class="step-icon">
+                        <a name="0-7-0"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-7-0')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-7-0 success-icon"
+                                   style="margin-left: 60px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-7-0')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                A executes a GET on the resource /devices/{deviceId}/blockedUsers
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-5e23114d-09fb-4ff3-82ea-84ad7e104ce2"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-33-0">
+                        cURL
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-33-0" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                cURL
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-33-0')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-33-0">curl -v -H &quot;Transaction-Id: @TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26&quot; -H &quot;Accept: */*&quot; -H &quot;Content-Type: application/json&quot; -X GET &quot;http://RU2-Ref-Pract-SDK-HS4/devices/1/blockedUsers&quot; </pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">039ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-7-0" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="110" class="step-icon">
+                        <a name="0-7-0-0"></a>
+                            <span style="margin-left: 80px;"
+                                  class="nested-group-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a>
+                                </span>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                                <span class="nested-group-step">
+                                                GET http://RU2-Ref-Pract-SDK-HS4/devices/1/blockedUsers
+                                        </span>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+                <span>
+                        <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                                data-target="#restModal-REST-34">
+                            REST Query
+                        </button>
+                    </span>
+                <!-- Modal -->
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="restModal-REST-34">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Response</h4>
+                                    <p>URL: http://RU2-Ref-Pract-SDK-HS4/devices/1/blockedUsers</p>
+                                    <p>Status code: 200</p>
+                                    <p>Content Type: application/json</p>
+                                    <h4>Request Headers</h4>
+                                    <pre>Transaction-Id=@TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26<br>Accept=*/*<br>Content-Type=application/json</pre>
+                                    <h4>Response Headers</h4>
+                                    <pre>Date: Tue, 12 Aug 2025 20:54:37 GMT<br>Content-Type: application/json<br>Content-Length: 62<br>Strict-Transport-Security: max-age=31536000; includeSubDomains<br>connection: keep-alive</pre>
+                                <h4>Response Body</h4>
+                                    <pre>{<br>    &quot;groupNames&quot;: [<br>        &quot;isInsuredPerson&quot;<br>    ],<br>    &quot;mxids&quot;: [<br>        <br>    ],<br>    &quot;serverNames&quot;: [<br>        <br>    ]<br>}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                        </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-group-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-group-step"></span></td>
+                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+                <tr class="test-SUCCESS">
+
+                    <td width="70" class="step-icon">
+                        <a name="0-8"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-8')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-8 success-icon"
+                                   style="margin-left: 40px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-8')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                A executes a GET on the resource /devices/{deviceId}/authorizationMode
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">074ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-8" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="90" class="step-icon">
+                        <a name="0-8-0"></a>
+                            <span style="margin-left: 60px;"
+                                  class="nested-group-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a>
+                                </span>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                                <span class="nested-group-step">
+                                                GET http://RU2-Ref-Pract-SDK-HS4/devices/1/authorizationMode
+                                        </span>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+                <span>
+                        <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                                data-target="#restModal-REST-36">
+                            REST Query
+                        </button>
+                    </span>
+                <!-- Modal -->
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="restModal-REST-36">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Response</h4>
+                                    <p>URL: http://RU2-Ref-Pract-SDK-HS4/devices/1/authorizationMode</p>
+                                    <p>Status code: 200</p>
+                                    <p>Content Type: application/json</p>
+                                    <h4>Request Headers</h4>
+                                    <pre>Transaction-Id=@TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26<br>Accept=*/*<br>Content-Type=application/json</pre>
+                                    <h4>Response Headers</h4>
+                                    <pre>Date: Tue, 12 Aug 2025 20:54:37 GMT<br>Content-Type: application/json<br>Content-Length: 10<br>Strict-Transport-Security: max-age=31536000; includeSubDomains<br>connection: keep-alive</pre>
+                                <h4>Response Body</h4>
+                                    <pre>&quot;AllowAll&quot;</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                        </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-group-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-group-step"></span></td>
+                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+                <tr class="test-SUCCESS">
+
+                    <td width="70" class="step-icon">
+                        <a name="0-9"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-9')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-9 success-icon"
+                                   style="margin-left: 40px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-9')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                A executes a GET on the resource /devices/{deviceId}/blockedUsers
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">044ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-9" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="90" class="step-icon">
+                        <a name="0-9-0"></a>
+                            <span style="margin-left: 60px;"
+                                  class="nested-group-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a>
+                                </span>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                                <span class="nested-group-step">
+                                                GET http://RU2-Ref-Pract-SDK-HS4/devices/1/blockedUsers
+                                        </span>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+                <span>
+                        <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                                data-target="#restModal-REST-38">
+                            REST Query
+                        </button>
+                    </span>
+                <!-- Modal -->
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="restModal-REST-38">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Response</h4>
+                                    <p>URL: http://RU2-Ref-Pract-SDK-HS4/devices/1/blockedUsers</p>
+                                    <p>Status code: 200</p>
+                                    <p>Content Type: application/json</p>
+                                    <h4>Request Headers</h4>
+                                    <pre>Transaction-Id=@TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26<br>Accept=*/*<br>Content-Type=application/json</pre>
+                                    <h4>Response Headers</h4>
+                                    <pre>Date: Tue, 12 Aug 2025 20:54:37 GMT<br>Content-Type: application/json<br>Content-Length: 62<br>Strict-Transport-Security: max-age=31536000; includeSubDomains<br>connection: keep-alive</pre>
+                                <h4>Response Body</h4>
+                                    <pre>{<br>    &quot;groupNames&quot;: [<br>        &quot;isInsuredPerson&quot;<br>    ],<br>    &quot;mxids&quot;: [<br>        <br>    ],<br>    &quot;serverNames&quot;: [<br>        <br>    ]<br>}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                        </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-group-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-group-step"></span></td>
+                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+                <tr class="test-SUCCESS">
+
+                    <td width="70" class="step-icon">
+                        <a name="0-10"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-10')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-10 success-icon"
+                                   style="margin-left: 40px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-10')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                A executes a DELETE on the resource /devices/{deviceId}/blockedUsers
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">3s 230ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-10" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="90" class="step-icon">
+                        <a name="0-10-0"></a>
+                            <span style="margin-left: 60px;"
+                                  class="nested-group-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a>
+                                </span>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                                <span class="nested-group-step">
+                                                DELETE http://RU2-Ref-Pract-SDK-HS4/devices/1/blockedUsers
+                                        </span>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+                <span>
+                        <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                                data-target="#restModal-REST-40">
+                            REST Query
+                        </button>
+                    </span>
+                <!-- Modal -->
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="restModal-REST-40">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Response</h4>
+                                    <p>URL: http://RU2-Ref-Pract-SDK-HS4/devices/1/blockedUsers</p>
+                                    <p>Status code: 204</p>
+                                    <p>Content Type: application/json</p>
+                                    <h4>Request Headers</h4>
+                                    <pre>Transaction-Id=@TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26<br>Accept=*/*<br>Content-Type=application/json</pre>
+                                    <h4>Content Body</h4>
+                                    <pre>{<br>    &quot;groupNames&quot;: [<br>        &quot;isInsuredPerson&quot;<br>    ],<br>    &quot;mxids&quot;: [<br>        <br>    ],<br>    &quot;serverNames&quot;: [<br>        <br>    ]<br>}</pre>
+                                    <h4>Response Headers</h4>
+                                    <pre>Date: Tue, 12 Aug 2025 20:54:40 GMT<br>Strict-Transport-Security: max-age=31536000; includeSubDomains<br>connection: keep-alive</pre>
+                                <h4>Response Body</h4>
+                                    <pre></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                        </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-group-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-group-step"></span></td>
+                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+                <tr class="test-SUCCESS">
+
+                    <td width="70" class="step-icon">
+                        <a name="0-11"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-11')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-11 success-icon"
+                                   style="margin-left: 40px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-11')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                A logout task
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">113ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-11" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="90" class="step-icon">
+                        <a name="0-11-0"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-11-0')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-11-0 success-icon"
+                                   style="margin-left: 60px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-11-0')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                A executes a POST on the resource /devices/{deviceId}/logout
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">111ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-11-0" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="110" class="step-icon">
+                        <a name="0-11-0-0"></a>
+                            <span style="margin-left: 80px;"
+                                  class="nested-group-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a>
+                                </span>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                                <span class="nested-group-step">
+                                                POST http://RU2-Ref-Pract-SDK-HS4/devices/1/logout
+                                        </span>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+                <span>
+                        <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                                data-target="#restModal-REST-43">
+                            REST Query
+                        </button>
+                    </span>
+                <!-- Modal -->
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="restModal-REST-43">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Response</h4>
+                                    <p>URL: http://RU2-Ref-Pract-SDK-HS4/devices/1/logout</p>
+                                    <p>Status code: 200</p>
+                                    <p>Content Type: application/json</p>
+                                    <h4>Request Headers</h4>
+                                    <pre>Transaction-Id=@TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26<br>Accept=*/*<br>Content-Type=application/json</pre>
+                                    <h4>Response Headers</h4>
+                                    <pre>Date: Tue, 12 Aug 2025 20:54:40 GMT<br>Content-Length: 0<br>Strict-Transport-Security: max-age=31536000; includeSubDomains<br>connection: keep-alive</pre>
+                                <h4>Response Body</h4>
+                                    <pre></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                        </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-group-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-group-step"></span></td>
+                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+                <tr class="test-SUCCESS">
+
+                    <td width="70" class="step-icon">
+                        <a name="0-12"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-12')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-12 success-icon"
+                                   style="margin-left: 40px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-12')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                A executes a POST on the resource /devices/{deviceId}/unclaim
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-01fa973e-baea-40a5-b17d-1ea2375ac1dd"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-44-0">
+                        Rohdaten-Statistik-Total
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-44-0" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                Rohdaten-Statistik-Total
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-44-0')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-44-0">TIM.UC_10057_01 (Client-Login, Auswahl Authentifizierungsverfahren):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;  357<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10057_02 (Erstellung Matrix-ACCESS_TOKEN):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;  357<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10057_03 (Erstellung Matrix-OpenID-Token):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;  357<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10104-01_01 (Akteur suchen):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;   66<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10104-01_02 (Akteur einladen, gleicher Homeserver):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;   50<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    5<br>&nbsp; &nbsp; &nbsp; &nbsp;[HTTP/1.1 403 Forbidden, HTTP/1.1 403 Forbidden, HTTP/1.1 403 Forbidden, HTTP/1.1 403 Forbidden, HTTP/1.1 403 Forbidden]<br><br> TIM.UC_10063_01 (Austausch von Events innerhalb einer Organisation, gleicher Homeserver):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;   47<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10061-01_01 (Eintrag in Freigabeliste erzeugen):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10061-01_02 (Einladung Sendersystem, unterschiedliche Homeserver):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;   72<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    7<br>&nbsp; &nbsp; &nbsp; &nbsp;[HTTP/1.1 403 Forbidden, HTTP/1.1 403 Forbidden, HTTP/1.1 403 Forbidden, HTTP/1.1 403 Forbidden, HTTP/1.1 403 Forbidden, HTTP/1.1 403 Forbidden, HTTP/1.1 403 Forbidden]<br><br> TIM.UC_10061-01_03 (Einladung Empfangssystem, unterschiedliche Homeserver):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;   72<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    7<br>&nbsp; &nbsp; &nbsp; &nbsp;[HTTP/1.1 403 Forbidden, HTTP/1.1 403 Forbidden, HTTP/1.1 403 Forbidden, HTTP/1.1 403 Forbidden, HTTP/1.1 403 Forbidden, HTTP/1.1 403 Forbidden, HTTP/1.1 403 Forbidden]<br><br> TIM.UC_10062-01_01 (Event Sendersystem, unterschiedliche Homeserver):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;   67<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    1<br>&nbsp; &nbsp; &nbsp; &nbsp;[HTTP/1.1 403 Forbidden]<br><br> TIM.UC_10062-01_02 (Event Empfangssystem, unterschiedliche Homeserver):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;   67<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    1<br>&nbsp; &nbsp; &nbsp; &nbsp;[HTTP/1.1 403 Forbidden]<br><br> TIM.UC_10059-01_02 (Organisationsressourcen im Verzeichnisdienst hinzufügen):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;   50<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br></pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-d0cf002e-d01c-4a91-a900-21ea01d4b789"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-44-1">
+                        Rohdaten-Statistik
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-44-1" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                Rohdaten-Statistik
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-44-1')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-44-1">TIM.UC_10057_01 (Client-Login, Auswahl Authentifizierungsverfahren):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    2<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10057_02 (Erstellung Matrix-ACCESS_TOKEN):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    2<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10057_03 (Erstellung Matrix-OpenID-Token):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    2<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10104-01_01 (Akteur suchen):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10104-01_02 (Akteur einladen, gleicher Homeserver):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10063_01 (Austausch von Events innerhalb einer Organisation, gleicher Homeserver):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10061-01_01 (Eintrag in Freigabeliste erzeugen):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10061-01_02 (Einladung Sendersystem, unterschiedliche Homeserver):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10061-01_03 (Einladung Empfangssystem, unterschiedliche Homeserver):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10062-01_01 (Event Sendersystem, unterschiedliche Homeserver):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10062-01_02 (Event Empfangssystem, unterschiedliche Homeserver):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10059-01_02 (Organisationsressourcen im Verzeichnisdienst hinzufügen):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br></pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <span>
+                    <a role="button" class="btn btn-success btn-sm" href="downloadable/downloadable-6a942ed8-0e60-4468-95d5-ab8d2622fa1d-rbel_06X.01.03_Berechtigungskonfigu76ea788d-be92-3417-8ab8-19477659c375_1_2025-08-12_22-54-41.html">
+                        <i class="bi bi-download"></i>&nbsp;RBellog 1
+                    </a>
+                </span>
+                                            </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">135ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-12" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="90" class="step-icon">
+                        <a name="0-12-0"></a>
+                            <span style="margin-left: 60px;"
+                                  class="nested-group-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a>
+                                </span>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                                <span class="nested-group-step">
+                                                POST http://RU2-Ref-Pract-SDK-HS4/devices/1/unclaim
+                                        </span>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+                <span>
+                        <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                                data-target="#restModal-REST-45">
+                            REST Query
+                        </button>
+                    </span>
+                <!-- Modal -->
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="restModal-REST-45">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Response</h4>
+                                    <p>URL: http://RU2-Ref-Pract-SDK-HS4/devices/1/unclaim</p>
+                                    <p>Status code: 200</p>
+                                    <p>Content Type: application/json</p>
+                                    <h4>Request Headers</h4>
+                                    <pre>Transaction-Id=@TCID:TIM_V2_PRO_AF_06X0103/2f3fbea4-d5d3-447f-bf2d-3cda96da3b26<br>Accept=*/*<br>Content-Type=application/json</pre>
+                                    <h4>Response Headers</h4>
+                                    <pre>Date: Tue, 12 Aug 2025 20:54:41 GMT<br>Content-Type: application/json<br>Content-Length: 95<br>Strict-Transport-Security: max-age=31536000; includeSubDomains<br>connection: keep-alive</pre>
+                                <h4>Response Body</h4>
+                                    <pre>{<br>    &quot;deviceId&quot;: 1,<br>    &quot;deviceName&quot;: &quot;device-1&quot;,<br>    &quot;deviceStatus&quot;: &quot;free&quot;,<br>    &quot;claimerName&quot;: &quot;&quot;,<br>    &quot;claimedUntil&quot;: &quot;&quot;<br>}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                        </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-group-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-group-step"></span></td>
+                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+            <tr class="test-SUCCESS">
+                    <td colspan="2"></td>
+                <td width="130"><span class="top-level-step"><em>SUCCESS</em></span></td>
+                <td width="100"><span class="top-level-step"><em>60.83s</em></span></td>
+            </tr>
+
+        </table>
+    </div>
+</div>
+
+<div id="beforefooter"></div>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <span class="version">Serenity BDD version 4.2.30</span>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function toggleDiv(divId) {
+        $("#" + divId).toggle();
+        var $icon = $(".img" + divId);
+        $icon.toggleClass("bi-caret-right-square");
+        $icon.toggleClass("bi-caret-down-square");
+    }
+</script>
+
+
+<script type="text/javascript">
+    //<![CDATA[
+
+    $(document).ready(function () {
+        $('img.screenshot').imgPreview({
+            imgCSS: {
+                width: '500px'
+            },
+            distanceFromCursor: {top: 10, left: -200}
+        });
+    });
+
+    //]]>
+</script>
+<div id="imgPreviewContainer" style="position: absolute; top: 612px; left: 355px; display: none; " class=""><img
+            src="" style="display: none; "></div>
+<div id="imgPreviewContainer2" style="position: absolute; top: 925px; left: 320px; display: none; " class="">
+    <img style="width: 200px; display: none; " src=""></div>
+<div id="imgPreviewWithStyles" style="position: absolute; top: 1272px; left: 321px; display: none; " class="">
+    <img style="height: 200px; opacity: 1; display: none; " src=""></div>
+<div id="imgPreviewWithStyles2" style="display: none; position: absolute; "><img style="height: 200px; "></div>
+<div id="imgPreviewWithStyles3" style="display: none; position: absolute; "><img style="height: 200px; "></div>
+
+</div>
+</body>
+</html>

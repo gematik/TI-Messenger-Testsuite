@@ -131,7 +131,7 @@ public class FhirSearchQuestion implements Question<FhirSearchResultDTO> {
       FhirSearchResultDTO response, List<FhirPractitionerDTO> practitioners) {
     List<FhirPractitionerRoleDTO> practitionerRoles =
         getResourcesFromSearchResult(
-            response, FhirResourceTypeDTO.PRACTITIONERROLE, FhirPractitionerRoleDTO.class);
+            response, FhirResourceTypeDTO.PRACTITIONER_ROLE, FhirPractitionerRoleDTO.class);
     List<String> endpointReferences = new ArrayList<>();
     for (FhirPractitionerDTO practitioner : practitioners) {
       for (FhirPractitionerRoleDTO practitionerRole : practitionerRoles) {

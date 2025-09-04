@@ -49,12 +49,14 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import kong.unirest.UnirestInstance;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 
@@ -66,7 +68,7 @@ public class CleanupTrigger {
   public static final String ORG_ADMIN_TAG = "orgAdmin";
   private static final List<CombineItem> combineItems;
   private static final Set<String> combineItemsUrls;
-  private static final ThreadLocal<UnirestInstance> cleanUpClient =
+  private static final ThreadLocal<CloseableHttpClient> cleanUpClient =
       ThreadLocal.withInitial(ClientFactory::getCleanUpClient);
   private static final ExecutorService executorService = Executors.newFixedThreadPool(10);
   private static final String CLAIMING_STEP_TEXT = "Es werden folgende Clients reserviert:";
@@ -96,16 +98,26 @@ public class CleanupTrigger {
   @SneakyThrows
   @SuppressWarnings("java:S2142")
   public static boolean sendCleanupRequest(List<TestStep> testSteps) {
-    Set<String> urlsToTrigger = getAllApisUsedInTestSteps(testSteps);
-    List<Callable<Integer>> calls = createCalls(urlsToTrigger);
-    for (Future<Integer> future : executorService.invokeAll(calls)) {
+    final Set<String> urlsToTrigger = getAllApisUsedInTestSteps(testSteps);
+    log.info(
+        "Cleaning up before tests using {} urlsToTiger: {}",
+        urlsToTrigger.size(),
+        '[' + String.join(", ", urlsToTrigger) + ']');
+    final List<Callable<UrlAndResponseStatus>> calls = createCalls(urlsToTrigger);
+    for (final Future<UrlAndResponseStatus> future : executorService.invokeAll(calls)) {
       try {
-        HttpStatus status = HttpStatus.valueOf(future.get());
+        final UrlAndResponseStatus urlAndStatus = future.get();
+        final HttpStatus status = HttpStatus.valueOf(urlAndStatus.status);
         if (!status.is2xxSuccessful()) {
+          log.info(
+              "Couldn't clean up before test for url {} . got status {}/{}",
+              urlAndStatus.url,
+              status.value(),
+              status.getReasonPhrase());
           return false;
         }
       } catch (InterruptedException | ExecutionException e) {
-        log.error("Was not able to clean up before test.", e);
+        log.error("Was not able to clean up all urls before test.", e);
         return false;
       }
     }
@@ -116,18 +128,21 @@ public class CleanupTrigger {
     cleanUpClient.remove();
   }
 
-  private static List<Callable<Integer>> createCalls(Set<String> urlToTrigger) {
+  private record UrlAndResponseStatus(String url, int status) {}
+
+  private static List<Callable<UrlAndResponseStatus>> createCalls(Set<String> urlToTrigger) {
     return urlToTrigger.stream()
         .map(
             url ->
-                (Callable<Integer>)
-                    () ->
-                        cleanUpClient
-                            .get()
-                            .post(url)
-                            .header(TEST_CASE_ID_HEADER, getTestcaseId())
-                            .asEmpty()
-                            .getStatus())
+                (Callable<UrlAndResponseStatus>)
+                    () -> {
+                      HttpPost post = new HttpPost(url);
+                      post.setHeader(TEST_CASE_ID_HEADER, getTestcaseId());
+                      try (CloseableHttpResponse response = cleanUpClient.get().execute(post)) {
+                        int status = response.getStatusLine().getStatusCode();
+                        return new UrlAndResponseStatus(url, status);
+                      }
+                    })
         .toList();
   }
 

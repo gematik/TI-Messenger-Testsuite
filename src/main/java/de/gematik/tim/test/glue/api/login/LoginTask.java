@@ -41,7 +41,7 @@ import static de.gematik.tim.test.glue.api.utils.ParallelUtils.fromJson;
 import static de.gematik.tim.test.glue.api.utils.ParallelUtils.toJson;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTestcaseId;
-import static de.gematik.tim.test.models.AuthStageNameDTO.BASICAUTH;
+import static de.gematik.tim.test.models.AuthStageNameDTO.BASIC_AUTH;
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -52,11 +52,14 @@ import de.gematik.tim.test.glue.api.utils.TestsuiteInitializer;
 import de.gematik.tim.test.models.AccountDTO;
 import de.gematik.tim.test.models.LoginDTO;
 import java.util.Optional;
-import kong.unirest.HttpResponse;
-import kong.unirest.JsonNode;
-import kong.unirest.UnirestInstance;
+import lombok.SneakyThrows;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 
 public class LoginTask extends ParallelTaskRunner implements Task {
 
@@ -72,30 +75,31 @@ public class LoginTask extends ParallelTaskRunner implements Task {
   }
 
   @Override
+  @SneakyThrows
   public void runParallel() {
-    UnirestInstance client = getParallelClient().get();
-    Optional<LoginDTO> loginDto = getLoginDto(actor);
+    final CloseableHttpClient client = getParallelClient().get();
+    final Optional<LoginDTO> loginDto = getLoginDto(actor);
 
-    HttpResponse<JsonNode> resp;
+    HttpPost post = new HttpPost(LOGIN.getResolvedPath(actor));
+    post.addHeader(TEST_CASE_ID_HEADER, getTestcaseId());
+    String jsonString;
+
     if (loginDto.isPresent()) {
-      resp =
-          client
-              .post(LOGIN.getResolvedPath(actor))
-              .header(TEST_CASE_ID_HEADER, getTestcaseId())
-              .body(toJson(loginDto.get()))
-              .asJson();
-    } else {
-      resp =
-          client
-              .post(LOGIN.getResolvedPath(actor))
-              .header(TEST_CASE_ID_HEADER, getTestcaseId())
-              .asJson();
+      final StringEntity entity = new StringEntity(toJson(loginDto.get()));
+      post.setEntity(entity);
+      post.addHeader("Content-Type", "application/json");
     }
-    AccountDTO account = fromJson(resp.getBody().toString(), AccountDTO.class);
-    if (actor.recall(IS_ORG_ADMIN) == null) {
-      RawDataStatistics.login(resp.getStatus(), resp.getStatusText());
+    try (final CloseableHttpResponse response = client.execute(post)) {
+      final int statusCode = response.getStatusLine().getStatusCode();
+      final HttpEntity entity = response.getEntity();
+      jsonString = entity != null ? new String(entity.getContent().readAllBytes()) : "";
+      if (actor.recall(IS_ORG_ADMIN) == null) {
+        RawDataStatistics.login(statusCode, response.getStatusLine().getReasonPhrase());
+      }
+      saveLastResponseCode(actor.getName(), statusCode);
     }
-    saveLastResponseCode(actor.getName(), resp.getStatus());
+
+    final AccountDTO account = fromJson(jsonString, AccountDTO.class);
     cleanRoomAndSetProperties(actor, account);
   }
 
@@ -148,7 +152,7 @@ public class LoginTask extends ParallelTaskRunner implements Task {
     if (actor.recall(MX_ID) != null) {
       return Optional.of(
           new LoginDTO()
-              .authStage(BASICAUTH)
+              .authStage(BASIC_AUTH)
               .username(actor.recall(MX_ID))
               .password(actor.recall(ACCOUNT_PASSWORD)));
     }

@@ -12,7 +12,7 @@
   <description>Properties and dependencies for Testsuite</description>
 
   <properties>
-    <revision>2.3.0</revision>
+    <revision>2.3.1</revision>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <java.version>17</java.version>
@@ -21,10 +21,10 @@
     <cucumber-test-combinations-maven-plugin.version>
       2.11.5
     </cucumber-test-combinations-maven-plugin.version>
-    <tiger.version>3.6.1</tiger.version>
-    <serenity.core.version>4.2.16</serenity.core.version>
+    <tiger.version>4.0.8</tiger.version>
+    <serenity.core.version>4.2.34</serenity.core.version>
     <polarion.toolbox.version>3.0.3-212</polarion.toolbox.version>
-    <ti.m.mtls.certs.version>2.0.3</ti.m.mtls.certs.version>
+    <ti.m.mtls.certs.version>2.0.6</ti.m.mtls.certs.version>
 
     <ti.m.mtls.output.directory>${project.build.directory}/profile-resources</ti.m.mtls.output.directory>
     <tim.shared.properties>${ti.m.mtls.output.directory}/shared.properties</tim.shared.properties>
@@ -103,7 +103,7 @@
     <dependency>
       <groupId>de.gematik</groupId>
       <artifactId>tiger-cloud-extension</artifactId>
-      <version>1.0.10</version>
+      <version>10.0.18</version>
     </dependency>
     <dependency>
       <groupId>net.sf.supercsv</groupId>
@@ -133,18 +133,18 @@
     <dependency>
       <groupId>com.nimbusds</groupId>
       <artifactId>nimbus-jose-jwt</artifactId>
-      <version>9.37.3</version>
+      <version>10.3.1</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.30</version>
+      <version>1.18.38</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.5.6</version>
+      <version>1.5.18</version>
     </dependency>
     <dependency>
       <groupId>jakarta.xml.bind</groupId>
@@ -287,7 +287,79 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>io.github.git-commit-id</groupId>
+        <artifactId>git-commit-id-maven-plugin</artifactId>
+        <version>9.0.2</version>
+        <executions>
+          <execution>
+            <id>get_git_infos</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>revision</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <generateGitPropertiesFile>true</generateGitPropertiesFile>
+          <includeOnlyProperties>
+            <includeOnlyProperty>^git.branch</includeOnlyProperty>
+          </includeOnlyProperties>
+        </configuration>
+      </plugin>
+      <plugin>
+       <groupId>org.openapitools</groupId>
+       <artifactId>openapi-generator-maven-plugin</artifactId>
+       <version>7.14.0</version>
+       <executions>
+         <execution>
+           <goals>
+             <goal>generate</goal>
+           </goals>
+           <configuration>
+             <inputSpec>
+               ${project.basedir}/src/main/resources/api/TiMessengerTestTreiber.yaml
+             </inputSpec>
+             <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
+             <generatorName>java</generatorName>
+             <modelPackage>de.gematik.tim.test.models</modelPackage>
+             <modelNameSuffix>DTO</modelNameSuffix>
+             <generateApis>false</generateApis>
+             <generateApiTests>false</generateApiTests>
+             <generateModelTests>false</generateModelTests>
+             <generateSupportingFiles>false</generateSupportingFiles>
+             <configOptions>
+               <library>resttemplate</library>
+               <serializationLibrary>jackson</serializationLibrary>
+               <dateLibrary>java8</dateLibrary>
+               <sourceFolder>src/generated/java/main</sourceFolder>
+             </configOptions>
+           </configuration>
+         </execution>
+       </executions>
+     </plugin>
+     <plugin>
+      <artifactId>maven-failsafe-plugin</artifactId>
+      <version>3.5.2</version>
+      <configuration>
+        <environmentVariables>
+          <TIGER_TESTENV_CFGFILE>${tiger.config.file}</TIGER_TESTENV_CFGFILE>
+        </environmentVariables>
+        <systemPropertyVariables>
+          <cucumber.filter.tags>${cucumber.filter.tags}</cucumber.filter.tags>
+          <cucumber.plugin>${custom.plugin}</cucumber.plugin>
+        </systemPropertyVariables>
+        <forkedProcessExitTimeoutInSeconds>120</forkedProcessExitTimeoutInSeconds>
+      </configuration>
+      <executions>
+        <execution>
+          <goals>
+            <goal>integration-test</goal>
+            <goal>verify</goal>
+          </goals>
+        </execution>
+      </executions>
+     </plugin>
     </plugins>
   </build>
-
 </project>

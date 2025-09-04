@@ -1,0 +1,58 @@
+# language: de
+@File:FeatureFile_04_04_V2_Basis @Ctl:UseCaseV2_04_Basis @Ctl:OneHomeServer @PRODUKT:TI-M_Client_Basis @PRODUKT:TI-M_FD_Basis @Zul:Pro @AF-ID:AF_10063-01 @NB:JA
+Funktionalität: 5.1.4 (4) Austausch von Events innerhalb einer Organisation (Basis Spec)
+  Dieser Anwendungsfall ermöglicht es Akteuren, welche sich in einem gemeinsamen Raum innerhalb eines Messenger-Service befinden,
+  Nachrichten auszutauschen und weitere durch die Matrix-Spezifikation festgelegte Aktionen (Events) auszuführen.
+
+  COMMENT: Basis
+  AF_10063-01 Austausch von Events zwischen Akteuren innerhalb einer Organisation
+
+  Inhalt
+  TF 1 - 2 HBA User schreibt HBA User (Chat/Raum)
+
+  @Ctl:AllowAll @Ctl:VZD @TCID:TIM_V2_BASIS_AF_040401 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 04.04.01 Austausch von Events innerhalb einer Organisation - Chat - AllowAll - HBA User schreibt HBA User
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_PRACTITIONER | <ApiName1A> |
+      | B | PRO_PRACTITIONER | <ApiName1B> |
+    Und "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und "A" findet "B" in FHIR
+    Und "A" schreibt "B" direkt "Testnachricht 1"
+    Dann "B" erhält eine Einladung von "A"
+    Und "B" bestätigt eine Einladung von "A"
+    Und "B" empfängt eine Nachricht "Testnachricht 1" von "A"
+    Und "B" schreibt "A" direkt "Testnachricht 2"
+    Und "A" empfängt eine Nachricht "Testnachricht 2" von "B"
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:EqualProperty(homeserver) @Plugin:AllowSelfCombine(true) @Plugin:AllowDoubleLineup(false) @Plugin:Filter(ApiName1A.hasTag("proClient")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName1A.hasTag("practitioner")) @Plugin:Filter(ApiName1B.hasTag("practitioner"))
+    Beispiele:
+      | ApiName1A             | ApiName1B             |
+      | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:AllowAll @Ctl:VZD @TCID:TIM_V2_BASIS_AF_040402 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 04.04.02 Austausch von Events innerhalb einer Organisation - Raum - AllowAll - HBA User schreibt HBA User
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_PRACTITIONER | <ApiName1A> |
+      | B | PRO_PRACTITIONER | <ApiName1B> |
+    Und "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und "A", "B" hinterlegen ihre MXIDs im Verzeichnis Dienst
+    Und "A" findet "B" in FHIR
+    Und "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und "B" ist dem Raum "TIM Testraum 1" beigetreten
+    Wenn "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Dann "B" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
+    Wenn "B" sendet die Nachricht "Testnachricht 2" an den Raum "TIM Testraum 1"
+    Dann "A" empfängt eine Nachricht "Testnachricht 2" von "B" im Raum "TIM Testraum 1"
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:EqualProperty(homeserver) @Plugin:AllowSelfCombine(true) @Plugin:AllowDoubleLineup(false) @Plugin:Filter(ApiName1A.hasTag("proClient")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName1A.hasTag("practitioner")) @Plugin:Filter(ApiName1B.hasTag("practitioner"))
+    Beispiele:
+      | ApiName1A             | ApiName1B             |
+      | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS3 |
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #

@@ -1,0 +1,816 @@
+# language: de
+@File:FeatureFile_05_01_V2_Basis @Ctl:UseCaseV2_05_Basis @PRODUKT:TI-M_Client_Basis @PRODUKT:TI-M_FD_Basis @PRODUKT:VZD_FHIR @Zul:Pro @Zul:ProKK @AF-ID:AF_10061-04 @AFO-ID:A_25045-01 @AFO-ID:A_25046 @AFO-ID:A_25043
+Funktionalität: 5.1.5 (1) Einladung von Akteuren außerhalb einer Organisation (Basis Spec)
+  In diesem Anwendungsfall wird ein Akteur außerhalb einer Organisation eingeladen. Für die Suche nach Akteuren
+  außerhalb der Organisation kann das VZD-FHIR-Directory verwendet werden. Ist die MXID des gesuchten Akteurs dort nicht
+  vorhanden, muss es die Möglichkeit geben, die Kontaktaufnahme auch auf anderen Wegen zu ermöglichen,
+  mindestens mittels manueller Eingabe der MXID. Weitere Optionen wie z. B. QR-Code-Scans sind zulässig.
+
+  COMMENT: Basis
+  AF_10061-04 Einladung von Akteuren außerhalb einer Organisation
+  A_25045-01  Funktionsumfang der Berechtigungskonfiguration
+  A_25046     Durchsetzung der Berechtigungskonfiguration - Client
+  A_25043     Berechtigungskonfiguration in Accountdaten speichern
+
+  Inhalt
+
+  TF 1  - 2  User (AllowAll) wird in Chat/Raum eingeladen
+  TF 3  - 4  User (BlockAll) wird in Chat/Raum eingeladen - Negativ
+  TF 5       User AllowAll (blockt/entblockt User) (Raum)
+  TF 6       User AllowAll (2 User blockt/entblockt)
+  TF 7       User AllowAll wird von geblocktem und ungeblocktem User eingeladen
+  TF 8       User BlockAll (blockt/entblockt User) (Raum)
+  TF 9       User BlockAll (2 User blockt/entblockt)
+  TF 10      User BlockAll wird von allow und unallow User eingeladen
+  TF 11      User (versucht)lädt anderen User ein im MixedMode
+  TF 12 - 13 User AllowAll blockt/entblockt Server-Namen (Chat/Raum)
+  TF 14 - 15 User BlockAll allow/unallow Server-Namen (Chat/Raum)
+  TF 16 - 17 User lehnt Einladung ab (AllowAll) (Chat/Raum)
+  TF 18 - 19 User lehnt Einladung ab (BlockAll) (Chat/Raum)
+  TF 20      Dritter Nutzer wird in Chat eingeladen werden (AllowAll)
+  TF 21      Dritter Nutzer wird in Chat eingeladen werden (BlockAll) - Negativ
+  TF 22 - 25 Eintragung/Löschen in Liste von anderem Berechtigungsmodus (AllowAll) - Negativ
+  TF 26 - 29 Eintragung/Löschen in Liste von anderem Berechtigungsmodus (BlockAll) - Negativ
+  TF 30      Eintrag doppelter MXID Einträge in BlockListe (AllowAll)
+  TF 31      Eintrag doppelter MXID Einträge in AllowListe (BlockAll)
+  TF 32      Einträge bleiben trotz Logout erhalten (AllowAll)
+  TF 33      Einträge bleiben trotz Logout erhalten (BlockAll)
+
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:BP @Ctl:VZD @TCID:TIM_V2_BASIS_AF_050101 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.01 Einladung außerhalb einer Organisation - Chat - AllowAll - User schreibt anderen User über Healthcaresevice
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" schreibt "B" über den Healthcare-Service "HealthcareServiceName1" direkt "Testnachricht 1"
+    Und "B" bestätigt eine Einladung von "C"
+    Und "B" empfängt eine Nachricht "Testnachricht 1" von "C"
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName2.properties["homeserver"].equals(ApiName1A.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS4 | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:BP @Ctl:VZD @TCID:TIM_V2_BASIS_AF_050102 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.02 Einladung außerhalb einer Organisation - Raum - AllowAll - User schreibt anderen User über Healthcaresevice
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" ist dem Raum "TIM Testraum 1" beigetreten
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName2.properties["homeserver"].equals(ApiName1A.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS4 | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+
+  @Ctl:BlockAll @Ctl:OrgAdmin @Ctl:BP @Ctl:VZD @TCID:TIM_V2_BASIS_AF_050103 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.03 Einladung außerhalb einer Organisation - Chat - BlockAll - User schreibt anderen User über Healthcaresevice
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzen den eigenen Authorization Mode auf "BlockAll"
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" versucht "B" direkt "Testnachricht 1" zu schreiben
+    Dann erhält "C" einen Responsecode 403
+    Und "B" erhält KEINE Einladung von "C" [Retry 6 - 1]
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName2.properties["homeserver"].equals(ApiName1A.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS3 | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:BlockAll @Ctl:OrgAdmin @Ctl:BP @Ctl:VZD @TCID:TIM_V2_BASIS_AF_050104 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.04 Einladung außerhalb einer Organisation - Raum - BlockAll - User schreibt anderen User über Healthcaresevice
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzen den eigenen Authorization Mode auf "BlockAll"
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und "C" versucht "B" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann erhält "C" einen Responsecode 403
+    Und "B" erhält KEINE Einladung von "C" für den Raum "TIM Testraum 1" [Retry 6 - 1]
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName2.properties["homeserver"].equals(ApiName1A.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS3 | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:BP @Ctl:VZD @TCID:TIM_V2_BASIS_AF_050105 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.05 Einladung außerhalb einer Organisation - Raum - AllowAll - User AllowAll (blockt/entblockt User)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und "B" hinterlegt die User "C" in der Blockliste
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und "C" versucht "B" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann erhält "C" einen Responsecode 403
+    Und "B" erhält KEINE Einladung von "C" für den Raum "TIM Testraum 1" [Retry 6 - 1]
+    Und "B" entfernt die User "C" in der Blockliste
+    Und "C" erstellt einen Chat-Raum "TIM Testraum 2"
+    Und "C" lädt "B" in Chat-Raum "TIM Testraum 2" ein
+    Dann "B" erhält eine Einladung in Raum "TIM Testraum 2" von "C"
+    Und "B" bestätigt eine Einladung in Raum "TIM Testraum 2" von "C"
+    Und "B" ist dem Raum "TIM Testraum 2" beigetreten
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName2.properties["homeserver"].equals(ApiName1A.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS4 | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:BP @Ctl:VZD @TCID:TIM_V2_BASIS_AF_050106 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.06 Einladung außerhalb einer Organisation - Chat - AllowAll - User AllowAll (2 User blockt/entblockt)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2A> |
+      | D | PRO_CLIENT | <ApiName2B> |
+    Und "B", "C", "D" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und "B" hinterlegt die User "C", "D" in der Blockliste
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" versucht "B" direkt "Testnachricht 1" zu schreiben
+    Dann erhält "C" einen Responsecode 403
+    Und "B" erhält KEINE Einladung von "C" [Retry 6 - 1]
+    Und "D" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "D" versucht "B" direkt "Testnachricht 2" zu schreiben
+    Dann erhält "D" einen Responsecode 403
+    Und "B" erhält KEINE Einladung von "D" [Retry 6 - 1]
+    Und "B" entfernt die User "C", "D" in der Blockliste
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" schreibt "B" über den Healthcare-Service "HealthcareServiceName1" direkt "Testnachricht 3"
+    Und "B" bestätigt eine Einladung von "C"
+    Und "B" empfängt eine Nachricht "Testnachricht 3" von "C"
+    Und "D" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "D" schreibt "B" über den Healthcare-Service "HealthcareServiceName1" direkt "Testnachricht 4"
+    Und "B" bestätigt eine Einladung von "D"
+    Und "B" empfängt eine Nachricht "Testnachricht 4" von "D"
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName2A.properties["homeserver"].equals(ApiName1A.properties["homeserver"])) @Plugin:Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"])) @Plugin:AllowSelfCombine(true) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2A.hasTag("proClient")) @Plugin:Filter(ApiName2B.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2A             | ApiName2B             |
+      | RU2-Ref-ORG-Web-HS3 | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:BP @Ctl:VZD @TCID:TIM_V2_BASIS_AF_050107 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.07 Einladung außerhalb einer Organisation - Raum - AllowAll - User AllowAll wird von geblocktem und ungeblocktem User eingeladen
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName1C> |
+      | D | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C", "D" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und "B" hinterlegt die User "D" in der Blockliste
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "D" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
+    Dann "D" findet "C" im Healthcare-Service "HealthcareServiceName2"
+    Und "D" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und "D" lädt "C" in Chat-Raum "TIM Testraum 1" ein
+    Dann "C" erhält eine Einladung in Raum "TIM Testraum 1" von "D"
+    Und "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "D"
+    Und "C" ist dem Raum "TIM Testraum 1" beigetreten
+    Und "D" versucht "B" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann erhält "D" einen Responsecode 403
+    Und "B" erhält KEINE Einladung von "D" für den Raum "TIM Testraum 1" [Retry 6 - 1]
+    Und "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" ist dem Raum "TIM Testraum 1" beigetreten
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName2.properties["homeserver"].equals(ApiName1A.properties["homeserver"])) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1C.properties["homeserver"])) @Plugin:AllowSelfCombine(true) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName1C.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName1C             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS3 | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:BlockAll @Ctl:OrgAdmin @Ctl:BP @Ctl:VZD @TCID:TIM_V2_BASIS_AF_050108 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.08 Einladung außerhalb einer Organisation - Raum - BlockAll - User BlockAll (blockt/entblockt User)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzen den eigenen Authorization Mode auf "BlockAll"
+    Und "B" hinterlegt die User "C" in der Allowliste
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" ist dem Raum "TIM Testraum 1" beigetreten
+    Wenn "B" verlässt Raum "TIM Testraum 1"
+    Und "B" entfernt die User "C" in der Allowliste
+    Und "C" versucht "B" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann erhält "C" einen Responsecode 403
+    Und "B" erhält KEINE Einladung von "C" für den Raum "TIM Testraum 1" [Retry 6 - 1]
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName2.properties["homeserver"].equals(ApiName1A.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS3 | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:BlockAll @Ctl:OrgAdmin @Ctl:BP @Ctl:VZD @TCID:TIM_V2_BASIS_AF_050109 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.09 Einladung außerhalb einer Organisation - Chat - BlockAll - User BlockAll (2 User blockt/entblockt)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2A> |
+      | D | PRO_CLIENT | <ApiName2B> |
+    Und "B", "C", "D" setzen den eigenen Authorization Mode auf "BlockAll"
+    Und "B" hinterlegt die User "C", "D" in der Allowliste
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" schreibt "B" über den Healthcare-Service "HealthcareServiceName1" direkt "Testnachricht 1"
+    Und "B" bestätigt eine Einladung von "C"
+    Und "B" empfängt eine Nachricht "Testnachricht 1" von "C"
+    Wenn "B" verlässt Chat mit "C"
+    Und "D" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "D" schreibt "B" über den Healthcare-Service "HealthcareServiceName1" direkt "Testnachricht 2"
+    Und "B" bestätigt eine Einladung von "D"
+    Und "B" empfängt eine Nachricht "Testnachricht 2" von "D"
+    Wenn "B" verlässt Chat mit "D"
+    Und "B" entfernt die User "C", "D" in der Allowliste
+    Und "C" versucht "B" direkt "Testnachricht 3" zu schreiben
+    Dann erhält "C" einen Responsecode 403
+    Und "B" erhält KEINE Einladung von "C" [Retry 6 - 1]
+    Und "D" versucht "B" direkt "Testnachricht 4" zu schreiben
+    Dann erhält "D" einen Responsecode 403
+    Und "B" erhält KEINE Einladung von "D" [Retry 6 - 1]
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName2A.properties["homeserver"].equals(ApiName1A.properties["homeserver"])) @Plugin:Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"])) @Plugin:AllowSelfCombine(true) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2A.hasTag("proClient")) @Plugin:Filter(ApiName2B.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2A             | ApiName2B             |
+      | RU2-Ref-ORG-Web-HS3 | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:BlockAll @Ctl:OrgAdmin @Ctl:BP @Ctl:VZD @TCID:TIM_V2_BASIS_AF_050110 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.10 Einladung außerhalb einer Organisation - Raum - BlockAll - User BlockAll wird von ungeblockten und geblocktem User eingeladen
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName1C> |
+      | D | PRO_CLIENT | <ApiName2>  |
+    Und "B", "D" setzen den eigenen Authorization Mode auf "BlockAll"
+    Und "C" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und "B" hinterlegt die User "D" in der Allowliste
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "D" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
+    Dann "D" findet "C" im Healthcare-Service "HealthcareServiceName2"
+    Und "D" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und "D" lädt "C" in Chat-Raum "TIM Testraum 1" ein
+    Dann "C" erhält eine Einladung in Raum "TIM Testraum 1" von "D"
+    Und "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "D"
+    Und "C" ist dem Raum "TIM Testraum 1" beigetreten
+    Und "D" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann "B" erhält eine Einladung in Raum "TIM Testraum 1" von "D"
+    Und "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "D"
+    Und "B" ist dem Raum "TIM Testraum 1" beigetreten
+    Wenn "B" verlässt Raum "TIM Testraum 1"
+    Und "C" versucht "B" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann erhält "C" einen Responsecode 403
+    Und "B" erhält KEINE Einladung von "C" für den Raum "TIM Testraum 1" [Retry 6 - 1]
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName2.properties["homeserver"].equals(ApiName1A.properties["homeserver"])) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1C.properties["homeserver"])) @Plugin:AllowSelfCombine(true) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName1C.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName1C             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS4 | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+
+  @Ctl:MixedMode @Ctl:OrgAdmin @Ctl:BP @Ctl:VZD @TCID:TIM_V2_BASIS_AF_050111 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.11 Einladung außerhalb einer Organisation - Raum - MixedMode - User (versucht)lädt anderen User ein
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzt den eigenen Authorization Mode auf "BlockAll"
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und "C" versucht "B" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann erhält "C" einen Responsecode 403
+    Und "B" erhält KEINE Einladung von "C" für den Raum "TIM Testraum 1" [Retry 6 - 1]
+    Und "B" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" ist dem Raum "TIM Testraum 1" beigetreten
+    Und "B" verlässt Raum "TIM Testraum 1"
+    Und "B" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und "C" versucht "B" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann erhält "C" einen Responsecode 403
+    Und "B" erhält KEINE Einladung von "C" für den Raum "TIM Testraum 1" [Retry 6 - 1]
+    Und "B" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" ist dem Raum "TIM Testraum 1" beigetreten
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName2.properties["homeserver"].equals(ApiName1A.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS4 | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+
+  @Ctl:DomainBP @Ctl:OrgAdmin @Ctl:BP @Ctl:VZD @TCID:TIM_V2_BASIS_AF_050112 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.12 Einladung außerhalb einer Organisation - Chat - DomainBlock - User blockt/ unblockt Server-Namen
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und "B" hinterlegt den Server-Namen von "C" in der Blockliste
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" versucht "B" direkt "Testnachricht 1" zu schreiben
+    Dann erhält "C" einen Responsecode 403
+    Und "B" erhält KEINE Einladung von "C" [Retry 6 - 1]
+    Und "B" entfernt den Server-Namen von "C" in der Blockliste
+    Und "C" schreibt "B" direkt "Testnachricht 2"
+    Dann "B" erhält eine Einladung von "C"
+    Und "B" bestätigt eine Einladung von "C"
+    Und "B" empfängt eine Nachricht "Testnachricht 2" von "C"
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName2.properties["homeserver"].equals(ApiName1A.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS3 | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:DomainBP @Ctl:OrgAdmin @Ctl:BP @Ctl:VZD @TCID:TIM_V2_BASIS_AF_050113 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.13 Einladung außerhalb einer Organisation - Raum - DomainBlock - User blockt/ unblockt Server-Namen
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und "B" hinterlegt den Server-Namen von "C" in der Blockliste
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und "C" versucht "B" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann erhält "C" einen Responsecode 403
+    Und "B" erhält KEINE Einladung von "C" für den Raum "TIM Testraum 1" [Retry 6 - 1]
+    Und "B" entfernt den Server-Namen von "C" in der Blockliste
+    Und "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" ist dem Raum "TIM Testraum 1" beigetreten
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName2.properties["homeserver"].equals(ApiName1A.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS3 | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:DomainBP @Ctl:OrgAdmin @Ctl:BP @Ctl:VZD @TCID:TIM_V2_BASIS_AF_050114 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.14 Einladung außerhalb einer Organisation - Chat - DomainBlock - User allow/unallow Server-Namen
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und "B" hinterlegt den Server-Namen von "C" in der Allowliste
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" schreibt "B" direkt "Testnachricht 1"
+    Dann "B" erhält eine Einladung von "C"
+    Und "B" bestätigt eine Einladung von "C"
+    Und "B" empfängt eine Nachricht "Testnachricht 1" von "C"
+    Wenn "B" verlässt Chat mit "C"
+    Und "B" entfernt den Server-Namen von "C" in der Allowliste
+    Und "C" versucht "B" direkt "Testnachricht 2" zu schreiben
+    Dann erhält "C" einen Responsecode 403
+    Und "B" erhält KEINE Einladung von "C" [Retry 6 - 1]
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName2.properties["homeserver"].equals(ApiName1A.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS3 | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:DomainBP @Ctl:OrgAdmin @Ctl:BP @Ctl:VZD @TCID:TIM_V2_BASIS_AF_050115 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.15 Einladung außerhalb einer Organisation - Raum - DomainBlock - User allow/unallow Server-Namen
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und "B" hinterlegt den Server-Namen von "C" in der Allowliste
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "C"
+    Und "B" ist dem Raum "TIM Testraum 1" beigetreten
+    Wenn "B" verlässt Raum "TIM Testraum 1"
+    Und "B" entfernt den Server-Namen von "C" in der Allowliste
+    Und "C" versucht "B" in Chat-Raum "TIM Testraum 1" einzuladen
+    Dann erhält "C" einen Responsecode 403
+    Und "B" erhält KEINE Einladung von "C" für den Raum "TIM Testraum 1" [Retry 6 - 1]
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName2.properties["homeserver"].equals(ApiName1A.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS3 | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:InviteReject @Ctl:BP @Ctl:VZD @TCID:TIM_V2_BASIS_AF_050116 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.16 Einladung außerhalb einer Organisation - Chat - AllowAll - User lehnt Einladung ab
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzt den eigenen Authorization Mode auf "AllowAll"
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" schreibt "B" direkt "Testnachricht 1"
+    Dann "B" erhält eine Einladung von "C"
+    Wenn "B" lehnt eine Einladung zum Chat mit "C" ab
+    Dann "B" ist dem Chat mit "C" nicht beigetreten [Retry 6 - 1]
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName2.properties["homeserver"].equals(ApiName1A.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS3 | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:InviteReject @Ctl:BP @Ctl:VZD @TCID:TIM_V2_BASIS_AF_050117 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.17 Einladung außerhalb einer Organisation - Raum - AllowAll - User lehnt Einladung ab
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzt den eigenen Authorization Mode auf "AllowAll"
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Wenn "B" lehnt eine Einladung von "C" für Raum "TIM Testraum 1" ab
+    Dann "B" ist dem Raum "TIM Testraum 1" nicht beigetreten [Retry 6 - 1]
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName2.properties["homeserver"].equals(ApiName1A.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS4 | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+
+  @Ctl:BlockAll @Ctl:OrgAdmin @Ctl:InviteReject @Ctl:BP @Ctl:VZD @TCID:TIM_V2_BASIS_AF_050118 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.18 Einladung außerhalb einer Organisation - Chat - BlockAll - User lehnt Einladung ab
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und "B" hinterlegt die User "C" in der Allowliste
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" schreibt "B" direkt "Testnachricht 1"
+    Dann "B" erhält eine Einladung von "C"
+    Wenn "B" lehnt eine Einladung zum Chat mit "C" ab
+    Dann "B" ist dem Chat mit "C" nicht beigetreten [Retry 6 - 1]
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName2.properties["homeserver"].equals(ApiName1A.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS4 | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+
+  @Ctl:BlockAll @Ctl:OrgAdmin @Ctl:InviteReject @Ctl:BP @Ctl:VZD @TCID:TIM_V2_BASIS_AF_050119 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.19 Einladung außerhalb einer Organisation - Raum - BlockAll - User lehnt Einladung ab
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und "B" hinterlegt die User "C" in der Allowliste
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Und "C" erstellt einen Chat-Raum "TIM Testraum 1"
+    Dann "C" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "C" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Dann "B" erhält eine Einladung in Raum "TIM Testraum 1" von "C"
+    Wenn "B" lehnt eine Einladung von "C" für Raum "TIM Testraum 1" ab
+    Dann "B" ist dem Raum "TIM Testraum 1" nicht beigetreten [Retry 6 - 1]
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(!ApiName2.properties["homeserver"].equals(ApiName1A.properties["homeserver"])) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS3 | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:AllowAll @Ctl:BP @Ctl:OrgAdmin @Ctl:VZD @TCID:TIM_V2_BASIS_AF_050120 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.20 Einladung außerhalb einer Organisation - Chat - AllowAll - Dritter Nutzer wird in Chat eingeladen werden
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName1C> |
+      | D | PRO_CLIENT | <ApiName2>  |
+    Und "B", "C", "D" setzt den eigenen Authorization Mode auf "AllowAll"
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
+    Dann "D" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "D" schreibt "B" direkt "Testnachricht 1"
+    Und "B" erhält eine Einladung von "D"
+    Und "B" bestätigt eine Einladung von "D"
+    Und "B" empfängt eine Nachricht "Testnachricht 1" von "D"
+    Dann "D" findet "C" im Healthcare-Service "HealthcareServiceName2"
+    Und "D" lädt "C" in Chat mit "B" ein
+    Und "C" erhält eine Einladung von "D"
+    Und "C" bestätigt eine Einladung von "D"
+    Und "C" ist dem Chat mit "D", "B" beigetreten
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1C.properties["homeserver"])) @Plugin:Filter(!ApiName2.properties["homeserver"].equals(ApiName1A.properties["homeserver"])) @Plugin:AllowSelfCombine(true) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName1C.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName1C             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS4 | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+
+  @Ctl:AllowAll @Ctl:BP @Ctl:OrgAdmin @Ctl:VZD @TCID:TIM_V2_BASIS_AF_050121 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.21 Einladung außerhalb einer Organisation - Chat - BlockAll - Dritter Nutzer wird in Chat eingeladen werden
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN  | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+      | C | PRO_CLIENT | <ApiName1C> |
+      | D | PRO_CLIENT | <ApiName2>  |
+    Und "B", "D" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und "C" setzt den eigenen Authorization Mode auf "BlockAll"
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Wenn "A" erstellt einen Healthcare-Service "HealthcareServiceName2" und setzen einen Endpunkt auf "C"
+    Dann "D" findet "B" im Healthcare-Service "HealthcareServiceName1"
+    Und "D" schreibt "B" direkt "Testnachricht 1"
+    Und "B" erhält eine Einladung von "D"
+    Und "B" bestätigt eine Einladung von "D"
+    Und "B" empfängt eine Nachricht "Testnachricht 1" von "D"
+    Und "D" versucht "C" in Chat mit "B" einzuladen
+    Dann erhält "D" einen Responsecode 403
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"])) @Plugin:Filter(ApiName1A.properties["homeserver"].equals(ApiName1C.properties["homeserver"])) @Plugin:Filter(!ApiName2.properties["homeserver"].equals(ApiName1A.properties["homeserver"])) @Plugin:AllowSelfCombine(true) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1A.hasTag("orgAdmin")) @Plugin:Filter(ApiName1B.hasTag("proClient")) @Plugin:Filter(ApiName1C.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A           | ApiName1B             | ApiName1C             | ApiName2              |
+      | RU2-Ref-ORG-Web-HS4 | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+
+  @Ctl:AllowAll @Ctl:BP @TCID:TIM_V2_BASIS_AF_050122 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.22 Einladung außerhalb einer Organisation - AllowAll - Eintragung in Liste von anderem Berechtigungsmodus
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und "A" versucht User "B" in der Allowliste zu hinterlegen
+    Dann erhält "A" einen Responsecode 403
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:DistinctProperty(homeserver) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1              | ApiName2              |
+      | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+
+  @Ctl:AllowAll @Ctl:BP @TCID:TIM_V2_BASIS_AF_050123 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.23 Einladung außerhalb einer Organisation - AllowAll - Eintragung eines Server-Namen in Liste von anderem Berechtigungsmodus
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und "A" versucht den Server-Namen von "B" in der Allowliste zu hinterlegen
+    Dann erhält "A" einen Responsecode 403
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:DistinctProperty(homeserver) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1              | ApiName2              |
+      | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+
+  @Ctl:AllowAll @Ctl:BP @TCID:TIM_V2_BASIS_AF_050124 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.24 Einladung außerhalb einer Organisation - AllowAll - Löschen in Liste von anderem Berechtigungsmodus
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und "A" hinterlegt die User "B" in der Allowliste
+    Und "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und "A" versucht die User "B" in der Allowliste zu entfernen
+    Dann erhält "A" einen Responsecode 403
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:DistinctProperty(homeserver) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1              | ApiName2              |
+      | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:AllowAll @Ctl:BP @TCID:TIM_V2_BASIS_AF_050125 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.25 Einladung außerhalb einer Organisation - AllowAll - Löschen eines Server-Namen in Liste von anderem Berechtigungsmodus
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und "A" hinterlegt den Server-Namen von "B" in der Allowliste
+    Und "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und "A" versucht den Server-Namen von "B" in der Allowliste zu entfernen
+    Dann erhält "A" einen Responsecode 403
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:DistinctProperty(homeserver) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1              | ApiName2              |
+      | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+
+  @Ctl:BlockAll @Ctl:BP @TCID:TIM_V2_BASIS_AF_050126 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.26 Einladung außerhalb einer Organisation - BlockAll - Eintragung in Liste von anderem Berechtigungsmodus
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und "A" versucht User "B" in der Blockliste zu hinterlegen
+    Dann erhält "A" einen Responsecode 403
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:DistinctProperty(homeserver) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1              | ApiName2              |
+      | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+
+  @Ctl:BlockAll @Ctl:BP @TCID:TIM_V2_BASIS_AF_050127 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.27 Einladung außerhalb einer Organisation - BlockAll - Eintragung eines Server-Namen in Liste von anderem Berechtigungsmodus
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und "A" versucht den Server-Namen von "B" in der Blockliste zu hinterlegen
+    Dann erhält "A" einen Responsecode 403
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:DistinctProperty(homeserver) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1              | ApiName2              |
+      | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:BlockAll @Ctl:BP @TCID:TIM_V2_BASIS_AF_050128 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.28 Einladung außerhalb einer Organisation - BlockAll - Löschen in Liste von anderem Berechtigungsmodus
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und "A" hinterlegt die User "B" in der Blockliste
+    Und "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und "A" versucht die User "B" in der Blockliste zu entfernen
+    Dann erhält "A" einen Responsecode 403
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:DistinctProperty(homeserver) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1              | ApiName2              |
+      | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:BlockAll @Ctl:BP @TCID:TIM_V2_BASIS_AF_050129 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.29 Einladung außerhalb einer Organisation - BlockAll - Löschen eines Server-Namen in Liste von anderem Berechtigungsmodus
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und "A" hinterlegt den Server-Namen von "B" in der Blockliste
+    Und "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und "A" versucht den Server-Namen von "B" in der Blockliste zu entfernen
+    Dann erhält "A" einen Responsecode 403
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:DistinctProperty(homeserver) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1              | ApiName2              |
+      | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:AllowAll @Ctl:BP @TCID:TIM_V2_BASIS_AF_050130 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:JA
+  Szenariogrundriss: 05.01.30 Einladung außerhalb einer Organisation - AllowAll - Eintrag doppelter MXID Einträge in BlockListe
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und "A" hinterlegt die User "B" in der Blockliste
+    Und "A" versucht die User "B" in der Blockliste erneut zu hinterlegen
+    Dann erhält "A" einen der Responsecodes "200", "403"
+    Und "A" entfernt die User "B" in der Blockliste
+    Und "A" findet "B" nicht mehr in seiner Blockliste
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:DistinctProperty(homeserver) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1              | ApiName2              |
+      | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:BlockAll @Ctl:BP @TCID:TIM_V2_BASIS_AF_050131 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:JA
+  Szenariogrundriss: 05.01.31 Einladung außerhalb einer Organisation - BlockAll - Eintrag doppelter MXID Einträge in AllowListe
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und "A", "B" setzen den eigenen Authorization Mode auf "BlockAll"
+    Und "A" hinterlegt die User "B" in der Allowliste
+    Und "A" versucht die User "B" in der Allowliste erneut zu hinterlegen
+    Dann erhält "A" einen der Responsecodes "200", "403"
+    Und "A" entfernt die User "B" in der Allowliste
+    Und "A" findet "B" nicht mehr in seiner Allowliste
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:DistinctProperty(homeserver) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1              | ApiName2              |
+      | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:AllowAll @Ctl:BP @TCID:TIM_V2_BASIS_AF_050132 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.32 Einladung außerhalb einer Organisation - AllowAll - Einträge bleiben trotz Logout erhalten
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und "A" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und "A" hinterlegt die User "B" in der Blockliste
+    Und "A" hinterlegt den Server-Namen von "B" in der Blockliste
+    Und "A" loggt sich im TI-Messenger aus
+    Und "A" loggt sich im TI-Messenger ein
+    Und "A" prüft, ob der eigene Authorization Mode auf "AllowAll" gesetzt ist
+    Und "A" prüft, ob User "B" in der Blockliste gesetzt ist
+    Und "A" prüft, ob der Server-Name von "B" in der Blockliste gesetzt ist
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:DistinctProperty(homeserver) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1              | ApiName2              |
+      | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:BlockAll @Ctl:BP @TCID:TIM_V2_BASIS_AF_050133 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 05.01.33 Einladung außerhalb einer Organisation - BlockAll - Einträge bleiben trotz Logout erhalten
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und "A" setzt den eigenen Authorization Mode auf "BlockAll"
+    Und "A" hinterlegt die User "B" in der Allowliste
+    Und "A" hinterlegt den Server-Namen von "B" in der Allowliste
+    Und "A" loggt sich im TI-Messenger aus
+    Und "A" loggt sich im TI-Messenger ein
+    Und "A" prüft, ob der eigene Authorization Mode auf "BlockAll" gesetzt ist
+    Und "A" prüft, ob User "B" in der Allowliste gesetzt ist
+    Und "A" prüft, ob der Server-Name von "B" in der Allowliste gesetzt ist
+
+    # @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:DistinctProperty(homeserver) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1              | ApiName2              |
+      | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #
+# @MaxSameColumnProperty(ApiName1A,homeserver,1) #

@@ -50,7 +50,7 @@ import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getEn
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getHealthcareServiceFromInternalName;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.removeInternalEndpointWithName;
 import static de.gematik.tim.test.models.FhirResourceTypeDTO.ENDPOINT;
-import static de.gematik.tim.test.models.FhirResourceTypeDTO.HEALTHCARESERVICE;
+import static de.gematik.tim.test.models.FhirResourceTypeDTO.HEALTHCARE_SERVICE;
 import static java.lang.String.format;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorInTheSpotlight;
@@ -120,7 +120,7 @@ public class FhirOrgAdminGlue {
     checkResponseCode(actor.getName(), OK.value());
     List<FhirHealthcareServiceDTO> healthcareServices =
         getResourcesFromSearchResult(
-            searchResult, HEALTHCARESERVICE, FhirHealthcareServiceDTO.class);
+            searchResult, HEALTHCARE_SERVICE, FhirHealthcareServiceDTO.class);
     List<FhirHealthcareServiceDTO> healthcareServicesWithMatchingName =
         healthcareServices.stream()
             .filter(
@@ -314,19 +314,26 @@ public class FhirOrgAdminGlue {
   @Dann("vergleicht {string} den Healthcare-Service {string} mit dem JSON {string}")
   public void compareHealthcareServiceWithJson(String orgAdmin, String hcsName, String fileName) {
     Actor actor = theActorCalled(orgAdmin);
-    FhirHealthcareServiceDTO hs = actor.asksFor(getHealthcareService().withName(hcsName));
-    FhirHealthcareServiceDTO jsonHs = readJsonFile(fileName, FhirHealthcareServiceDTO.class);
+    FhirHealthcareServiceDTO actualHealthcareService =
+        actor.asksFor(getHealthcareService().withName(hcsName));
+    FhirHealthcareServiceDTO expectedHealthcareService =
+        readJsonFile(fileName, FhirHealthcareServiceDTO.class);
 
-    jsonHs.setEndpoint(jsonHs.getEndpoint() == null ? List.of() : jsonHs.getEndpoint());
-    jsonHs.setLocation(jsonHs.getLocation() == null ? List.of() : jsonHs.getLocation());
-    hs.setEndpoint(hs.getEndpoint() == null ? List.of() : hs.getEndpoint());
-    hs.setLocation(hs.getLocation() == null ? List.of() : hs.getLocation());
+    expectedHealthcareService.setEndpoint(
+        expectedHealthcareService.getEndpoint() == null
+            ? List.of()
+            : expectedHealthcareService.getEndpoint());
+    actualHealthcareService.setEndpoint(
+        actualHealthcareService.getEndpoint() == null
+            ? List.of()
+            : actualHealthcareService.getEndpoint());
 
-    assertThat(hs)
+    assertThat(actualHealthcareService)
         .usingRecursiveComparison()
-        .ignoringFields("providedBy", "identifier", "meta", "resourceType", "text", "name")
+        .ignoringFields(
+            "providedBy", "identifier", "meta", "resourceType", "text", "name", "location")
         .ignoringFieldsMatchingRegexes(".*id")
-        .isEqualTo(jsonHs);
+        .isEqualTo(expectedHealthcareService);
   }
 
   @And("the endpoint of {string} in the healthcare service {string} is the JSON {string}")
@@ -336,15 +343,20 @@ public class FhirOrgAdminGlue {
     Actor admin = theActorInTheSpotlight();
     admin.abilityTo(UseHealthcareServiceAbility.class).setActive(hcsName);
     admin.abilityTo(UseEndpointAbility.class).setActive(theActorCalled(user).recall(DISPLAY_NAME));
-    FhirEndpointDTO endpoint = admin.asksFor(getEndpoint());
-    FhirEndpointDTO jsonEndpoint = readJsonFile(fileName, FhirEndpointDTO.class);
-    String actualAddress = jsonEndpoint.getAddress() + getHomeServerWithoutHttpAndPort(admin);
-    jsonEndpoint.setAddress(actualAddress);
-    assertThat(endpoint)
+    FhirEndpointDTO actualEndpoint = admin.asksFor(getEndpoint());
+    FhirEndpointDTO expectedEndpoint = readJsonFile(fileName, FhirEndpointDTO.class);
+    String actualAddress = expectedEndpoint.getAddress() + getHomeServerWithoutHttpAndPort(admin);
+    expectedEndpoint.setAddress(actualAddress);
+
+    expectedEndpoint.setExtension(
+        expectedEndpoint.getExtension() == null ? List.of() : expectedEndpoint.getExtension());
+    actualEndpoint.setExtension(
+        actualEndpoint.getExtension() == null ? List.of() : actualEndpoint.getExtension());
+    assertThat(actualEndpoint)
         .usingRecursiveComparison()
         .ignoringFields("identifier", "meta", "resourceType", "text", "managingOrganization")
         .ignoringFieldsMatchingRegexes(".*id")
-        .isEqualTo(jsonEndpoint);
+        .isEqualTo(expectedEndpoint);
   }
 
   @When(

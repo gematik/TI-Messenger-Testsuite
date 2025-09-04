@@ -1,0 +1,168 @@
+# language: de
+@File:FeatureFile_10X_01_V2_Basis @Ctl:UseCaseV2_10X_Basis @PRODUKT:TI-M_FD_Basis @Zul:Pro @Zul:ProKK @AFO-ID:A_26344 @AFO-ID:A_26263 @AFO-ID:A_26265 @AFO-ID:A_26289 @AFO-ID:A_25641-01
+Funktionalität: 10X. (1) API Checks (Basis Spec)
+  Die folgenden Testfälle sollen APIs (inkl. verbotenen und deprecated APIs) und deren Existenz bzw. Erreichbarkeit überprüfen.
+
+  COMMENT: Basis
+  A_26344    - Verbot von URL-Previews
+  A_26263    - Unauthenticated Media
+  A_26265    - TI-M FD Org-Admin Support
+  A_26289    - Authentisierung von Profilabfragen
+  A_25641-01 - Matrix Spezifikationsversion - Standard error response
+
+  Inhalt
+  TF 1 - 2   Verbot von URL-Previews
+  TF 3 - 4   Deprecated Media Endpunkte - Innerhalb und ausserhalb von HomeServern
+  TF 5       Support Endpunkt
+  TF 6 - 8   Authentisierung von Profilabfragen
+  TF 9 - 10  Standardisierte Fehlermeldungen für unbekannte Endpunkte/Methoden
+
+  @Ctl:ApiCheck @TCID:TIM_V2_BASIS_AF_10X0101 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 10X.01.01 API Checks - Verbot von URL-Previews (Org-User)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1> |
+    Wenn A fragt inklusive access_token an seinem HomeServer die API "/_matrix/media/v3/preview_url" über ein "GET" ab
+    Dann erhält "A" einen Responsecode 404
+
+    @Plugin:Filter(ApiName1.hasTag("proClient"))
+    Beispiele:
+      | ApiName1              |
+      | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:ApiCheck @TCID:TIM_V2_BASIS_AF_10X0102 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 10X.01.02 API Checks - Verbot von URL-Previews (Org-User)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1> |
+    Wenn A fragt inklusive access_token an seinem HomeServer die API "/_matrix/client/v1/media/preview_url" über ein "GET" ab
+    Dann erhält "A" einen Responsecode 404
+
+    @Plugin:Filter(ApiName1.hasTag("proClient"))
+    Beispiele:
+      | ApiName1              |
+      | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:AllowAll @Ctl:ApiCheck @Ctl:Attachment @TCID:TIM_V2_BASIS_AF_10X0103 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:JA
+  Szenariogrundriss: 10X.01.03 API Checks - Deprecated Media Endpunkte auf dem gleichen HomeServer (Org-User)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+    Und "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und "B" ist dem Raum "TIM Testraum 1" beigetreten
+    Wenn "A" sendet ein Attachment "bild.jpg" als "m.image" an den Raum "TIM Testraum 1"
+    Und B fragt an seinem HomeServer die media API "/_matrix/media/v3/download/{serverName}/{mediaId}" inkl Parameterbefüllung über ein "GET" ab
+    Dann erhält "B" einen Responsecode 200
+    Und B fragt an seinem HomeServer die media API "/_matrix/media/v3/download/{serverName}/{mediaId}/{fileName}" inkl Parameterbefüllung über ein "GET" ab
+    Dann erhält "B" einen Responsecode 200
+    Und B fragt an seinem HomeServer die media thumbnail API "/_matrix/media/v3/thumbnail/{serverName}/{mediaId}" inkl Parameterbefüllung über ein "GET" ab
+    Dann erhält "B" einen der Responsecodes "200", "400"
+
+    # @MaxSameColumnProperty(ApiName2,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:EqualProperty(homeserver) @Plugin:AllowSelfCombine(true) @Plugin:AllowDoubleLineup(false) @Plugin:Filter(ApiName1A.hasTag("proClient")) @Plugin:Filter(ApiName1B.hasTag("proClient"))
+    Beispiele:
+      | ApiName1A             | ApiName1B             |
+      | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS3 |
+
+  @Ctl:AllowAll @Ctl:ApiCheck @Ctl:Attachment @TCID:TIM_V2_BASIS_AF_10X0104 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:JA
+  Szenariogrundriss: 10X.01.04 API Checks - Deprecated Media Endpunkte auf unterschiedlichen HomeServern (Org-User)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und "B" ist dem Raum "TIM Testraum 1" beigetreten
+    Wenn "A" sendet ein Attachment "bild.jpg" als "m.image" an den Raum "TIM Testraum 1"
+    Und B fragt an seinem HomeServer die media API "/_matrix/media/v3/download/{serverName}/{mediaId}" inkl Parameterbefüllung über ein "GET" ab
+    Dann erhält "B" einen Responsecode 200
+    Und B fragt an seinem HomeServer die media API "/_matrix/media/v3/download/{serverName}/{mediaId}/{fileName}" inkl Parameterbefüllung über ein "GET" ab
+    Dann erhält "B" einen Responsecode 200
+    Und B fragt an seinem HomeServer die media thumbnail API "/_matrix/media/v3/thumbnail/{serverName}/{mediaId}" inkl Parameterbefüllung über ein "GET" ab
+    Dann erhält "B" einen der Responsecodes "200", "400"
+
+    # @MaxSameColumnProperty(ApiName2,homeserver,1) #
+    @Plugin:Shuffle(true) @Plugin:DistinctProperty(homeserver) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1              | ApiName2              |
+      | RU2-Ref-Pract-SDK-HS3 | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:ApiCheck @TCID:TIM_V2_BASIS_AF_10X0105 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert @NB:JA
+  Szenariogrundriss: 10X.01.05 API Checks - Support Endpunkt (Org-User)
+    Angenommen A fragt an Schnittstelle <ApiName1> die Home-Server-Adresse ab
+    Und A fragt an seinem HomeServer die API "/.well-known/matrix/support" über ein "GET" ab
+    Dann erhält "A" einen der Responsecodes "200", "404"
+    Und "A" überprüft, dass die Response befüllt ist
+
+    @Plugin:Filter(ApiName1.hasTag("proClient"))
+    Beispiele:
+      | ApiName1              |
+      | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:ApiCheck @TCID:TIM_V2_BASIS_AF_10X0106 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 10X.01.06 API Checks - Authentisierung von Profilabfragen
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1> |
+    Und B fragt an Schnittstelle <ApiName2> die Home-Server-Adresse ab
+    Wenn B fragt an seinem HomeServer die profile API "/_matrix/client/v3/profile/{userId}" inkl Parameterbefüllung von "A" über ein "GET" ab
+    Dann erhält "B" einen Responsecode 401
+
+    @Plugin:DistinctProperty(homeserver) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1              | ApiName2              |
+      | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+
+  @Ctl:ApiCheck @TCID:TIM_V2_BASIS_AF_10X0107 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 10X.01.07 API Checks - Authentisierung von Profilabfragen mit avatar_url
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1> |
+    Und B fragt an Schnittstelle <ApiName2> die Home-Server-Adresse ab
+    Wenn B fragt an seinem HomeServer die profile API "/_matrix/client/v3/profile/{userId}/avatar_url" inkl Parameterbefüllung von "A" über ein "GET" ab
+    Dann erhält "B" einen Responsecode 401
+
+    @Plugin:DistinctProperty(homeserver) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1              | ApiName2              |
+      | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+
+  @Ctl:ApiCheck @TCID:TIM_V2_BASIS_AF_10X0108 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert @NB:NEIN
+  Szenariogrundriss: 10X.01.08 API Checks - Authentisierung von Profilabfragen mit displayname
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1> |
+    Und B fragt an Schnittstelle <ApiName2> die Home-Server-Adresse ab
+    Wenn B fragt an seinem HomeServer die profile API "/_matrix/client/v3/profile/{userId}/displayname" inkl Parameterbefüllung von "A" über ein "GET" ab
+    Dann erhält "B" einen Responsecode 401
+
+    @Plugin:DistinctProperty(homeserver) @Plugin:AllowSelfCombine(false) @Plugin:AllowDoubleLineup(true) @Plugin:Filter(ApiName1.hasTag("proClient")) @Plugin:Filter(ApiName2.hasTag("proClient"))
+    Beispiele:
+      | ApiName1              | ApiName2              |
+      | RU2-Ref-Pract-SDK-HS4 | RU2-Ref-Pract-SDK-HS3 |
+
+  @Ctl:ApiCheck @TCID:TIM_V2_BASIS_AF_10X0109 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert @NB:JA
+  Szenariogrundriss: 10X.01.09 API Checks - Standardisierte Fehlermeldungen für unbekannte Endpunkte
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1> |
+    Wenn A fragt inklusive access_token an seinem HomeServer die API "/_matrix/media/v3/config" über ein "GET" ab
+    Dann erhält "A" einen der Responsecodes "200", "404"
+
+    @Plugin:Filter(ApiName1.hasTag("proClient"))
+    Beispiele:
+      | ApiName1              |
+      | RU2-Ref-Pract-SDK-HS4 |
+
+  @Ctl:ApiCheck @TCID:TIM_V2_BASIS_AF_10X0110 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert @NB:JA
+  Szenariogrundriss: 10X.01.10 API Checks - Standardisierte Fehlermeldungen für unbekannte Methoden
+    Angenommen A fragt an Schnittstelle <ApiName1> die Home-Server-Adresse ab
+    Wenn A fragt an seinem HomeServer die API "/.well-known/matrix/support" über ein "DELETE" ab
+    Dann erhält "A" einen Responsecode 405
+
+    @Plugin:Filter(ApiName1.hasTag("proClient"))
+    Beispiele:
+      | ApiName1              |
+      | RU2-Ref-Pract-SDK-HS4 |
+# @MaxSameColumnProperty(ApiName2,homeserver,1) #
+# @MaxSameColumnProperty(ApiName2,homeserver,1) #

@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Serenity Reports</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+<link rel="apple-touch-icon" sizes="57x57" href="apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">
+<link rel="stylesheet" href="bootstrap-icons/bootstrap-icons.css">
+<!-- JQuery -->
+<script type="text/javascript" src="scripts/jquery-3.7.1.min.js"></script><!-- Required Stylesheets -->
+<link href="bootstrap-treeview/dist/bootstrap-treeview.min.css" rel="stylesheet">
+
+<!-- Required Javascript -->
+<script src="bootstrap-treeview/dist/bootstrap-treeview.min.js"></script><!-- DataTables -->
+<link type="text/css" href="datatables/1.13.1/datatables.min.css" rel="stylesheet" />
+<script type="text/javascript" src="datatables/1.13.1/datatables.min.js"></script>
+<script type="text/javascript" src="datatables/1.13.1/time-elapsed-dhms.js"></script>
+
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script src="bootstrap/js/bootstrap.min.js"></script>
+
+
+<script>
+    jQuery.fn.dataTable.ext.type.order['time-elapsed-dhms-pre'] = function(data) {
+
+        var matches = data.match(/^(\d+(?:\.\d+)?)\s*([a-z]+)/i);
+        var multipliers = {
+            ms: 1,
+            s: 1000,
+            m: 60000,
+            h: 3600000,
+            d: 86400000
+        };
+
+        if (matches) {
+            var multiplier = multipliers[matches[2].toLowerCase()];
+            return parseFloat(matches[1]) * multiplier;
+        } else {
+            return -1;
+        };
+    };
+</script>
+<link rel="stylesheet" href="css/core.css"/>
+<link rel="stylesheet" href="css/link.css"/>
+<link type="text/css" media="screen" href="css/screen.css" rel="Stylesheet"/>
+<!--CHART.JS-->
+<script src="chartjs/chart.js"></script>
+<script src="chartjs/chartjs-plugin-datalabels@2.0.0.min.js"></script>
+<script src="chartjs/patternomaly.min.js"></script>
+<script>
+    // Register the plugin to all charts:
+    Chart.register(ChartDataLabels);
+</script>
+<!-- JQuery-UI -->
+<link type="text/css" href="jqueryui/1.13.2/jquery-ui.css" rel="Stylesheet" />
+<script type="text/javascript" src="jqueryui/1.13.2/jquery-ui.js"></script><!-- DataTables -->
+<link type="text/css" href="datatables/1.13.1/datatables.min.css" rel="stylesheet" />
+<script type="text/javascript" src="datatables/1.13.1/datatables.min.js"></script>
+<script type="text/javascript" src="datatables/1.13.1/time-elapsed-dhms.js"></script>
+
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script src="bootstrap/js/bootstrap.min.js"></script>
+
+
+<script>
+    jQuery.fn.dataTable.ext.type.order['time-elapsed-dhms-pre'] = function(data) {
+
+        var matches = data.match(/^(\d+(?:\.\d+)?)\s*([a-z]+)/i);
+        var multipliers = {
+            ms: 1,
+            s: 1000,
+            m: 60000,
+            h: 3600000,
+            d: 86400000
+        };
+
+        if (matches) {
+            var multiplier = multipliers[matches[2].toLowerCase()];
+            return parseFloat(matches[1]) * multiplier;
+        } else {
+            return -1;
+        };
+    };
+</script>
+
+
+
+
+    <script class="code" type="text/javascript">$(document).ready(function () {
+
+            $("#scenario-results").DataTable({
+                "order": [[0, "asc",], [1, "asc",], [2, "asc",]],
+                "language": {
+                    searchPlaceholder: "Filter",
+                    search: ""
+                },
+                columnDefs: [
+                    {
+                        targets: 4,
+                        visible: false
+                    },
+                    {type: 'time-elapsed-dhms', targets: 6}
+                ]
+            })
+            $("#manual-scenario-results").DataTable({
+                "order": [[0, "asc",], [1, "asc",]],
+                "language": {
+                    searchPlaceholder: "Filter",
+                    search: ""
+                },
+                columnDefs: [
+                    {
+                        targets: 4,
+                        visible: false
+                    },
+                ]
+            })
+
+            // Results table
+            $('#test-results-table').DataTable({
+                "order": [[0, "asc",], [3, "asc",]],
+                "pageLength": 10,
+                "lengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]]
+            });
+
+            $('#evidence-table').DataTable({
+                searching: false,
+                paging: false,
+                info: false
+            });
+
+            $(".feature-coverage-table").DataTable({
+                searching: true,
+                paging: false,
+                info: false,
+                language: {
+                    searchPlaceholder: "Filter",
+                    search: ""
+                },
+                columnDefs: [
+                    {
+                        targets: 2,
+                        visible: false
+                    },
+                ]
+            });
+
+            $(".feature-coverage-table-with-pagination").DataTable({
+                searching: true,
+                order: [[0, "asc",]],
+                pageLength: 10,
+                language: {
+                    searchPlaceholder: "Filter",
+                    search: ""
+                },
+                columnDefs: [
+                    {
+                        targets: 2,
+                        visible: false
+                    },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body class="results-page">
+<div id="topheader">
+    <div id="topbanner">
+        <div id="logo"><a href="index.html"><img src="images/serenity-logo.png" border="0"/></a></div>
+        <div id="projectname-banner" style="float:right">
+            <span class="projectname">
+                <span class="projecttitle">Serenity BDD Report</span>
+                <span class="projectsubtitle"></span>
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="middlecontent">
+
+
+    <div id="contenttop">
+        <div class="middlebg">
+        <span class="breadcrumbs"><a href="index.html">Home</a>
+                    > Tcid 
+                > <span class="truncate-60">
+                TIM V2 PRO AF 050125
+            </span>
+        </span>
+        </div>
+        <div class="rightbg"></div>
+    </div>
+
+    <div class="clr"></div>
+    <!--/* starts second table*/-->
+        <div>
+            <table class="table environment">
+                <tr>
+                        <th class="custom-title">
+                            Pool group string
+                        </th>
+                        <th class="custom-title">
+                            Used items
+                        </th>
+                        <th class="custom-title">
+                            Used groups
+                        </th>
+                </tr>
+                <tr>
+                        <td class="custom-value">
+                            <div>RU2,0,WILDCARD</div>
+                        </td>
+                        <td class="custom-value">
+                            <div>RU2-Ref-ORG-Web-HS4 ---> https://oapub-d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev/ti-messenger-testdriver/</div><div>RU2-Ref-Pract-SDK-HS4 ---> https://ctdpub-d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev</div><div>RU2-Ref-ORG-Web-HS3 ---> https://oapub-10c810c7-6cc5-4e3f-b878-950b3b293644.ru.timref.akquinet.nx2.dev/ti-messenger-testdriver/</div><div>RU2-Ref-Pract-SDK-HS3 ---> https://ctdpub-10c810c7-6cc5-4e3f-b878-950b3b293644.ru.timref.akquinet.nx2.dev</div>
+                        </td>
+                        <td class="custom-value">
+                             [RU2]: <div>RU2-Ref-ORG-Web-HS4 ---> https://oapub-d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev/ti-messenger-testdriver/</div><div>RU2-Ref-Pract-SDK-HS4 ---> https://ctdpub-d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev</div><div>RU2-Ref-ORG-Web-HS3 ---> https://oapub-10c810c7-6cc5-4e3f-b878-950b3b293644.ru.timref.akquinet.nx2.dev/ti-messenger-testdriver/</div><div>RU2-Ref-Pract-SDK-HS3 ---> https://ctdpub-10c810c7-6cc5-4e3f-b878-950b3b293644.ru.timref.akquinet.nx2.dev</div>
+                        </td>
+                </tr>
+            </table>
+        </div>
+<div>
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#"><i class="bi bi-journal-check"></i> Overall Test Results</a>
+        </li>
+        <li >
+            <a href="capabilities.html"><i class="bi bi-journal-text"></i> Requirements</a>
+        </li>
+    </ul>
+    <span class="date-and-time"><a href="build-info.html"><i class="bi bi-info-circle"></i></a> Report generated 12-08-2025 23:05:52</span>
+    <br style="clear:left"/>
+</div>
+    <div class="clr"></div>
+    <div id="beforetable"></div>
+    <div id="results-dashboard">
+        <div class="middlb">
+            <div class="table">
+
+                <h2><i class='bi bi-tags'></i> Tcid: TIM V2 PRO AF 050125</h2>
+                <table class='overview'>
+                    <tr>
+                        <td width="375px" valign="top">
+                            <div class="test-count-summary">
+                                <div class="test-count-title">
+                                    1 test
+
+                                     |
+                                        <a href="c9def6dad23f774426f1eea5adc461f009b028a798beca8b67a4aa9d6e860941.csv" title="Download CSV"> <i class="bi bi-cloud-arrow-down"
+                                                                                        title="Download CSV"></i></a>
+
+
+                                </div>
+                            </div>
+
+                            <div>
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a data-toggle="tab" href="#summary"><i class="bi bi-house-door"></i>
+                                            Summary</a>
+                                    </li>
+                                    <li>
+                                        <a data-toggle="tab" href="#tests"><i class="bi bi-speedometer"></i> Test
+                                            Results</a>
+                                    </li>
+                                        <li>
+                                            <a data-toggle="tab" href="#evidence"><i class="bi bi-download"></i>Evidence</a>
+                                        </li>
+                                </ul>
+
+
+                                <div class="card border">
+                                    <div class="tab-content" id="pills-tabContent">
+                                        <div id="summary" class="tab-pane fade in active">
+                                            <div class="container-fluid">
+                                                <div class="dashboard-charts row">
+                                                    <div class="col-lg-4 col-md-6 col-sm-9">
+                                                        <!-- PIE CHART -->
+                                                        <h4><i class="bi bi-pie-chart"></i> Overview</h4>
+                                                            <div class="chart-container">
+                                                                <canvas id="resultChart" height="200px"></canvas>
+                                                            </div>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-6 col-sm-9">
+                                                        <h4><i class="bi bi-check-square"></i> Test Outcomes</h4>
+                                                        <!-- Severity bar chart -->
+                                                        <div class="chart-container">
+                                                            <canvas id="severityChart" height="200px"></canvas>
+                                                        </div>
+                                                    </div>
+                                                        <div class="col-lg-4 col-md-6 col-sm-9">
+                                                            <h4><i class="bi bi-graph-up"></i> Test Performance</h4>
+
+                                                            <!-- Duration bar chart -->
+                                                            <div class="chart-container">
+                                                                <canvas id="durationChart" height="200px"></canvas>
+                                                            </div>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    <div class="col-lg-4 col-md-4 col-sm-6">
+    <div>
+        <h3><i class="bi bi-speedometer2"></i> Key Statistics</h3>
+        <div>
+            <table class="table table-striped table-hover">
+                <tbody>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-card-checklist"></i> Number of Scenarios
+                    </td>
+                    <td>1</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-caret-right"></i> Total Number of Test Cases
+                    </td>
+                    <td>1</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-flag-fill"></i> Tests Started
+                    </td>
+                    <td>Aug 12, 2025 20:14:32</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-stop-circle"></i> Tests
+                        Finished
+                    </td>
+                    <td>Aug 12, 2025 20:15:41</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-stopwatch"></i> Total
+                        Duration
+                    </td>
+                    <td> 1m 8s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-trophy"></i> Fastest Test
+                    </td>
+                    <td> 1m 8s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-skip-start"></i> Slowest
+                        Test
+                    </td>
+                    <td> 1m 8s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-stopwatch"></i> Average
+                        Execution Time
+                    </td>
+                    <td> 1m 8s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-stopwatch-fill"></i> Total
+                        Execution Time
+                    </td>
+                    <td> 1m 8s</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container-fluid">
+
+                                            </div>
+                                            <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Tags</h3>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">AF-ID</h5>
+                            <div>
+                                    <a href="deea7db544fe0da089b9faba52bb5a18d8165e8c8a898279f179bec884d6bf6e.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> AF 10104-03&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">AFO-ID</h5>
+                            <div>
+                                    <a href="1d224373575f271ba6d88b2e5c5acd852eb11d5cd35f0228bb0583a2183d42a1.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 25046&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="97536bce1a9be40767fbd2d82744caa9b9dc855e157bb78127cecf3d631801bc.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 25045-01&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Ctl</h5>
+                            <div>
+                                    <a href="44cdef8a547e59a975df0cb767520950ca9db6b128ceec431949e1c4fc18ad53.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> UseCaseV2 05 Pro&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="2b683eddbeb627ecabc92e1c57af09092b06873e5a081b57f51ba35b9226be7d.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Bp&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="d0b32cf5c2573baf79c3489637157238d8bdb5da84eec2db1357506a1e11c1fb.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Allow All&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="5a1118d148f28f694ba9248bccbe65242f88731bd1f49ed0d53d91acc6fef0b2.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> One Home Server&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">File</h5>
+                            <div>
+                                    <a href="a066ac7c45f62b3a9b853298484b57c9c556aff6a786fa6ef8e1f0881e6db37a.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Featurefile 05 01 V2 Pro&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Nb</h5>
+                            <div>
+                                    <a href="6c3176dab12e20d3f33b521cd28e4287e04cca162711c2a46ee6d6270be51c18.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Nein&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Prio</h5>
+                            <div>
+                                    <a href="7748df88f2c56a8cb6f2fb2e9c999c5782b6158037eec2da2975d7b7a25436d8.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> 1&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Produkt</h5>
+                            <div>
+                                    <a href="77e3e49441a15427e6dfa1d7c22dfb483bf88791320a2d3fa6dfb87cd322cf71.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TI-M Client Basis&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="42f57fe4afe684cfa4294a39123d3069604423191b213120cf03954cef7bfd03.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TI-M FD Pro&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="b1d13d9ab0b4421623dd61b18a621a1af725631e917f2c2d2321064d4e4fcd9a.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TI-M Client Pro&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="f7ec57d495a4882eb70ab1bf9636e653a9800e0f0c080dfc217938ad7721c248.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TI-M FD Basis&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Plugin</h5>
+                            <div>
+                                    <a href="045d390b85b61c0375fc56b7d71e640ab460d9defd6b39290708a73426934e51.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Shuffle(True)&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="04794a5ed960fc5e469a40bd2b884fa31e50607bbf1941403bbe56008edf5d83.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Allowdoublelineup(False)&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="1e7ce955d2ceeed8c1835578a93ca8d1f73d0bd4c4211b7936384b109e009ce7.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Filter(Apiname1.hastag("proclient"))&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="19beb0144b3a38e9d778fca7596fe5da635d6cce390659672a0abbfa06374401.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Allowselfcombine(True)&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="02d7af76f2098469b38d51f7b3e6c306378490df8b6709f644f522b108d2d5ab.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Filter(Apiname2.hastag("proclient"))&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="fa8963e64f67ab2303c1a4c5678e612ac776c31c4b8a6d04bf3c3976a18cdade.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Equalproperty(Homeserver)&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Status</h5>
+                            <div>
+                                    <a href="16b36824af0423c8594aa55c340a5be9a21ff049608858e50f41700f9f05ac68.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Implementiert&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Tcid</h5>
+                            <div>
+                                    <a href="c9def6dad23f774426f1eea5adc461f009b028a798beca8b67a4aa9d6e860941.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 PRO AF 050125&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Testfall</h5>
+                            <div>
+                                    <a href="d29c7c11eba50c2fc671cacd274b724a98a4d9114c0dc094b471e538bf1fa9fe.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Negativ&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Zul</h5>
+                            <div>
+                                    <a href="e11fe88c90e04b74aacca98c4911cfd5d8e24be4d55e026531948bb3883f1dbc.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Pro&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="f696a82952b18ab3ef913d09362e4c385161759145754f7bb48fc927b902d1b4.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Pro Kk&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+                                            </div>
+                                        </div>
+                                        <div id="tests" class="tab-pane fade">
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+    <div>
+        <h3><i class="bi bi-speedometer2"></i> Key Statistics</h3>
+        <div>
+            <table class="table table-striped table-hover">
+                <tbody>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-card-checklist"></i> Number of Scenarios
+                    </td>
+                    <td>1</td>
+                    <td>
+                        <i class="bi bi-stopwatch"></i> Total
+                        Duration
+                    </td>
+                    <td> 1m 8s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-caret-right"></i> Total Number of Test Cases
+                    </td>
+                    <td>1</td>
+                    <td>
+                        <i class="bi bi-trophy"></i> Fastest Test
+                    </td>
+                    <td> 1m 8s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-person"></i> Number of Manual Test Cases
+                    </td>
+                    <td>0</td>
+                    <td>
+                        <i class="bi bi-skip-start"></i> Slowest
+                        Test
+                    </td>
+                    <td> 1m 8s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-flag-fill"></i> Tests Started
+                    </td>
+                    <td>Aug 12, 2025 20:14:32</td>
+                    <td>
+                        <i class="bi bi-stopwatch"></i> Average
+                        Execution Time
+                    </td>
+                    <td> 1m 8s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-stop-circle"></i> Tests
+                        Finished
+                    </td>
+                    <td>Aug 12, 2025 20:15:41</td>
+                    <td>
+                        <i class="bi bi-stopwatch-fill"></i> Total
+                        Execution Time
+                    </td>
+                    <td> 1m 8s</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+                                                        <h3><i class="bi bi-gear"></i> Automated Scenarios</h3>
+
+                                                            <table class="scenario-result-table table" id="scenario-results" style="width:100%">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>Feature</th>
+                                                                    <th class="test-name-column">Scenario</th>
+                                                                    <th>Context</th>
+                                                                    <th>Steps</th>
+                                                                    <th>StepsText</th>
+                                                                    <th>Started</th>
+                                                                    <th>Total Duration</th>
+                                                                    <th>Result</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr class="scenario-result SUCCESS">
+                                                                        <td>
+                                                                                <a href="#">5.1.5 (1) Einladung von Akteuren innerhalb einer Organisation (Pro Spec)</a>
+                                                                        </td>
+                                                                        <td data-order="05.01.25 Einladung innerhalb einer Organisation - AllowAll - Löschen eines Server-Namen in Liste von anderem Berechtigungsmodus">
+                                                                            <i class="bi bi-table"
+                                                                               title="Data Driven Scenario"> <a
+                                                                                        href="adfd3ccb1ee544cc13d8aa4f8e2ff425da66a597bd583a3347d1162884b97555.html">05.01.25 Einladung innerhalb einer Organisation - AllowAll - Löschen eines Server-Namen in Liste von anderem Berechtigungsmodus</a>
+                                                                                <br/>
+                                                                                    <a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> 1 passing test case
+                                                                                    <br/>
+                                                                        </td>
+                                                                        <td><span style="display:none"></span>
+                                                                        </td>
+                                                                        <td>6</td>
+                                                                        <td>Angenommen Es werden folgende Clients reserviert:
+
+
+|A | PRO_CLIENT | &lt;ApiName1&gt;|
+|---|---|---|
+|B | PRO_CLIENT | &lt;ApiName2&gt;|
+
+Und &quot;A&quot; setzt den eigenen Authorization Mode auf &quot;BlockAll&quot;
+Und &quot;A&quot; hinterlegt den Server-Namen von &quot;B&quot; in der Allowliste
+Und &quot;A&quot; setzt den eigenen Authorization Mode auf &quot;AllowAll&quot;
+Und &quot;A&quot; versucht den Server-Namen von &quot;B&quot; in der Allowliste zu entfernen
+Dann erhält &quot;A&quot; einen Responsecode 403
+</td>
+                                                                        <td data-order="1755022472">20:14:32</td>
+                                                                        <td>1m 8s</td>
+                                                                        <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span
+                                                                                    style="display:none">SUCCESS</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <h3><i class="bi bi-hand-index-thumb"></i> Manual Tests</h3>
+
+                                                            No manual tests were recorded
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Tags</h3>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">AF-ID</h5>
+                            <div>
+                                    <a href="deea7db544fe0da089b9faba52bb5a18d8165e8c8a898279f179bec884d6bf6e.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> AF 10104-03&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">AFO-ID</h5>
+                            <div>
+                                    <a href="1d224373575f271ba6d88b2e5c5acd852eb11d5cd35f0228bb0583a2183d42a1.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 25046&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="97536bce1a9be40767fbd2d82744caa9b9dc855e157bb78127cecf3d631801bc.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 25045-01&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Ctl</h5>
+                            <div>
+                                    <a href="44cdef8a547e59a975df0cb767520950ca9db6b128ceec431949e1c4fc18ad53.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> UseCaseV2 05 Pro&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="2b683eddbeb627ecabc92e1c57af09092b06873e5a081b57f51ba35b9226be7d.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Bp&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="d0b32cf5c2573baf79c3489637157238d8bdb5da84eec2db1357506a1e11c1fb.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Allow All&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="5a1118d148f28f694ba9248bccbe65242f88731bd1f49ed0d53d91acc6fef0b2.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> One Home Server&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">File</h5>
+                            <div>
+                                    <a href="a066ac7c45f62b3a9b853298484b57c9c556aff6a786fa6ef8e1f0881e6db37a.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Featurefile 05 01 V2 Pro&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Nb</h5>
+                            <div>
+                                    <a href="6c3176dab12e20d3f33b521cd28e4287e04cca162711c2a46ee6d6270be51c18.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Nein&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Prio</h5>
+                            <div>
+                                    <a href="7748df88f2c56a8cb6f2fb2e9c999c5782b6158037eec2da2975d7b7a25436d8.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> 1&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Produkt</h5>
+                            <div>
+                                    <a href="77e3e49441a15427e6dfa1d7c22dfb483bf88791320a2d3fa6dfb87cd322cf71.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TI-M Client Basis&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="42f57fe4afe684cfa4294a39123d3069604423191b213120cf03954cef7bfd03.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TI-M FD Pro&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="b1d13d9ab0b4421623dd61b18a621a1af725631e917f2c2d2321064d4e4fcd9a.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TI-M Client Pro&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="f7ec57d495a4882eb70ab1bf9636e653a9800e0f0c080dfc217938ad7721c248.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TI-M FD Basis&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Plugin</h5>
+                            <div>
+                                    <a href="045d390b85b61c0375fc56b7d71e640ab460d9defd6b39290708a73426934e51.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Shuffle(True)&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="04794a5ed960fc5e469a40bd2b884fa31e50607bbf1941403bbe56008edf5d83.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Allowdoublelineup(False)&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="1e7ce955d2ceeed8c1835578a93ca8d1f73d0bd4c4211b7936384b109e009ce7.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Filter(Apiname1.hastag("proclient"))&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="19beb0144b3a38e9d778fca7596fe5da635d6cce390659672a0abbfa06374401.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Allowselfcombine(True)&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="02d7af76f2098469b38d51f7b3e6c306378490df8b6709f644f522b108d2d5ab.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Filter(Apiname2.hastag("proclient"))&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="fa8963e64f67ab2303c1a4c5678e612ac776c31c4b8a6d04bf3c3976a18cdade.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Equalproperty(Homeserver)&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Status</h5>
+                            <div>
+                                    <a href="16b36824af0423c8594aa55c340a5be9a21ff049608858e50f41700f9f05ac68.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Implementiert&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Tcid</h5>
+                            <div>
+                                    <a href="c9def6dad23f774426f1eea5adc461f009b028a798beca8b67a4aa9d6e860941.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 PRO AF 050125&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Testfall</h5>
+                            <div>
+                                    <a href="d29c7c11eba50c2fc671cacd274b724a98a4d9114c0dc094b471e538bf1fa9fe.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Negativ&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Zul</h5>
+                            <div>
+                                    <a href="e11fe88c90e04b74aacca98c4911cfd5d8e24be4d55e026531948bb3883f1dbc.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Pro&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="f696a82952b18ab3ef913d09362e4c385161759145754f7bb48fc927b902d1b4.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Pro Kk&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+                                            </div>
+                                        </div>
+
+                                            <div id="evidence" class="tab-pane fade">
+                                                <div class="container-fluid">
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <h3><i class="bi bi-download"></i> Evidence</h3>
+                                                            <table id="evidence-table" class="table table-bordered">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>Scenario</th>
+                                                                    <th>Title</th>
+                                                                    <th>Details</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>05.01.25 Einladung innerhalb einer Organisation - AllowAll - Löschen eines Server-Namen in Liste von anderem Berechtigungsmodus</td>
+                                                                        <td>RBellog 1</td>
+                                                                        <td><a role='button' target='_blank' class='btn btn-success btn-sm' href='downloadable/downloadable-316c5687-2ccc-4ab8-96fd-db6798461106-rbel_05.01.25_Einladung_innerhalb_ec995ac13-d888-3f64-b782-5565a60a33a4_1_2025-08-12_20-15-41.html'><i class='fas fa-download'></i>&nbsp;Download Evidence</a></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="beforefooter"></div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <span class="version">Serenity BDD version 4.2.30</span>
+        </div>
+    </div>
+</div>
+
+<!-- Chart data -->
+    <!-- PIE CHART -->
+    <script>
+
+        // The results pie chart
+        const outcomeChartCtx = document.getElementById('resultChart');
+
+        // Options define for display value on top of bars
+        const outcomeDetailsReports = [
+            { title: 'Passing Test Cases', link: "a938811cdcab61b4a20d82c1a58d464faf0e58b58125603aaa36436c8fdd5dc4.html" },
+            { title: 'Pending Test Cases', link: "42b31bea23a0be8e5d18524e93571081610506aa07c2330d2b9001127732a4e0.html" },
+            { title: 'Ignored Test Cases', link: "0346dd44924b249658bdca6628578c8d0e8f7568591ef70d30737eaeeef19bf0.html" },
+            { title: 'Skipped Test Cases', link: "0acb81e4556dcf230dba7be018ef4d8da942fcb81df1484f4e2eaa30ea8bc39f.html" },
+            { title: 'Aborted Test Cases',  link: "c403c31ba3e346cd98074699af17ef589b0d90b0ebe7bc84ca62a3645d7c92e0.html"},
+            { title: 'Failed Test Cases', link: "d5dd9e70f5a187345c523fc85eaccb91fec4a237a5c5e2334c1ded5028c15842.html"  },
+            { title: 'Broken Test Cases', link: "266abe46615dc640603fcdcd37d0a3cd6d26d985d336a91dc908ce4cbae82b08.html"    },
+            { title: 'Compromised Test Cases',  link: "ce86183ec237f36922512a24988b74fbee2d1b613b163fb7c94b68adc0d67e06.html" },
+        ]
+        const outcomeData = {
+            labels: ['Passing Test Cases', 'Pending Test Cases', 'Ignored Test Cases', 'Skipped Test Cases', 'Aborted Test Cases', 'Failed Test Cases', 'Broken Test Cases', 'Compromised Test Cases','Undefined Test Cases'],
+            datasets: [{
+                label: 'Test Results',
+                fill: false,
+                data: [1,0,0,0,0,0,0,0],
+                backgroundColor: ['rgba(153,204,51,0.5)','rgba(165, 199, 238, 0.5)','rgba(168, 168, 168, 0.5)','rgba(238, 224, 152, 0.75)','rgba(255, 153, 102, 0.5)','rgba(255, 22, 49, 0.5)','rgba(255, 97, 8, 0.5)','rgba(255, 104, 255, 0.5)','rgba(83, 50, 168, 0.5)'],
+                borderColor: ['rgba(153,204,51,1)','rgba(165, 199, 238, 1)','rgba(168, 168, 168, 1)','rgba(238, 224, 152, 1)','rgba(255, 153, 102, 1)','rgba(255, 22, 49, 1)','rgba(255, 97, 8, 1)','rgba(255, 104, 255, 1)','rgba(83, 50, 168, 1)'],
+                borderWidth: 1,
+            }]
+        }
+        const outcomeOptions = {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom'
+                },
+                // Change options for ALL labels of THIS CHART
+                datalabels: {
+                    color: '#444444',
+                    'font.weight': 'bold',
+                    formatter: (value, ctx) => {
+                        let sum = 0;
+                        let dataArr = ctx.chart.data.datasets[0].data;
+                        dataArr.map(data => {
+                            sum += data;
+                        });
+                        let percentage = (value * 100 / sum).toFixed(0) + "%";
+                        if (percentage === '0%' || percentage === 'NaN%') {
+                            return '';
+                        } else {
+                            return percentage;
+                        }
+                    },
+                },
+            }
+        }
+
+        const outcomeChart = new Chart(outcomeChartCtx, {
+            type: 'doughnut',
+            data: outcomeData,
+            options: outcomeOptions,
+            plugins: [
+                {
+                    id: 'text',
+                    beforeDraw: function (chart, a, b) {
+                        var width = chart.width,
+                            height = chart.height,
+                            ctx = chart.ctx;
+
+                        ctx.restore();
+                        var fontSize = (height / 200).toFixed(1);
+                        ctx.font = fontSize + "em sans-serif";
+                        ctx.textBaseline = "middle";
+
+                        var text = "100%"
+                        textX = 10 + Math.round((width - ctx.measureText(text).width) / 2);
+                        textY = (height / 2) - 40;
+
+                        ctx.fillText(text, textX, textY);
+                        ctx.save();
+                    }
+                }]
+        });
+
+        function clickHandler(click) {
+            const points = outcomeChart.getElementsAtEventForMode(click, 'nearest', {intersect: true}, true);
+            if (points.length) {
+                const firstPoint = points[0];
+                window.open(outcomeDetailsReports[firstPoint.index].link, "_self")
+
+            }
+        }
+        outcomeChartCtx.onclick = clickHandler;
+    </script>
+    <!-- END PIE CHART -->
+
+    <!-- SUMMARY BAR CHART -->
+    <script>
+
+        // The Severity bar chart
+        const severityChartCtx = document.getElementById('severityChart');
+
+        // Options define for display value on top of bars
+
+        const severityDetailsReports = [
+            { title: 'Passing Scenarios', link: "a938811cdcab61b4a20d82c1a58d464faf0e58b58125603aaa36436c8fdd5dc4.html" },
+            { title: 'Pending Scenarios', link: "42b31bea23a0be8e5d18524e93571081610506aa07c2330d2b9001127732a4e0.html" },
+            { title: 'Ignored Scenarios', link: "0346dd44924b249658bdca6628578c8d0e8f7568591ef70d30737eaeeef19bf0.html" },
+            { title: 'Skipped Scenarios', link: "0acb81e4556dcf230dba7be018ef4d8da942fcb81df1484f4e2eaa30ea8bc39f.html" },
+            { title: 'Aborted Scenarios',  link: "c403c31ba3e346cd98074699af17ef589b0d90b0ebe7bc84ca62a3645d7c92e0.html"},
+            { title: 'Failed Scenarios', link: "d5dd9e70f5a187345c523fc85eaccb91fec4a237a5c5e2334c1ded5028c15842.html"  },
+            { title: 'Broken Scenarios', link: "266abe46615dc640603fcdcd37d0a3cd6d26d985d336a91dc908ce4cbae82b08.html"    },
+            { title: 'Compromised Scenarios',  link: "ce86183ec237f36922512a24988b74fbee2d1b613b163fb7c94b68adc0d67e06.html" },
+        ]
+        const severityData = {
+            labels: ['Passing', 'Pending', 'Ignored', 'Skipped', 'Aborted', 'Failed', 'Broken', 'Compromised'],
+            datasets: [
+                {
+                    label: 'Automated',
+                    data: [1,0,0,0,0,0,0,0],
+                    backgroundColor: ['rgba(153,204,51,0.5)','rgba(165, 199, 238, 0.5)','rgba(168, 168, 168, 0.5)','rgba(238, 224, 152, 0.75)','rgba(255, 153, 102, 0.5)','rgba(255, 22, 49, 0.5)','rgba(255, 97, 8, 0.5)','rgba(255, 104, 255, 0.5)','rgba(83, 50, 168, 0.5)'],
+                    borderColor: ['rgba(153,204,51,1)','rgba(165, 199, 238, 1)','rgba(168, 168, 168, 1)','rgba(238, 224, 152, 1)','rgba(255, 153, 102, 1)','rgba(255, 22, 49, 1)','rgba(255, 97, 8, 1)','rgba(255, 104, 255, 1)','rgba(83, 50, 168, 1)'],
+                    borderWidth: 1
+                },
+                {
+                    label: 'Manual',
+                    data: [0,0,0,0,0,0,0,0],
+                    backgroundColor: ['rgba(153,204,51,0.25)','rgba(165, 199, 238, 0.25)','rgba(168, 168, 168, 0.25)','rgba(238, 224, 152, 0.375)','rgba(255, 153, 102, 0.25)','rgba(255, 22, 49, 0.25)','rgba(255, 97, 8, 0.25)','rgba(255, 104, 255, 0.25)','rgba(83, 50, 168, 0.25)'],
+                    borderColor: ['rgba(153,204,51,1)','rgba(165, 199, 238, 1)','rgba(168, 168, 168, 1)','rgba(238, 224, 152, 1)','rgba(255, 153, 102, 1)','rgba(255, 22, 49, 1)','rgba(255, 97, 8, 1)','rgba(255, 104, 255, 1)','rgba(83, 50, 168, 1)'],
+                    borderWidth: 1
+                },
+
+            ]
+        }
+        const severityOptions = {
+            responsive: true,
+            skipNull: true,
+            scales: {
+                x: {
+                    stacked: true,
+                },
+                y: {
+                    stacked: true,
+                }
+            },
+            plugins: {
+                // Change options for ALL labels of THIS CHART
+                datalabels: {
+                    color: '#444444',
+                    'font.weight': 'bold',
+                    formatter: (value, ctx) => {
+                        if (value === 0) {
+                            return '';
+                        } else {
+                            return value;
+                        }
+                    },
+                }
+            }
+        }
+        const severityChart = new Chart(severityChartCtx, {
+            type: 'bar',
+            data: severityData,
+            options: severityOptions
+        });
+
+        function clickHandler(click) {
+            const points = severityChart.getElementsAtEventForMode(click, 'nearest', {intersect: true}, true);
+            if (points.length) {
+                const firstPoint = points[0];
+                window.open(severityDetailsReports[firstPoint.index].link, "_self")
+
+            }
+        }
+        severityChartCtx.onclick = clickHandler;
+    </script>
+    <!-- END SUMMARY CHART -->
+
+    <!-- DURATION CHART -->
+    <script>
+
+        // Options define for display value on top of bars
+        const durationDetailsReports = [
+                {title: "Under 1 second", link: "5d6dfc81603a05dd832f51d7b143f1bf04349c4e0ef98cd5ebb694d16c7f96cf.html"},
+                {title: "1 to 10 seconds", link: "89cf6215bbaf8f24ebd5bde2c1ee2e0374f254c255b2ce9f219cade664498c3b.html"},
+                {title: "10 to 30 seconds", link: "2c5a11e4f990fde7d5fe6b6c7193edff359d856f95bdb4003d50717b0dd36d54.html"},
+                {title: "30 to 60 seconds", link: "11706819ead80889b2d63e2332e8d09415675cca207a81c5089d279469c9d3fc.html"},
+                {title: "1 to 2 minutes", link: "e813a624dd0888e9c1bab1db251f72bd1d751a87e9acd0acc003c251c0ef5d99.html"},
+                {title: "2 to 5 minutes", link: "60ba4c54e233b81f3752877db74797fb1845a73ec8ca2ebbfb9473aa9e49a84f.html"},
+                {title: "5 to 10 minutes", link: "da7860b2b84599024c1991d3b31cc6230f08eb2563f03b62bf7522b6da09579a.html"},
+                {title: "10 minutes or over", link: "d7316b45005349835b442cc4bb20240666b52151806667074082ae62978021a5.html"},
+        ]
+        // The Severity bar chart
+        const durationChartCtx = document.getElementById('durationChart');
+
+        // Options define for display value on top of bars
+
+        const durationData = {
+            labels: ['Under 1 second','1 to 10 seconds','10 to 30 seconds','30 to 60 seconds','1 to 2 minutes','2 to 5 minutes','5 to 10 minutes','10 minutes or over'],
+            datasets: [{
+                label: 'Number of tests per duration',
+                fill: false,
+                data: ['0','0','0','0','1','0','0','0'],
+                backgroundColor: 'rgba(83, 146, 255,0.5)',
+                borderColor: 'rgba(83, 146, 255, 1)',
+            }]
+        }
+        const durationOptions = {
+            responsive: true,
+            plugins: {
+                // Change options for ALL labels of THIS CHART
+                datalabels: {
+                    color: '#444444',
+                    'font.weight': 'bold',
+                    formatter: (value, ctx) => {
+                        if (value > 0) {
+                            return value;
+                        } else {
+                            return '';
+                        }
+                    },
+                },
+                tooltip: {
+                    enabled: true,
+                    usePointStyle: true,
+                    callbacks: {
+                        label: (data) => {
+                            return data.parsed.y + ' tests'
+                        }
+                    },
+                },
+            },
+        }
+
+        const durationChart = new Chart(durationChartCtx, {
+            type: 'bar',
+            data: durationData,
+            options: durationOptions
+        });
+
+        function durationClickHandler(click) {
+            const points = durationChart.getElementsAtEventForMode(click, 'nearest', {intersect: true}, true);
+            if (points.length) {
+                const firstPoint = points[0];
+                window.open(durationDetailsReports[firstPoint.index].link, "_self")
+
+            }
+        }
+
+        durationChartCtx.onclick = durationClickHandler;
+    </script>
+    <!-- END DURATION CHART -->
+
+
+</body>
+</html>

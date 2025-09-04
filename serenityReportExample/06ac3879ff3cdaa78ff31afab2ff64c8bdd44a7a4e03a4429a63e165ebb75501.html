@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>00.01.05 Abfrage der Matrix-Server-Version</title>
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+<link rel="apple-touch-icon" sizes="57x57" href="apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff"><link rel="stylesheet" href="bootstrap-icons/bootstrap-icons.css">
+<!-- JQuery -->
+<script type="text/javascript" src="scripts/jquery-3.7.1.min.js"></script><!-- Required Stylesheets -->
+<link href="bootstrap-treeview/dist/bootstrap-treeview.min.css" rel="stylesheet">
+
+<!-- Required Javascript -->
+<script src="bootstrap-treeview/dist/bootstrap-treeview.min.js"></script><!-- DataTables -->
+<link type="text/css" href="datatables/1.13.1/datatables.min.css" rel="stylesheet" />
+<script type="text/javascript" src="datatables/1.13.1/datatables.min.js"></script>
+<script type="text/javascript" src="datatables/1.13.1/time-elapsed-dhms.js"></script>
+
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script src="bootstrap/js/bootstrap.min.js"></script>
+
+
+<script>
+    jQuery.fn.dataTable.ext.type.order['time-elapsed-dhms-pre'] = function(data) {
+
+        var matches = data.match(/^(\d+(?:\.\d+)?)\s*([a-z]+)/i);
+        var multipliers = {
+            ms: 1,
+            s: 1000,
+            m: 60000,
+            h: 3600000,
+            d: 86400000
+        };
+
+        if (matches) {
+            var multiplier = multipliers[matches[2].toLowerCase()];
+            return parseFloat(matches[1]) * multiplier;
+        } else {
+            return -1;
+        };
+    };
+</script>
+<link rel="stylesheet" href="css/core.css"/>
+<link rel="stylesheet" href="css/link.css"/>
+<link type="text/css" media="screen" href="css/screen.css" rel="Stylesheet"/>
+<!--CHART.JS-->
+<script src="chartjs/chart.js"></script>
+<script src="chartjs/chartjs-plugin-datalabels@2.0.0.min.js"></script>
+<script src="chartjs/patternomaly.min.js"></script>
+<script>
+    // Register the plugin to all charts:
+    Chart.register(ChartDataLabels);
+</script>
+<!-- JQuery-UI -->
+<link type="text/css" href="jqueryui/1.13.2/jquery-ui.css" rel="Stylesheet" />
+<script type="text/javascript" src="jqueryui/1.13.2/jquery-ui.js"></script><!-- DataTables -->
+<link type="text/css" href="datatables/1.13.1/datatables.min.css" rel="stylesheet" />
+<script type="text/javascript" src="datatables/1.13.1/datatables.min.js"></script>
+<script type="text/javascript" src="datatables/1.13.1/time-elapsed-dhms.js"></script>
+
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script src="bootstrap/js/bootstrap.min.js"></script>
+
+
+<script>
+    jQuery.fn.dataTable.ext.type.order['time-elapsed-dhms-pre'] = function(data) {
+
+        var matches = data.match(/^(\d+(?:\.\d+)?)\s*([a-z]+)/i);
+        var multipliers = {
+            ms: 1,
+            s: 1000,
+            m: 60000,
+            h: 3600000,
+            d: 86400000
+        };
+
+        if (matches) {
+            var multiplier = multipliers[matches[2].toLowerCase()];
+            return parseFloat(matches[1]) * multiplier;
+        } else {
+            return -1;
+        };
+    };
+</script>
+<!-- ImgPreview -->
+<script src="scripts/imgpreview.full.jquery.js" type="text/javascript"></script>
+</head>
+
+<body class="results-page">
+
+
+<div id="topheader">
+    <div id="topbanner">
+        <div id="logo"><a href="index.html"><img src="images/serenity-logo.png" border="0"/></a></div>
+        <div id="projectname-banner" style="float:right">
+            <span class="projectname">
+                <span class="projecttitle">Serenity BDD Report</span>
+                <span class="projectsubtitle"></span>
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="middlecontent">
+    <div id="contenttop">
+        <div class="middlebg">
+        <span class="breadcrumbs">
+            <a href="index.html" class="breadcrumbs">Home</a>
+
+        >
+            00.01.05 abfrage der matrix-server-version
+        </span>
+        </div>
+        <div class="rightbg"></div>
+    </div>
+
+    <div class="clr"></div>
+
+    <!--/* starts second table*/-->
+<div>
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#"><i class="bi bi-journal-check"></i> Overall Test Results</a>
+        </li>
+        <li >
+            <a href="capabilities.html"><i class="bi bi-journal-text"></i> Requirements</a>
+        </li>
+    </ul>
+    <span class="date-and-time"><a href="build-info.html"><i class="bi bi-info-circle"></i></a> Report generated 12-08-2025 18:46</span>
+    <br style="clear:left"/>
+</div>
+    <div class="clr"></div>
+
+
+    <div id="contentbody">
+        <div class="titlebar">
+            <div class="story-title">
+                <table class="outcome-header">
+                    <tr>
+                        <td>
+                                <div>
+                                    <h3 class="discreet-story-header">
+                                        <i class="fs-2 bi bi-chat-left-quote large-icon"></i>
+                                        <span class="story-header-title">00 (1) Abfragen Der Schnittstellen-Information Und Die Geräte-Liste Aller Schnittstellen</span>
+                                    </h3>
+                                </div>
+
+                        </td>
+                        <td valign="top">
+                            <p class="tag">
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="b4cbf857506990c596fb50faff38a3afd018e4657602837e3869c8ea75d140e1.html">Positiv
+                                              (TESTFALL)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="7748df88f2c56a8cb6f2fb2e9c999c5782b6158037eec2da2975d7b7a25436d8.html">1
+                                              (PRIO)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="6c3176dab12e20d3f33b521cd28e4287e04cca162711c2a46ee6d6270be51c18.html">Nein
+                                              (NB)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="159570c773f58830c73939d2cc6ac4e94af929ee10e67808625a98ea4e47cd24.html">Schnittstellen Daten
+                                              (Ctl)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="5afab7cf2bb6bfcdedaa09663319cc3d679794ae62b3dfe8ae24ceb046a1fc12.html">Filter(Apiname1.hastag("proclient")||(Apiname1.hastag("proclient")&&Apiname1.hastag("practitioner")))
+                                              (Plugin)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="e11fe88c90e04b74aacca98c4911cfd5d8e24be4d55e026531948bb3883f1dbc.html">Pro
+                                              (Zul)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="10f582d683d63d9030af96bae212dd4f171de6e891b4854a406340408b027b9c.html">UseCaseV2 00 Basis
+                                              (Ctl)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="34322aa27ce8dbb9a0edb82b3b08f307675141999d321a572fac124e57b5d2c7.html">TIM V2 BASIS AF 000105
+                                              (TCID)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="6c5512236937b92cd7a296b24edb966c2bd94be46b8910f8b129a42d6150eb25.html">1 To 10 Seconds
+                                              (Duration)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="225d77bdef4c47d9339bffb235f0323b309c906b4a4345ae172ce0591ebea317.html">A 25641-01
+                                              (AFO-ID)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="f7ec57d495a4882eb70ab1bf9636e653a9800e0f0c080dfc217938ad7721c248.html">TI-M FD Basis
+                                              (PRODUKT)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="0b9d5a8d8378a09e11ab0ceed06248dc9e68efac87860595e350d66577cc7277.html">Featurefile 00 01 V2 Basis
+                                              (File)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="16b36824af0423c8594aa55c340a5be9a21ff049608858e50f41700f9f05ac68.html">Implementiert
+                                              (STATUS)
+                                        </a>
+                                </span>
+                                    <span class="badge example-tag tag-badge" style="background:default;">
+                                    <i class="bi bi-tag-fill"></i>&nbsp;
+                                        <a class="tagLink" style="background:default;"
+                                           href="f696a82952b18ab3ef913d09362e4c385161759145754f7bb48fc927b902d1b4.html">Pro Kk
+                                              (Zul)
+                                        </a>
+                                </span>
+                                    
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="story-title">
+                <table class="outcome-header">
+                    <tr>
+                        <td colspan="2" class="test-title-bar">
+                            <span class="outcome-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon fa-2x' title='SUCCESS'></i></a></span>
+                            <span class="test-case-title">
+                                <span class="success-color">
+                                    00.01.05 Abfrage der Matrix-Server-Version
+                                        <span class="related-issue-title"></span>
+                                </span>
+                            </span>
+
+
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+
+            <!-- CAST MEMBERS -->
+            <div>&nbsp;</div>
+            <div>
+                <h3 class="discreet-story-header">
+                    <i class="fs-2 bi bi-people large-icon"></i>
+                    <span class="story-header-title">
+                        <a class="btn btn-primary" data-toggle="collapse" href="#castDetails"
+                           role="button" aria-expanded="true" aria-controls="castDetails">Cast</a>
+                    </span>
+                </h3>
+            </div>
+            <div class="collapse multi-collapse" id="castDetails">
+                <table class="cast">
+                    <tr>
+                            <td width="100%">
+                                <h4>
+                                    <i class="fs-2 bi bi-person"></i>&nbsp;
+                                    <span>
+                                        <a data-toggle="collapse" href="#abilities-A"
+                                           aria-expanded="false" aria-controls="abilities">A</a>
+                                        
+                                    </span>
+                                </h4>
+                                <div class="collapse multi-collapse" id="abilities-A">
+                                        <div>
+                                            <span class="cast-description">A can:</span>
+                                            <ul>
+                                                    <li>call an API at http://RU2-Ref-Pract-SDK-HS4</li>
+                                                    <li>call an API at https://d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev</li>
+                                            </ul>
+                                        </div>
+                                </div>
+                            </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        </td>
+        </tr>
+        </table>
+    </div>
+    <!-- END CAST MEMBERS -->
+
+
+</div>
+</div>
+
+<div class="clr"></div>
+
+    <div class="story-title">
+        <h3 class="story-header">Scenario Outline</h3>
+
+        <div class="scenario">Angenommen A fragt an Schnittstelle &lt;ApiName1&gt; die Home-Server-Adresse ab<br>Wenn A die supporteten Matrix-Versions vom Home-Server abfragt<br>Dann ist die unterstützte Matrix-Version "1.11"</div>
+
+    </div>
+
+<div id="beforetable"></div>
+
+
+        <h3 class="story-header">Examples:&nbsp;</h3>
+            <div class="requirementNarrative"></div>
+
+
+            <p class="example-tag">
+                    <span class="badge example-tag tag-badge" style="">
+                    <i class="bi bi-tag"></i>&nbsp;<a class="tagLink" style=" style=""
+                                                      href="5afab7cf2bb6bfcdedaa09663319cc3d679794ae62b3dfe8ae24ceb046a1fc12.html">Filter(Apiname1.hastag("proclient")||(Apiname1.hastag("proclient")&&Apiname1.hastag("practitioner")))
+                    (Plugin)</a>
+                </span>
+            </p>
+
+        <div class="example-table test-report">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                        <th>Api Name1</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="test-SUCCESS"><a href="#0">1</a></td>
+                            <td class="test-SUCCESS"><a
+                                        href="#0">RU2-Ref-Pract-SDK-HS4</a>
+                            </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+<div id="tablecontents">
+    <div>
+        <table class="step-table">
+            <tr class="step-titles">
+                <th width="65">
+                </th>
+                <th class="step-description-column greentext">
+                    Steps
+                </th>
+
+                <th width="130" class="greentext">Outcome</th>
+                <th width="100" class="greentext"><i title="Duration" class="bi bi-stopwatch"></i></th>
+            </tr>
+            <tr class="step-table-separator">
+                <td colspan="5"></td>
+            </tr>
+
+                <tr class="test-SUCCESS">
+
+                    <td width="50" class="step-icon">
+                        <a name="0"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0 success-icon"
+                                   style="margin-left: 20px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0')"
+                               style="display:block;">
+                                <span class="top-level-step">
+                                                1: 00.01.05 Abfrage der Matrix-Server-Version ({ApiName1=RU2-Ref-Pract-SDK-HS4})
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-1137a6df-ff2c-4b09-8054-b0fd69d2c5e2"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-1-0">
+                        TestcaseId
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-1-0" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                TestcaseId
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-1-0')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-1-0">@TCID:TIM_V2_BASIS_AF_000105/b6ba2bc0-798d-47cd-b9e4-90b129823d59</pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="top-level-step">SUCCESS</span></td>
+                    <td width="100"><span class="top-level-step">1s 897ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="70" class="step-icon">
+                        <a name="0-0"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-0')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-0 success-icon"
+                                   style="margin-left: 40px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-0')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                Angenommen A fragt an Schnittstelle RU2-Ref-Pract-SDK-HS4 die Home-Server-Adresse ab
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">372ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-0" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="90" class="step-icon">
+                        <a name="0-0-0"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-0-0')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-0-0 success-icon"
+                                   style="margin-left: 60px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-0-0')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                A executes a GET on the resource /
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-09a9f198-afe4-4cfc-aa61-43ae57652af6"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-3-0">
+                        cURL   0
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-3-0" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                cURL   0
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-3-0')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-3-0">curl -v -H &quot;Transaction-Id: @TCID:TIM_V2_BASIS_AF_000104/b29d56a4-045a-4afe-8ccd-5f9a92584a98&quot; -H &quot;Accept: */*&quot; -H &quot;Content-Type: application/json&quot; -X POST &quot;http://RU2-Ref-ORG-Web-HS4/devices/1/logout&quot; </pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-93dd3ee2-7934-4dd6-a018-957b9aba22b8"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-3-1">
+                        cURL   1
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-3-1" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                cURL   1
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-3-1')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-3-1">curl -v -H &quot;Transaction-Id: @TCID:TIM_V2_BASIS_AF_000104/b29d56a4-045a-4afe-8ccd-5f9a92584a98&quot; -H &quot;Accept: */*&quot; -H &quot;Content-Type: application/json&quot; -X POST &quot;http://RU2-Ref-ORG-Web-HS4/devices/1/unclaim&quot; </pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-c7ffb3df-a06d-4e89-a7d1-50b50aaca5df"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-3-2">
+                        cURL   2
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-3-2" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                cURL   2
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-3-2')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-3-2">curl -v -H &quot;Transaction-Id: @TCID:TIM_V2_BASIS_AF_000105/b6ba2bc0-798d-47cd-b9e4-90b129823d59&quot; -H &quot;Accept: */*&quot; -H &quot;Content-Type: application/json&quot; -X GET &quot;http://RU2-Ref-Pract-SDK-HS4/&quot; </pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">162ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-0-0" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="110" class="step-icon">
+                        <a name="0-0-0-0"></a>
+                            <span style="margin-left: 80px;"
+                                  class="nested-group-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a>
+                                </span>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                                <span class="nested-group-step">
+                                                GET http://RU2-Ref-Pract-SDK-HS4/
+                                        </span>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+                <span>
+                        <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                                data-target="#restModal-REST-4">
+                            REST Query
+                        </button>
+                    </span>
+                <!-- Modal -->
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="restModal-REST-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Response</h4>
+                                    <p>URL: http://RU2-Ref-Pract-SDK-HS4/</p>
+                                    <p>Status code: 200</p>
+                                    <p>Content Type: application/json</p>
+                                    <h4>Request Headers</h4>
+                                    <pre>Transaction-Id=@TCID:TIM_V2_BASIS_AF_000105/b6ba2bc0-798d-47cd-b9e4-90b129823d59<br>Accept=*/*<br>Content-Type=application/json</pre>
+                                    <h4>Response Headers</h4>
+                                    <pre>Date: Tue, 12 Aug 2025 16:46:53 GMT<br>Content-Type: application/json<br>Content-Length: 588<br>Strict-Transport-Security: max-age=31536000; includeSubDomains<br>connection: keep-alive</pre>
+                                <h4>Response Body</h4>
+                                    <pre>{<br>    &quot;title&quot;: &quot;Timmy test-driver client&quot;,<br>    &quot;description&quot;: &quot;TIM test-driver based on trixnity-messenger SDK&quot;,<br>    &quot;homeserver&quot;: &quot;https://d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev&quot;,<br>    &quot;contact&quot;: {<br>        &quot;name&quot;: &quot;Michael Thiele&quot;,<br>        &quot;url&quot;: &quot;https://timmy-messenger.de&quot;,<br>        &quot;email&quot;: &quot;michael.thiele@connect2x.de&quot;<br>    },<br>    &quot;clientInfo&quot;: {<br>        &quot;name&quot;: &quot;Timmy test-driver client&quot;,<br>        &quot;version&quot;: &quot;0.7.11&quot;,<br>        &quot;osInfo&quot;: {<br>            &quot;operatingSystem&quot;: &quot;Linux&quot;<br>        },<br>        &quot;canAdministrateFhirPractitioner&quot;: true,<br>        &quot;canSendMessages&quot;: true,<br>        &quot;isInsurance&quot;: false,<br>        &quot;isPro&quot;: true<br>    },<br>    &quot;fachdienstInfo&quot;: {<br>        &quot;name&quot;: &quot;Timmy Fachdienst&quot;,<br>        &quot;version&quot;: &quot;0.0.1&quot;<br>    },<br>    &quot;testDriverVersion&quot;: &quot;0.14.9&quot;<br>}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                        </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-group-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-group-step"></span></td>
+                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+                <tr class="test-SUCCESS">
+
+                    <td width="70" class="step-icon">
+                        <a name="0-1"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-1')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-1 success-icon"
+                                   style="margin-left: 40px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-1')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                Wenn A die supporteten Matrix-Versions vom Home-Server abfragt
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">1s 302ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-1" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="90" class="step-icon">
+                        <a name="0-1-0"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-1-0')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-1-0 success-icon"
+                                   style="margin-left: 60px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-1-0')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                A executes a GET on the resource /.well-known/matrix/client
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">925ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-1-0" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="110" class="step-icon">
+                        <a name="0-1-0-0"></a>
+                            <span style="margin-left: 80px;"
+                                  class="nested-group-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a>
+                                </span>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                                <span class="nested-group-step">
+                                                GET https://d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev/.well-known/matrix/client
+                                        </span>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+                <span>
+                        <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                                data-target="#restModal-REST-7">
+                            REST Query
+                        </button>
+                    </span>
+                <!-- Modal -->
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="restModal-REST-7">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Response</h4>
+                                    <p>URL: https://d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev/.well-known/matrix/client</p>
+                                    <p>Status code: 200</p>
+                                    <p>Content Type: application/json</p>
+                                    <h4>Request Headers</h4>
+                                    <pre>X-TIM-User-Agent=gematikTestsuite, web<br>Accept=*/*<br>Content-Type=application/json</pre>
+                                    <h4>Response Headers</h4>
+                                    <pre>Date: Tue, 12 Aug 2025 16:46:54 GMT<br>Content-Type: application/json<br>access-control-allow-headers: DNT,Keep-Alive,User-Agent,Useragent,X-TIM-User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,mxid<br>access-control-allow-methods: GET, PUT, POST, DELETE, PATCH, OPTIONS<br>access-control-allow-origin: *<br>access-control-expose-headers: Synapse-Trace-Id, Server<br>cache-control: no-cache, no-store, must-revalidate<br>Strict-Transport-Security: max-age=31536000; includeSubDomains<br>Access-Control-Allow-Credentials: true<br>Access-Control-Max-Age: 1728000<br>content-length: 104<br>connection: keep-alive</pre>
+                                <h4>Response Body</h4>
+                                    <pre>{<br>    &quot;m.homeserver&quot;: {<br>        &quot;base_url&quot;: &quot;https://d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev/&quot;<br>    }<br>}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                        </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-group-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-group-step"></span></td>
+                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+                <tr class="test-SUCCESS">
+
+                    <td width="90" class="step-icon">
+                        <a name="0-1-1"></a>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-1-1')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection0-1-1 success-icon"
+                                   style="margin-left: 60px; float:left; padding-right:5px"></i>
+                            </a>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection0-1-1')"
+                               style="display:block;">
+                                <span class="nested-step">
+                                                A executes a GET on the resource /_matrix/client/versions
+                                        </span>
+                            </a>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-b1a287bd-5188-4351-a216-c34fe8e15cae"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-8-0">
+                        cURL   0
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-8-0" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                cURL   0
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-8-0')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-8-0">curl -v -H &quot;X-TIM-User-Agent: gematikTestsuite, web&quot; -H &quot;Accept: */*&quot; -H &quot;Content-Type: application/json&quot; -X GET &quot;https://d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev/.well-known/matrix/client&quot; </pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-c2295179-c2c9-4ffb-842c-3beaefac5eff"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-8-1">
+                        cURL   1
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-8-1" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                cURL   1
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-8-1')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-8-1">curl -v -H &quot;X-TIM-User-Agent: gematikTestsuite, web&quot; -H &quot;Accept: */*&quot; -H &quot;Content-Type: application/json&quot; -X GET &quot;https://d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev/_matrix/client/versions&quot; </pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-step">135ms</span></td>
+                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection0-1-1" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="110" class="step-icon">
+                        <a name="0-1-1-0"></a>
+                            <span style="margin-left: 80px;"
+                                  class="nested-group-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a>
+                                </span>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                                <span class="nested-group-step">
+                                                GET https://d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev/_matrix/client/versions
+                                        </span>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+                <span>
+                        <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                                data-target="#restModal-REST-9">
+                            REST Query
+                        </button>
+                    </span>
+                <!-- Modal -->
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="restModal-REST-9">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Response</h4>
+                                    <p>URL: https://d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev/_matrix/client/versions</p>
+                                    <p>Status code: 200</p>
+                                    <p>Content Type: application/json</p>
+                                    <h4>Request Headers</h4>
+                                    <pre>X-TIM-User-Agent=gematikTestsuite, web<br>Accept=*/*<br>Content-Type=application/json</pre>
+                                    <h4>Response Headers</h4>
+                                    <pre>Date: Tue, 12 Aug 2025 16:46:54 GMT<br>Content-Type: application/json<br>access-control-allow-headers: DNT,Keep-Alive,User-Agent,Useragent,X-TIM-User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,mxid<br>access-control-allow-methods: GET, PUT, POST, DELETE, PATCH, OPTIONS<br>access-control-allow-origin: *<br>access-control-expose-headers: Synapse-Trace-Id, Server<br>cache-control: no-cache, no-store, must-revalidate<br>Strict-Transport-Security: max-age=31536000; includeSubDomains<br>Access-Control-Allow-Credentials: true<br>Access-Control-Max-Age: 1728000<br>content-length: 188<br>connection: keep-alive</pre>
+                                <h4>Response Body</h4>
+                                    <pre>{<br>    &quot;versions&quot;: [<br>        &quot;r0.0.1&quot;,<br>        &quot;r0.1.0&quot;,<br>        &quot;r0.2.0&quot;,<br>        &quot;r0.3.0&quot;,<br>        &quot;r0.4.0&quot;,<br>        &quot;r0.5.0&quot;,<br>        &quot;r0.6.0&quot;,<br>        &quot;r0.6.1&quot;,<br>        &quot;v1.1&quot;,<br>        &quot;v1.10&quot;,<br>        &quot;v1.11&quot;,<br>        &quot;v1.2&quot;,<br>        &quot;v1.3&quot;,<br>        &quot;v1.4&quot;,<br>        &quot;v1.5&quot;,<br>        &quot;v1.6&quot;,<br>        &quot;v1.7&quot;,<br>        &quot;v1.8&quot;,<br>        &quot;v1.9&quot;<br>    ],<br>    &quot;unstable_features&quot;: {<br>        <br>    }<br>}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                        </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-group-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-group-step"></span></td>
+                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+                <tr class="test-SUCCESS">
+
+                    <td width="70" class="step-icon">
+                        <a name="0-2"></a>
+                            <span style="margin-left: 40px;"
+                                  class="nested-group-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a>
+                                </span>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                                <span class="nested-group-step">
+                                                Dann ist die unterstützte Matrix-Version "1.11"
+                                        </span>
+                            <span class="evidence">
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-e6856fcf-8ef5-4697-a6fc-bded24c8bd0f"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-10-0">
+                        Rohdaten-Statistik-Total
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-10-0" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                Rohdaten-Statistik-Total
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-10-0')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-10-0">TIM.UC_10057_01 (Client-Login, Auswahl Authentifizierungsverfahren):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;   14<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10057_02 (Erstellung Matrix-ACCESS_TOKEN):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;   14<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10057_03 (Erstellung Matrix-OpenID-Token):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;   14<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10104-01_01 (Akteur suchen):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10104-01_02 (Akteur einladen, gleicher Homeserver):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    4<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10063_01 (Austausch von Events innerhalb einer Organisation, gleicher Homeserver):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    8<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10061-01_01 (Eintrag in Freigabeliste erzeugen):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10061-01_02 (Einladung Sendersystem, unterschiedliche Homeserver):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10061-01_03 (Einladung Empfangssystem, unterschiedliche Homeserver):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10062-01_01 (Event Sendersystem, unterschiedliche Homeserver):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10062-01_02 (Event Empfangssystem, unterschiedliche Homeserver):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10059-01_02 (Organisationsressourcen im Verzeichnisdienst hinzufügen):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    6<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br></pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-038c575e-d72b-4c9a-9366-320c8af387c3"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-10-1">
+                        Rohdaten-Statistik
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-10-1" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                Rohdaten-Statistik
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-10-1')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-10-1">TIM.UC_10057_01 (Client-Login, Auswahl Authentifizierungsverfahren):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10057_02 (Erstellung Matrix-ACCESS_TOKEN):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10057_03 (Erstellung Matrix-OpenID-Token):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10104-01_01 (Akteur suchen):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10104-01_02 (Akteur einladen, gleicher Homeserver):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10063_01 (Austausch von Events innerhalb einer Organisation, gleicher Homeserver):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10061-01_01 (Eintrag in Freigabeliste erzeugen):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10061-01_02 (Einladung Sendersystem, unterschiedliche Homeserver):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10061-01_03 (Einladung Empfangssystem, unterschiedliche Homeserver):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10062-01_01 (Event Sendersystem, unterschiedliche Homeserver):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10062-01_02 (Event Empfangssystem, unterschiedliche Homeserver):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br> TIM.UC_10059-01_02 (Organisationsressourcen im Verzeichnisdienst hinzufügen):<br>&nbsp; &nbsp; &nbsp; &nbsp;   Erfolgreich:&nbsp; &nbsp; &nbsp; &nbsp;    0<br>&nbsp; &nbsp; &nbsp; &nbsp;Fehlgeschlagen:&nbsp; &nbsp; &nbsp; &nbsp;    0<br><br></pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <a name="report-data-3a5d11d7-1d40-45f0-99b5-033452469b6e"></a>
+                <span>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="collapse"
+                            data-target="#reportData-EVIDENCE-10-2">
+                        Individual Log
+                    </button>
+                </span>
+                <div class="rest-query-details">
+                    <div class="collapse multi-collapse" id="reportData-EVIDENCE-10-2" tabindex="-1" role="dialog"
+                         aria-labelledby="restModalLabel" aria-hidden="true">
+                        <div class="card">
+                            <h4 class="card-header" id="restModalLabel">
+                                Individual Log
+                            <a role="button" class="btn btn-xs copy-button" onclick="copyContent('reportDataContent-EVIDENCE-10-2')">
+                                <i class="bi bi-clipboard"></i>&nbsp;Copy
+                            </a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportDataContent-EVIDENCE-10-2">Name: 00.01.05 Abfrage der Matrix-Server-Version<br>&nbsp; &nbsp; &nbsp; &nbsp;TCID: @TCID:TIM_V2_BASIS_AF_000105/b6ba2bc0-798d-47cd-b9e4-90b129823d59<br>&nbsp; &nbsp; &nbsp; &nbsp;Messages: @TCID:TIM_V2_BASIS_AF_000105/b6ba2bc0-798d-47cd-b9e4-90b129823d59<br>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;18:46:54.360 -&gt; times: 1 =&gt; supportedMatrixVersion<br>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Custom object with key: https://d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev<br></pre>
+                        </div>
+                    </div>
+                </div>
+                                            </span>
+                                        <span class="piece-of-evidence">
+
+    <script>
+        function copyContent(id) {
+            console.log("copy content of " + id)
+            const content = document.getElementById(id).innerText
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+
+                <span>
+                    <a role="button" class="btn btn-success btn-sm" href="downloadable/downloadable-5ca48d98-89aa-47ab-95f9-cc12e92dbc3a-rbel_00.01.05_Abfrage_der_Matrix-Se1e8818ed-4a16-3546-aea2-6d0150d211d3_1_2025-08-12_18-46-54.html">
+                        <i class="bi bi-download"></i>&nbsp;RBellog 1
+                    </a>
+                </span>
+                                            </span>
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-group-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-group-step">202ms</span></td>
+                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+            <tr class="test-SUCCESS">
+                    <td colspan="2"></td>
+                <td width="130"><span class="top-level-step"><em>SUCCESS</em></span></td>
+                <td width="100"><span class="top-level-step"><em>1.9s</em></span></td>
+            </tr>
+
+        </table>
+    </div>
+</div>
+
+<div id="beforefooter"></div>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <span class="version">Serenity BDD version 4.2.30</span>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function toggleDiv(divId) {
+        $("#" + divId).toggle();
+        var $icon = $(".img" + divId);
+        $icon.toggleClass("bi-caret-right-square");
+        $icon.toggleClass("bi-caret-down-square");
+    }
+</script>
+
+
+<script type="text/javascript">
+    //<![CDATA[
+
+    $(document).ready(function () {
+        $('img.screenshot').imgPreview({
+            imgCSS: {
+                width: '500px'
+            },
+            distanceFromCursor: {top: 10, left: -200}
+        });
+    });
+
+    //]]>
+</script>
+<div id="imgPreviewContainer" style="position: absolute; top: 612px; left: 355px; display: none; " class=""><img
+            src="" style="display: none; "></div>
+<div id="imgPreviewContainer2" style="position: absolute; top: 925px; left: 320px; display: none; " class="">
+    <img style="width: 200px; display: none; " src=""></div>
+<div id="imgPreviewWithStyles" style="position: absolute; top: 1272px; left: 321px; display: none; " class="">
+    <img style="height: 200px; opacity: 1; display: none; " src=""></div>
+<div id="imgPreviewWithStyles2" style="display: none; position: absolute; "><img style="height: 200px; "></div>
+<div id="imgPreviewWithStyles3" style="display: none; position: absolute; "><img style="height: 200px; "></div>
+
+</div>
+</body>
+</html>

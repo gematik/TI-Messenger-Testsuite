@@ -343,7 +343,7 @@ public class AuthorizationGlue {
     if (!groupName.equals("Versicherte")) {
       throw new NotImplementedException(format("The group with the name %s is unknown", groupName));
     }
-    return GroupNameDTO.ISINSUREDPERSON;
+    return GroupNameDTO.IS_INSURED_PERSON;
   }
 
   @When("{string} checks, that the group {string} is NOT found on the block list")

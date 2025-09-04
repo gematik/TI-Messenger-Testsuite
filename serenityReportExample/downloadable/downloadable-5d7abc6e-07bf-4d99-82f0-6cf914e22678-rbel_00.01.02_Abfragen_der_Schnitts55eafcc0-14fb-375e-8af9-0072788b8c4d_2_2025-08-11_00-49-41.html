@@ -1,0 +1,1079 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>00.01.02 Abfragen der Schnittstellen-Information durch Org-Admin-Client</title><script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script><script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script><script src="https://code.jquery.com/jquery-3.7.1.js"></script><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script><script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.10.0/build/highlight.min.js"></script><script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.10.0/build/languages/xml.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.11/dayjs.min.js"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.10.0/build/styles/stackoverflow-dark.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"><link rel="icon" type="image/png" href="data:image/png;base64,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
+"><style id="rbel_css">/**
+ *
+ * Copyright 2021-2025 gematik GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * *******
+ *
+ * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ */
+hex-viewer {
+    display: inline !important;
+}
+
+h1.title {
+    font-size: 2rem;
+}
+
+.title {
+    font-size: 1.25rem;
+    margin-bottom: .5rem;
+    color: #373a3c;
+}
+
+.paddingLeft {
+    padding-left: 5rem;
+}
+
+article.message {
+    margin: .5rem !important;
+}
+
+.notification .tile .message-body {
+    padding: .25rem;
+}
+
+td {
+    padding: .3rem !important;
+    border-style: unset;
+}
+
+.card-content {
+    padding: .5rem;
+}
+
+.copyToClipboard-button {
+    filter: invert(100%);
+    margin-left: 2em;
+    margin-top: 0.5em;
+}
+
+.sidebar {
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: sticky;
+    vertical-align: top;
+    max-height: 100vh;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    float: left;
+}
+
+.rbel-main-content {
+    /*margin-left: 20%;*/
+}
+
+.mainsection {
+    flex-wrap: wrap-reverse;
+}
+
+/* Layout für große Bildschirme */
+@media (min-width: 1700px) and (max-width: 1920px) {
+    .sidebar {
+        width: 100%;
+        float: none;
+        display: block;
+    }
+
+    .rbel-main-content {
+        margin-left: 0;
+        display: block;
+    }
+}
+
+.full-width {
+    width: 100%;
+}
+
+.logo {
+    vertical-align: middle;
+    margin: 1rem;
+    margin-bottom: 0;
+}
+
+.logo img {
+    max-width: 100%;
+    max-height: 250px;
+}
+
+.navbar-title {
+    color: rgb(2, 154, 207);
+}
+
+.navbar-version {
+    line-height: 4rem;
+}
+
+.header {
+    border-bottom: 3px solid #ddd;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+    background: #eee;
+}
+
+.table, .card {
+    max-width: 100%;
+}
+
+.card {
+    background: #ddd;
+}
+
+.json-note {
+    position: relative;
+    border-radius: .4em;
+    border: 1px solid #6b999f;
+    color: #8aecf7;
+    padding: 0.15rem;
+    display: inline-block;
+    margin-left: 0.5rem;
+}
+
+pre.json {
+    color: greenyellow !important;
+}
+
+pre.binary {
+    max-width: 800px;
+}
+
+pre.value, pre.json, pre.value div, pre.json div {
+    word-break: break-all;
+    white-space: break-spaces;
+}
+
+pre.json {
+    word-break: break-all;
+    white-space: break-spaces;
+    color: greenyellow !important;
+}
+
+.text-ellipsis {
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.card-header-title {
+    padding: 0.5rem 1rem;
+}
+
+.msg-sequence {
+    height: 2.5rem !important;
+}
+
+@media print {
+    .column.menu {
+        position: static !important;
+        display: block;
+        overflow-x: hidden;
+        overflow-y: auto;
+        vertical-align: top;
+        width: 100%;
+        height: auto;
+        margin-left: 5rem;
+        column-count: 3;
+    }
+
+    .columns.is-fullheight {
+        display: block !important;
+    }
+
+    pre, pre.json, pre.value {
+        color: darkred !important;
+        background-color: white !important;
+    }
+
+    .card {
+        background: white;
+    }
+
+    .page-break {
+        break-before: page;
+    }
+
+    div pre.json, div pre.value {
+        break-inside: avoid-page;
+    }
+
+    i.fa-angle-double-up, i.fa-angle-double-down, i.fa-toggle-on, i.fa-toggle-off {
+        display: none;
+    }
+}
+
+@page {
+    size: 594mm 420mm;
+}
+
+.col.is-one-fifth {
+    flex: none;
+    width: 20%;
+}
+
+p {
+    margin: 0;
+    padding: 0;
+}
+
+
+.is-size-1 {
+    font-size: 3rem !important;
+}
+
+.is-size-2 {
+    font-size: 2.5rem !important;
+}
+
+.is-size-3 {
+    font-size: 2rem !important;
+}
+
+.is-size-4 {
+    font-size: 1.3rem !important;
+}
+
+.is-size-5 {
+    font-size: 1.2rem !important
+}
+
+.is-size-6 {
+    font-size: 1rem !important;
+}
+
+.is-size-7 {
+    font-size: .75rem !important
+}
+
+.sidebar {
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: sticky;
+    vertical-align: top;
+    max-height: 100vh;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+#sidebar-menu, .menu + div {
+    padding-bottom: 10rem;
+}
+
+.container .container {
+    margin-left: 1rem;
+}
+
+.container.page-break {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.tile.is-ancestor:last-child {
+    margin-bottom: -0.75rem;
+}
+
+.tile.is-ancestor {
+    margin-left: -0.75rem;
+    margin-right: -0.75rem;
+    margin-top: -0.75rem;
+}
+
+.tile {
+    align-items: stretch;
+    display: block;
+    flex-basis: 0;
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: -webkit-min-content;
+    min-height: -moz-min-content;
+    min-height: min-content;
+}
+
+.tile.is-parent {
+    padding: 0.75rem;
+}
+
+.tile.is-vertical {
+    flex-direction: column;
+}
+
+.tile.is-vertical > .tile.is-child {
+    margin-top: 1.5rem !important;
+}
+
+.notification.is-primary {
+    background-color: #fef6f5;
+    color: #d9230f;
+    border: 1px solid #f7958a;
+}
+
+.notification.is-info {
+    background-color: #f5fdfe;
+    color: #0fc5d9;
+    border: 1px solid #8aecf7;
+}
+
+.notification.is-success {
+    background-color: #f9fef5;
+    color: #469408;
+    border: 1px solid #90f540;
+}
+
+.notification.is-warning {
+    background-color: #fcf8fc;
+    color: #9b479f;
+    border: 1px solid #d6a7d8;
+}
+
+.notification .title {
+    color: currentColor;
+}
+
+.tile.is-child:not(:first-child) {
+    margin: 0 !important;
+}
+
+.notification {
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    padding: 1rem 1rem 1rem 1rem;
+    position: relative;
+}
+
+.card {
+    background: #ddd;
+}
+
+.table, .card {
+    max-width: 100%;
+}
+
+.has-text-link {
+    color: #029acf !important;
+}
+
+.has-text-link {
+    color: #3273dc !important;
+}
+
+a.mt-3.is-block {
+    text-decoration: none;
+}
+
+.has-text-success {
+    color: #469408 !important;
+    text-decoration: none;
+}
+
+.has-text-danger {
+    color: #d9831f !important;
+}
+
+.icon {
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    height: 1.5rem;
+    width: 1.5rem;
+}
+
+.modal-button {
+    background-color: #fff;
+}
+
+.message.is-warning .message-header {
+    background-color: #9b479f;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+}
+
+.notification.is-warning {
+    background-color: #fcf8fc;
+    color: #9b479f;
+    border: 1px solid #d6a7d8;
+}
+
+article.message {
+    margin: 0.5rem !important;
+}
+
+div.message-header {
+    padding: 0.4rem;
+}
+
+td {
+    padding: 0.3rem !important;
+}
+
+.tag:not(body).is-info.is-light {
+    background-color: #ecfcfe;
+    color: #0a8694;
+}
+
+.tag:not(body) {
+    align-items: center;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    color: #444;
+    display: inline-flex;
+    font-size: .75rem;
+    height: 2em;
+    justify-content: center;
+    line-height: 1.5;
+    padding-left: 0.75em;
+    padding-right: 0.75em;
+    white-space: nowrap;
+}
+
+.msg-sequence {
+    height: 2.5rem !important;
+}
+
+pre {
+    color: #fa4 !important;
+    background-color: #444 !important;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    padding: .5rem;
+    font-size: .7rem;
+    margin-bottom: 0;
+}
+
+prekey {
+    color: orangered !important;
+    background-color: #444 !important;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    padding: .2rem;
+}
+
+pre.json {
+    color: greenyellow !important;
+    margin-top: 0.75rem;
+    word-break: break-all;
+    white-space: break-spaces;
+}
+
+pre.binary {
+    max-width: 800px;
+}
+
+pre.value, pre.json, pre.value div, pre.json div {
+    word-break: break-all;
+    white-space: break-spaces;
+}
+
+.has-text-link {
+    color: #029acf !important;
+}
+
+a.has-text-link:focus,
+a.has-text-link:hover {
+    color: #205bbc !important
+}
+
+.has-background-dark {
+    background-color: #373a3c !important
+}
+
+.has-text-danger {
+    color: #d9831f !important
+}
+
+.has-text-success {
+    color: #469408 !important;
+    text-decoration: none;
+}
+
+h2.title {
+    font-size: 1.5rem;
+    color: currentColor;
+    font-weight: bold;
+}
+
+.has-text-weight-bold {
+    font-weight: 700 !important;
+}
+
+.has-text-weight-light {
+    font-weight: 300 !important;
+}
+
+a {
+    color: #029acf;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.has-text-danger {
+    color: #d9831f !important;
+}
+
+.has-text-warning {
+    color: #9b479f !important;
+}
+
+.has-text-info {
+    color: #0fc5d9 !important;
+}
+</style></head><body style="overflow-x: hidden;"><div id="navbardiv"></div><section class="main-content"><section class="row header"><div class="col-1 h-100 my-auto logo"><img src="data:image/png;base64,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
+" id="test-tiger-logo"></div><div class="col is-size-6"><div class="row my-auto"><div class="col navbar-title is-size-3 h-100 my-auto">00.01.02 Abfragen der Schnittstellen-Information durch Org-Admin-Client</div><span class="col-2 is-size-7 navbar-version">4.0.8-2025-07-10 07:29</span></div><div><p><button class="js-modal-trigger" data-bs-target="modal-data-variant">Variant 2</button></p><p><i>file:///home/jenkins/agent/workspace/TIM-Longrun-Generate-Report/target/features/UCs_Basis/UC00_Geraete_Informationen_abfragen/00_1_Pro_Geraete_Informationen_abfragen_V2_Basis.feature</i></p></div></div></section></section><section class="row is-fullheight mainsection" id="test-rbel-section"><div class=" col is-one-fifth menu is-size-4 sidebar"><h2 class="mb-3 ms-2">Flow</h2><div class="ms-1" id="sidebar-menu"></div></div><div class="col ms-6"><div class="created fst-italic is-size-6 float-end me-6">Created Mon, 11 Aug 2025 00:49:41 +0200</div><div class="rbel-main-content"><div><div class="container page-break mx-3 mt-3"><div class="card full-width test-card msg-card"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="full-width"><a name="beb6b5d8-e04d-4cd2-8cb9-360453acbffb"></a><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 msg-toggle has-text-link"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogujI2VdNxHhdG2Wg3ZlBp" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogujI2VdNxHhdG2Wg3ZlBp" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of </p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogujI2VdNxHhdG2Wg3ZlBp"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogujI2VdNxHhdG2Wg3ZlBp" style="white-space: pre-wrap;word-wrap: break-word;">POST /ti-messenger-testdriver/ HTTP/1.1
+Transaction-Id: @TCID:TIM_V2_BASIS_AF_000102/af90243a-8a89-4640-8f03-0ac02592d3a4
+Accept: */*
+Content-Type: application/json
+Content-Length: 0
+Proxy-Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.14)
+Accept-Encoding: gzip,deflate
+Host: oapub-0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev:443
+
+</pre></div></article></div></div></div></span><span><a class="btn modal-button modal-button-details float-end partner-message-button" onclick="scrollToMessage(&#x27;e1bb214b-5dac-4ace-ae1c-f8e97e0a0d96&#x27;,18357)"><span class="icon is-small"><i class="fas fa-right-left"></i></span></a></span><h1 class="title ms-3 text-ellipsis has-text-link" style="overflow: hidden;"><span class="msg-sequence tag is-info is-light me-3 is-size-4 test-message-number has-text-link">18357</span><i class="fas me-1 fa-share has-text-link" title="Request"></i><span class="font-monospace title ms-3 ">POST /ti-messenger-testdriver/</span><span style="display: block;"><span class="is-size-7 ms-4 "><span class="icon"><i class="fas fa-clock"></i></span>00:49:35.112246946+02:00</span><span class="is-size-7 ms-4">127.0.0.1:50720<span class="icon"><i class="fas fa-arrow-right"></i></span>RU1-Ref-ORG-Web-HS2:80</span></span></h1></div></div></header><div class="card-content test-card-content msg-content"><div><div class="tile is-ancestor pe-2"><div class="tile is-ancestor pe-2"><div class="tile is-parent is-vertical pe-3"><div><div class="container page-break my-3"><div class="card full-width test-card is-primary notification"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="tile is-child pe-3"><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 text-danger header-toggle"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogqLYKeWN7AiHNEHxRyfh8" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogqLYKeWN7AiHNEHxRyfh8" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of header</p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogqLYKeWN7AiHNEHxRyfh8"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogqLYKeWN7AiHNEHxRyfh8" style="white-space: pre-wrap;word-wrap: break-word;">Transaction-Id: @TCID:TIM_V2_BASIS_AF_000102/af90243a-8a89-4640-8f03-0ac02592d3a4
+Accept: */*
+Content-Type: application/json
+Content-Length: 0
+Proxy-Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.14)
+Accept-Encoding: gzip,deflate
+Host: oapub-0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev:443</pre></div></article></div></div></div></span><div class="text-danger"><h2 class="title">REQ Headers</h2></div></div></div></header><div class="card-content test-card-content msg-header-content test-msg-header-content"><div><table class="table"><tbody><tr><td><pre>Transaction-Id</pre></td><td><pre class="value"><span class="is-size-7">@TCID:TIM_V2_BASIS_AF_000102/af90243a-8a89-4640-8f03-0ac02592d3a4</span></pre></td></tr><tr><td><pre>Accept</pre></td><td><pre class="value"><span class="is-size-7">*/*</span></pre></td></tr><tr><td><pre>Content-Type</pre></td><td><pre class="value"><span class="is-size-7">application/json</span></pre></td></tr><tr><td><pre>Content-Length</pre></td><td><pre class="value"><span class="is-size-7">0</span></pre></td></tr><tr><td><pre>Proxy-Connection</pre></td><td><pre class="value"><span class="is-size-7">Keep-Alive</span></pre></td></tr><tr><td><pre>User-Agent</pre></td><td><pre class="value"><span class="is-size-7">Apache-HttpClient/4.5.13 (Java/17.0.14)</span></pre></td></tr><tr><td><pre>Accept-Encoding</pre></td><td><pre class="value"><span class="is-size-7">gzip,deflate</span></pre></td></tr><tr><td><pre>Host</pre></td><td><pre class="value"><div><div>oapub-0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev:443</div></div></pre></td></tr></tbody></table></div></div></div></div></div><div class="is-info notification container is-child"><h2 class="title">REQ Body Empty</h2></div></div></div></div></div></div></div></div></div><div><div class="container page-break mx-3 mt-3"><div class="card full-width test-card msg-card"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="full-width"><a name="e1bb214b-5dac-4ace-ae1c-f8e97e0a0d96"></a><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 msg-toggle text-success"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogZNfuWfZQ20VC4M70Jv5l" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogZNfuWfZQ20VC4M70Jv5l" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of </p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogZNfuWfZQ20VC4M70Jv5l"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogZNfuWfZQ20VC4M70Jv5l" style="white-space: pre-wrap;word-wrap: break-word;">HTTP/1.1 200 
+Date: Sun, 10 Aug 2025 22:49:36 GMT
+Content-Length: 0
+Connection: keep-alive
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+</pre></div></article></div></div></div></span><span><a class="btn modal-button modal-button-details float-end partner-message-button" onclick="scrollToMessage(&#x27;beb6b5d8-e04d-4cd2-8cb9-360453acbffb&#x27;,18356)"><span class="icon is-small"><i class="fas fa-right-left"></i></span></a></span><h1 class="title ms-3 text-ellipsis text-success" style="overflow: hidden;"><span class="msg-sequence tag is-info is-light me-3 is-size-4 test-message-number text-success">18358</span><i class="fas me-1 fa-reply text-success" title="Response"></i><span class="font-monospace title ms-3 ">200</span><span style="display: block;"><span class="is-size-7 ms-4 "><span class="icon"><i class="fas fa-clock"></i></span>00:49:36.539197808+02:00</span><span class="is-size-7 ms-4">127.0.0.1:50720<span class="icon"><i class="fas fa-arrow-left"></i></span>RU1-Ref-ORG-Web-HS2:80</span></span></h1></div></div></header><div class="card-content test-card-content msg-content"><div><div class="tile is-ancestor pe-2"><div class="tile is-ancestor pe-2"><div class="tile is-parent is-vertical pe-3"><div><div class="container page-break my-3"><div class="card full-width test-card is-primary notification"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="tile is-child pe-3"><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 text-danger header-toggle"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogYDbwQnI4eVoLTeL9Ke0S" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogYDbwQnI4eVoLTeL9Ke0S" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of header</p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogYDbwQnI4eVoLTeL9Ke0S"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogYDbwQnI4eVoLTeL9Ke0S" style="white-space: pre-wrap;word-wrap: break-word;">Date: Sun, 10 Aug 2025 22:49:36 GMT
+Content-Length: 0
+Connection: keep-alive
+Strict-Transport-Security: max-age=31536000; includeSubDomains</pre></div></article></div></div></div></span><div class="text-danger"><h2 class="title">RES Headers</h2></div></div></div></header><div class="card-content test-card-content msg-header-content test-msg-header-content"><div><table class="table"><tbody><tr><td><pre>Date</pre></td><td><pre class="value"><span class="is-size-7">Sun, 10 Aug 2025 22:49:36 GMT</span></pre></td></tr><tr><td><pre>Content-Length</pre></td><td><pre class="value"><span class="is-size-7">0</span></pre></td></tr><tr><td><pre>Connection</pre></td><td><pre class="value"><span class="is-size-7">keep-alive</span></pre></td></tr><tr><td><pre>Strict-Transport-Security</pre></td><td><pre class="value"><span class="is-size-7">max-age=31536000; includeSubDomains</span></pre></td></tr></tbody></table></div></div></div></div></div><div class="is-info notification container is-child"><h2 class="title">RES Body Empty</h2></div></div></div></div></div></div></div></div></div><div><div class="container page-break mx-3 mt-3"><div class="card full-width test-card msg-card"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="full-width"><a name="543cc44c-a687-4a29-ac80-574858d02fda"></a><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 msg-toggle has-text-link"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogvMHtLNVqNpiEQNh1YgDq" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogvMHtLNVqNpiEQNh1YgDq" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of </p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogvMHtLNVqNpiEQNh1YgDq"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogvMHtLNVqNpiEQNh1YgDq" style="white-space: pre-wrap;word-wrap: break-word;">GET /ti-messenger-testdriver/devices HTTP/1.1
+Content-Type: application/json
+Accept: */*
+Transaction-Id: @TCID:TIM_V2_BASIS_AF_000102/af90243a-8a89-4640-8f03-0ac02592d3a4
+Proxy-Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.14)
+Accept-Encoding: gzip,deflate
+content-length: 0
+Host: oapub-0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev:443
+
+</pre></div></article></div></div></div></span><span><a class="btn modal-button modal-button-details float-end partner-message-button" onclick="scrollToMessage(&#x27;40a297d3-06dc-4b8c-857c-10082c6403e2&#x27;,18359)"><span class="icon is-small"><i class="fas fa-right-left"></i></span></a></span><h1 class="title ms-3 text-ellipsis has-text-link" style="overflow: hidden;"><span class="msg-sequence tag is-info is-light me-3 is-size-4 test-message-number has-text-link">18359</span><i class="fas me-1 fa-share has-text-link" title="Request"></i><span class="font-monospace title ms-3 ">GET /ti-messenger-testdriver/devices</span><span style="display: block;"><span class="is-size-7 ms-4 "><span class="icon"><i class="fas fa-clock"></i></span>00:49:36.552592237+02:00</span><span class="is-size-7 ms-4">127.0.0.1:58194<span class="icon"><i class="fas fa-arrow-right"></i></span>RU1-Ref-ORG-Web-HS2:80</span></span></h1></div></div></header><div class="card-content test-card-content msg-content"><div><div class="tile is-ancestor pe-2"><div class="tile is-ancestor pe-2"><div class="tile is-parent is-vertical pe-3"><div><div class="container page-break my-3"><div class="card full-width test-card is-primary notification"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="tile is-child pe-3"><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 text-danger header-toggle"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogPklTP33HyCpV6VSMt4se" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogPklTP33HyCpV6VSMt4se" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of header</p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogPklTP33HyCpV6VSMt4se"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogPklTP33HyCpV6VSMt4se" style="white-space: pre-wrap;word-wrap: break-word;">Content-Type: application/json
+Accept: */*
+Transaction-Id: @TCID:TIM_V2_BASIS_AF_000102/af90243a-8a89-4640-8f03-0ac02592d3a4
+Proxy-Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.14)
+Accept-Encoding: gzip,deflate
+content-length: 0
+Host: oapub-0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev:443</pre></div></article></div></div></div></span><div class="text-danger"><h2 class="title">REQ Headers</h2></div></div></div></header><div class="card-content test-card-content msg-header-content test-msg-header-content"><div><table class="table"><tbody><tr><td><pre>Content-Type</pre></td><td><pre class="value"><span class="is-size-7">application/json</span></pre></td></tr><tr><td><pre>Accept</pre></td><td><pre class="value"><span class="is-size-7">*/*</span></pre></td></tr><tr><td><pre>Transaction-Id</pre></td><td><pre class="value"><span class="is-size-7">@TCID:TIM_V2_BASIS_AF_000102/af90243a-8a89-4640-8f03-0ac02592d3a4</span></pre></td></tr><tr><td><pre>Proxy-Connection</pre></td><td><pre class="value"><span class="is-size-7">Keep-Alive</span></pre></td></tr><tr><td><pre>User-Agent</pre></td><td><pre class="value"><span class="is-size-7">Apache-HttpClient/4.5.13 (Java/17.0.14)</span></pre></td></tr><tr><td><pre>Accept-Encoding</pre></td><td><pre class="value"><span class="is-size-7">gzip,deflate</span></pre></td></tr><tr><td><pre>content-length</pre></td><td><pre class="value"><span class="is-size-7">0</span></pre></td></tr><tr><td><pre>Host</pre></td><td><pre class="value"><div><div>oapub-0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev:443</div></div></pre></td></tr></tbody></table></div></div></div></div></div><div class="is-info notification container is-child"><h2 class="title">REQ Body Empty</h2></div></div></div></div></div></div></div></div></div><div><div class="container page-break mx-3 mt-3"><div class="card full-width test-card msg-card"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="full-width"><a name="40a297d3-06dc-4b8c-857c-10082c6403e2"></a><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 msg-toggle text-success"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialog74WmwlReZsdRTIm1TKoV" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialog74WmwlReZsdRTIm1TKoV" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of </p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialog74WmwlReZsdRTIm1TKoV"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialog74WmwlReZsdRTIm1TKoV" style="white-space: pre-wrap;word-wrap: break-word;">HTTP/1.1 200 
+Date: Sun, 10 Aug 2025 22:49:36 GMT
+Content-Type: application/json
+Connection: keep-alive
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+content-length: 131
+
+{&quot;devices&quot;:[{&quot;deviceId&quot;:1,&quot;deviceName&quot;:&quot;Chrome&quot;,&quot;deviceStatus&quot;:&quot;free&quot;,&quot;claimerName&quot;:&quot;&quot;,&quot;claimedUntil&quot;:&quot;2025-08-06T08:26:47.149Z&quot;}]}</pre></div></article></div></div></div></span><span><a class="btn modal-button modal-button-details float-end partner-message-button" onclick="scrollToMessage(&#x27;543cc44c-a687-4a29-ac80-574858d02fda&#x27;,18358)"><span class="icon is-small"><i class="fas fa-right-left"></i></span></a></span><h1 class="title ms-3 text-ellipsis text-success" style="overflow: hidden;"><span class="msg-sequence tag is-info is-light me-3 is-size-4 test-message-number text-success">18360</span><i class="fas me-1 fa-reply text-success" title="Response"></i><span class="font-monospace title ms-3 ">200</span><span style="display: block;"><span class="is-size-7 ms-4 "><span class="icon"><i class="fas fa-clock"></i></span>00:49:36.617793427+02:00</span><span class="is-size-7 ms-4">127.0.0.1:58194<span class="icon"><i class="fas fa-arrow-left"></i></span>RU1-Ref-ORG-Web-HS2:80</span></span></h1></div></div></header><div class="card-content test-card-content msg-content"><div><div class="tile is-ancestor pe-2"><div class="tile is-ancestor pe-2"><div class="tile is-parent is-vertical pe-3"><div><div class="container page-break my-3"><div class="card full-width test-card is-primary notification"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="tile is-child pe-3"><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 text-danger header-toggle"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogHAaheQOxuFLt7KbGjuso" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogHAaheQOxuFLt7KbGjuso" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of header</p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogHAaheQOxuFLt7KbGjuso"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogHAaheQOxuFLt7KbGjuso" style="white-space: pre-wrap;word-wrap: break-word;">Date: Sun, 10 Aug 2025 22:49:36 GMT
+Content-Type: application/json
+Connection: keep-alive
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+content-length: 131</pre></div></article></div></div></div></span><div class="text-danger"><h2 class="title">RES Headers</h2></div></div></div></header><div class="card-content test-card-content msg-header-content test-msg-header-content"><div><table class="table"><tbody><tr><td><pre>Date</pre></td><td><pre class="value"><span class="is-size-7">Sun, 10 Aug 2025 22:49:36 GMT</span></pre></td></tr><tr><td><pre>Content-Type</pre></td><td><pre class="value"><span class="is-size-7">application/json</span></pre></td></tr><tr><td><pre>Connection</pre></td><td><pre class="value"><span class="is-size-7">keep-alive</span></pre></td></tr><tr><td><pre>Strict-Transport-Security</pre></td><td><pre class="value"><span class="is-size-7">max-age=31536000; includeSubDomains</span></pre></td></tr><tr><td><pre>content-length</pre></td><td><pre class="value"><span class="is-size-7">131</span></pre></td></tr></tbody></table></div></div></div></div></div><div><div class="container page-break my-3"><div class="card full-width test-card is-info notification"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="tile is-child pe-3"><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 text-info body-toggle"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogvuzpuENLBx3ZruJIAlpc" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogvuzpuENLBx3ZruJIAlpc" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of body</p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogvuzpuENLBx3ZruJIAlpc"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogvuzpuENLBx3ZruJIAlpc" style="white-space: pre-wrap;word-wrap: break-word;">{&quot;devices&quot;:[{&quot;deviceId&quot;:1,&quot;deviceName&quot;:&quot;Chrome&quot;,&quot;deviceStatus&quot;:&quot;free&quot;,&quot;claimerName&quot;:&quot;&quot;,&quot;claimedUntil&quot;:&quot;2025-08-06T08:26:47.149Z&quot;}]}</pre></div></article></div></div></div></span><div class="text-info"><h2 class="title">RES Body</h2></div></div></div></header><div class="card-content test-card-content msg-body-content test-msg-body-content"><div><div class="tile is-ancestor pe-2"><div class="tile is-vertical is-parent pe-2"><div class="tile is-child pe-3"><pre class="json language-json">{
+  "devices" : [ {
+    "deviceId" : 1,
+    "deviceName" : "Chrome",
+    "deviceStatus" : "free",
+    "claimerName" : "",
+    "claimedUntil" : "2025-08-06T08:26:47.149Z"
+  } ]
+}</pre></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div><div><div class="container page-break mx-3 mt-3"><div class="card full-width test-card msg-card"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="full-width"><a name="d50de717-83f1-4b88-b8ae-ee74e812c1cc"></a><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 msg-toggle has-text-link"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogkBnjfxUjU0tSg91UY4hg" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogkBnjfxUjU0tSg91UY4hg" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of </p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogkBnjfxUjU0tSg91UY4hg"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogkBnjfxUjU0tSg91UY4hg" style="white-space: pre-wrap;word-wrap: break-word;">POST /ti-messenger-testdriver/devices/1/claim HTTP/1.1
+Accept: application/json
+Transaction-Id: @TCID:TIM_V2_BASIS_AF_000102/af90243a-8a89-4640-8f03-0ac02592d3a4
+Content-Type: application/json
+Content-Length: 57
+Proxy-Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.14)
+Accept-Encoding: gzip,deflate
+Host: oapub-0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev:443
+
+{&quot;claimerName&quot;:&quot;no configured cert found&quot;,&quot;claimFor&quot;:300}</pre></div></article></div></div></div></span><span><a class="btn modal-button modal-button-details float-end partner-message-button" onclick="scrollToMessage(&#x27;39cec4f5-d57a-487c-aed3-fea4c6f183e7&#x27;,18361)"><span class="icon is-small"><i class="fas fa-right-left"></i></span></a></span><h1 class="title ms-3 text-ellipsis has-text-link" style="overflow: hidden;"><span class="msg-sequence tag is-info is-light me-3 is-size-4 test-message-number has-text-link">18361</span><i class="fas me-1 fa-share has-text-link" title="Request"></i><span class="font-monospace title ms-3 ">POST /ti-messenger-testdriver/devices/1/claim</span><span style="display: block;"><span class="is-size-7 ms-4 "><span class="icon"><i class="fas fa-clock"></i></span>00:49:36.631938277+02:00</span><span class="is-size-7 ms-4">127.0.0.1:58208<span class="icon"><i class="fas fa-arrow-right"></i></span>RU1-Ref-ORG-Web-HS2:80</span></span></h1></div></div></header><div class="card-content test-card-content msg-content"><div><div class="tile is-ancestor pe-2"><div class="tile is-ancestor pe-2"><div class="tile is-parent is-vertical pe-3"><div><div class="container page-break my-3"><div class="card full-width test-card is-primary notification"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="tile is-child pe-3"><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 text-danger header-toggle"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogUilafWG492bY431lGGFp" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogUilafWG492bY431lGGFp" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of header</p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogUilafWG492bY431lGGFp"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogUilafWG492bY431lGGFp" style="white-space: pre-wrap;word-wrap: break-word;">Accept: application/json
+Transaction-Id: @TCID:TIM_V2_BASIS_AF_000102/af90243a-8a89-4640-8f03-0ac02592d3a4
+Content-Type: application/json
+Content-Length: 57
+Proxy-Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.14)
+Accept-Encoding: gzip,deflate
+Host: oapub-0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev:443</pre></div></article></div></div></div></span><div class="text-danger"><h2 class="title">REQ Headers</h2></div></div></div></header><div class="card-content test-card-content msg-header-content test-msg-header-content"><div><table class="table"><tbody><tr><td><pre>Accept</pre></td><td><pre class="value"><span class="is-size-7">application/json</span></pre></td></tr><tr><td><pre>Transaction-Id</pre></td><td><pre class="value"><span class="is-size-7">@TCID:TIM_V2_BASIS_AF_000102/af90243a-8a89-4640-8f03-0ac02592d3a4</span></pre></td></tr><tr><td><pre>Content-Type</pre></td><td><pre class="value"><span class="is-size-7">application/json</span></pre></td></tr><tr><td><pre>Content-Length</pre></td><td><pre class="value"><span class="is-size-7">57</span></pre></td></tr><tr><td><pre>Proxy-Connection</pre></td><td><pre class="value"><span class="is-size-7">Keep-Alive</span></pre></td></tr><tr><td><pre>User-Agent</pre></td><td><pre class="value"><span class="is-size-7">Apache-HttpClient/4.5.13 (Java/17.0.14)</span></pre></td></tr><tr><td><pre>Accept-Encoding</pre></td><td><pre class="value"><span class="is-size-7">gzip,deflate</span></pre></td></tr><tr><td><pre>Host</pre></td><td><pre class="value"><div><div>oapub-0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev:443</div></div></pre></td></tr></tbody></table></div></div></div></div></div><div><div class="container page-break my-3"><div class="card full-width test-card is-info notification"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="tile is-child pe-3"><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 text-info body-toggle"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogQ3WwmrmjjnihgJf0ggsO" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogQ3WwmrmjjnihgJf0ggsO" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of body</p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogQ3WwmrmjjnihgJf0ggsO"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogQ3WwmrmjjnihgJf0ggsO" style="white-space: pre-wrap;word-wrap: break-word;">{&quot;claimerName&quot;:&quot;no configured cert found&quot;,&quot;claimFor&quot;:300}</pre></div></article></div></div></div></span><div class="text-info"><h2 class="title">REQ Body</h2></div></div></div></header><div class="card-content test-card-content msg-body-content test-msg-body-content"><div><div class="tile is-ancestor pe-2"><div class="tile is-vertical is-parent pe-2"><div class="tile is-child pe-3"><pre class="json language-json">{
+  "claimerName" : "no configured cert found",
+  "claimFor" : 300
+}</pre></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div><div><div class="container page-break mx-3 mt-3"><div class="card full-width test-card msg-card"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="full-width"><a name="39cec4f5-d57a-487c-aed3-fea4c6f183e7"></a><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 msg-toggle text-success"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogAKIdIPaEqa1ZDtbEN0bp" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogAKIdIPaEqa1ZDtbEN0bp" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of </p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogAKIdIPaEqa1ZDtbEN0bp"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogAKIdIPaEqa1ZDtbEN0bp" style="white-space: pre-wrap;word-wrap: break-word;">HTTP/1.1 200 
+Date: Sun, 10 Aug 2025 22:49:37 GMT
+Content-Type: application/json
+Connection: keep-alive
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+content-length: 150
+
+{&quot;deviceId&quot;:1,&quot;deviceName&quot;:&quot;Chrome&quot;,&quot;deviceStatus&quot;:&quot;claimed&quot;,&quot;claimerName&quot;:&quot;no configured cert found&quot;,&quot;claimedUntil&quot;:&quot;2025-08-10T22:54:37.341024194Z&quot;}</pre></div></article></div></div></div></span><span><a class="btn modal-button modal-button-details float-end partner-message-button" onclick="scrollToMessage(&#x27;d50de717-83f1-4b88-b8ae-ee74e812c1cc&#x27;,18360)"><span class="icon is-small"><i class="fas fa-right-left"></i></span></a></span><h1 class="title ms-3 text-ellipsis text-success" style="overflow: hidden;"><span class="msg-sequence tag is-info is-light me-3 is-size-4 test-message-number text-success">18362</span><i class="fas me-1 fa-reply text-success" title="Response"></i><span class="font-monospace title ms-3 ">200</span><span style="display: block;"><span class="is-size-7 ms-4 "><span class="icon"><i class="fas fa-clock"></i></span>00:49:37.345954954+02:00</span><span class="is-size-7 ms-4">127.0.0.1:58208<span class="icon"><i class="fas fa-arrow-left"></i></span>RU1-Ref-ORG-Web-HS2:80</span></span></h1></div></div></header><div class="card-content test-card-content msg-content"><div><div class="tile is-ancestor pe-2"><div class="tile is-ancestor pe-2"><div class="tile is-parent is-vertical pe-3"><div><div class="container page-break my-3"><div class="card full-width test-card is-primary notification"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="tile is-child pe-3"><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 text-danger header-toggle"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialoghfrZfPl0mGoTPnTin3Mu" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialoghfrZfPl0mGoTPnTin3Mu" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of header</p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialoghfrZfPl0mGoTPnTin3Mu"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialoghfrZfPl0mGoTPnTin3Mu" style="white-space: pre-wrap;word-wrap: break-word;">Date: Sun, 10 Aug 2025 22:49:37 GMT
+Content-Type: application/json
+Connection: keep-alive
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+content-length: 150</pre></div></article></div></div></div></span><div class="text-danger"><h2 class="title">RES Headers</h2></div></div></div></header><div class="card-content test-card-content msg-header-content test-msg-header-content"><div><table class="table"><tbody><tr><td><pre>Date</pre></td><td><pre class="value"><span class="is-size-7">Sun, 10 Aug 2025 22:49:37 GMT</span></pre></td></tr><tr><td><pre>Content-Type</pre></td><td><pre class="value"><span class="is-size-7">application/json</span></pre></td></tr><tr><td><pre>Connection</pre></td><td><pre class="value"><span class="is-size-7">keep-alive</span></pre></td></tr><tr><td><pre>Strict-Transport-Security</pre></td><td><pre class="value"><span class="is-size-7">max-age=31536000; includeSubDomains</span></pre></td></tr><tr><td><pre>content-length</pre></td><td><pre class="value"><span class="is-size-7">150</span></pre></td></tr></tbody></table></div></div></div></div></div><div><div class="container page-break my-3"><div class="card full-width test-card is-info notification"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="tile is-child pe-3"><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 text-info body-toggle"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogBe7KaQiy2LaPyadaUIZN" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogBe7KaQiy2LaPyadaUIZN" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of body</p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogBe7KaQiy2LaPyadaUIZN"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogBe7KaQiy2LaPyadaUIZN" style="white-space: pre-wrap;word-wrap: break-word;">{&quot;deviceId&quot;:1,&quot;deviceName&quot;:&quot;Chrome&quot;,&quot;deviceStatus&quot;:&quot;claimed&quot;,&quot;claimerName&quot;:&quot;no configured cert found&quot;,&quot;claimedUntil&quot;:&quot;2025-08-10T22:54:37.341024194Z&quot;}</pre></div></article></div></div></div></span><div class="text-info"><h2 class="title">RES Body</h2></div></div></div></header><div class="card-content test-card-content msg-body-content test-msg-body-content"><div><div class="tile is-ancestor pe-2"><div class="tile is-vertical is-parent pe-2"><div class="tile is-child pe-3"><pre class="json language-json">{
+  "deviceId" : 1,
+  "deviceName" : "Chrome",
+  "deviceStatus" : "claimed",
+  "claimerName" : "no configured cert found",
+  "claimedUntil" : "2025-08-10T22:54:37.341024194Z"
+}</pre></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div><div><div class="container page-break mx-3 mt-3"><div class="card full-width test-card msg-card"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="full-width"><a name="684bd8f4-ef9c-4bf1-8176-1bf629882e77"></a><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 msg-toggle has-text-link"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialog4d9vIBzJ9izXmoV18un7" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialog4d9vIBzJ9izXmoV18un7" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of </p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialog4d9vIBzJ9izXmoV18un7"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialog4d9vIBzJ9izXmoV18un7" style="white-space: pre-wrap;word-wrap: break-word;">GET /ti-messenger-testdriver/ HTTP/1.1
+Content-Type: application/json
+Accept: */*
+Transaction-Id: @TCID:TIM_V2_BASIS_AF_000102/af90243a-8a89-4640-8f03-0ac02592d3a4
+Proxy-Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.14)
+Accept-Encoding: gzip,deflate
+content-length: 0
+Host: oapub-0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev:443
+
+</pre></div></article></div></div></div></span><span><a class="btn modal-button modal-button-details float-end partner-message-button" onclick="scrollToMessage(&#x27;ccaf8f15-5120-4864-93e7-597ff0e795a2&#x27;,18363)"><span class="icon is-small"><i class="fas fa-right-left"></i></span></a></span><h1 class="title ms-3 text-ellipsis has-text-link" style="overflow: hidden;"><span class="msg-sequence tag is-info is-light me-3 is-size-4 test-message-number has-text-link">18363</span><i class="fas me-1 fa-share has-text-link" title="Request"></i><span class="font-monospace title ms-3 ">GET /ti-messenger-testdriver/</span><span style="display: block;"><span class="is-size-7 ms-4 "><span class="icon"><i class="fas fa-clock"></i></span>00:49:37.364163054+02:00</span><span class="is-size-7 ms-4">127.0.0.1:58218<span class="icon"><i class="fas fa-arrow-right"></i></span>RU1-Ref-ORG-Web-HS2:80</span></span></h1></div></div></header><div class="card-content test-card-content msg-content"><div><div class="tile is-ancestor pe-2"><div class="tile is-ancestor pe-2"><div class="tile is-parent is-vertical pe-3"><div><div class="container page-break my-3"><div class="card full-width test-card is-primary notification"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="tile is-child pe-3"><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 text-danger header-toggle"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogsp6L1GZ0UBPXN6Nv6vOh" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogsp6L1GZ0UBPXN6Nv6vOh" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of header</p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogsp6L1GZ0UBPXN6Nv6vOh"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogsp6L1GZ0UBPXN6Nv6vOh" style="white-space: pre-wrap;word-wrap: break-word;">Content-Type: application/json
+Accept: */*
+Transaction-Id: @TCID:TIM_V2_BASIS_AF_000102/af90243a-8a89-4640-8f03-0ac02592d3a4
+Proxy-Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.14)
+Accept-Encoding: gzip,deflate
+content-length: 0
+Host: oapub-0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev:443</pre></div></article></div></div></div></span><div class="text-danger"><h2 class="title">REQ Headers</h2></div></div></div></header><div class="card-content test-card-content msg-header-content test-msg-header-content"><div><table class="table"><tbody><tr><td><pre>Content-Type</pre></td><td><pre class="value"><span class="is-size-7">application/json</span></pre></td></tr><tr><td><pre>Accept</pre></td><td><pre class="value"><span class="is-size-7">*/*</span></pre></td></tr><tr><td><pre>Transaction-Id</pre></td><td><pre class="value"><span class="is-size-7">@TCID:TIM_V2_BASIS_AF_000102/af90243a-8a89-4640-8f03-0ac02592d3a4</span></pre></td></tr><tr><td><pre>Proxy-Connection</pre></td><td><pre class="value"><span class="is-size-7">Keep-Alive</span></pre></td></tr><tr><td><pre>User-Agent</pre></td><td><pre class="value"><span class="is-size-7">Apache-HttpClient/4.5.13 (Java/17.0.14)</span></pre></td></tr><tr><td><pre>Accept-Encoding</pre></td><td><pre class="value"><span class="is-size-7">gzip,deflate</span></pre></td></tr><tr><td><pre>content-length</pre></td><td><pre class="value"><span class="is-size-7">0</span></pre></td></tr><tr><td><pre>Host</pre></td><td><pre class="value"><div><div>oapub-0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev:443</div></div></pre></td></tr></tbody></table></div></div></div></div></div><div class="is-info notification container is-child"><h2 class="title">REQ Body Empty</h2></div></div></div></div></div></div></div></div></div><div><div class="container page-break mx-3 mt-3"><div class="card full-width test-card msg-card"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="full-width"><a name="ccaf8f15-5120-4864-93e7-597ff0e795a2"></a><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 msg-toggle text-success"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialog2eFEHpQlaR6qQMXbAyuf" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialog2eFEHpQlaR6qQMXbAyuf" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of </p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialog2eFEHpQlaR6qQMXbAyuf"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialog2eFEHpQlaR6qQMXbAyuf" style="white-space: pre-wrap;word-wrap: break-word;">HTTP/1.1 200 
+Date: Sun, 10 Aug 2025 22:49:37 GMT
+Content-Type: application/json
+Connection: keep-alive
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+content-length: 1022
+
+{&quot;title&quot;:&quot;OrgAdminClient TestDriver&quot;,&quot;description&quot;:&quot;OrgAdminClient TestDriver Description&quot;,&quot;homeserver&quot;:&quot;https://0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev&quot;,&quot;contact&quot;:{&quot;name&quot;:&quot;Akquinet&quot;,&quot;url&quot;:&quot;https://www.akquinet.de&quot;,&quot;email&quot;:&quot;ehealth-servicedesk@akquinet.de&quot;},&quot;clientInfo&quot;:{&quot;browserInfo&quot;:{&quot;name&quot;:&quot;Chrome Browser&quot;,&quot;version&quot;:&quot;112.0.5615.49&quot;},&quot;name&quot;:&quot;TIM Ref OrgAdmin Client&quot;,&quot;description&quot;:&quot;TIM Ref OrgAdmin Client Description&quot;,&quot;version&quot;:&quot;0.13.1&quot;,&quot;osInfo&quot;:{&quot;operatingSystem&quot;:&quot;Linux&quot;,&quot;version&quot;:&quot;5.15&quot;},&quot;applicationType&quot;:&quot;WebApp&quot;,&quot;matrixVersion&quot;:&quot;1.3&quot;,&quot;canAdministrateFhirOrganization&quot;:true,&quot;canAdministrateFhirPractitioner&quot;:false,&quot;canSendMessages&quot;:false},&quot;fachdienstInfo&quot;:{&quot;name&quot;:&quot;TIM Ref Fachdienst&quot;,&quot;description&quot;:&quot;TIM Ref Fachdienst Description&quot;,&quot;version&quot;:&quot;0.29.0&quot;,&quot;osInfo&quot;:{&quot;operatingSystem&quot;:&quot;Linux&quot;,&quot;version&quot;:&quot;5.15&quot;},&quot;applicationType&quot;:&quot;WebApp&quot;,&quot;contact&quot;:{&quot;name&quot;:&quot;Akquinet&quot;,&quot;url&quot;:&quot;https://www.akquinet.de&quot;,&quot;email&quot;:&quot;ehealth-servicedesk@akquinet.de&quot;},&quot;matrixVersion&quot;:&quot;1.3&quot;},&quot;testDriverVersion&quot;:&quot;0.19.1&quot;}</pre></div></article></div></div></div></span><span><a class="btn modal-button modal-button-details float-end partner-message-button" onclick="scrollToMessage(&#x27;684bd8f4-ef9c-4bf1-8176-1bf629882e77&#x27;,18362)"><span class="icon is-small"><i class="fas fa-right-left"></i></span></a></span><h1 class="title ms-3 text-ellipsis text-success" style="overflow: hidden;"><span class="msg-sequence tag is-info is-light me-3 is-size-4 test-message-number text-success">18364</span><i class="fas me-1 fa-reply text-success" title="Response"></i><span class="font-monospace title ms-3 ">200</span><span style="display: block;"><span class="is-size-7 ms-4 "><span class="icon"><i class="fas fa-clock"></i></span>00:49:37.418387253+02:00</span><span class="is-size-7 ms-4">127.0.0.1:58218<span class="icon"><i class="fas fa-arrow-left"></i></span>RU1-Ref-ORG-Web-HS2:80</span></span></h1></div></div></header><div class="card-content test-card-content msg-content"><div><div class="tile is-ancestor pe-2"><div class="tile is-ancestor pe-2"><div class="tile is-parent is-vertical pe-3"><div><div class="container page-break my-3"><div class="card full-width test-card is-primary notification"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="tile is-child pe-3"><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 text-danger header-toggle"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogO5v1bqfZVA1Nmvjch3EX" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogO5v1bqfZVA1Nmvjch3EX" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of header</p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogO5v1bqfZVA1Nmvjch3EX"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogO5v1bqfZVA1Nmvjch3EX" style="white-space: pre-wrap;word-wrap: break-word;">Date: Sun, 10 Aug 2025 22:49:37 GMT
+Content-Type: application/json
+Connection: keep-alive
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+content-length: 1022</pre></div></article></div></div></div></span><div class="text-danger"><h2 class="title">RES Headers</h2></div></div></div></header><div class="card-content test-card-content msg-header-content test-msg-header-content"><div><table class="table"><tbody><tr><td><pre>Date</pre></td><td><pre class="value"><span class="is-size-7">Sun, 10 Aug 2025 22:49:37 GMT</span></pre></td></tr><tr><td><pre>Content-Type</pre></td><td><pre class="value"><span class="is-size-7">application/json</span></pre></td></tr><tr><td><pre>Connection</pre></td><td><pre class="value"><span class="is-size-7">keep-alive</span></pre></td></tr><tr><td><pre>Strict-Transport-Security</pre></td><td><pre class="value"><span class="is-size-7">max-age=31536000; includeSubDomains</span></pre></td></tr><tr><td><pre>content-length</pre></td><td><pre class="value"><span class="is-size-7">1022</span></pre></td></tr></tbody></table></div></div></div></div></div><div><div class="container page-break my-3"><div class="card full-width test-card is-info notification"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="tile is-child pe-3"><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 text-info body-toggle"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogkN7gJUqGfI7x4LiZA6vB" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogkN7gJUqGfI7x4LiZA6vB" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of body</p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogkN7gJUqGfI7x4LiZA6vB"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogkN7gJUqGfI7x4LiZA6vB" style="white-space: pre-wrap;word-wrap: break-word;">{&quot;title&quot;:&quot;OrgAdminClient TestDriver&quot;,&quot;description&quot;:&quot;OrgAdminClient TestDriver Description&quot;,&quot;homeserver&quot;:&quot;https://0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev&quot;,&quot;contact&quot;:{&quot;name&quot;:&quot;Akquinet&quot;,&quot;url&quot;:&quot;https://www.akquinet.de&quot;,&quot;email&quot;:&quot;ehealth-servicedesk@akquinet.de&quot;},&quot;clientInfo&quot;:{&quot;browserInfo&quot;:{&quot;name&quot;:&quot;Chrome Browser&quot;,&quot;version&quot;:&quot;112.0.5615.49&quot;},&quot;name&quot;:&quot;TIM Ref OrgAdmin Client&quot;,&quot;description&quot;:&quot;TIM Ref OrgAdmin Client Description&quot;,&quot;version&quot;:&quot;0.13.1&quot;,&quot;osInfo&quot;:{&quot;operatingSystem&quot;:&quot;Linux&quot;,&quot;version&quot;:&quot;5.15&quot;},&quot;applicationType&quot;:&quot;WebApp&quot;,&quot;matrixVersion&quot;:&quot;1.3&quot;,&quot;canAdministrateFhirOrganization&quot;:true,&quot;canAdministrateFhirPractitioner&quot;:false,&quot;canSendMessages&quot;:false},&quot;fachdienstInfo&quot;:{&quot;name&quot;:&quot;TIM Ref Fachdienst&quot;,&quot;description&quot;:&quot;TIM Ref Fachdienst Description&quot;,&quot;version&quot;:&quot;0.29.0&quot;,&quot;osInfo&quot;:{&quot;operatingSystem&quot;:&quot;Linux&quot;,&quot;version&quot;:&quot;5.15&quot;},&quot;applicationType&quot;:&quot;WebApp&quot;,&quot;contact&quot;:{&quot;name&quot;:&quot;Akquinet&quot;,&quot;url&quot;:&quot;https://www.akquinet.de&quot;,&quot;email&quot;:&quot;ehealth-servicedesk@akquinet.de&quot;},&quot;matrixVersion&quot;:&quot;1.3&quot;},&quot;testDriverVersion&quot;:&quot;0.19.1&quot;}</pre></div></article></div></div></div></span><div class="text-info"><h2 class="title">RES Body</h2></div></div></div></header><div class="card-content test-card-content msg-body-content test-msg-body-content"><div><div class="tile is-ancestor pe-2"><div class="tile is-vertical is-parent pe-2"><div class="tile is-child pe-3"><pre class="json language-json">{
+  "title" : "OrgAdminClient TestDriver",
+  "description" : "OrgAdminClient TestDriver Description",
+  "homeserver" : "https://0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev",
+  "contact" : {
+    "name" : "Akquinet",
+    "url" : "https://www.akquinet.de",
+    "email" : "ehealth-servicedesk@akquinet.de"
+  },
+  "clientInfo" : {
+    "browserInfo" : {
+      "name" : "Chrome Browser",
+      "version" : "112.0.5615.49"
+    },
+    "name" : "TIM Ref OrgAdmin Client",
+    "description" : "TIM Ref OrgAdmin Client Description",
+    "version" : "0.13.1",
+    "osInfo" : {
+      "operatingSystem" : "Linux",
+      "version" : "5.15"
+    },
+    "applicationType" : "WebApp",
+    "matrixVersion" : "1.3",
+    "canAdministrateFhirOrganization" : true,
+    "canAdministrateFhirPractitioner" : false,
+    "canSendMessages" : false
+  },
+  "fachdienstInfo" : {
+    "name" : "TIM Ref Fachdienst",
+    "description" : "TIM Ref Fachdienst Description",
+    "version" : "0.29.0",
+    "osInfo" : {
+      "operatingSystem" : "Linux",
+      "version" : "5.15"
+    },
+    "applicationType" : "WebApp",
+    "contact" : {
+      "name" : "Akquinet",
+      "url" : "https://www.akquinet.de",
+      "email" : "ehealth-servicedesk@akquinet.de"
+    },
+    "matrixVersion" : "1.3"
+  },
+  "testDriverVersion" : "0.19.1"
+}</pre></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div><div><div class="container page-break mx-3 mt-3"><div class="card full-width test-card msg-card"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="full-width"><a name="76319918-d354-43e4-a23a-74fa94773fdd"></a><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 msg-toggle has-text-link"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogZmUsos4k55Xd8XQuQW5F" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogZmUsos4k55Xd8XQuQW5F" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of </p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogZmUsos4k55Xd8XQuQW5F"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogZmUsos4k55Xd8XQuQW5F" style="white-space: pre-wrap;word-wrap: break-word;">POST /ti-messenger-testdriver/devices/1/login HTTP/1.1
+Content-Type: application/json
+Accept: */*
+Transaction-Id: @TCID:TIM_V2_BASIS_AF_000102/af90243a-8a89-4640-8f03-0ac02592d3a4
+Content-Length: 0
+Proxy-Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.14)
+Accept-Encoding: gzip,deflate
+Host: oapub-0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev:443
+
+</pre></div></article></div></div></div></span><span><a class="btn modal-button modal-button-details float-end partner-message-button" onclick="scrollToMessage(&#x27;6826bc3a-6442-4a86-8c07-4dfdbdf70c86&#x27;,18365)"><span class="icon is-small"><i class="fas fa-right-left"></i></span></a></span><h1 class="title ms-3 text-ellipsis has-text-link" style="overflow: hidden;"><span class="msg-sequence tag is-info is-light me-3 is-size-4 test-message-number has-text-link">18365</span><i class="fas me-1 fa-share has-text-link" title="Request"></i><span class="font-monospace title ms-3 ">POST /ti-messenger-testdriver/devices/1/login</span><span style="display: block;"><span class="is-size-7 ms-4 "><span class="icon"><i class="fas fa-clock"></i></span>00:49:37.434056923+02:00</span><span class="is-size-7 ms-4">127.0.0.1:58226<span class="icon"><i class="fas fa-arrow-right"></i></span>RU1-Ref-ORG-Web-HS2:80</span></span></h1></div></div></header><div class="card-content test-card-content msg-content"><div><div class="tile is-ancestor pe-2"><div class="tile is-ancestor pe-2"><div class="tile is-parent is-vertical pe-3"><div><div class="container page-break my-3"><div class="card full-width test-card is-primary notification"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="tile is-child pe-3"><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 text-danger header-toggle"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialog6WKa7Dsr1qRAcqJCKqRs" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialog6WKa7Dsr1qRAcqJCKqRs" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of header</p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialog6WKa7Dsr1qRAcqJCKqRs"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialog6WKa7Dsr1qRAcqJCKqRs" style="white-space: pre-wrap;word-wrap: break-word;">Content-Type: application/json
+Accept: */*
+Transaction-Id: @TCID:TIM_V2_BASIS_AF_000102/af90243a-8a89-4640-8f03-0ac02592d3a4
+Content-Length: 0
+Proxy-Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.14)
+Accept-Encoding: gzip,deflate
+Host: oapub-0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev:443</pre></div></article></div></div></div></span><div class="text-danger"><h2 class="title">REQ Headers</h2></div></div></div></header><div class="card-content test-card-content msg-header-content test-msg-header-content"><div><table class="table"><tbody><tr><td><pre>Content-Type</pre></td><td><pre class="value"><span class="is-size-7">application/json</span></pre></td></tr><tr><td><pre>Accept</pre></td><td><pre class="value"><span class="is-size-7">*/*</span></pre></td></tr><tr><td><pre>Transaction-Id</pre></td><td><pre class="value"><span class="is-size-7">@TCID:TIM_V2_BASIS_AF_000102/af90243a-8a89-4640-8f03-0ac02592d3a4</span></pre></td></tr><tr><td><pre>Content-Length</pre></td><td><pre class="value"><span class="is-size-7">0</span></pre></td></tr><tr><td><pre>Proxy-Connection</pre></td><td><pre class="value"><span class="is-size-7">Keep-Alive</span></pre></td></tr><tr><td><pre>User-Agent</pre></td><td><pre class="value"><span class="is-size-7">Apache-HttpClient/4.5.13 (Java/17.0.14)</span></pre></td></tr><tr><td><pre>Accept-Encoding</pre></td><td><pre class="value"><span class="is-size-7">gzip,deflate</span></pre></td></tr><tr><td><pre>Host</pre></td><td><pre class="value"><div><div>oapub-0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev:443</div></div></pre></td></tr></tbody></table></div></div></div></div></div><div class="is-info notification container is-child"><h2 class="title">REQ Body Empty</h2></div></div></div></div></div></div></div></div></div><div><div class="container page-break mx-3 mt-3"><div class="card full-width test-card msg-card"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="full-width"><a name="6826bc3a-6442-4a86-8c07-4dfdbdf70c86"></a><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 msg-toggle text-success"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogt2frjxQ9N7jYJ5TwfZYW" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogt2frjxQ9N7jYJ5TwfZYW" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of </p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogt2frjxQ9N7jYJ5TwfZYW"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogt2frjxQ9N7jYJ5TwfZYW" style="white-space: pre-wrap;word-wrap: break-word;">HTTP/1.1 200 
+Date: Sun, 10 Aug 2025 22:49:40 GMT
+Content-Type: application/json
+Connection: keep-alive
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+content-length: 85
+
+{&quot;username&quot;:&quot;5kfzca6c&quot;,&quot;password&quot;:&quot;s3jDIgg0L2OjqbnN&quot;,&quot;displayName&quot;:&quot;Admin&quot;,&quot;mxid&quot;:&quot;&quot;}</pre></div></article></div></div></div></span><span><a class="btn modal-button modal-button-details float-end partner-message-button" onclick="scrollToMessage(&#x27;76319918-d354-43e4-a23a-74fa94773fdd&#x27;,18364)"><span class="icon is-small"><i class="fas fa-right-left"></i></span></a></span><h1 class="title ms-3 text-ellipsis text-success" style="overflow: hidden;"><span class="msg-sequence tag is-info is-light me-3 is-size-4 test-message-number text-success">18366</span><i class="fas me-1 fa-reply text-success" title="Response"></i><span class="font-monospace title ms-3 ">200</span><span style="display: block;"><span class="is-size-7 ms-4 "><span class="icon"><i class="fas fa-clock"></i></span>00:49:40.767573675+02:00</span><span class="is-size-7 ms-4">127.0.0.1:58226<span class="icon"><i class="fas fa-arrow-left"></i></span>RU1-Ref-ORG-Web-HS2:80</span></span></h1></div></div></header><div class="card-content test-card-content msg-content"><div><div class="tile is-ancestor pe-2"><div class="tile is-ancestor pe-2"><div class="tile is-parent is-vertical pe-3"><div><div class="container page-break my-3"><div class="card full-width test-card is-primary notification"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="tile is-child pe-3"><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 text-danger header-toggle"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogNa06bO7NZQvUJmqQLz3v" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogNa06bO7NZQvUJmqQLz3v" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of header</p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogNa06bO7NZQvUJmqQLz3v"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogNa06bO7NZQvUJmqQLz3v" style="white-space: pre-wrap;word-wrap: break-word;">Date: Sun, 10 Aug 2025 22:49:40 GMT
+Content-Type: application/json
+Connection: keep-alive
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+content-length: 85</pre></div></article></div></div></div></span><div class="text-danger"><h2 class="title">RES Headers</h2></div></div></div></header><div class="card-content test-card-content msg-header-content test-msg-header-content"><div><table class="table"><tbody><tr><td><pre>Date</pre></td><td><pre class="value"><span class="is-size-7">Sun, 10 Aug 2025 22:49:40 GMT</span></pre></td></tr><tr><td><pre>Content-Type</pre></td><td><pre class="value"><span class="is-size-7">application/json</span></pre></td></tr><tr><td><pre>Connection</pre></td><td><pre class="value"><span class="is-size-7">keep-alive</span></pre></td></tr><tr><td><pre>Strict-Transport-Security</pre></td><td><pre class="value"><span class="is-size-7">max-age=31536000; includeSubDomains</span></pre></td></tr><tr><td><pre>content-length</pre></td><td><pre class="value"><span class="is-size-7">85</span></pre></td></tr></tbody></table></div></div></div></div></div><div><div class="container page-break my-3"><div class="card full-width test-card is-info notification"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="tile is-child pe-3"><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 text-info body-toggle"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogrPXXDRisAVJnpHkfgLys" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogrPXXDRisAVJnpHkfgLys" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of body</p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogrPXXDRisAVJnpHkfgLys"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogrPXXDRisAVJnpHkfgLys" style="white-space: pre-wrap;word-wrap: break-word;">{&quot;username&quot;:&quot;5kfzca6c&quot;,&quot;password&quot;:&quot;s3jDIgg0L2OjqbnN&quot;,&quot;displayName&quot;:&quot;Admin&quot;,&quot;mxid&quot;:&quot;&quot;}</pre></div></article></div></div></div></span><div class="text-info"><h2 class="title">RES Body</h2></div></div></div></header><div class="card-content test-card-content msg-body-content test-msg-body-content"><div><div class="tile is-ancestor pe-2"><div class="tile is-vertical is-parent pe-2"><div class="tile is-child pe-3"><pre class="json language-json">{
+  "username" : "5kfzca6c",
+  "password" : "s3jDIgg0L2OjqbnN",
+  "displayName" : "Admin",
+  "mxid" : ""
+}</pre></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div><div><div class="container page-break mx-3 mt-3"><div class="card full-width test-card msg-card"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="full-width"><a name="81c0f517-0226-4d69-b6da-59ae273e9d85"></a><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 msg-toggle has-text-link"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialog0LiD3Uwnq4hO7r0pDplS" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialog0LiD3Uwnq4hO7r0pDplS" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of </p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialog0LiD3Uwnq4hO7r0pDplS"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialog0LiD3Uwnq4hO7r0pDplS" style="white-space: pre-wrap;word-wrap: break-word;">GET /ti-messenger-testdriver/ HTTP/1.1
+Content-Type: application/json
+Accept: */*
+Proxy-Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.14)
+Accept-Encoding: gzip,deflate
+content-length: 0
+Host: oapub-0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev:443
+
+</pre></div></article></div></div></div></span><span><a class="btn modal-button modal-button-details float-end partner-message-button" onclick="scrollToMessage(&#x27;4f357616-5fb4-4cb3-b145-4d00958fe731&#x27;,18367)"><span class="icon is-small"><i class="fas fa-right-left"></i></span></a></span><h1 class="title ms-3 text-ellipsis has-text-link" style="overflow: hidden;"><span class="msg-sequence tag is-info is-light me-3 is-size-4 test-message-number has-text-link">18367</span><i class="fas me-1 fa-share has-text-link" title="Request"></i><span class="font-monospace title ms-3 ">GET /ti-messenger-testdriver/</span><span style="display: block;"><span class="is-size-7 ms-4 "><span class="icon"><i class="fas fa-clock"></i></span>00:49:40.988811133+02:00</span><span class="is-size-7 ms-4">127.0.0.1:58242<span class="icon"><i class="fas fa-arrow-right"></i></span>RU1-Ref-ORG-Web-HS2:80</span></span></h1></div></div></header><div class="card-content test-card-content msg-content"><div><div class="tile is-ancestor pe-2"><div class="tile is-ancestor pe-2"><div class="tile is-parent is-vertical pe-3"><div><div class="container page-break my-3"><div class="card full-width test-card is-primary notification"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="tile is-child pe-3"><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 text-danger header-toggle"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialoghBAJo9xdsqqffS2aZzGI" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialoghBAJo9xdsqqffS2aZzGI" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of header</p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialoghBAJo9xdsqqffS2aZzGI"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialoghBAJo9xdsqqffS2aZzGI" style="white-space: pre-wrap;word-wrap: break-word;">Content-Type: application/json
+Accept: */*
+Proxy-Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.14)
+Accept-Encoding: gzip,deflate
+content-length: 0
+Host: oapub-0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev:443</pre></div></article></div></div></div></span><div class="text-danger"><h2 class="title">REQ Headers</h2></div></div></div></header><div class="card-content test-card-content msg-header-content test-msg-header-content"><div><table class="table"><tbody><tr><td><pre>Content-Type</pre></td><td><pre class="value"><span class="is-size-7">application/json</span></pre></td></tr><tr><td><pre>Accept</pre></td><td><pre class="value"><span class="is-size-7">*/*</span></pre></td></tr><tr><td><pre>Proxy-Connection</pre></td><td><pre class="value"><span class="is-size-7">Keep-Alive</span></pre></td></tr><tr><td><pre>User-Agent</pre></td><td><pre class="value"><span class="is-size-7">Apache-HttpClient/4.5.13 (Java/17.0.14)</span></pre></td></tr><tr><td><pre>Accept-Encoding</pre></td><td><pre class="value"><span class="is-size-7">gzip,deflate</span></pre></td></tr><tr><td><pre>content-length</pre></td><td><pre class="value"><span class="is-size-7">0</span></pre></td></tr><tr><td><pre>Host</pre></td><td><pre class="value"><div><div>oapub-0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev:443</div></div></pre></td></tr></tbody></table></div></div></div></div></div><div class="is-info notification container is-child"><h2 class="title">REQ Body Empty</h2></div></div></div></div></div></div></div></div></div><div><div class="container page-break mx-3 mt-3"><div class="card full-width test-card msg-card"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="full-width"><a name="4f357616-5fb4-4cb3-b145-4d00958fe731"></a><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 msg-toggle text-success"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogVkPrONIcNm2W1Sx9fc2C" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogVkPrONIcNm2W1Sx9fc2C" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of </p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogVkPrONIcNm2W1Sx9fc2C"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogVkPrONIcNm2W1Sx9fc2C" style="white-space: pre-wrap;word-wrap: break-word;">HTTP/1.1 200 
+Date: Sun, 10 Aug 2025 22:49:41 GMT
+Content-Type: application/json
+Connection: keep-alive
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+content-length: 1022
+
+{&quot;title&quot;:&quot;OrgAdminClient TestDriver&quot;,&quot;description&quot;:&quot;OrgAdminClient TestDriver Description&quot;,&quot;homeserver&quot;:&quot;https://0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev&quot;,&quot;contact&quot;:{&quot;name&quot;:&quot;Akquinet&quot;,&quot;url&quot;:&quot;https://www.akquinet.de&quot;,&quot;email&quot;:&quot;ehealth-servicedesk@akquinet.de&quot;},&quot;clientInfo&quot;:{&quot;browserInfo&quot;:{&quot;name&quot;:&quot;Chrome Browser&quot;,&quot;version&quot;:&quot;112.0.5615.49&quot;},&quot;name&quot;:&quot;TIM Ref OrgAdmin Client&quot;,&quot;description&quot;:&quot;TIM Ref OrgAdmin Client Description&quot;,&quot;version&quot;:&quot;0.13.1&quot;,&quot;osInfo&quot;:{&quot;operatingSystem&quot;:&quot;Linux&quot;,&quot;version&quot;:&quot;5.15&quot;},&quot;applicationType&quot;:&quot;WebApp&quot;,&quot;matrixVersion&quot;:&quot;1.3&quot;,&quot;canAdministrateFhirOrganization&quot;:true,&quot;canAdministrateFhirPractitioner&quot;:false,&quot;canSendMessages&quot;:false},&quot;fachdienstInfo&quot;:{&quot;name&quot;:&quot;TIM Ref Fachdienst&quot;,&quot;description&quot;:&quot;TIM Ref Fachdienst Description&quot;,&quot;version&quot;:&quot;0.29.0&quot;,&quot;osInfo&quot;:{&quot;operatingSystem&quot;:&quot;Linux&quot;,&quot;version&quot;:&quot;5.15&quot;},&quot;applicationType&quot;:&quot;WebApp&quot;,&quot;contact&quot;:{&quot;name&quot;:&quot;Akquinet&quot;,&quot;url&quot;:&quot;https://www.akquinet.de&quot;,&quot;email&quot;:&quot;ehealth-servicedesk@akquinet.de&quot;},&quot;matrixVersion&quot;:&quot;1.3&quot;},&quot;testDriverVersion&quot;:&quot;0.19.1&quot;}</pre></div></article></div></div></div></span><span><a class="btn modal-button modal-button-details float-end partner-message-button" onclick="scrollToMessage(&#x27;81c0f517-0226-4d69-b6da-59ae273e9d85&#x27;,18366)"><span class="icon is-small"><i class="fas fa-right-left"></i></span></a></span><h1 class="title ms-3 text-ellipsis text-success" style="overflow: hidden;"><span class="msg-sequence tag is-info is-light me-3 is-size-4 test-message-number text-success">18368</span><i class="fas me-1 fa-reply text-success" title="Response"></i><span class="font-monospace title ms-3 ">200</span><span style="display: block;"><span class="is-size-7 ms-4 "><span class="icon"><i class="fas fa-clock"></i></span>00:49:41.062036823+02:00</span><span class="is-size-7 ms-4">127.0.0.1:58242<span class="icon"><i class="fas fa-arrow-left"></i></span>RU1-Ref-ORG-Web-HS2:80</span></span></h1></div></div></header><div class="card-content test-card-content msg-content"><div><div class="tile is-ancestor pe-2"><div class="tile is-ancestor pe-2"><div class="tile is-parent is-vertical pe-3"><div><div class="container page-break my-3"><div class="card full-width test-card is-primary notification"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="tile is-child pe-3"><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 text-danger header-toggle"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialoggmWtwlzkCscK4TEVh0Ob" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialoggmWtwlzkCscK4TEVh0Ob" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of header</p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialoggmWtwlzkCscK4TEVh0Ob"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialoggmWtwlzkCscK4TEVh0Ob" style="white-space: pre-wrap;word-wrap: break-word;">Date: Sun, 10 Aug 2025 22:49:41 GMT
+Content-Type: application/json
+Connection: keep-alive
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+content-length: 1022</pre></div></article></div></div></div></span><div class="text-danger"><h2 class="title">RES Headers</h2></div></div></div></header><div class="card-content test-card-content msg-header-content test-msg-header-content"><div><table class="table"><tbody><tr><td><pre>Date</pre></td><td><pre class="value"><span class="is-size-7">Sun, 10 Aug 2025 22:49:41 GMT</span></pre></td></tr><tr><td><pre>Content-Type</pre></td><td><pre class="value"><span class="is-size-7">application/json</span></pre></td></tr><tr><td><pre>Connection</pre></td><td><pre class="value"><span class="is-size-7">keep-alive</span></pre></td></tr><tr><td><pre>Strict-Transport-Security</pre></td><td><pre class="value"><span class="is-size-7">max-age=31536000; includeSubDomains</span></pre></td></tr><tr><td><pre>content-length</pre></td><td><pre class="value"><span class="is-size-7">1022</span></pre></td></tr></tbody></table></div></div></div></div></div><div><div class="container page-break my-3"><div class="card full-width test-card is-info notification"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="tile is-child pe-3"><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 text-info body-toggle"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogxixulhLBLoppw2G6QKj2" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogxixulhLBLoppw2G6QKj2" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of body</p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogxixulhLBLoppw2G6QKj2"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogxixulhLBLoppw2G6QKj2" style="white-space: pre-wrap;word-wrap: break-word;">{&quot;title&quot;:&quot;OrgAdminClient TestDriver&quot;,&quot;description&quot;:&quot;OrgAdminClient TestDriver Description&quot;,&quot;homeserver&quot;:&quot;https://0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev&quot;,&quot;contact&quot;:{&quot;name&quot;:&quot;Akquinet&quot;,&quot;url&quot;:&quot;https://www.akquinet.de&quot;,&quot;email&quot;:&quot;ehealth-servicedesk@akquinet.de&quot;},&quot;clientInfo&quot;:{&quot;browserInfo&quot;:{&quot;name&quot;:&quot;Chrome Browser&quot;,&quot;version&quot;:&quot;112.0.5615.49&quot;},&quot;name&quot;:&quot;TIM Ref OrgAdmin Client&quot;,&quot;description&quot;:&quot;TIM Ref OrgAdmin Client Description&quot;,&quot;version&quot;:&quot;0.13.1&quot;,&quot;osInfo&quot;:{&quot;operatingSystem&quot;:&quot;Linux&quot;,&quot;version&quot;:&quot;5.15&quot;},&quot;applicationType&quot;:&quot;WebApp&quot;,&quot;matrixVersion&quot;:&quot;1.3&quot;,&quot;canAdministrateFhirOrganization&quot;:true,&quot;canAdministrateFhirPractitioner&quot;:false,&quot;canSendMessages&quot;:false},&quot;fachdienstInfo&quot;:{&quot;name&quot;:&quot;TIM Ref Fachdienst&quot;,&quot;description&quot;:&quot;TIM Ref Fachdienst Description&quot;,&quot;version&quot;:&quot;0.29.0&quot;,&quot;osInfo&quot;:{&quot;operatingSystem&quot;:&quot;Linux&quot;,&quot;version&quot;:&quot;5.15&quot;},&quot;applicationType&quot;:&quot;WebApp&quot;,&quot;contact&quot;:{&quot;name&quot;:&quot;Akquinet&quot;,&quot;url&quot;:&quot;https://www.akquinet.de&quot;,&quot;email&quot;:&quot;ehealth-servicedesk@akquinet.de&quot;},&quot;matrixVersion&quot;:&quot;1.3&quot;},&quot;testDriverVersion&quot;:&quot;0.19.1&quot;}</pre></div></article></div></div></div></span><div class="text-info"><h2 class="title">RES Body</h2></div></div></div></header><div class="card-content test-card-content msg-body-content test-msg-body-content"><div><div class="tile is-ancestor pe-2"><div class="tile is-vertical is-parent pe-2"><div class="tile is-child pe-3"><pre class="json language-json">{
+  "title" : "OrgAdminClient TestDriver",
+  "description" : "OrgAdminClient TestDriver Description",
+  "homeserver" : "https://0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev",
+  "contact" : {
+    "name" : "Akquinet",
+    "url" : "https://www.akquinet.de",
+    "email" : "ehealth-servicedesk@akquinet.de"
+  },
+  "clientInfo" : {
+    "browserInfo" : {
+      "name" : "Chrome Browser",
+      "version" : "112.0.5615.49"
+    },
+    "name" : "TIM Ref OrgAdmin Client",
+    "description" : "TIM Ref OrgAdmin Client Description",
+    "version" : "0.13.1",
+    "osInfo" : {
+      "operatingSystem" : "Linux",
+      "version" : "5.15"
+    },
+    "applicationType" : "WebApp",
+    "matrixVersion" : "1.3",
+    "canAdministrateFhirOrganization" : true,
+    "canAdministrateFhirPractitioner" : false,
+    "canSendMessages" : false
+  },
+  "fachdienstInfo" : {
+    "name" : "TIM Ref Fachdienst",
+    "description" : "TIM Ref Fachdienst Description",
+    "version" : "0.29.0",
+    "osInfo" : {
+      "operatingSystem" : "Linux",
+      "version" : "5.15"
+    },
+    "applicationType" : "WebApp",
+    "contact" : {
+      "name" : "Akquinet",
+      "url" : "https://www.akquinet.de",
+      "email" : "ehealth-servicedesk@akquinet.de"
+    },
+    "matrixVersion" : "1.3"
+  },
+  "testDriverVersion" : "0.19.1"
+}</pre></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div><div><div class="container page-break mx-3 mt-3"><div class="card full-width test-card msg-card"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="full-width"><a name="08d120bc-2927-4eb6-aa43-a226246387dc"></a><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 msg-toggle has-text-link"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogu4HbRf4t0yDA9LZ3947C" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogu4HbRf4t0yDA9LZ3947C" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of </p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogu4HbRf4t0yDA9LZ3947C"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogu4HbRf4t0yDA9LZ3947C" style="white-space: pre-wrap;word-wrap: break-word;">POST /ti-messenger-testdriver/devices/1/logout HTTP/1.1
+Content-Type: application/json
+Accept: */*
+Transaction-Id: @TCID:TIM_V2_BASIS_AF_000102/af90243a-8a89-4640-8f03-0ac02592d3a4
+Content-Length: 0
+Proxy-Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.14)
+Accept-Encoding: gzip,deflate
+Host: oapub-0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev:443
+
+</pre></div></article></div></div></div></span><span><a class="btn modal-button modal-button-details float-end partner-message-button" onclick="scrollToMessage(&#x27;e5807740-bea2-425a-b3e5-2db08c41c010&#x27;,18369)"><span class="icon is-small"><i class="fas fa-right-left"></i></span></a></span><h1 class="title ms-3 text-ellipsis has-text-link" style="overflow: hidden;"><span class="msg-sequence tag is-info is-light me-3 is-size-4 test-message-number has-text-link">18369</span><i class="fas me-1 fa-share has-text-link" title="Request"></i><span class="font-monospace title ms-3 ">POST /ti-messenger-testdriver/devices/1/logout</span><span style="display: block;"><span class="is-size-7 ms-4 "><span class="icon"><i class="fas fa-clock"></i></span>00:49:41.51848263+02:00</span><span class="is-size-7 ms-4">127.0.0.1:58254<span class="icon"><i class="fas fa-arrow-right"></i></span>RU1-Ref-ORG-Web-HS2:80</span></span></h1></div></div></header><div class="card-content test-card-content msg-content"><div><div class="tile is-ancestor pe-2"><div class="tile is-ancestor pe-2"><div class="tile is-parent is-vertical pe-3"><div><div class="container page-break my-3"><div class="card full-width test-card is-primary notification"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="tile is-child pe-3"><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 text-danger header-toggle"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogYSRYe6FacAN3GcQavF48" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogYSRYe6FacAN3GcQavF48" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of header</p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogYSRYe6FacAN3GcQavF48"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogYSRYe6FacAN3GcQavF48" style="white-space: pre-wrap;word-wrap: break-word;">Content-Type: application/json
+Accept: */*
+Transaction-Id: @TCID:TIM_V2_BASIS_AF_000102/af90243a-8a89-4640-8f03-0ac02592d3a4
+Content-Length: 0
+Proxy-Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.14)
+Accept-Encoding: gzip,deflate
+Host: oapub-0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev:443</pre></div></article></div></div></div></span><div class="text-danger"><h2 class="title">REQ Headers</h2></div></div></div></header><div class="card-content test-card-content msg-header-content test-msg-header-content"><div><table class="table"><tbody><tr><td><pre>Content-Type</pre></td><td><pre class="value"><span class="is-size-7">application/json</span></pre></td></tr><tr><td><pre>Accept</pre></td><td><pre class="value"><span class="is-size-7">*/*</span></pre></td></tr><tr><td><pre>Transaction-Id</pre></td><td><pre class="value"><span class="is-size-7">@TCID:TIM_V2_BASIS_AF_000102/af90243a-8a89-4640-8f03-0ac02592d3a4</span></pre></td></tr><tr><td><pre>Content-Length</pre></td><td><pre class="value"><span class="is-size-7">0</span></pre></td></tr><tr><td><pre>Proxy-Connection</pre></td><td><pre class="value"><span class="is-size-7">Keep-Alive</span></pre></td></tr><tr><td><pre>User-Agent</pre></td><td><pre class="value"><span class="is-size-7">Apache-HttpClient/4.5.13 (Java/17.0.14)</span></pre></td></tr><tr><td><pre>Accept-Encoding</pre></td><td><pre class="value"><span class="is-size-7">gzip,deflate</span></pre></td></tr><tr><td><pre>Host</pre></td><td><pre class="value"><div><div>oapub-0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev:443</div></div></pre></td></tr></tbody></table></div></div></div></div></div><div class="is-info notification container is-child"><h2 class="title">REQ Body Empty</h2></div></div></div></div></div></div></div></div></div><div><div class="container page-break mx-3 mt-3"><div class="card full-width test-card msg-card"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="full-width"><a name="e5807740-bea2-425a-b3e5-2db08c41c010"></a><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 msg-toggle text-success"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogAC3VeysaK8X7QQ76hAzP" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogAC3VeysaK8X7QQ76hAzP" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of </p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogAC3VeysaK8X7QQ76hAzP"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogAC3VeysaK8X7QQ76hAzP" style="white-space: pre-wrap;word-wrap: break-word;">HTTP/1.1 200 
+Date: Sun, 10 Aug 2025 22:49:41 GMT
+Content-Length: 0
+Connection: keep-alive
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+</pre></div></article></div></div></div></span><span><a class="btn modal-button modal-button-details float-end partner-message-button" onclick="scrollToMessage(&#x27;08d120bc-2927-4eb6-aa43-a226246387dc&#x27;,18368)"><span class="icon is-small"><i class="fas fa-right-left"></i></span></a></span><h1 class="title ms-3 text-ellipsis text-success" style="overflow: hidden;"><span class="msg-sequence tag is-info is-light me-3 is-size-4 test-message-number text-success">18370</span><i class="fas me-1 fa-reply text-success" title="Response"></i><span class="font-monospace title ms-3 ">200</span><span style="display: block;"><span class="is-size-7 ms-4 "><span class="icon"><i class="fas fa-clock"></i></span>00:49:41.778231489+02:00</span><span class="is-size-7 ms-4">127.0.0.1:58254<span class="icon"><i class="fas fa-arrow-left"></i></span>RU1-Ref-ORG-Web-HS2:80</span></span></h1></div></div></header><div class="card-content test-card-content msg-content"><div><div class="tile is-ancestor pe-2"><div class="tile is-ancestor pe-2"><div class="tile is-parent is-vertical pe-3"><div><div class="container page-break my-3"><div class="card full-width test-card is-primary notification"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="tile is-child pe-3"><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 text-danger header-toggle"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogBJhkj9shR2hmrhWIwa1Y" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogBJhkj9shR2hmrhWIwa1Y" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of header</p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogBJhkj9shR2hmrhWIwa1Y"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogBJhkj9shR2hmrhWIwa1Y" style="white-space: pre-wrap;word-wrap: break-word;">Date: Sun, 10 Aug 2025 22:49:41 GMT
+Content-Length: 0
+Connection: keep-alive
+Strict-Transport-Security: max-age=31536000; includeSubDomains</pre></div></article></div></div></div></span><div class="text-danger"><h2 class="title">RES Headers</h2></div></div></div></header><div class="card-content test-card-content msg-header-content test-msg-header-content"><div><table class="table"><tbody><tr><td><pre>Date</pre></td><td><pre class="value"><span class="is-size-7">Sun, 10 Aug 2025 22:49:41 GMT</span></pre></td></tr><tr><td><pre>Content-Length</pre></td><td><pre class="value"><span class="is-size-7">0</span></pre></td></tr><tr><td><pre>Connection</pre></td><td><pre class="value"><span class="is-size-7">keep-alive</span></pre></td></tr><tr><td><pre>Strict-Transport-Security</pre></td><td><pre class="value"><span class="is-size-7">max-age=31536000; includeSubDomains</span></pre></td></tr></tbody></table></div></div></div></div></div><div class="is-info notification container is-child"><h2 class="title">RES Body Empty</h2></div></div></div></div></div></div></div></div></div><div><div class="container page-break mx-3 mt-3"><div class="card full-width test-card msg-card"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="full-width"><a name="2b45d1cd-059e-4e7c-9d66-f451e943877a"></a><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 msg-toggle has-text-link"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogoHGVi0V9CLIewk37tlqL" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogoHGVi0V9CLIewk37tlqL" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of </p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogoHGVi0V9CLIewk37tlqL"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogoHGVi0V9CLIewk37tlqL" style="white-space: pre-wrap;word-wrap: break-word;">POST /ti-messenger-testdriver/devices/1/unclaim HTTP/1.1
+Content-Type: application/json
+Accept: */*
+Transaction-Id: @TCID:TIM_V2_BASIS_AF_000102/af90243a-8a89-4640-8f03-0ac02592d3a4
+Content-Length: 0
+Proxy-Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.14)
+Accept-Encoding: gzip,deflate
+Host: oapub-0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev:443
+
+</pre></div></article></div></div></div></span><span><a class="btn modal-button modal-button-details float-end partner-message-button" onclick="scrollToMessage(&#x27;3b7983c0-f9c4-43ed-902e-39f72158656f&#x27;,18371)"><span class="icon is-small"><i class="fas fa-right-left"></i></span></a></span><h1 class="title ms-3 text-ellipsis has-text-link" style="overflow: hidden;"><span class="msg-sequence tag is-info is-light me-3 is-size-4 test-message-number has-text-link">18371</span><i class="fas me-1 fa-share has-text-link" title="Request"></i><span class="font-monospace title ms-3 ">POST /ti-messenger-testdriver/devices/1/unclaim</span><span style="display: block;"><span class="is-size-7 ms-4 "><span class="icon"><i class="fas fa-clock"></i></span>00:49:41.789828429+02:00</span><span class="is-size-7 ms-4">127.0.0.1:58264<span class="icon"><i class="fas fa-arrow-right"></i></span>RU1-Ref-ORG-Web-HS2:80</span></span></h1></div></div></header><div class="card-content test-card-content msg-content"><div><div class="tile is-ancestor pe-2"><div class="tile is-ancestor pe-2"><div class="tile is-parent is-vertical pe-3"><div><div class="container page-break my-3"><div class="card full-width test-card is-primary notification"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="tile is-child pe-3"><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 text-danger header-toggle"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialoghLK0Gz5VAHzCSB3PXSk4" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialoghLK0Gz5VAHzCSB3PXSk4" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of header</p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialoghLK0Gz5VAHzCSB3PXSk4"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialoghLK0Gz5VAHzCSB3PXSk4" style="white-space: pre-wrap;word-wrap: break-word;">Content-Type: application/json
+Accept: */*
+Transaction-Id: @TCID:TIM_V2_BASIS_AF_000102/af90243a-8a89-4640-8f03-0ac02592d3a4
+Content-Length: 0
+Proxy-Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.14)
+Accept-Encoding: gzip,deflate
+Host: oapub-0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev:443</pre></div></article></div></div></div></span><div class="text-danger"><h2 class="title">REQ Headers</h2></div></div></div></header><div class="card-content test-card-content msg-header-content test-msg-header-content"><div><table class="table"><tbody><tr><td><pre>Content-Type</pre></td><td><pre class="value"><span class="is-size-7">application/json</span></pre></td></tr><tr><td><pre>Accept</pre></td><td><pre class="value"><span class="is-size-7">*/*</span></pre></td></tr><tr><td><pre>Transaction-Id</pre></td><td><pre class="value"><span class="is-size-7">@TCID:TIM_V2_BASIS_AF_000102/af90243a-8a89-4640-8f03-0ac02592d3a4</span></pre></td></tr><tr><td><pre>Content-Length</pre></td><td><pre class="value"><span class="is-size-7">0</span></pre></td></tr><tr><td><pre>Proxy-Connection</pre></td><td><pre class="value"><span class="is-size-7">Keep-Alive</span></pre></td></tr><tr><td><pre>User-Agent</pre></td><td><pre class="value"><span class="is-size-7">Apache-HttpClient/4.5.13 (Java/17.0.14)</span></pre></td></tr><tr><td><pre>Accept-Encoding</pre></td><td><pre class="value"><span class="is-size-7">gzip,deflate</span></pre></td></tr><tr><td><pre>Host</pre></td><td><pre class="value"><div><div>oapub-0ed5d2be-d54d-4b01-b98a-10f3465ca7b5.ru.timref.akquinet.nx2.dev:443</div></div></pre></td></tr></tbody></table></div></div></div></div></div><div class="is-info notification container is-child"><h2 class="title">REQ Body Empty</h2></div></div></div></div></div></div></div></div></div><div><div class="container page-break mx-3 mt-3"><div class="card full-width test-card msg-card"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="full-width"><a name="3b7983c0-f9c4-43ed-902e-39f72158656f"></a><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 msg-toggle text-success"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogmv53il71IW3z8GAF9peh" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogmv53il71IW3z8GAF9peh" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of </p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogmv53il71IW3z8GAF9peh"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogmv53il71IW3z8GAF9peh" style="white-space: pre-wrap;word-wrap: break-word;">HTTP/1.1 200 
+Date: Sun, 10 Aug 2025 22:49:41 GMT
+Content-Type: application/json
+Connection: keep-alive
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+content-length: 117
+
+{&quot;deviceId&quot;:1,&quot;deviceName&quot;:&quot;Chrome&quot;,&quot;deviceStatus&quot;:&quot;free&quot;,&quot;claimerName&quot;:&quot;&quot;,&quot;claimedUntil&quot;:&quot;2025-08-06T08:26:47.149Z&quot;}</pre></div></article></div></div></div></span><span><a class="btn modal-button modal-button-details float-end partner-message-button" onclick="scrollToMessage(&#x27;2b45d1cd-059e-4e7c-9d66-f451e943877a&#x27;,18370)"><span class="icon is-small"><i class="fas fa-right-left"></i></span></a></span><h1 class="title ms-3 text-ellipsis text-success" style="overflow: hidden;"><span class="msg-sequence tag is-info is-light me-3 is-size-4 test-message-number text-success">18372</span><i class="fas me-1 fa-reply text-success" title="Response"></i><span class="font-monospace title ms-3 ">200</span><span style="display: block;"><span class="is-size-7 ms-4 "><span class="icon"><i class="fas fa-clock"></i></span>00:49:41.954268758+02:00</span><span class="is-size-7 ms-4">127.0.0.1:58264<span class="icon"><i class="fas fa-arrow-left"></i></span>RU1-Ref-ORG-Web-HS2:80</span></span></h1></div></div></header><div class="card-content test-card-content msg-content"><div><div class="tile is-ancestor pe-2"><div class="tile is-ancestor pe-2"><div class="tile is-parent is-vertical pe-3"><div><div class="container page-break my-3"><div class="card full-width test-card is-primary notification"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="tile is-child pe-3"><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 text-danger header-toggle"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogW8cuZIRtzFmTYW8TQ2XX" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogW8cuZIRtzFmTYW8TQ2XX" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of header</p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogW8cuZIRtzFmTYW8TQ2XX"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogW8cuZIRtzFmTYW8TQ2XX" style="white-space: pre-wrap;word-wrap: break-word;">Date: Sun, 10 Aug 2025 22:49:41 GMT
+Content-Type: application/json
+Connection: keep-alive
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+content-length: 117</pre></div></article></div></div></div></span><div class="text-danger"><h2 class="title">RES Headers</h2></div></div></div></header><div class="card-content test-card-content msg-header-content test-msg-header-content"><div><table class="table"><tbody><tr><td><pre>Date</pre></td><td><pre class="value"><span class="is-size-7">Sun, 10 Aug 2025 22:49:41 GMT</span></pre></td></tr><tr><td><pre>Content-Type</pre></td><td><pre class="value"><span class="is-size-7">application/json</span></pre></td></tr><tr><td><pre>Connection</pre></td><td><pre class="value"><span class="is-size-7">keep-alive</span></pre></td></tr><tr><td><pre>Strict-Transport-Security</pre></td><td><pre class="value"><span class="is-size-7">max-age=31536000; includeSubDomains</span></pre></td></tr><tr><td><pre>content-length</pre></td><td><pre class="value"><span class="is-size-7">117</span></pre></td></tr></tbody></table></div></div></div></div></div><div><div class="container page-break my-3"><div class="card full-width test-card is-info notification"><header class="card-header test-card-header"><div class="card-header-title test-card-header-title card-toggle"><div class="tile is-child pe-3"><i class="fa-solid fa-toggle-on toggle-icon float-end me-3 is-size-3 text-info body-toggle"></i><span><a class="btn modal-button modal-button-details float-end mx-2 test-modal-content" data-bs-target="#dialogMe6hkhwmQ1Db2uNMdk4o" data-bs-toggle="modal"><span class="icon is-small"><i class="fas fa-align-left"></i></span></a><div class="modal" id="dialogMe6hkhwmQ1Db2uNMdk4o" role="dialog"><div class="modal-dialog"><div class="modal-background"></div><div class="modal-content" role="document" style="width: 900px;"><div class="modal-header bg-dark"><div style="display: inline-flex;"><p style="align-self: center;color:#ffff;" class="modal-title">Raw content of body</p><button class="btn btn-sm copyToClipboard-button" data-target="text-dialogMe6hkhwmQ1Db2uNMdk4o"><i class="fa fa-clipboard"></i></button></div><button class="btn btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><article class="message"><div class="message-body"><pre id="text-dialogMe6hkhwmQ1Db2uNMdk4o" style="white-space: pre-wrap;word-wrap: break-word;">{&quot;deviceId&quot;:1,&quot;deviceName&quot;:&quot;Chrome&quot;,&quot;deviceStatus&quot;:&quot;free&quot;,&quot;claimerName&quot;:&quot;&quot;,&quot;claimedUntil&quot;:&quot;2025-08-06T08:26:47.149Z&quot;}</pre></div></article></div></div></div></span><div class="text-info"><h2 class="title">RES Body</h2></div></div></div></header><div class="card-content test-card-content msg-body-content test-msg-body-content"><div><div class="tile is-ancestor pe-2"><div class="tile is-vertical is-parent pe-2"><div class="tile is-child pe-3"><pre class="json language-json">{
+  "deviceId" : 1,
+  "deviceName" : "Chrome",
+  "deviceStatus" : "free",
+  "claimerName" : "",
+  "claimedUntil" : "2025-08-06T08:26:47.149Z"
+}</pre></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div><div class="created fst-italic is-size-6 float-end me-6">Created Mon, 11 Aug 2025 00:49:41 +0200</div></div></section></body><script id="mainWebUiScript">/*
+ *
+ * Copyright 2021-2025 gematik GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * *******
+ *
+ * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ */
+const menuHtmlMessage =
+    `<div class="ms-1 is-size-7">  <a onclick="scrollToMessage('$\{uuid}',$\{sequenceNumber})" class="mt-3 is-block">
+    <div class="$\{color} d-flex align-items-center">
+      <span class="tag $\{color} is-light me-1">$\{sequence}</span>
+      <i class="fas $\{symbol}"></i>
+      <span class="ms-1">$\{abbrev}</span>
+      <span class="has-text-dark text-ellipsis ms-auto">$\{timestamp}</span>
+    </div>
+    <div class="ms-4 $\{color} d-flex align-items-center">
+      <span class="ms-1 has-text-weight-bold text-ellipsis"        title="$\{menuInfoString}">$\{menuInfoString}      </span>
+    </div>
+    <div class="ms-4 $\{color} d-flex align-items-center">
+      <span class="ms-3 text-ellipsis"        title="$\{additionalInformation}">$\{additionalInformation}      </span>
+    </div>
+  </a></div>`;
+
+const menuHtmlTemplateSubResponse =
+    "      <i class=\"fas fa-reply\"></i>\n"
+    + "      <span class=\"ms-1\">RES</span>\n"
+    + "      <span class=\"mx-1\" \n"
+    + "         title=\"${additionalInformation}\">${additionalInformation}"
+    + "      </span>\n";
+
+let msgIndex = 1;
+
+// called implicitly by the HTML code created by the server at
+// de.gematik.rbellogger.renderer.RbelHtmlRenderingToolkit.renderDocument (end of method)
+function createMenuEntry(msgMetaData) {
+    let isRequest = msgMetaData.request;
+
+    let menuItem = menuHtmlMessage;
+    menuItem = menuItem
+        .replaceAll("${uuid}", msgMetaData.uuid)
+        .replaceAll("${color}", msgMetaData.color)
+        .replaceAll("${symbol}", msgMetaData.symbol)
+        .replaceAll("${abbrev}", msgMetaData.abbrev)
+        .replaceAll("${sequence}", msgMetaData.sequenceNumber + 1)
+        .replaceAll("${sequenceNumber}", msgMetaData.sequenceNumber);
+    if (msgMetaData.menuInfoString != null) {
+        menuItem = menuItem
+            .replaceAll("${menuInfoString}", msgMetaData.menuInfoString);
+    } else {
+        menuItem = menuItem
+            .replaceAll("${menuInfoString}", " ");
+    }
+    if (msgMetaData.additionalInformation != null &&
+        msgMetaData.additionalInformation.length > 0) {
+        menuItem = menuItem
+            .replaceAll("${additionalInformation}",
+                msgMetaData.additionalInformation[0]);
+    } else {
+        menuItem = menuItem
+            .replaceAll("${additionalInformation}", " ");
+    }
+    if (msgMetaData.timestamp != null) {
+        menuItem = menuItem
+            .replace("${timestamp}",
+                formatTimeStamp(msgMetaData.timestamp));
+    } else {
+        menuItem = menuItem
+            .replace("${timestamp}", " ");
+    }
+    document.getElementById("sidebar-menu")
+        .appendChild(htmlToElement(menuItem));
+}
+
+function formatTimeStamp(timestampIsoString) {
+    const containsZoneId = timestampIsoString.includes('[');
+    let stringToConvert = timestampIsoString;
+    if (containsZoneId) {
+        stringToConvert = timestampIsoString.substring(0,
+            timestampIsoString.indexOf('['));
+    }
+    return dayjs(stringToConvert).format("HH:mm:ss.SSS");
+}
+
+
+function htmlToElement(html) {
+    const template = document.createElement('template');
+    html = html.trim(); // Never return a text node of whitespace as the result
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+
+// noinspection JSUnusedLocalSymbols the sequence number is only used in the tigerProxy context
+function scrollToMessage(uuid, sequenceNumber) {
+    scrollMessageIntoView(uuid);
+}
+
+function scrollMessageIntoView(uuid) {
+    let elements = document.getElementsByName(uuid);
+    if (elements.length > 0) {
+        elements[0].scrollIntoView(true);
+    }
+
+}
+
+function getAll(selector, baseEl) {
+    if (!baseEl) {
+        baseEl = document;
+    }
+    return Array.prototype.slice.call(baseEl.querySelectorAll(selector), 0);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Modals
+    const $modalButtons = getAll('.modal-button');
+    const $copyButtons = getAll('.copyToClipboard-button');
+
+    if ($modalButtons.length > 0) {
+        $modalButtons.forEach(function ($el) {
+            $el.addEventListener('click', function (e) {
+                e.preventDefault();
+                return false;
+            });
+        });
+    }
+
+    if ($copyButtons.length > 0) {
+        $copyButtons.forEach(function ($el) {
+            $el.addEventListener('click', function (e) {
+                let target = $el.dataset.target;
+                let $target = document.getElementById(target);
+                navigator.clipboard.writeText($target.textContent);
+                e.preventDefault();
+                return false;
+            });
+        });
+    }
+});
+
+function toggleCollapsableIcon(target) {
+    const classList = target.classList;
+    const flag = classList.contains("fa-toggle-on");
+    classList.toggle("fa-toggle-on", !flag);
+    classList.toggle("fa-toggle-off", flag);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    let msgCards = document.getElementsByClassName('msg-card');
+    for (let i = 0; i < msgCards.length; i++) {
+        msgCards[i].children[0].children[0].children[0].children[1].addEventListener(
+            'click', e => {
+                e.currentTarget
+                    .parentElement.parentElement.parentElement.parentElement
+                    .childNodes[1].classList.toggle('d-none');
+                toggleCollapsableIcon(e.currentTarget);
+                e.preventDefault();
+                return false;
+            });
+
+        document.querySelectorAll('pre.json').forEach(el => {
+            if (el.getAttribute("data-hljs-highlighted") !== "true") {
+                hljs.highlightElement(el);
+                el.setAttribute("data-hljs-highlighted", "true");
+            }
+        });
+    }
+
+    let notification = document.getElementsByClassName('card notification');
+    for (let i = 0; i < notification.length; i++) {
+        notification[i].children[0].children[0].children[0].children[0].addEventListener(
+            'click', e => {
+                e.currentTarget
+                    .parentElement.parentElement.parentElement.parentElement
+                    .childNodes[1].classList.toggle('d-none');
+                toggleCollapsableIcon(e.currentTarget);
+                e.preventDefault();
+                return false;
+            });
+    }
+});
+</script><script>createMenuEntry({"pairedUuid":"e1bb214b-5dac-4ace-ae1c-f8e97e0a0d96","symbol":"fa-share","sequenceNumber":18356,"request":true,"additionalInformation":[],"color":"has-text-link","menuInfoString":"POST /ti-messenger-testdriver/","uuid":"beb6b5d8-e04d-4cd2-8cb9-360453acbffb","bundledServerNameSender":"","sender":"127.0.0.1:50720","recipient":"RU1-Ref-ORG-Web-HS2:80","bundledServerNameReceiver":"RU1-Ref-ORG-Web-HS2","abbrev":"REQ","timestamp":"2025-08-11T00:49:35.112246946+02:00[Europe/Berlin]"})
+createMenuEntry({"pairedUuid":"beb6b5d8-e04d-4cd2-8cb9-360453acbffb","symbol":"fa-reply","sequenceNumber":18357,"request":false,"additionalInformation":[],"color":"text-success","menuInfoString":"200","uuid":"e1bb214b-5dac-4ace-ae1c-f8e97e0a0d96","bundledServerNameSender":"RU1-Ref-ORG-Web-HS2","sender":"RU1-Ref-ORG-Web-HS2:80","recipient":"127.0.0.1:50720","bundledServerNameReceiver":"","abbrev":"RES","timestamp":"2025-08-11T00:49:36.539197808+02:00[Europe/Berlin]"})
+createMenuEntry({"pairedUuid":"40a297d3-06dc-4b8c-857c-10082c6403e2","symbol":"fa-share","sequenceNumber":18358,"request":true,"additionalInformation":[],"color":"has-text-link","menuInfoString":"GET /ti-messenger-testdriver/devices","uuid":"543cc44c-a687-4a29-ac80-574858d02fda","bundledServerNameSender":"","sender":"127.0.0.1:58194","recipient":"RU1-Ref-ORG-Web-HS2:80","bundledServerNameReceiver":"RU1-Ref-ORG-Web-HS2","abbrev":"REQ","timestamp":"2025-08-11T00:49:36.552592237+02:00[Europe/Berlin]"})
+createMenuEntry({"pairedUuid":"543cc44c-a687-4a29-ac80-574858d02fda","symbol":"fa-reply","sequenceNumber":18359,"request":false,"additionalInformation":[],"color":"text-success","menuInfoString":"200","uuid":"40a297d3-06dc-4b8c-857c-10082c6403e2","bundledServerNameSender":"RU1-Ref-ORG-Web-HS2","sender":"RU1-Ref-ORG-Web-HS2:80","recipient":"127.0.0.1:58194","bundledServerNameReceiver":"","abbrev":"RES","timestamp":"2025-08-11T00:49:36.617793427+02:00[Europe/Berlin]"})
+createMenuEntry({"pairedUuid":"39cec4f5-d57a-487c-aed3-fea4c6f183e7","symbol":"fa-share","sequenceNumber":18360,"request":true,"additionalInformation":[],"color":"has-text-link","menuInfoString":"POST /ti-messenger-testdriver/devices/1/claim","uuid":"d50de717-83f1-4b88-b8ae-ee74e812c1cc","bundledServerNameSender":"","sender":"127.0.0.1:58208","recipient":"RU1-Ref-ORG-Web-HS2:80","bundledServerNameReceiver":"RU1-Ref-ORG-Web-HS2","abbrev":"REQ","timestamp":"2025-08-11T00:49:36.631938277+02:00[Europe/Berlin]"})
+createMenuEntry({"pairedUuid":"d50de717-83f1-4b88-b8ae-ee74e812c1cc","symbol":"fa-reply","sequenceNumber":18361,"request":false,"additionalInformation":[],"color":"text-success","menuInfoString":"200","uuid":"39cec4f5-d57a-487c-aed3-fea4c6f183e7","bundledServerNameSender":"RU1-Ref-ORG-Web-HS2","sender":"RU1-Ref-ORG-Web-HS2:80","recipient":"127.0.0.1:58208","bundledServerNameReceiver":"","abbrev":"RES","timestamp":"2025-08-11T00:49:37.345954954+02:00[Europe/Berlin]"})
+createMenuEntry({"pairedUuid":"ccaf8f15-5120-4864-93e7-597ff0e795a2","symbol":"fa-share","sequenceNumber":18362,"request":true,"additionalInformation":[],"color":"has-text-link","menuInfoString":"GET /ti-messenger-testdriver/","uuid":"684bd8f4-ef9c-4bf1-8176-1bf629882e77","bundledServerNameSender":"","sender":"127.0.0.1:58218","recipient":"RU1-Ref-ORG-Web-HS2:80","bundledServerNameReceiver":"RU1-Ref-ORG-Web-HS2","abbrev":"REQ","timestamp":"2025-08-11T00:49:37.364163054+02:00[Europe/Berlin]"})
+createMenuEntry({"pairedUuid":"684bd8f4-ef9c-4bf1-8176-1bf629882e77","symbol":"fa-reply","sequenceNumber":18363,"request":false,"additionalInformation":[],"color":"text-success","menuInfoString":"200","uuid":"ccaf8f15-5120-4864-93e7-597ff0e795a2","bundledServerNameSender":"RU1-Ref-ORG-Web-HS2","sender":"RU1-Ref-ORG-Web-HS2:80","recipient":"127.0.0.1:58218","bundledServerNameReceiver":"","abbrev":"RES","timestamp":"2025-08-11T00:49:37.418387253+02:00[Europe/Berlin]"})
+createMenuEntry({"pairedUuid":"6826bc3a-6442-4a86-8c07-4dfdbdf70c86","symbol":"fa-share","sequenceNumber":18364,"request":true,"additionalInformation":[],"color":"has-text-link","menuInfoString":"POST /ti-messenger-testdriver/devices/1/login","uuid":"76319918-d354-43e4-a23a-74fa94773fdd","bundledServerNameSender":"","sender":"127.0.0.1:58226","recipient":"RU1-Ref-ORG-Web-HS2:80","bundledServerNameReceiver":"RU1-Ref-ORG-Web-HS2","abbrev":"REQ","timestamp":"2025-08-11T00:49:37.434056923+02:00[Europe/Berlin]"})
+createMenuEntry({"pairedUuid":"76319918-d354-43e4-a23a-74fa94773fdd","symbol":"fa-reply","sequenceNumber":18365,"request":false,"additionalInformation":[],"color":"text-success","menuInfoString":"200","uuid":"6826bc3a-6442-4a86-8c07-4dfdbdf70c86","bundledServerNameSender":"RU1-Ref-ORG-Web-HS2","sender":"RU1-Ref-ORG-Web-HS2:80","recipient":"127.0.0.1:58226","bundledServerNameReceiver":"","abbrev":"RES","timestamp":"2025-08-11T00:49:40.767573675+02:00[Europe/Berlin]"})
+createMenuEntry({"pairedUuid":"4f357616-5fb4-4cb3-b145-4d00958fe731","symbol":"fa-share","sequenceNumber":18366,"request":true,"additionalInformation":[],"color":"has-text-link","menuInfoString":"GET /ti-messenger-testdriver/","uuid":"81c0f517-0226-4d69-b6da-59ae273e9d85","bundledServerNameSender":"","sender":"127.0.0.1:58242","recipient":"RU1-Ref-ORG-Web-HS2:80","bundledServerNameReceiver":"RU1-Ref-ORG-Web-HS2","abbrev":"REQ","timestamp":"2025-08-11T00:49:40.988811133+02:00[Europe/Berlin]"})
+createMenuEntry({"pairedUuid":"81c0f517-0226-4d69-b6da-59ae273e9d85","symbol":"fa-reply","sequenceNumber":18367,"request":false,"additionalInformation":[],"color":"text-success","menuInfoString":"200","uuid":"4f357616-5fb4-4cb3-b145-4d00958fe731","bundledServerNameSender":"RU1-Ref-ORG-Web-HS2","sender":"RU1-Ref-ORG-Web-HS2:80","recipient":"127.0.0.1:58242","bundledServerNameReceiver":"","abbrev":"RES","timestamp":"2025-08-11T00:49:41.062036823+02:00[Europe/Berlin]"})
+createMenuEntry({"pairedUuid":"e5807740-bea2-425a-b3e5-2db08c41c010","symbol":"fa-share","sequenceNumber":18368,"request":true,"additionalInformation":[],"color":"has-text-link","menuInfoString":"POST /ti-messenger-testdriver/devices/1/logout","uuid":"08d120bc-2927-4eb6-aa43-a226246387dc","bundledServerNameSender":"","sender":"127.0.0.1:58254","recipient":"RU1-Ref-ORG-Web-HS2:80","bundledServerNameReceiver":"RU1-Ref-ORG-Web-HS2","abbrev":"REQ","timestamp":"2025-08-11T00:49:41.518482630+02:00[Europe/Berlin]"})
+createMenuEntry({"pairedUuid":"08d120bc-2927-4eb6-aa43-a226246387dc","symbol":"fa-reply","sequenceNumber":18369,"request":false,"additionalInformation":[],"color":"text-success","menuInfoString":"200","uuid":"e5807740-bea2-425a-b3e5-2db08c41c010","bundledServerNameSender":"RU1-Ref-ORG-Web-HS2","sender":"RU1-Ref-ORG-Web-HS2:80","recipient":"127.0.0.1:58254","bundledServerNameReceiver":"","abbrev":"RES","timestamp":"2025-08-11T00:49:41.778231489+02:00[Europe/Berlin]"})
+createMenuEntry({"pairedUuid":"3b7983c0-f9c4-43ed-902e-39f72158656f","symbol":"fa-share","sequenceNumber":18370,"request":true,"additionalInformation":[],"color":"has-text-link","menuInfoString":"POST /ti-messenger-testdriver/devices/1/unclaim","uuid":"2b45d1cd-059e-4e7c-9d66-f451e943877a","bundledServerNameSender":"","sender":"127.0.0.1:58264","recipient":"RU1-Ref-ORG-Web-HS2:80","bundledServerNameReceiver":"RU1-Ref-ORG-Web-HS2","abbrev":"REQ","timestamp":"2025-08-11T00:49:41.789828429+02:00[Europe/Berlin]"})
+createMenuEntry({"pairedUuid":"2b45d1cd-059e-4e7c-9d66-f451e943877a","symbol":"fa-reply","sequenceNumber":18371,"request":false,"additionalInformation":[],"color":"text-success","menuInfoString":"200","uuid":"3b7983c0-f9c4-43ed-902e-39f72158656f","bundledServerNameSender":"RU1-Ref-ORG-Web-HS2","sender":"RU1-Ref-ORG-Web-HS2:80","recipient":"127.0.0.1:58264","bundledServerNameReceiver":"","abbrev":"RES","timestamp":"2025-08-11T00:49:41.954268758+02:00[Europe/Berlin]"})</script></html>

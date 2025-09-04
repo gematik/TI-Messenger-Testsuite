@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Serenity Reports</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+<link rel="apple-touch-icon" sizes="57x57" href="apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">
+<link rel="stylesheet" href="bootstrap-icons/bootstrap-icons.css">
+<!-- JQuery -->
+<script type="text/javascript" src="scripts/jquery-3.7.1.min.js"></script><!-- Required Stylesheets -->
+<link href="bootstrap-treeview/dist/bootstrap-treeview.min.css" rel="stylesheet">
+
+<!-- Required Javascript -->
+<script src="bootstrap-treeview/dist/bootstrap-treeview.min.js"></script><!-- DataTables -->
+<link type="text/css" href="datatables/1.13.1/datatables.min.css" rel="stylesheet" />
+<script type="text/javascript" src="datatables/1.13.1/datatables.min.js"></script>
+<script type="text/javascript" src="datatables/1.13.1/time-elapsed-dhms.js"></script>
+
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script src="bootstrap/js/bootstrap.min.js"></script>
+
+
+<script>
+    jQuery.fn.dataTable.ext.type.order['time-elapsed-dhms-pre'] = function(data) {
+
+        var matches = data.match(/^(\d+(?:\.\d+)?)\s*([a-z]+)/i);
+        var multipliers = {
+            ms: 1,
+            s: 1000,
+            m: 60000,
+            h: 3600000,
+            d: 86400000
+        };
+
+        if (matches) {
+            var multiplier = multipliers[matches[2].toLowerCase()];
+            return parseFloat(matches[1]) * multiplier;
+        } else {
+            return -1;
+        };
+    };
+</script>
+<link rel="stylesheet" href="css/core.css"/>
+<link rel="stylesheet" href="css/link.css"/>
+<link type="text/css" media="screen" href="css/screen.css" rel="Stylesheet"/>
+<!--CHART.JS-->
+<script src="chartjs/chart.js"></script>
+<script src="chartjs/chartjs-plugin-datalabels@2.0.0.min.js"></script>
+<script src="chartjs/patternomaly.min.js"></script>
+<script>
+    // Register the plugin to all charts:
+    Chart.register(ChartDataLabels);
+</script>
+<!-- JQuery-UI -->
+<link type="text/css" href="jqueryui/1.13.2/jquery-ui.css" rel="Stylesheet" />
+<script type="text/javascript" src="jqueryui/1.13.2/jquery-ui.js"></script><!-- DataTables -->
+<link type="text/css" href="datatables/1.13.1/datatables.min.css" rel="stylesheet" />
+<script type="text/javascript" src="datatables/1.13.1/datatables.min.js"></script>
+<script type="text/javascript" src="datatables/1.13.1/time-elapsed-dhms.js"></script>
+
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script src="bootstrap/js/bootstrap.min.js"></script>
+
+
+<script>
+    jQuery.fn.dataTable.ext.type.order['time-elapsed-dhms-pre'] = function(data) {
+
+        var matches = data.match(/^(\d+(?:\.\d+)?)\s*([a-z]+)/i);
+        var multipliers = {
+            ms: 1,
+            s: 1000,
+            m: 60000,
+            h: 3600000,
+            d: 86400000
+        };
+
+        if (matches) {
+            var multiplier = multipliers[matches[2].toLowerCase()];
+            return parseFloat(matches[1]) * multiplier;
+        } else {
+            return -1;
+        };
+    };
+</script>
+
+
+
+
+    <script class="code" type="text/javascript">$(document).ready(function () {
+
+            $("#scenario-results").DataTable({
+                "order": [[0, "asc",], [1, "asc",], [2, "asc",]],
+                "language": {
+                    searchPlaceholder: "Filter",
+                    search: ""
+                },
+                columnDefs: [
+                    {
+                        targets: 4,
+                        visible: false
+                    },
+                    {type: 'time-elapsed-dhms', targets: 6}
+                ]
+            })
+            $("#manual-scenario-results").DataTable({
+                "order": [[0, "asc",], [1, "asc",]],
+                "language": {
+                    searchPlaceholder: "Filter",
+                    search: ""
+                },
+                columnDefs: [
+                    {
+                        targets: 4,
+                        visible: false
+                    },
+                ]
+            })
+
+            // Results table
+            $('#test-results-table').DataTable({
+                "order": [[0, "asc",], [3, "asc",]],
+                "pageLength": 10,
+                "lengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]]
+            });
+
+            $('#evidence-table').DataTable({
+                searching: false,
+                paging: false,
+                info: false
+            });
+
+            $(".feature-coverage-table").DataTable({
+                searching: true,
+                paging: false,
+                info: false,
+                language: {
+                    searchPlaceholder: "Filter",
+                    search: ""
+                },
+                columnDefs: [
+                    {
+                        targets: 2,
+                        visible: false
+                    },
+                ]
+            });
+
+            $(".feature-coverage-table-with-pagination").DataTable({
+                searching: true,
+                order: [[0, "asc",]],
+                pageLength: 10,
+                language: {
+                    searchPlaceholder: "Filter",
+                    search: ""
+                },
+                columnDefs: [
+                    {
+                        targets: 2,
+                        visible: false
+                    },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body class="results-page">
+<div id="topheader">
+    <div id="topbanner">
+        <div id="logo"><a href="index.html"><img src="images/serenity-logo.png" border="0"/></a></div>
+        <div id="projectname-banner" style="float:right">
+            <span class="projectname">
+                <span class="projecttitle">Serenity BDD Report</span>
+                <span class="projectsubtitle"></span>
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="middlecontent">
+
+
+    <div id="contenttop">
+        <div class="middlebg">
+        <span class="breadcrumbs"><a href="index.html">Home</a>
+                    > AFO-ID 
+                > <span class="truncate-60">
+                A 25426
+            </span>
+        </span>
+        </div>
+        <div class="rightbg"></div>
+    </div>
+
+    <div class="clr"></div>
+    <!--/* starts second table*/-->
+        <div>
+            <table class="table environment">
+                <tr>
+                        <th class="custom-title">
+                            Pool group string
+                        </th>
+                        <th class="custom-title">
+                            Used items
+                        </th>
+                        <th class="custom-title">
+                            Used groups
+                        </th>
+                </tr>
+                <tr>
+                        <td class="custom-value">
+                            <div>RU2,0,WILDCARD</div>
+                        </td>
+                        <td class="custom-value">
+                            <div>RU2-Ref-ORG-Web-HS4 ---> https://oapub-d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev/ti-messenger-testdriver/</div><div>RU2-Ref-Pract-SDK-HS4 ---> https://ctdpub-d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev</div><div>RU2-Ref-ORG-Web-HS3 ---> https://oapub-10c810c7-6cc5-4e3f-b878-950b3b293644.ru.timref.akquinet.nx2.dev/ti-messenger-testdriver/</div><div>RU2-Ref-Pract-SDK-HS3 ---> https://ctdpub-10c810c7-6cc5-4e3f-b878-950b3b293644.ru.timref.akquinet.nx2.dev</div>
+                        </td>
+                        <td class="custom-value">
+                             [RU2]: <div>RU2-Ref-ORG-Web-HS4 ---> https://oapub-d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev/ti-messenger-testdriver/</div><div>RU2-Ref-Pract-SDK-HS4 ---> https://ctdpub-d2954547-13ae-4b05-9af1-34b38bd328f2.ru.timref.akquinet.nx2.dev</div><div>RU2-Ref-ORG-Web-HS3 ---> https://oapub-10c810c7-6cc5-4e3f-b878-950b3b293644.ru.timref.akquinet.nx2.dev/ti-messenger-testdriver/</div><div>RU2-Ref-Pract-SDK-HS3 ---> https://ctdpub-10c810c7-6cc5-4e3f-b878-950b3b293644.ru.timref.akquinet.nx2.dev</div>
+                        </td>
+                </tr>
+            </table>
+        </div>
+<div>
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#"><i class="bi bi-journal-check"></i> Overall Test Results</a>
+        </li>
+        <li >
+            <a href="capabilities.html"><i class="bi bi-journal-text"></i> Requirements</a>
+        </li>
+    </ul>
+    <span class="date-and-time"><a href="build-info.html"><i class="bi bi-info-circle"></i></a> Report generated 12-08-2025 23:05:52</span>
+    <br style="clear:left"/>
+</div>
+    <div class="clr"></div>
+    <div id="beforetable"></div>
+    <div id="results-dashboard">
+        <div class="middlb">
+            <div class="table">
+
+                <h2><i class='bi bi-tags'></i> AFO-ID: A 25426</h2>
+                <table class='overview'>
+                    <tr>
+                        <td width="375px" valign="top">
+                            <div class="test-count-summary">
+                                <div class="test-count-title">
+                                    4 tests
+
+                                     |
+                                        <a href="5a5eb0b2c80652b59bbc082066ec298703a86cc3a70083462e50c252400415b0.csv" title="Download CSV"> <i class="bi bi-cloud-arrow-down"
+                                                                                        title="Download CSV"></i></a>
+
+
+                                </div>
+                            </div>
+
+                            <div>
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a data-toggle="tab" href="#summary"><i class="bi bi-house-door"></i>
+                                            Summary</a>
+                                    </li>
+                                    <li>
+                                        <a data-toggle="tab" href="#tests"><i class="bi bi-speedometer"></i> Test
+                                            Results</a>
+                                    </li>
+                                        <li>
+                                            <a data-toggle="tab" href="#evidence"><i class="bi bi-download"></i>Evidence</a>
+                                        </li>
+                                </ul>
+
+
+                                <div class="card border">
+                                    <div class="tab-content" id="pills-tabContent">
+                                        <div id="summary" class="tab-pane fade in active">
+                                            <div class="container-fluid">
+                                                <div class="dashboard-charts row">
+                                                    <div class="col-lg-4 col-md-6 col-sm-9">
+                                                        <!-- PIE CHART -->
+                                                        <h4><i class="bi bi-pie-chart"></i> Overview</h4>
+                                                            <div class="chart-container">
+                                                                <canvas id="resultChart" height="200px"></canvas>
+                                                            </div>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-6 col-sm-9">
+                                                        <h4><i class="bi bi-check-square"></i> Test Outcomes</h4>
+                                                        <!-- Severity bar chart -->
+                                                        <div class="chart-container">
+                                                            <canvas id="severityChart" height="200px"></canvas>
+                                                        </div>
+                                                    </div>
+                                                        <div class="col-lg-4 col-md-6 col-sm-9">
+                                                            <h4><i class="bi bi-graph-up"></i> Test Performance</h4>
+
+                                                            <!-- Duration bar chart -->
+                                                            <div class="chart-container">
+                                                                <canvas id="durationChart" height="200px"></canvas>
+                                                            </div>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    <div class="col-lg-4 col-md-4 col-sm-6">
+    <div>
+        <h3><i class="bi bi-speedometer2"></i> Key Statistics</h3>
+        <div>
+            <table class="table table-striped table-hover">
+                <tbody>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-card-checklist"></i> Number of Scenarios
+                    </td>
+                    <td>4</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-caret-right"></i> Total Number of Test Cases
+                    </td>
+                    <td>4</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-flag-fill"></i> Tests Started
+                    </td>
+                    <td>Aug 12, 2025 18:49:40</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-stop-circle"></i> Tests
+                        Finished
+                    </td>
+                    <td>Aug 12, 2025 19:29:25</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-stopwatch"></i> Total
+                        Duration
+                    </td>
+                    <td> 39m 44s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-trophy"></i> Fastest Test
+                    </td>
+                    <td> 1m 18s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-skip-start"></i> Slowest
+                        Test
+                    </td>
+                    <td> 1m 30s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-stopwatch"></i> Average
+                        Execution Time
+                    </td>
+                    <td> 1m 24s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-stopwatch-fill"></i> Total
+                        Execution Time
+                    </td>
+                    <td> 5m 37s</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container-fluid">
+
+                                                    <div class="row">
+                                                        <div class="col-lg-6 col-md-6 col-sm-12">
+                                                            <h3>Test Failure Overview</h3>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-6 col-md-6 col-sm-12">
+                                                            <h4>Most Frequent Failures</h4>
+                                                            <table class="table" style="width:40vw;">
+                                                                <tbody>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-6 col-sm-12">
+                                                            <h4>Most Unstable Features</h4>
+                                                            <table class="table" style="width:40vw;">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="failure-color top-list-title">
+                                                                            <a href="#">09X. (1) Room States (Basis Spec)</a>
+                                                                        </td>
+                                                                        <td>
+                                                                            <span class="badge failure-badge">50%</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="failure-color top-list-title">
+                                                                            <a href="#">09X. (4) Room States (Basis Spec)</a>
+                                                                        </td>
+                                                                        <td>
+                                                                            <span class="badge failure-badge">50%</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                            <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Tags</h3>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">AFO-ID</h5>
+                            <div>
+                                    <a href="2847239d3cf7b680cadcd1fa96e3936c42d97438ffa315da886f18a2bae915ba.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 25814-01&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="74de8f3b20fb4f0ab9254b9f072c9c5917938268b7da5ecd81db1f664927b220.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 25813-01&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="592d9721e22fa0fcc1e448f05009d53468546ac70783f1e5cfc7a703afcff79f.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 26248&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="d156b314921179e9e00ccc7e8885a9cc69adc0c0c83532e781b4d91714ddc707.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 26338-01&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="5a5eb0b2c80652b59bbc082066ec298703a86cc3a70083462e50c252400415b0.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 25426&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Ctl</h5>
+                            <div>
+                                    <a href="d0b32cf5c2573baf79c3489637157238d8bdb5da84eec2db1357506a1e11c1fb.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Allow All&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="3acff479136aa5b945676ea6d6c47250274ca45f832b4e2c585703164010b8c6.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Room Version&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="4aa43b12b78a47fcda1365ba84ad1520357d23758259cfe43895b203db5a0347.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Room States&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="84af1f7d588b1ce14b1a2260519781bdc112a672bbeb232fe1492fd6d47c685c.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> UseCaseV2 09X Basis&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">File</h5>
+                            <div>
+                                    <a href="25dbe35e52398ec5d29cb4a877faa7cd04cd2307506e654b5c893515a20d5733.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Featurefile 09X 01 V2 Basis&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                                    <a href="03dd8c5ce7aa4d04adc6389beee98065f5293f66b24044f9d2ab71c899631fa5.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Featurefile 09X 04 V2 Basis&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Nb</h5>
+                            <div>
+                                    <a href="061e0d44c3842a1a3e1a6c42a92321448d2e09caa7a933a2e16e48aedadc765c.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Ja&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                                    <a href="6c3176dab12e20d3f33b521cd28e4287e04cca162711c2a46ee6d6270be51c18.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Nein&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Prio</h5>
+                            <div>
+                                    <a href="7748df88f2c56a8cb6f2fb2e9c999c5782b6158037eec2da2975d7b7a25436d8.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> 1&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Produkt</h5>
+                            <div>
+                                    <a href="77e3e49441a15427e6dfa1d7c22dfb483bf88791320a2d3fa6dfb87cd322cf71.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TI-M Client Basis&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="f7ec57d495a4882eb70ab1bf9636e653a9800e0f0c080dfc217938ad7721c248.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TI-M FD Basis&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Plugin</h5>
+                            <div>
+                                    <a href="20e540f9e8ee842698bff859493ae5071fe3897d3993c5a2530710fc430f25cd.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Allowselfcombine(False)&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="2315995e9e2894889db7424e1fb25493f0b579839dc448f6405d5bc7b5bb48e8.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Filter(Apiname2.hastag("practitioner"))&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                                    <a href="cea0662e593d38d0c0c9bbf5bf6f909bd8675564b41e1e5fd459bbb52bee6c08.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Distinctproperty(Homeserver)&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="045d390b85b61c0375fc56b7d71e640ab460d9defd6b39290708a73426934e51.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Shuffle(True)&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="1e7ce955d2ceeed8c1835578a93ca8d1f73d0bd4c4211b7936384b109e009ce7.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Filter(Apiname1.hastag("proclient"))&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="ba02700b5b885dfc80d54b77f2cb3697b09ce4e092f9914a9a74895cfcf93fa8.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Allowdoublelineup(True)&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="02d7af76f2098469b38d51f7b3e6c306378490df8b6709f644f522b108d2d5ab.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Filter(Apiname2.hastag("proclient"))&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="4f57ef079e7abd565ff4600be346ab95222dde09e6395e7d88440b3fc67596c4.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Filter(Apiname1.hastag("practitioner"))&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                                    <a href="aa33527cc0ea8e3c4cfd57d86a4ef7e26c03f937b27606e4eb9b3bcc68f34dd0.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Maxsamecolumnproperty(Apiname1,homeserver,1)&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Status</h5>
+                            <div>
+                                    <a href="16b36824af0423c8594aa55c340a5be9a21ff049608858e50f41700f9f05ac68.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Implementiert&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Tcid</h5>
+                            <div>
+                                    <a href="8b3a7e37a542d605d342b62c82333b38367b315669a310863704e39a16fe09ba.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 09X0401&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="b2295b2fd7e7d2c0baffb96fd5e37339be15ad3079cf663473cad0ba38b910c3.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 09X0102&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="1632757c8efe7487573721171781098413cca89cf7752ad58ab92fb64347cf96.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 09X0402&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="d431d66779690d44a4421596b93c177544e2ab00c91d97e8e8887dcee3bcfa31.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 09X0101&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Testfall</h5>
+                            <div>
+                                    <a href="b4cbf857506990c596fb50faff38a3afd018e4657602837e3869c8ea75d140e1.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Positiv&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Zul</h5>
+                            <div>
+                                    <a href="e11fe88c90e04b74aacca98c4911cfd5d8e24be4d55e026531948bb3883f1dbc.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Pro&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="f696a82952b18ab3ef913d09362e4c385161759145754f7bb48fc927b902d1b4.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Pro Kk&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+                                            </div>
+                                        </div>
+                                        <div id="tests" class="tab-pane fade">
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+    <div>
+        <h3><i class="bi bi-speedometer2"></i> Key Statistics</h3>
+        <div>
+            <table class="table table-striped table-hover">
+                <tbody>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-card-checklist"></i> Number of Scenarios
+                    </td>
+                    <td>4</td>
+                    <td>
+                        <i class="bi bi-stopwatch"></i> Total
+                        Duration
+                    </td>
+                    <td> 39m 44s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-caret-right"></i> Total Number of Test Cases
+                    </td>
+                    <td>4</td>
+                    <td>
+                        <i class="bi bi-trophy"></i> Fastest Test
+                    </td>
+                    <td> 1m 18s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-person"></i> Number of Manual Test Cases
+                    </td>
+                    <td>0</td>
+                    <td>
+                        <i class="bi bi-skip-start"></i> Slowest
+                        Test
+                    </td>
+                    <td> 1m 30s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-flag-fill"></i> Tests Started
+                    </td>
+                    <td>Aug 12, 2025 18:49:40</td>
+                    <td>
+                        <i class="bi bi-stopwatch"></i> Average
+                        Execution Time
+                    </td>
+                    <td> 1m 24s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-stop-circle"></i> Tests
+                        Finished
+                    </td>
+                    <td>Aug 12, 2025 19:29:25</td>
+                    <td>
+                        <i class="bi bi-stopwatch-fill"></i> Total
+                        Execution Time
+                    </td>
+                    <td> 5m 37s</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+                                                        <h3><i class="bi bi-gear"></i> Automated Scenarios</h3>
+
+                                                            <table class="scenario-result-table table" id="scenario-results" style="width:100%">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>Feature</th>
+                                                                    <th class="test-name-column">Scenario</th>
+                                                                    <th>Context</th>
+                                                                    <th>Steps</th>
+                                                                    <th>StepsText</th>
+                                                                    <th>Started</th>
+                                                                    <th>Total Duration</th>
+                                                                    <th>Result</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr class="scenario-result FAILURE">
+                                                                        <td>
+                                                                                <a href="#">09X. (1) Room States (Basis Spec)</a>
+                                                                        </td>
+                                                                        <td data-order="09X.01.01 Room States - Chat - Default Room State und Raumversion (Org-User)">
+                                                                            <i class="bi bi-table"
+                                                                               title="Data Driven Scenario"> <a
+                                                                                        href="7957b3184d6e6e12738d53efc8b7e16049d205079dbfa2378a90adb808aa1618.html">09X.01.01 Room States - Chat - Default Room State und Raumversion (Org-User)</a>
+                                                                                <br/>
+                                                                                    <a href='##beforetable'><i class='bi bi-x-circle-fill failure-icon ' title='FAILURE'></i></a> 1 failing test case
+                                                                                    <br/>
+                                                                        </td>
+                                                                        <td><span style="display:none"></span>
+                                                                        </td>
+                                                                        <td>11</td>
+                                                                        <td>Angenommen Es werden folgende Clients reserviert:
+
+
+|A | PRO_CLIENT | &lt;ApiName1&gt;|
+|---|---|---|
+|B | PRO_CLIENT | &lt;ApiName2&gt;|
+
+Und &quot;A&quot;, &quot;B&quot; setzen den eigenen Authorization Mode auf &quot;AllowAll&quot;
+Und &quot;A&quot; schreibt &quot;B&quot; direkt &quot;Testnachricht 1&quot;
+Und &quot;B&quot; erhält eine Einladung von &quot;A&quot;
+Und &quot;B&quot; bestätigt eine Einladung von &quot;A&quot;
+Wenn &quot;B&quot; empfängt eine Nachricht &quot;Testnachricht 1&quot; von &quot;A&quot;
+Dann &quot;B&quot; prüft die Raumversion im Chat mit &quot;A&quot; auf Version &quot;10&quot;
+Dann &quot;B&quot; prüft den Room State im Chat mit &quot;A&quot; auf &quot;TIM_ROOM_TYPE&quot;
+Dann &quot;B&quot; prüft, ob die Room States &quot;ROOM_NAME,ROOM_TOPIC,TIM_ROOM_NAME,TIM_ROOM_TOPIC&quot; im Chat mit &quot;A&quot; vorhanden sind
+Dann &quot;B&quot; prüft, ob der Parameter in den Room States &quot;ROOM_NAME&quot; im Chat mit &quot;A&quot; mit dem Wert von &quot;TIM_ROOM_NAME&quot; befüllt ist
+Dann &quot;B&quot; prüft, ob der Parameter in den Room States &quot;ROOM_TOPIC&quot; im Chat mit &quot;A&quot; mit dem Wert von &quot;TIM_ROOM_TOPIC&quot; befüllt ist
+</td>
+                                                                        <td data-order="1755019604">19:26:44</td>
+                                                                        <td>1m 18s</td>
+                                                                        <td><a href='##beforetable'><i class='bi bi-x-circle-fill failure-icon ' title='FAILURE'></i></a> <span
+                                                                                    style="display:none">FAILURE</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr class="scenario-result SUCCESS">
+                                                                        <td>
+                                                                                <a href="#">09X. (1) Room States (Basis Spec)</a>
+                                                                        </td>
+                                                                        <td data-order="09X.01.02 Room States - Raum - Default Room State und Raumversion (Org-User)">
+                                                                            <i class="bi bi-table"
+                                                                               title="Data Driven Scenario"> <a
+                                                                                        href="a8b2e00b23c2480992dff0effaf3d88afd5bd62e583b60c9515145dd2480a68c.html">09X.01.02 Room States - Raum - Default Room State und Raumversion (Org-User)</a>
+                                                                                <br/>
+                                                                                    <a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> 1 passing test case
+                                                                                    <br/>
+                                                                        </td>
+                                                                        <td><span style="display:none"></span>
+                                                                        </td>
+                                                                        <td>13</td>
+                                                                        <td>Angenommen Es werden folgende Clients reserviert:
+
+
+|A | PRO_CLIENT | &lt;ApiName1&gt;|
+|---|---|---|
+|B | PRO_CLIENT | &lt;ApiName2&gt;|
+
+Und &quot;A&quot;, &quot;B&quot; setzen den eigenen Authorization Mode auf &quot;AllowAll&quot;
+Und &quot;A&quot; erstellt einen Chat-Raum &quot;TIM Testraum 1&quot; inkl. Topic
+Und &quot;A&quot; lädt &quot;B&quot; in Chat-Raum &quot;TIM Testraum 1&quot; ein
+Und &quot;B&quot; erhält eine Einladung von &quot;A&quot;
+Und &quot;B&quot; bestätigt eine Einladung in Raum &quot;TIM Testraum 1&quot; von &quot;A&quot;
+Wenn &quot;B&quot; ist dem Raum &quot;TIM Testraum 1&quot; beigetreten
+Dann &quot;B&quot; prüft die Raumversion im Raum &quot;TIM Testraum 1&quot; auf Version &quot;10&quot;
+Dann &quot;B&quot; prüft den Room State im Raum &quot;TIM Testraum 1&quot; auf &quot;TIM_ROOM_TYPE&quot;
+Dann &quot;B&quot; prüft, ob die Room States &quot;ROOM_NAME,ROOM_TOPIC,TIM_ROOM_NAME,TIM_ROOM_TOPIC&quot; im Raum &quot;TIM Testraum 1&quot; vorhanden sind
+Dann &quot;B&quot; prüft, ob die Parameter in den Room States &quot;TIM_ROOM_NAME,TIM_ROOM_TOPIC&quot; im Raum &quot;TIM Testraum 1&quot; befüllt sind
+Dann &quot;B&quot; prüft, ob der Parameter in den Room States &quot;ROOM_NAME&quot; im Raum &quot;TIM Testraum 1&quot; mit dem Wert von &quot;TIM_ROOM_NAME&quot; befüllt ist
+Dann &quot;B&quot; prüft, ob der Parameter in den Room States &quot;ROOM_TOPIC&quot; im Raum &quot;TIM Testraum 1&quot; mit dem Wert von &quot;TIM_ROOM_TOPIC&quot; befüllt ist
+</td>
+                                                                        <td data-order="1755019682">19:28:02</td>
+                                                                        <td>1m 23s</td>
+                                                                        <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span
+                                                                                    style="display:none">SUCCESS</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr class="scenario-result FAILURE">
+                                                                        <td>
+                                                                                <a href="#">09X. (4) Room States (Basis Spec)</a>
+                                                                        </td>
+                                                                        <td data-order="09X.04.01 Room States - Chat - Default Room State (HBA-User an HBA-User)">
+                                                                            <i class="bi bi-table"
+                                                                               title="Data Driven Scenario"> <a
+                                                                                        href="2da89b1391296e46b89fa6baff83a48075cc43fd91db703b671e8d5b874d0ea3.html">09X.04.01 Room States - Chat - Default Room State (HBA-User an HBA-User)</a>
+                                                                                <br/>
+                                                                                    <a href='##beforetable'><i class='bi bi-x-circle-fill failure-icon ' title='FAILURE'></i></a> 1 failing test case
+                                                                                    <br/>
+                                                                        </td>
+                                                                        <td><span style="display:none"></span>
+                                                                        </td>
+                                                                        <td>13</td>
+                                                                        <td>Angenommen Es werden folgende Clients reserviert:
+
+
+|A | PRO_PRACTITIONER | &lt;ApiName1&gt;|
+|---|---|---|
+|B | PRO_PRACTITIONER | &lt;ApiName2&gt;|
+
+Und &quot;A&quot;, &quot;B&quot; setzen den eigenen Authorization Mode auf &quot;AllowAll&quot;
+Und &quot;A&quot;, &quot;B&quot; hinterlegen ihre MXIDs im Verzeichnis Dienst
+Und &quot;A&quot; findet &quot;B&quot; in FHIR
+Und &quot;A&quot; schreibt &quot;B&quot; direkt &quot;Testnachricht 1&quot;
+Und &quot;B&quot; erhält eine Einladung von &quot;A&quot;
+Und &quot;B&quot; bestätigt eine Einladung von &quot;A&quot;
+Wenn &quot;B&quot; empfängt eine Nachricht &quot;Testnachricht 1&quot; von &quot;A&quot;
+Dann &quot;B&quot; prüft die Raumversion im Chat mit &quot;A&quot; auf Version &quot;10&quot;
+Dann &quot;B&quot; prüft den Room State im Chat mit &quot;A&quot; auf &quot;TIM_ROOM_TYPE&quot;
+Dann &quot;B&quot; prüft, ob die Room States &quot;ROOM_NAME,ROOM_TOPIC,TIM_ROOM_NAME,TIM_ROOM_TOPIC&quot; im Chat mit &quot;A&quot; vorhanden sind
+Dann &quot;B&quot; prüft, ob der Parameter in den Room States &quot;ROOM_NAME&quot; im Chat mit &quot;A&quot; mit dem Wert von &quot;TIM_ROOM_NAME&quot; befüllt ist
+Dann &quot;B&quot; prüft, ob der Parameter in den Room States &quot;ROOM_TOPIC&quot; im Chat mit &quot;A&quot; mit dem Wert von &quot;TIM_ROOM_TOPIC&quot; befüllt ist
+</td>
+                                                                        <td data-order="1755017380">18:49:40</td>
+                                                                        <td>1m 26s</td>
+                                                                        <td><a href='##beforetable'><i class='bi bi-x-circle-fill failure-icon ' title='FAILURE'></i></a> <span
+                                                                                    style="display:none">FAILURE</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr class="scenario-result SUCCESS">
+                                                                        <td>
+                                                                                <a href="#">09X. (4) Room States (Basis Spec)</a>
+                                                                        </td>
+                                                                        <td data-order="09X.04.02 Room States - Raum - Default Room State (HBA-User an HBA-User)">
+                                                                            <i class="bi bi-table"
+                                                                               title="Data Driven Scenario"> <a
+                                                                                        href="7e63923335277371ae5675f4fb57f14bfb720028cd6d686519e724def2f92ea0.html">09X.04.02 Room States - Raum - Default Room State (HBA-User an HBA-User)</a>
+                                                                                <br/>
+                                                                                    <a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> 1 passing test case
+                                                                                    <br/>
+                                                                        </td>
+                                                                        <td><span style="display:none"></span>
+                                                                        </td>
+                                                                        <td>15</td>
+                                                                        <td>Angenommen Es werden folgende Clients reserviert:
+
+
+|A | PRO_PRACTITIONER | &lt;ApiName1&gt;|
+|---|---|---|
+|B | PRO_PRACTITIONER | &lt;ApiName2&gt;|
+
+Und &quot;A&quot;, &quot;B&quot; setzen den eigenen Authorization Mode auf &quot;AllowAll&quot;
+Und &quot;A&quot;, &quot;B&quot; hinterlegen ihre MXIDs im Verzeichnis Dienst
+Und &quot;A&quot; erstellt einen Chat-Raum &quot;TIM Testraum 1&quot; inkl. Topic
+Und &quot;A&quot; findet &quot;B&quot; in FHIR
+Und &quot;A&quot; lädt &quot;B&quot; in Chat-Raum &quot;TIM Testraum 1&quot; ein
+Und &quot;B&quot; erhält eine Einladung von &quot;A&quot;
+Und &quot;B&quot; bestätigt eine Einladung in Raum &quot;TIM Testraum 1&quot; von &quot;A&quot;
+Wenn &quot;B&quot; ist dem Raum &quot;TIM Testraum 1&quot; beigetreten
+Dann &quot;B&quot; prüft die Raumversion im Raum &quot;TIM Testraum 1&quot; auf Version &quot;10&quot;
+Dann &quot;B&quot; prüft den Room State im Raum &quot;TIM Testraum 1&quot; auf &quot;TIM_ROOM_TYPE&quot;
+Dann &quot;B&quot; prüft, ob die Room States &quot;ROOM_NAME,ROOM_TOPIC,TIM_ROOM_NAME,TIM_ROOM_TOPIC&quot; im Raum &quot;TIM Testraum 1&quot; vorhanden sind
+Dann &quot;B&quot; prüft, ob die Parameter in den Room States &quot;TIM_ROOM_NAME,TIM_ROOM_TOPIC&quot; im Raum &quot;TIM Testraum 1&quot; befüllt sind
+Dann &quot;B&quot; prüft, ob der Parameter in den Room States &quot;ROOM_NAME&quot; im Raum &quot;TIM Testraum 1&quot; mit dem Wert von &quot;TIM_ROOM_NAME&quot; befüllt ist
+Dann &quot;B&quot; prüft, ob der Parameter in den Room States &quot;ROOM_TOPIC&quot; im Raum &quot;TIM Testraum 1&quot; mit dem Wert von &quot;TIM_ROOM_TOPIC&quot; befüllt ist
+</td>
+                                                                        <td data-order="1755017466">18:51:06</td>
+                                                                        <td>1m 31s</td>
+                                                                        <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span
+                                                                                    style="display:none">SUCCESS</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <h3><i class="bi bi-hand-index-thumb"></i> Manual Tests</h3>
+
+                                                            No manual tests were recorded
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Tags</h3>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">AFO-ID</h5>
+                            <div>
+                                    <a href="2847239d3cf7b680cadcd1fa96e3936c42d97438ffa315da886f18a2bae915ba.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 25814-01&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="74de8f3b20fb4f0ab9254b9f072c9c5917938268b7da5ecd81db1f664927b220.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 25813-01&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="592d9721e22fa0fcc1e448f05009d53468546ac70783f1e5cfc7a703afcff79f.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 26248&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="d156b314921179e9e00ccc7e8885a9cc69adc0c0c83532e781b4d91714ddc707.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 26338-01&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="5a5eb0b2c80652b59bbc082066ec298703a86cc3a70083462e50c252400415b0.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> A 25426&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Ctl</h5>
+                            <div>
+                                    <a href="d0b32cf5c2573baf79c3489637157238d8bdb5da84eec2db1357506a1e11c1fb.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Allow All&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="3acff479136aa5b945676ea6d6c47250274ca45f832b4e2c585703164010b8c6.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Room Version&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="4aa43b12b78a47fcda1365ba84ad1520357d23758259cfe43895b203db5a0347.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Room States&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="84af1f7d588b1ce14b1a2260519781bdc112a672bbeb232fe1492fd6d47c685c.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> UseCaseV2 09X Basis&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">File</h5>
+                            <div>
+                                    <a href="25dbe35e52398ec5d29cb4a877faa7cd04cd2307506e654b5c893515a20d5733.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Featurefile 09X 01 V2 Basis&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                                    <a href="03dd8c5ce7aa4d04adc6389beee98065f5293f66b24044f9d2ab71c899631fa5.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Featurefile 09X 04 V2 Basis&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Nb</h5>
+                            <div>
+                                    <a href="061e0d44c3842a1a3e1a6c42a92321448d2e09caa7a933a2e16e48aedadc765c.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Ja&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                                    <a href="6c3176dab12e20d3f33b521cd28e4287e04cca162711c2a46ee6d6270be51c18.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Nein&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Prio</h5>
+                            <div>
+                                    <a href="7748df88f2c56a8cb6f2fb2e9c999c5782b6158037eec2da2975d7b7a25436d8.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> 1&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Produkt</h5>
+                            <div>
+                                    <a href="77e3e49441a15427e6dfa1d7c22dfb483bf88791320a2d3fa6dfb87cd322cf71.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TI-M Client Basis&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="f7ec57d495a4882eb70ab1bf9636e653a9800e0f0c080dfc217938ad7721c248.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TI-M FD Basis&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Plugin</h5>
+                            <div>
+                                    <a href="20e540f9e8ee842698bff859493ae5071fe3897d3993c5a2530710fc430f25cd.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Allowselfcombine(False)&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="2315995e9e2894889db7424e1fb25493f0b579839dc448f6405d5bc7b5bb48e8.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Filter(Apiname2.hastag("practitioner"))&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                                    <a href="cea0662e593d38d0c0c9bbf5bf6f909bd8675564b41e1e5fd459bbb52bee6c08.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Distinctproperty(Homeserver)&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="045d390b85b61c0375fc56b7d71e640ab460d9defd6b39290708a73426934e51.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Shuffle(True)&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="1e7ce955d2ceeed8c1835578a93ca8d1f73d0bd4c4211b7936384b109e009ce7.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Filter(Apiname1.hastag("proclient"))&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="ba02700b5b885dfc80d54b77f2cb3697b09ce4e092f9914a9a74895cfcf93fa8.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Allowdoublelineup(True)&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="02d7af76f2098469b38d51f7b3e6c306378490df8b6709f644f522b108d2d5ab.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Filter(Apiname2.hastag("proclient"))&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="4f57ef079e7abd565ff4600be346ab95222dde09e6395e7d88440b3fc67596c4.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Filter(Apiname1.hastag("practitioner"))&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                                    <a href="aa33527cc0ea8e3c4cfd57d86a4ef7e26c03f937b27606e4eb9b3bcc68f34dd0.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Maxsamecolumnproperty(Apiname1,homeserver,1)&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Status</h5>
+                            <div>
+                                    <a href="16b36824af0423c8594aa55c340a5be9a21ff049608858e50f41700f9f05ac68.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Implementiert&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Tcid</h5>
+                            <div>
+                                    <a href="8b3a7e37a542d605d342b62c82333b38367b315669a310863704e39a16fe09ba.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 09X0401&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="b2295b2fd7e7d2c0baffb96fd5e37339be15ad3079cf663473cad0ba38b910c3.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 09X0102&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="1632757c8efe7487573721171781098413cca89cf7752ad58ab92fb64347cf96.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 09X0402&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="d431d66779690d44a4421596b93c177544e2ab00c91d97e8e8887dcee3bcfa31.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TIM V2 BASIS AF 09X0101&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Testfall</h5>
+                            <div>
+                                    <a href="b4cbf857506990c596fb50faff38a3afd018e4657602837e3869c8ea75d140e1.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Positiv&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                                <h5 class="card-title">Zul</h5>
+                            <div>
+                                    <a href="e11fe88c90e04b74aacca98c4911cfd5d8e24be4d55e026531948bb3883f1dbc.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Pro&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="f696a82952b18ab3ef913d09362e4c385161759145754f7bb48fc927b902d1b4.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Pro Kk&nbsp;&nbsp;&nbsp;2
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+                                            </div>
+                                        </div>
+
+                                            <div id="evidence" class="tab-pane fade">
+                                                <div class="container-fluid">
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <h3><i class="bi bi-download"></i> Evidence</h3>
+                                                            <table id="evidence-table" class="table table-bordered">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>Scenario</th>
+                                                                    <th>Title</th>
+                                                                    <th>Details</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>09X.01.01 Room States - Chat - Default Room State und Raumversion (Org-User)</td>
+                                                                        <td>RBellog 1</td>
+                                                                        <td><a role='button' target='_blank' class='btn btn-success btn-sm' href='downloadable/downloadable-f5d6701c-cbcf-4dbe-9f91-ce2d299058aa-rbel_09X.01.01_Room_States_-_Chat_-ad88506d-2ac8-31cf-9c3c-59077d1a643c_1_2025-08-12_19-28-02.html'><i class='fas fa-download'></i>&nbsp;Download Evidence</a></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>09X.01.02 Room States - Raum - Default Room State und Raumversion (Org-User)</td>
+                                                                        <td>RBellog 1</td>
+                                                                        <td><a role='button' target='_blank' class='btn btn-success btn-sm' href='downloadable/downloadable-9b2b13f1-c7e7-4288-8fd3-fac9e1341709-rbel_09X.01.02_Room_States_-_Raum_-41289bfd-642c-32be-bc55-77c49dc03530_1_2025-08-12_19-29-25.html'><i class='fas fa-download'></i>&nbsp;Download Evidence</a></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>09X.04.01 Room States - Chat - Default Room State (HBA-User an HBA-User)</td>
+                                                                        <td>RBellog 1</td>
+                                                                        <td><a role='button' target='_blank' class='btn btn-success btn-sm' href='downloadable/downloadable-41b83bfc-07be-48ff-8468-1c30debdd17a-rbel_09X.04.01_Room_States_-_Chat_-ad3cd9b3-bede-3d90-8680-7ed708ad16b3_1_2025-08-12_18-51-06.html'><i class='fas fa-download'></i>&nbsp;Download Evidence</a></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>09X.04.02 Room States - Raum - Default Room State (HBA-User an HBA-User)</td>
+                                                                        <td>RBellog 1</td>
+                                                                        <td><a role='button' target='_blank' class='btn btn-success btn-sm' href='downloadable/downloadable-b5b8eb0a-7463-4309-b6e4-4e403899485d-rbel_09X.04.02_Room_States_-_Raum_-c5273f31-b652-3deb-a981-f179ffb705bf_1_2025-08-12_18-52-37.html'><i class='fas fa-download'></i>&nbsp;Download Evidence</a></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="beforefooter"></div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <span class="version">Serenity BDD version 4.2.30</span>
+        </div>
+    </div>
+</div>
+
+<!-- Chart data -->
+    <!-- PIE CHART -->
+    <script>
+
+        // The results pie chart
+        const outcomeChartCtx = document.getElementById('resultChart');
+
+        // Options define for display value on top of bars
+        const outcomeDetailsReports = [
+            { title: 'Passing Test Cases', link: "5b258b609537372598d544d1dfbe834c84ca7db34864b830695d8c8fb7a0f809.html" },
+            { title: 'Pending Test Cases', link: "a85f195069ecc5422f873c871d0b5967983adb79fb280d0e6fe469dd905f5fd4.html" },
+            { title: 'Ignored Test Cases', link: "6819e0c28d766d4fc8bd78d5583047d46aa7b4d9873c27706b0f338878019b01.html" },
+            { title: 'Skipped Test Cases', link: "ead00241527356e21eecd91f3d19434751be1a8266359b5e819b9600dd4ddaac.html" },
+            { title: 'Aborted Test Cases',  link: "b8e64f47ca6967b0d07dc23d973ee039a7444152f5de3c8cabc0e038bf4ee2f9.html"},
+            { title: 'Failed Test Cases', link: "1e79e71e75015ed4e294a9d7e44d2ee111f283ec05e210504f61be68db53ea21.html"  },
+            { title: 'Broken Test Cases', link: "98fc6d9a795c5ad1e69f81abe70c3384b3ef0ad1282640e8f8f2236bead70713.html"    },
+            { title: 'Compromised Test Cases',  link: "c19f4187c428ee796fa154e46648c035c44a18eda170f2edae4cf07ad192c867.html" },
+        ]
+        const outcomeData = {
+            labels: ['Passing Test Cases', 'Pending Test Cases', 'Ignored Test Cases', 'Skipped Test Cases', 'Aborted Test Cases', 'Failed Test Cases', 'Broken Test Cases', 'Compromised Test Cases','Undefined Test Cases'],
+            datasets: [{
+                label: 'Test Results',
+                fill: false,
+                data: [2,0,0,0,0,2,0,0],
+                backgroundColor: ['rgba(153,204,51,0.5)','rgba(165, 199, 238, 0.5)','rgba(168, 168, 168, 0.5)','rgba(238, 224, 152, 0.75)','rgba(255, 153, 102, 0.5)','rgba(255, 22, 49, 0.5)','rgba(255, 97, 8, 0.5)','rgba(255, 104, 255, 0.5)','rgba(83, 50, 168, 0.5)'],
+                borderColor: ['rgba(153,204,51,1)','rgba(165, 199, 238, 1)','rgba(168, 168, 168, 1)','rgba(238, 224, 152, 1)','rgba(255, 153, 102, 1)','rgba(255, 22, 49, 1)','rgba(255, 97, 8, 1)','rgba(255, 104, 255, 1)','rgba(83, 50, 168, 1)'],
+                borderWidth: 1,
+            }]
+        }
+        const outcomeOptions = {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom'
+                },
+                // Change options for ALL labels of THIS CHART
+                datalabels: {
+                    color: '#444444',
+                    'font.weight': 'bold',
+                    formatter: (value, ctx) => {
+                        let sum = 0;
+                        let dataArr = ctx.chart.data.datasets[0].data;
+                        dataArr.map(data => {
+                            sum += data;
+                        });
+                        let percentage = (value * 100 / sum).toFixed(0) + "%";
+                        if (percentage === '0%' || percentage === 'NaN%') {
+                            return '';
+                        } else {
+                            return percentage;
+                        }
+                    },
+                },
+            }
+        }
+
+        const outcomeChart = new Chart(outcomeChartCtx, {
+            type: 'doughnut',
+            data: outcomeData,
+            options: outcomeOptions,
+            plugins: [
+                {
+                    id: 'text',
+                    beforeDraw: function (chart, a, b) {
+                        var width = chart.width,
+                            height = chart.height,
+                            ctx = chart.ctx;
+
+                        ctx.restore();
+                        var fontSize = (height / 200).toFixed(1);
+                        ctx.font = fontSize + "em sans-serif";
+                        ctx.textBaseline = "middle";
+
+                        var text = "50%"
+                        textX = 10 + Math.round((width - ctx.measureText(text).width) / 2);
+                        textY = (height / 2) - 40;
+
+                        ctx.fillText(text, textX, textY);
+                        ctx.save();
+                    }
+                }]
+        });
+
+        function clickHandler(click) {
+            const points = outcomeChart.getElementsAtEventForMode(click, 'nearest', {intersect: true}, true);
+            if (points.length) {
+                const firstPoint = points[0];
+                window.open(outcomeDetailsReports[firstPoint.index].link, "_self")
+
+            }
+        }
+        outcomeChartCtx.onclick = clickHandler;
+    </script>
+    <!-- END PIE CHART -->
+
+    <!-- SUMMARY BAR CHART -->
+    <script>
+
+        // The Severity bar chart
+        const severityChartCtx = document.getElementById('severityChart');
+
+        // Options define for display value on top of bars
+
+        const severityDetailsReports = [
+            { title: 'Passing Scenarios', link: "5b258b609537372598d544d1dfbe834c84ca7db34864b830695d8c8fb7a0f809.html" },
+            { title: 'Pending Scenarios', link: "a85f195069ecc5422f873c871d0b5967983adb79fb280d0e6fe469dd905f5fd4.html" },
+            { title: 'Ignored Scenarios', link: "6819e0c28d766d4fc8bd78d5583047d46aa7b4d9873c27706b0f338878019b01.html" },
+            { title: 'Skipped Scenarios', link: "ead00241527356e21eecd91f3d19434751be1a8266359b5e819b9600dd4ddaac.html" },
+            { title: 'Aborted Scenarios',  link: "b8e64f47ca6967b0d07dc23d973ee039a7444152f5de3c8cabc0e038bf4ee2f9.html"},
+            { title: 'Failed Scenarios', link: "1e79e71e75015ed4e294a9d7e44d2ee111f283ec05e210504f61be68db53ea21.html"  },
+            { title: 'Broken Scenarios', link: "98fc6d9a795c5ad1e69f81abe70c3384b3ef0ad1282640e8f8f2236bead70713.html"    },
+            { title: 'Compromised Scenarios',  link: "c19f4187c428ee796fa154e46648c035c44a18eda170f2edae4cf07ad192c867.html" },
+        ]
+        const severityData = {
+            labels: ['Passing', 'Pending', 'Ignored', 'Skipped', 'Aborted', 'Failed', 'Broken', 'Compromised'],
+            datasets: [
+                {
+                    label: 'Automated',
+                    data: [2,0,0,0,0,2,0,0],
+                    backgroundColor: ['rgba(153,204,51,0.5)','rgba(165, 199, 238, 0.5)','rgba(168, 168, 168, 0.5)','rgba(238, 224, 152, 0.75)','rgba(255, 153, 102, 0.5)','rgba(255, 22, 49, 0.5)','rgba(255, 97, 8, 0.5)','rgba(255, 104, 255, 0.5)','rgba(83, 50, 168, 0.5)'],
+                    borderColor: ['rgba(153,204,51,1)','rgba(165, 199, 238, 1)','rgba(168, 168, 168, 1)','rgba(238, 224, 152, 1)','rgba(255, 153, 102, 1)','rgba(255, 22, 49, 1)','rgba(255, 97, 8, 1)','rgba(255, 104, 255, 1)','rgba(83, 50, 168, 1)'],
+                    borderWidth: 1
+                },
+                {
+                    label: 'Manual',
+                    data: [0,0,0,0,0,0,0,0],
+                    backgroundColor: ['rgba(153,204,51,0.25)','rgba(165, 199, 238, 0.25)','rgba(168, 168, 168, 0.25)','rgba(238, 224, 152, 0.375)','rgba(255, 153, 102, 0.25)','rgba(255, 22, 49, 0.25)','rgba(255, 97, 8, 0.25)','rgba(255, 104, 255, 0.25)','rgba(83, 50, 168, 0.25)'],
+                    borderColor: ['rgba(153,204,51,1)','rgba(165, 199, 238, 1)','rgba(168, 168, 168, 1)','rgba(238, 224, 152, 1)','rgba(255, 153, 102, 1)','rgba(255, 22, 49, 1)','rgba(255, 97, 8, 1)','rgba(255, 104, 255, 1)','rgba(83, 50, 168, 1)'],
+                    borderWidth: 1
+                },
+
+            ]
+        }
+        const severityOptions = {
+            responsive: true,
+            skipNull: true,
+            scales: {
+                x: {
+                    stacked: true,
+                },
+                y: {
+                    stacked: true,
+                }
+            },
+            plugins: {
+                // Change options for ALL labels of THIS CHART
+                datalabels: {
+                    color: '#444444',
+                    'font.weight': 'bold',
+                    formatter: (value, ctx) => {
+                        if (value === 0) {
+                            return '';
+                        } else {
+                            return value;
+                        }
+                    },
+                }
+            }
+        }
+        const severityChart = new Chart(severityChartCtx, {
+            type: 'bar',
+            data: severityData,
+            options: severityOptions
+        });
+
+        function clickHandler(click) {
+            const points = severityChart.getElementsAtEventForMode(click, 'nearest', {intersect: true}, true);
+            if (points.length) {
+                const firstPoint = points[0];
+                window.open(severityDetailsReports[firstPoint.index].link, "_self")
+
+            }
+        }
+        severityChartCtx.onclick = clickHandler;
+    </script>
+    <!-- END SUMMARY CHART -->
+
+    <!-- DURATION CHART -->
+    <script>
+
+        // Options define for display value on top of bars
+        const durationDetailsReports = [
+                {title: "Under 1 second", link: "6fb83dae459290e73daa0131b093edce540a8f00aa35e894eaa3b70a471bcc29.html"},
+                {title: "1 to 10 seconds", link: "ee2562c5ec2fc37659346e0882b6b1892dcbd27c3bf630184196d24e49d44738.html"},
+                {title: "10 to 30 seconds", link: "a8e3e2bfb72893dae34eb5776920c20fa37554cf9e5fddb269294237ff0209f0.html"},
+                {title: "30 to 60 seconds", link: "4c73016be0c886927cd52a0c9d1fd4909381cd1fec964eeb1b0606e8283efccc.html"},
+                {title: "1 to 2 minutes", link: "69d592df9d8fd75beede2245566071f82028028641e16d227e71855f3d212183.html"},
+                {title: "2 to 5 minutes", link: "4ae38f7b079d22cbbf2fd8769cade4cdf24ce8c91a86e043edb10d4bd7477530.html"},
+                {title: "5 to 10 minutes", link: "4159f0cb004438875b98af584bc548d039981a48bf4eb37395377bf97954a046.html"},
+                {title: "10 minutes or over", link: "1366c7101822411d5f66b75ce4da5bedc34f6792ba8388750814955a8a89ae17.html"},
+        ]
+        // The Severity bar chart
+        const durationChartCtx = document.getElementById('durationChart');
+
+        // Options define for display value on top of bars
+
+        const durationData = {
+            labels: ['Under 1 second','1 to 10 seconds','10 to 30 seconds','30 to 60 seconds','1 to 2 minutes','2 to 5 minutes','5 to 10 minutes','10 minutes or over'],
+            datasets: [{
+                label: 'Number of tests per duration',
+                fill: false,
+                data: ['0','0','0','0','4','0','0','0'],
+                backgroundColor: 'rgba(83, 146, 255,0.5)',
+                borderColor: 'rgba(83, 146, 255, 1)',
+            }]
+        }
+        const durationOptions = {
+            responsive: true,
+            plugins: {
+                // Change options for ALL labels of THIS CHART
+                datalabels: {
+                    color: '#444444',
+                    'font.weight': 'bold',
+                    formatter: (value, ctx) => {
+                        if (value > 0) {
+                            return value;
+                        } else {
+                            return '';
+                        }
+                    },
+                },
+                tooltip: {
+                    enabled: true,
+                    usePointStyle: true,
+                    callbacks: {
+                        label: (data) => {
+                            return data.parsed.y + ' tests'
+                        }
+                    },
+                },
+            },
+        }
+
+        const durationChart = new Chart(durationChartCtx, {
+            type: 'bar',
+            data: durationData,
+            options: durationOptions
+        });
+
+        function durationClickHandler(click) {
+            const points = durationChart.getElementsAtEventForMode(click, 'nearest', {intersect: true}, true);
+            if (points.length) {
+                const firstPoint = points[0];
+                window.open(durationDetailsReports[firstPoint.index].link, "_self")
+
+            }
+        }
+
+        durationChartCtx.onclick = durationClickHandler;
+    </script>
+    <!-- END DURATION CHART -->
+
+
+</body>
+</html>
