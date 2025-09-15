@@ -38,7 +38,11 @@ public class CombineItem {
 
   private String value;
   private String url;
+
+  @Builder.Default
   private Set<String> tags = new HashSet<>();
+
+  @Builder.Default
   private Map<String, String> properties = new HashMap<>();
 
   public boolean isSameAs(@NotNull String s) {

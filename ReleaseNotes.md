@@ -10,6 +10,14 @@
 [
 `docu TI-Messenger Version 2`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite_Version2.adoc)
 
+## Release 2.3.2
+
+### Changes
+
+- Updates TIM Forum announcement
+- Removes files from Serenity Example report to save space (RbelLogs will also be removed in a future release)
+- Bumps dependencies
+
 ## Release 2.3.1
 
 ### Features

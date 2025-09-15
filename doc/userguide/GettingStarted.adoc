@@ -41,7 +41,17 @@ Since all communication runs through the Tiger Proxy, a client certificate must 
 Additionally, the test driver must be equipped with the corresponding certificates.
 This chapter describes how to properly configure the proxy and provides supporting guidance on how to install the server certificate.
 
-After applying for approval, you will be asked to provide the URLs of the interfaces you have supplied.
+You will need to request those mTLS certificates in an link:https://service.gematik.de/servicedesk/customer/portal/24[ANF-TIM ticket].
+
+To speed up the request, please provide us with the following information for the certificates (find example values between the <greater/less than symbols>).
+
+[source txt]
+----
+organizstion name: <my company>
+locality name: <Berlin>
+DNS list: <testdriver1.ru.mycompany.com, testdriver2.ru.mycompany.com> or <*.ru.mycompany.com>
+----
+
 For these URLs, gematik will create a server certificate, a client certificate, and all associated keys.
 
 ==== Extract certificates
@@ -144,7 +154,7 @@ This is done by specifying the following two environment variables:
 The respective stores should be in .p12 format.
 
 For local/internal development, the use of TLS can be bypassed.
-Instructions for this can be found link:DevGuide.adoc#Disable-TLS[here].
+Instructions for this can be found link:DevGuide.adoc#Disable-TLS[in the DevGuide].
 
 ==== Configure the certificate revocation list for mTLS
 
