@@ -20,7 +20,7 @@
   <properties>
     <jacoco.version>0.8.13</jacoco.version>
     <maven.source.plugin.version>3.3.1</maven.source.plugin.version>
-    <maven.javadoc.plugin.version>3.11.2</maven.javadoc.plugin.version>
+    <maven.javadoc.plugin.version>3.11.3</maven.javadoc.plugin.version>
     <tiger.config.file>tiger.yml</tiger.config.file>
   </properties>
 
@@ -71,39 +71,6 @@
             <id>attach-javadocs</id>
             <goals>
               <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>de.gematik.test</groupId>
-        <artifactId>tiger-maven-plugin</artifactId>
-        <version>${tiger.version}</version>
-        <executions>
-          <execution>
-            <configuration>
-              <skip>false</skip>
-              <featuresDir>${feature_dir}</featuresDir>
-              <includes>
-                <include>**/*.feature</include>
-              </includes>
-              <glues>
-                <glue>de.gematik.test.tiger.hooks</glue>
-                <glue>de.gematik.test.tiger.glue</glue>
-                <glue>de.gematik.tim.test.glue</glue>
-              </glues>
-              <driverPackage>
-                de.gematik.tim.test.drivers
-              </driverPackage>
-              <!-- optional -->
-              <!--suppress UnresolvedMavenProperty -->
-              <driverClassName>Parallel${ctr}IT</driverClassName>
-              <templateFile>${project.basedir}/src/main/resources/driver5ClassTemplate.jtmpl</templateFile>
-            </configuration>
-            <id>default-sources</id>
-            <goals>
-              <goal>generate-drivers</goal>
-              <goal>generate-serenity-reports</goal>
             </goals>
           </execution>
         </executions>
@@ -434,11 +401,11 @@
         <skip.save.tiger-yml>true</skip.save.tiger-yml>
       </properties>
       <dependencies>
-          <dependency>
-            <groupId>de.gematik.tim.test</groupId>
-            <artifactId>TI-Messenger-mTLS-Certs</artifactId>
-            <version>${ti.m.mtls.certs.version}</version>
-          </dependency>
+        <dependency>
+          <groupId>de.gematik.tim.test</groupId>
+          <artifactId>TI-Messenger-mTLS-Certs</artifactId>
+          <version>${ti.m.mtls.certs.version}</version>
+        </dependency>
       </dependencies>
     </profile>
     <profile>
