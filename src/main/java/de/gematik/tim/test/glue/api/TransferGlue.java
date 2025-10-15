@@ -48,4 +48,15 @@ public class TransferGlue {
   public void getBackDehydratedDevices(List<String> actorNames) {
     // implement me
   }
+
+  @Dann("{string} fragt die Room States aus dem Chat mit {string} ab")
+  public void getRoomStatesFromChat(String actorNames, String chatMember) {
+    // implement me
+  }
+
+  @Dann("{string} prüft, dass falls der Parameter {listOfStrings} in den Room States im Chat mit {string} vorhanden ist, er mit dem Wert von {listOfStrings} befüllt ist")
+  public void checkRoomStatesForChat(String actorNames, List<String> matrixRoomState, String chatMember, List<String> gematikRoomState) {
+    // implement me
+  }
+
 }

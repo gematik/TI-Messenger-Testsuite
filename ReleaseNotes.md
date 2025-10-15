@@ -10,6 +10,19 @@
 [
 `docu TI-Messenger Version 2`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite_Version2.adoc)
 
+## Release 2.3.3
+
+### Changes
+
+- Updated Room State Tests for direct chats: The fields Room_Name and Room_Topic are no longer mandatory
+- @TCID:TIM_V2_BASIS_AF_09X0101, @TCID:TIM_V2_BASIS_AF_09X0401, and @TCID:TIM_V2_BASIS_AF_09X0501 are currently @WIP
+- Updated certificate revocation list
+
+### Bugs
+
+- @TCID:TIM_V2_BASIS_AF_10X0101 and @TCID:TIM_V2_BASIS_AF_10X0102 will now include the url parameter, when calling the
+  preview_url
+
 ## Release 2.3.2
 
 ### Changes

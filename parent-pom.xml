@@ -12,7 +12,7 @@
   <description>Properties and dependencies for Testsuite</description>
 
   <properties>
-    <revision>2.3.2</revision>
+    <revision>2.3.3</revision>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <java.version>17</java.version>
@@ -24,7 +24,7 @@
     <tiger.version>4.0.9</tiger.version>
     <serenity.core.version>4.2.34</serenity.core.version>
     <polarion.toolbox.version>3.0.3-212</polarion.toolbox.version>
-    <ti.m.mtls.certs.version>2.0.7</ti.m.mtls.certs.version>
+    <ti.m.mtls.certs.version>2.0.8</ti.m.mtls.certs.version>
 
     <ti.m.mtls.output.directory>${project.build.directory}/profile-resources</ti.m.mtls.output.directory>
     <tim.shared.properties>${ti.m.mtls.output.directory}/shared.properties</tim.shared.properties>
@@ -101,11 +101,6 @@
       <version>${tiger.version}</version>
     </dependency>
     <dependency>
-      <groupId>de.gematik</groupId>
-      <artifactId>tiger-cloud-extension</artifactId>
-      <version>10.0.18</version>
-    </dependency>
-    <dependency>
       <groupId>net.sf.supercsv</groupId>
       <artifactId>super-csv</artifactId>
       <version>2.4.0</version>
@@ -138,7 +133,7 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.40</version>
+      <version>1.18.42</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -149,7 +144,7 @@
     <dependency>
       <groupId>jakarta.xml.bind</groupId>
       <artifactId>jakarta.xml.bind-api</artifactId>
-      <version>4.0.2</version>
+      <version>4.0.4</version>
     </dependency>
   </dependencies>
 
@@ -350,18 +345,12 @@
               <includes>
                 <include>**/*.feature</include>
               </includes>
-              <glues>
-                <glue>de.gematik.test.tiger.hooks</glue>
-                <glue>de.gematik.test.tiger.glue</glue>
-                <glue>de.gematik.tim.test.glue</glue>
-              </glues>
               <driverPackage>
                 de.gematik.tim.test.drivers
               </driverPackage>
-              <!-- optional -->
-              <!--suppress UnresolvedMavenProperty -->
-              <driverClassName>Parallel${ctr}IT</driverClassName>
-              <templateFile>${project.basedir}/src/main/resources/driver5ClassTemplate.jtmpl
+              <driverClassName>CucumberDriver${ctr}IT</driverClassName>
+              <templateFile>
+                ${project.basedir}/src/main/resources/driver5ClassTemplate.jtmpl
               </templateFile>
             </configuration>
             <id>default-sources</id>
@@ -374,7 +363,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.5.2</version>
+        <version>3.5.4</version>
         <configuration>
           <environmentVariables>
             <TIGER_TESTENV_CFGFILE>${tiger.config.file}</TIGER_TESTENV_CFGFILE>
