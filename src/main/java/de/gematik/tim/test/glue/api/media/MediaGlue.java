@@ -59,6 +59,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Base64;
 import java.util.Optional;
 import lombok.SneakyThrows;
 import net.serenitybdd.screenplay.Actor;
@@ -150,21 +151,22 @@ public class MediaGlue {
   @SneakyThrows
   private void checkMediaIntegrity(String fileName, byte[] receivedMedia, MessageDTO message) {
     Path path = Path.of(RESOURCES_PATH + fileName);
+    Base64.Encoder base64Enc = Base64.getEncoder();
     try (FileInputStream fis = new FileInputStream(path.toFile())) {
-      assertThat(receivedMedia).isEqualTo(fis.readAllBytes());
+      assertThat(base64Enc.encodeToString(receivedMedia)).as("receivedMedia (in base64) should have the expected content").isEqualTo(base64Enc.encodeToString(fis.readAllBytes()));
     }
-    assertThat(message.getBody()).isEqualTo(getCreatedMessage(fileName).getBody());
+    assertThat(message.getBody()).as("the body of the MessageDTO should be the body of a created message").isEqualTo(getCreatedMessage(fileName).getBody());
   }
 
   private void checkRequiredMessageProperties(
       MessageDTO receivedMessage, String msgType, String expectedMimetype) {
     MessageContentInfoDTO receivedMessageInfo = receivedMessage.getInfo();
-    assertThat(receivedMessage.getMsgtype()).isEqualTo(msgType);
-    assertThat(receivedMessage.getType()).isEqualTo("m.room.message");
-    assertThat(receivedMessage.getEventId()).isNotNull().isNotEmpty();
-    assertThat(receivedMessageInfo).isNotNull();
+    assertThat(receivedMessage.getMsgtype()).as("received MessageDTO should have the expected msgType").isEqualTo(msgType);
+    assertThat(receivedMessage.getType()).as("received MessageDTO should have the expected type").isEqualTo("m.room.message");
+    assertThat(receivedMessage.getEventId()).as("received MessageDTO shouldn't have an eventId that is null or empty").isNotNull().isNotEmpty();
+    assertThat(receivedMessageInfo).as("received MessageDTO should have a non-null messageInfo").isNotNull();
     String actualMimetype = receivedMessageInfo.getMimetype();
-    assertThat(actualMimetype).isEqualTo(expectedMimetype);
+    assertThat(actualMimetype).as("received MessageDTO should have the expected mimetype").isEqualTo(expectedMimetype);
   }
 
   private void checkRequiredFileProperties(MessageDTO receivedMessage) {

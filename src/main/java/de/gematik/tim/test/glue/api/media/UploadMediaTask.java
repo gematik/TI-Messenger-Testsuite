@@ -20,6 +20,7 @@
 
 package de.gematik.tim.test.glue.api.media;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MEDIA_ID;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.UPLOAD_MEDIA;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
@@ -27,6 +28,8 @@ import static net.serenitybdd.rest.SerenityRest.lastResponse;
 import de.gematik.tim.test.models.MediaFileIdDTO;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import io.restassured.response.ResponseBody;
+import java.util.Optional;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 
@@ -49,8 +52,14 @@ public class UploadMediaTask implements Task {
         UPLOAD_MEDIA.request().with(req -> req.contentType(ContentType.BINARY).body(media)));
 
     Response response = lastResponse();
-    assert (response.statusCode() / 100 == 2);
-    String mediaId = response.body().as(MediaFileIdDTO.class).getFileId();
+    ResponseBody responseBody = response.body();
+    assertThat(response.statusCode())
+        .as(
+            "Attempt to upload media failed with status code %d with body: '%s'",
+            response.statusCode(),
+            Optional.ofNullable(responseBody).map(ResponseBody::print).orElse(""))
+        .isBetween(200, 299);
+    String mediaId = responseBody.as(MediaFileIdDTO.class).getFileId();
     actor.remember(MEDIA_ID, mediaId);
   }
 }

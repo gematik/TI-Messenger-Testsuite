@@ -155,6 +155,25 @@ public class InfoControllerGlue {
     actor.attemptsTo(callMatrixEndpointWithoutForwarding(httpMethod, matrixUrl));
   }
 
+  @And(
+      "{word} requests at their homeserver the preview API {string} including parameter url as {string}, including the access_token")
+  @Und(
+      "{word} fragt inklusive access_token an seinem HomeServer die preview API {string} inkl Parameter url als {string} ab")
+  public void pingApiOnHomeserverForPreview(String actorName, String matrixUrl, String url) {
+    Actor actor = theActorCalled(actorName);
+    String accessToken = actor.recall(ACCESS_TOKEN);
+    if (accessToken == null || accessToken.isEmpty()) {
+      throw new TestRunException("An access token is required for this API call.");
+    }
+
+    registerHomeserverAsApi(actor);
+    actor.attemptsTo(
+        callMatrixEndpoint("GET", matrixUrl)
+            .withAccessToken(accessToken)
+            .withRequestParameter(Map.of("url", url)));
+    registerTestDriverAsApi(actor);
+  }
+
   @When(
       "{word} requests at their homeserver the profile API {string} including parameters of user {string} with http method {string}")
   @Wenn(
