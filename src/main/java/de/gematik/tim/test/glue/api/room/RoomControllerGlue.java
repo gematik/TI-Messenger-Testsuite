@@ -20,6 +20,7 @@
 
 package de.gematik.tim.test.glue.api.room;
 
+import de.gematik.tim.test.glue.api.devices.UseDeviceAbility;
 import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.glue.api.room.questions.RoomState;
 import de.gematik.tim.test.models.RoomDTO;
@@ -505,6 +506,84 @@ public class RoomControllerGlue {
     public void checkParameterExistentForRoomStatesOfChat(String actor, List<String> requestedRoomStates, String chatPartner) {
         String roomName = DIRECT_CHAT_NAME + theActorCalled(chatPartner).recall(MX_ID);
         checkParameterExistentForRoomStatesOfRoom(actor, requestedRoomStates, roomName);
+    }
+
+    @Dann("{string} fragt die Room States aus dem Chat mit {string} ab")
+    public void getRoomStatesFromChat(String actorName, String chatMember) {
+        final Actor actor = theActorCalled(actorName);
+        final String roomId = actor.abilityTo(UseRoomAbility.class).getActive().getRoomId();
+        assertThat(roomId)
+            .as(format("Actor %s has no active room", actorName))
+            .isNotNull();
+        final long deviceId = actor.abilityTo(UseDeviceAbility.class).getDeviceId();
+        assertThat(roomId)
+            .as(format("Actor %s has no device", actorName))
+            .isNotEqualTo(0l);
+        final List<RoomStateDTO> roomStates = actor.asksFor(roomStates());
+        assertThat(roomStates)
+            .as(format("Actor %s has no room states for device %d and room %s", actorName, deviceId, roomId))
+            .isNotNull();
+
+        actor.remember("roomStates:" + roomId, roomStates);
+    }
+
+    @Dann("{string} prüft, dass falls der Parameter {listOfStrings} in den Room States im Chat mit {string} vorhanden ist, er mit dem Wert von {listOfStrings} befüllt ist")
+    public void checkRoomStatesForChat(String actorName, List<String> matrixRoomStates, String chatMember, List<String> gematikRoomStates) {
+        final Actor actor = theActorCalled(actorName);
+        final String roomId = actor.abilityTo(UseRoomAbility.class).getActive().getRoomId();
+        final List<RoomStateDTO> foundRoomStates = actor.recall("roomStates:" + roomId);
+        assertThat(foundRoomStates)
+            .as(format("Couldn't recall roomStates for Actor %s in room %s", actorName, roomId))
+            .isNotNull();
+
+        assertThat(matrixRoomStates.size())
+            .as(format("Size of matrixRoomState (%d) didn't match size of gematikRoomState (%d)", matrixRoomStates.size(), gematikRoomStates.size()))
+            .isEqualTo(gematikRoomStates.size());
+
+        for(int index = 0; index < matrixRoomStates.size(); index++) {
+            final RoomState matrixRoomState = RoomState.valueOf(matrixRoomStates.get(index));
+            final RoomState gematikRoomState = RoomState.valueOf(gematikRoomStates.get(index));
+
+            final String matrixRoomStateValue = foundRoomStates.stream()
+                .filter(rs -> rs.getType().equals(matrixRoomState.getType()))
+                .findFirst()
+                .map((roomState)->extractContentValue(roomState.getContent()))
+                .orElse(null);
+            final String gematikRoomStateValue = foundRoomStates.stream()
+                .filter(rs -> rs.getType().equals(matrixRoomState.getType()))
+                .findFirst()
+                .map((roomState)->extractContentValue(roomState.getContent()))
+                .orElse(null);
+
+            if(matrixRoomStateValue!=null) {
+                assertThat(matrixRoomStateValue)
+                    .as(format("Value of (%s) didn't match the value of gematikRoomState (%s)", matrixRoomState.name(), gematikRoomState.name()))
+                    .isEqualTo(gematikRoomStateValue);
+            }
+        }
+    }
+
+    private String extractContentValue(final String jsonMapWithSingleKeyValue) {
+        if (jsonMapWithSingleKeyValue == null || jsonMapWithSingleKeyValue.trim().isEmpty()) {
+          return null;
+        }
+        // Remove whitespace and curly braces, then split by colon
+        String trimmed = jsonMapWithSingleKeyValue.trim();
+        if (!trimmed.startsWith("{") || !trimmed.endsWith("}")) {
+            throw new IllegalArgumentException("Expected json map but got: " + jsonMapWithSingleKeyValue);
+        }
+        trimmed = trimmed.substring(1, trimmed.length() - 1).trim();
+
+        final String[] parts = trimmed.split(":", 2);
+        if (parts.length != 2) {
+            throw new IllegalArgumentException("Expected json map with single key-value but got: " + jsonMapWithSingleKeyValue);
+        }
+        // Remove quotes and whitespace from the value
+        String value = parts[1].trim();
+        if (value.startsWith("\"") && value.endsWith("\"")) {
+            value = value.substring(1, value.length() - 1);
+        }
+        return value;
     }
 
     private boolean checkIfParametersAreSet(RoomState expectedRoomState, List<RoomStateDTO> roomStates) {

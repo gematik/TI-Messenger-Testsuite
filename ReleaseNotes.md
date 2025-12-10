@@ -10,6 +10,24 @@
 [
 `docu TI-Messenger Version 2`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite_Version2.adoc)
 
+## Release 2.3.4
+
+### Changes
+
+- Updated the GettingStarted doc to clarify the idea behind and the scope of the example Serenity report
+- Updated certificate revocation list
+- test driver API: adjusts managingOrganization to be a FhirReference instead of a String to be closer to the FHIR
+  profile
+
+### Features
+
+- enable test "Room States - Chat - Default Room State und Raumversion (Org-User)"
+  @TCID:TIM_V2_BASIS_AF_09X0101, @TCID:TIM_V2_BASIS_AF_09X0401, and @TCID:TIM_V2_BASIS_AF_09X0501 are no @WIP anymore
+
+### Bugfixes
+
+- teardown will now skip the current actor more robust in case of an error
+
 ## Release 2.3.3
 
 ### Changes
@@ -18,9 +36,11 @@
 - @TCID:TIM_V2_BASIS_AF_09X0101, @TCID:TIM_V2_BASIS_AF_09X0401, and @TCID:TIM_V2_BASIS_AF_09X0501 are currently @WIP
 - Updated certificate revocation list
 
-### Bugs
+### Bugfixes
 
 - @TCID:TIM_V2_BASIS_AF_10X0101 and @TCID:TIM_V2_BASIS_AF_10X0102 will now include the url parameter, when calling the
+- Make sure we switch back (from matrix api) to testdriver api, so teardown succeeds. This impacted tests in
+  10X_1_OrgOrg_API_Checks_V2_Basis.feature.cute.
   preview_url
 
 ## Release 2.3.2
@@ -50,7 +70,7 @@
 - clarifies on the fact, that a separate orgAdmin test driver is needed,
   solving https://github.com/gematik/TI-Messenger-Testsuite/issues/76
 
-### Bugs
+### Bugfixes
 
 - changing a healthcare service endpoint will no longer fail, when the field extension is [] instead of null
 
@@ -64,7 +84,7 @@
 
 ## Release 2.3.0
 
-### Bugs
+### Bugfixes
 
 - will now correctly serialize the authorization mode as json,
   solving https://github.com/gematik/TI-Messenger-Testsuite/issues/81
@@ -153,7 +173,7 @@ Find details about testing with the reference implementation in the chapter 7.4 
 
 ## Release 2.2.2
 
-## Bugs
+### Bugfixes
 
 - @TCID:TIM_V2_BASIS_AF_10X0103 and @TCID:TIM_V2_BASIS_AF_10X0104 will no longer try to run the teardown calls against
   the Matrix homeserver, and instead will call against the test driver as intended
@@ -175,7 +195,7 @@ Find details about testing with the reference implementation in the chapter 7.4 
 
 ## Release 2.2.0
 
-### Bugs
+### Bugfixes
 
 - fixes @TCID:TIM_V2_PRO_AF_010107 to not exit prematurely on the expected 403 status code
 
@@ -430,7 +450,7 @@ Find details about testing with the reference implementation in the chapter 7.4 
 - Checks for the specified fields of `MessageContentFile` have been extended in the glue code for sending and receiving
   attachments.
 
-### Bugs
+### Bugfixes
 
 - bumps API file version (was forgotten during the last releases)
 
@@ -467,7 +487,7 @@ Find details about testing with the reference implementation in the chapter 7.4 
 
 ### Beta Release TI-M Testsuite Version 2
 
-### Bugs
+### Bugfixes
 
 - fixes API tests trying to reach homeserver under test driver url
 
@@ -576,7 +596,7 @@ Find details about testing with the reference implementation in the chapter 7.4 
 - moves configuration of cucumber-test-combinations-maven-plugin and related properties from pom.xml
   to parent-pom.xml
 
-### Bugs
+### Bugfixes
 
 - fixes assertion of room states in FeatureFile 14 to take effect
 - partly reverts changes from https://github.com/gematik/TI-Messenger-Testsuite/issues/61 by
@@ -604,7 +624,7 @@ Find details about testing with the reference implementation in the chapter 7.4 
 
 - readjusts attachment type from m.text to m.file
 
-### Bugs
+### Bugfixes
 
 - ignores managingOrganization in endpoint comparison
 
@@ -627,7 +647,7 @@ Find details about testing with the reference implementation in the chapter 7.4 
   example to reflect
   VZD update to profile 0.11.18
 
-### Bugs
+### Bugfixes
 
 - fixed regression, pom.xml: removed `*` in save_reports to be compatible with macOS, see GitHub
   issue: https://github.com/gematik/TI-Messenger-Testsuite/issues/46
@@ -641,20 +661,20 @@ Find details about testing with the reference implementation in the chapter 7.4 
 - Three unused endpoints were removed from the test driver API: createLocation, updateLocation,
   deleteLocation
 
-### Bugs
+### Bugfixes
 
 - pom.xml: replaced `*` with `.` in line 637, see Github
   issue: https://github.com/gematik/TI-Messenger-Testsuite/issues/46
 
 ## Release 1.3.7
 
-### Bugs
+### Bugfixes
 
 - fixes release issue
 
 ## Release 1.3.6
 
-### Bugs
+### Bugfixes
 
 - fixes cleanup trigger, regression from 1.3.5
 
@@ -666,7 +686,7 @@ Find details about testing with the reference implementation in the chapter 7.4 
 - cleanup trigger works for both, normal clients and OrgAdmins
 - integrated new bdd plugin version, unknown info API fields will now be evaluated as false
 
-### Bugs
+### Bugfixes
 
 - TiMessengerTestTreiber.yaml: adjusted several semantic details, see Github issues #41, #42, #43
 - TiMessengerTestTreiber.yaml: changes FhirMeta.versionId type from integer to string, see Github
@@ -679,7 +699,7 @@ Find details about testing with the reference implementation in the chapter 7.4 
 
 - new error messages for room-checks
 
-### Bugs
+### Bugfixes
 
 - TiMessengerTestTreiber.yaml: replaced location with endpoint (see GitHub
   issue: https://github.com/gematik/TI-Messenger-Testsuite/issues/38)
@@ -688,7 +708,7 @@ Find details about testing with the reference implementation in the chapter 7.4 
 
 ## Release 1.3.3
 
-### Bugs
+### Bugfixes
 
 - fixes issue with release
 - adjusted error handling so error messages are more accurate
@@ -704,14 +724,14 @@ Find details about testing with the reference implementation in the chapter 7.4 
 
 ## Release 1.3.1
 
-### Bugs
+### Bugfixes
 
 - Fixes missing and double transactionIds
 - Removes work in progress tests
 
 ## Release 1.3.0
 
-### Bugs
+### Bugfixes
 
 - Fixes Testcase 0.05 which now correctly calls '/.well-known/matrix/client' instead of '
   /.well-known/matrix/server' to
@@ -780,20 +800,20 @@ Find details about testing with the reference implementation in the chapter 7.4 
 
 ## Release 0.10.9
 
-### Bugs
+### Bugfixes
 
 - Corrected TF 8.14, 8.15, 10.14, 10.15
 - Polarion upload path corrected
 
 ## Release 0.10.8
 
-### Bugs
+### Bugfixes
 
 - Search for endpoint in test case 03.03 is now done on updated healthcareservice
 
 ## Release 0.10.7
 
-### Bugs
+### Bugfixes
 
 - Added a check whether a user is an org admin so it does not require a mxid
 - sends an error message if test 11.01 fails
@@ -804,7 +824,7 @@ Find details about testing with the reference implementation in the chapter 7.4 
 
 ## Release 0.10.6
 
-### Bugs
+### Bugfixes
 
 - Get status message 403 instead of 401 when a person may not be invited to a room
 - Check practitioner name instead of endpoint name, when searching by name in VZD
@@ -819,7 +839,7 @@ Find details about testing with the reference implementation in the chapter 7.4 
 
 ## Release 0.10.5
 
-### Bugs
+### Bugfixes
 
 - Adjusted the AllowDoubleLineup Filter (set to ture) in Feature File 14 for TCs 14.02, 14.03, 14.04
 - Regression for parsing FhirResources fixed. The custom mapper is used and therefor won't break if
@@ -828,7 +848,7 @@ Find details about testing with the reference implementation in the chapter 7.4 
 
 ## Release 0.10.4
 
-### Bugs
+### Bugfixes
 
 - Added https:// for homeserver url in the request to get the server version, if neither http nor
   https is given in the
@@ -839,7 +859,7 @@ Find details about testing with the reference implementation in the chapter 7.4 
 
 ## Release 0.10.3
 
-### Bugs
+### Bugfixes
 
 - Membership-state-check search for roomId and not for roomName. This caused problems because the
   roomName in direct
@@ -851,7 +871,7 @@ Find details about testing with the reference implementation in the chapter 7.4 
 
 ## Release 0.10.2
 
-### Bugs
+### Bugfixes
 
 - Fixed two instances, where the mxid was not yet written in its uri scheme to the FHIR directory.
 
@@ -868,7 +888,7 @@ Find details about testing with the reference implementation in the chapter 7.4 
 
 - Changed naming of new Testcase 00.07 into 00.05
 
-### Bugs
+### Bugfixes
 
 - It's no longer expected for an invited member, to get a full member list in the getRooms request
   for rooms they are
@@ -909,7 +929,7 @@ Find details about testing with the reference implementation in the chapter 7.4 
 - Update Combinations-Plugin for better view of used groups in serenity report
 - Reworked claim parallel
 
-### Bugs
+### Bugfixes
 
 - Matrix url changed to correct schema like defined
   at https://spec.matrix.org/v1.9/appendices/#matrix-uri-scheme

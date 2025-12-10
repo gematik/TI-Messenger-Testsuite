@@ -22,6 +22,7 @@ package de.gematik.tim.test.glue.api.teardown;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_LOGGED_IN;
 import static de.gematik.tim.test.glue.api.login.LoginTask.login;
+import static de.gematik.tim.test.glue.api.utils.IndividualLogger.individualLog;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addFailedActor;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.isActorFailed;
 import static java.util.Objects.nonNull;
@@ -60,15 +61,26 @@ public abstract class TeardownAbility implements RefersToActor, Ability, HasTear
         try {
           ability.tearDown();
         } catch (TeardownException | AssertionFailedError e) {
-          log.error("Ability tearDown was not successful, proceeding", e);
+          log.error("Ability tearDown was not successful, skipping teardown for current actor", e);
+          individualLog(
+              "Ability teardown for actor %s failed".formatted(actor.getName()),
+              "ExceptionMessage",
+              e.getMessage());
           addFailedActor(actor);
         }
       }
     }
+    if (isActorFailed(actor)) {
+      return;
+    }
     try {
       teardownThis();
     } catch (TeardownException | AssertionFailedError e) {
-      log.error("TearDown was not successful, proceeding", e);
+      log.error("TearDown was not successful, skipping teardown for current actor", e);
+      individualLog(
+          "Teardown for actor %s failed".formatted(actor.getName()),
+          "ExceptionMessage",
+          e.getMessage());
       addFailedActor(actor);
     }
     tearedDown = true;
