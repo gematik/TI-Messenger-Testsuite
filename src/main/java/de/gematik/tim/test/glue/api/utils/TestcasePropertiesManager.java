@@ -77,10 +77,12 @@ public class TestcasePropertiesManager {
     id = format("%s/%s", testId, UUID.randomUUID());
   }
 
+  @SuppressWarnings({"RedundantSuppression", "LombokSetterMayBeUsed"})
   public static void setDryRun(boolean newDryRun) {
     dryRun = newDryRun;
   }
 
+  @SuppressWarnings({"RedundantSuppression", "LombokSetterMayBeUsed"})
   public static boolean isDryRun() {
     return dryRun;
   }
