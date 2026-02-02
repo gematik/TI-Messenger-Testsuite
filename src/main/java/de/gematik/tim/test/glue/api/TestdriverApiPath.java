@@ -67,6 +67,7 @@ public final class TestdriverApiPath {
   public static final String MESSAGE_PATH = ROOM_ID_PATH + "/messages";
   public static final String MESSAGE_ID_PATH =
       MESSAGE_PATH + "/" + PATH_VARIABLE.formatted(MESSAGE_ID_VARIABLE);
+  public static final String MESSAGE_REPLACE_PATH = MESSAGE_ID_PATH + "/replace";
 
   // LOGIN
   public static final String LOGIN_PATH = DEVICE_ID_PATH + "/login";

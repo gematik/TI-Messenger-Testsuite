@@ -22,43 +22,7 @@ package de.gematik.tim.test.glue.api;
 
 import static lombok.AccessLevel.PRIVATE;
 
-import io.cucumber.java.en.Then;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor(access = PRIVATE)
-public final class TransferGlue {
-
-  @Then("{string} erstellt einen öffentlichen Chat-Raum {string}")
-  public void cratePublicRoom(String actorName, String roomName) {
-    // implement me
-  }
-
-  @Then("{string} findet den öffentlichen Raum {string}")
-  public void findPublicRoom(String actorName, String roomName) {
-    // implement me
-  }
-
-  @Then("{string} betritt den Raum {string}")
-  public void joinRoom(String actorName, String roomName) {
-    // implement me
-  }
-
-  @Then("{string} kann den öffentlichen Raum {string} nicht finden")
-  public void cantFindPublicRoom(String actorName, String roomName) {
-    // implement me
-  }
-
-  @Then(
-      "{string} versucht die Eigenschaft {string} im Raum {string} auf den Wert {string} zu setzen")
-  public void tryToChangeRoomProperties(
-      String actorName, String parameterName, String roomName, String parameterValue) {
-    // implement me
-  }
-
-  @Then(
-      "{string} prüft, ob die Eigenschaft {string} im Raum {string} mit dem Wert {string} befüllt ist")
-  public void checkRoomProperties(
-      String actorName, String parameterName, String roomName, String parameterValue) {
-    // implement me
-  }
-}
+public final class TransferGlue {}

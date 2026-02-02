@@ -42,5 +42,4 @@ public final class ActorMemoryKeys {
   public static final String OWN_ENDPOINT_ID = "ownEndpointId";
   public static final String OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX = "_ownStatusInRoom";
   public static final String SESSION_KEY = "sessionKey";
-  public static final String TEST_DRIVER_URL = "testDriverUrl";
 }

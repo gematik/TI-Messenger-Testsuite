@@ -92,11 +92,7 @@ public class InfoControllerGlue {
   @Wenn("{word} die supporteten Matrix-Versions vom Home-Server abfragt")
   public void requestMatrixVersionFromHomeServer(String actorName) {
     Actor actor = theActorCalled(actorName);
-    runWithHomeserverAsApi(
-        () -> {
-          actor.asksFor(matrixSupportedServerVersion());
-        },
-        actor);
+    runWithHomeserverAsApi(() -> actor.asksFor(matrixSupportedServerVersion()), actor);
   }
 
   private void runWithHomeserverAsApi(Runnable task, Actor actor) {
@@ -150,9 +146,9 @@ public class InfoControllerGlue {
       throw new TestRunException("An access token is required for this API call.");
     }
     runWithHomeserverAsApi(
-        () -> {
-          actor.attemptsTo(callMatrixEndpoint(httpMethod, matrixUrl).withAccessToken(accessToken));
-        },
+        () ->
+            actor.attemptsTo(
+                callMatrixEndpoint(httpMethod, matrixUrl).withAccessToken(accessToken)),
         actor);
   }
 
@@ -172,12 +168,11 @@ public class InfoControllerGlue {
     }
 
     runWithHomeserverAsApi(
-        () -> {
-          actor.attemptsTo(
-              callMatrixEndpoint("GET", matrixUrl)
-                  .withAccessToken(accessToken)
-                  .withRequestParameter(Map.of("url", url)));
-        },
+        () ->
+            actor.attemptsTo(
+                callMatrixEndpoint("GET", matrixUrl)
+                    .withAccessToken(accessToken)
+                    .withRequestParameter(Map.of("url", url))),
         actor);
   }
 

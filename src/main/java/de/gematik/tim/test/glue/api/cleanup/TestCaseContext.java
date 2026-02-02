@@ -24,6 +24,8 @@ import io.cucumber.plugin.event.TestCase;
 
 public class TestCaseContext {
 
+  private TestCaseContext() {}
+
   private static final ThreadLocal<TestCase> currentTestCase = new ThreadLocal<>();
 
   public static void setTestCase(TestCase testCase) {

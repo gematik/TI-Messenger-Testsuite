@@ -31,7 +31,6 @@ import de.gematik.tim.test.glue.api.threading.ParallelExecutor;
 import de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager;
 import io.cucumber.java.de.Dann;
 import io.cucumber.java.en.Then;
-
 import java.util.List;
 
 public class GeneralStepsGlue {
@@ -45,7 +44,7 @@ public class GeneralStepsGlue {
       assertThat(ParallelExecutor.getLastResponseCodeForActor(actorName)).isEqualTo(responseCode);
     } else {
       assertThat(lastResponse().statusCode())
-          .as("Operation returned error code " + lastResponse().statusCode())
+          .as("Operation returned unexpected code " + lastResponse().statusCode())
           .isEqualTo(responseCode);
     }
   }

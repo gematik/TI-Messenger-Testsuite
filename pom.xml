@@ -18,62 +18,24 @@
   </parent>
 
   <properties>
-    <jacoco.version>0.8.13</jacoco.version>
-    <maven.source.plugin.version>3.3.1</maven.source.plugin.version>
-    <maven.javadoc.plugin.version>3.12.0</maven.javadoc.plugin.version>
+    <maven.exec.plugin.version>3.6.3</maven.exec.plugin.version>
     <tiger.config.file>tiger.yml</tiger.config.file>
+    <sonar.sources>${project.basedir}</sonar.sources>
+    <sonar.exclusions>serenityReportExample/**</sonar.exclusions>
+    <sonar.coverage.exclusions>**/*</sonar.coverage.exclusions>
   </properties>
 
   <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-        <includes>
-          <include>**/versions.txt</include>
-        </includes>
-      </resource>
-    </resources>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.14.1</version>
-        <configuration>
-          <encoding>${project.build.sourceEncoding}</encoding>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
-          <debug>true</debug>
-        </configuration>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.5.4</version>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>${maven.source.plugin.version}</version>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>${maven.javadoc.plugin.version}</version>
-        <configuration>
-          <doclint>none</doclint>
-        </configuration>
-        <executions>
-          <execution>
-            <id>attach-javadocs</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <groupId>org.sonarsource.scanner.maven</groupId>
+        <version>5.5.0.6356</version>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -111,26 +73,6 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>${jacoco.version}</version>
-        <executions>
-          <execution>
-            <id>prepare-agent</id>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>report</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>com.coderplus.maven.plugins</groupId>
         <artifactId>copy-rename-maven-plugin</artifactId>
         <version>1.0.1</version>
@@ -163,7 +105,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>3.3.1</version>
+        <version>3.4.0</version>
         <configuration>
           <skip>${skip.saving.reports}</skip>
         </configuration>
@@ -297,7 +239,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>properties-maven-plugin</artifactId>
-        <version>1.2.1</version>
+        <version>1.3.0</version>
         <executions>
           <execution>
             <phase>generate-resources</phase>
@@ -310,174 +252,38 @@
           </execution>
         </executions>
       </plugin>
+      <!--      Done with "cp" to keep timestamp-->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>${maven.exec.plugin.version}</version>
+        <configuration>
+          <skip>${skip.saving.reports}</skip>
+        </configuration>
+        <executions>
+          <execution>
+            <id>save_reports</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>cp</executable>
+              <arguments>
+                <argument>-a</argument>
+                <argument>${project.build.directory}/site/serenity/.</argument>
+                <argument>${basedir}/reports/${build.time}/report/</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
   <profiles>
     <profile>
-      <id>prod</id>
-      <build>
-        <plugins>
-          <!--Extract mtls-certs resources-->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <version>3.8.1</version>
-            <executions>
-              <execution>
-                <id>get-resources-for-prod</id>
-                <phase>generate-resources</phase>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <configuration>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>${project.groupId}</groupId>
-                      <artifactId>TI-Messenger-mTLS-Certs</artifactId>
-                      <version>${ti.m.mtls.certs.version}</version>
-                      <type>jar</type>
-                      <overWrite>true</overWrite>
-                      <outputDirectory>
-                        ${project.build.directory}/profile-resources
-                      </outputDirectory>
-                      <includes>**/*.yml,**/*.json,gemRoot/cert/gem/*.p12</includes>
-                      <excludes>META-INF/**</excludes>
-                    </artifactItem>
-                  </artifactItems>
-                  <overWriteSnapshots>true</overWriteSnapshots>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <!--      Done with "cp" to keep timestamp-->
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>3.5.1</version>
-            <configuration>
-              <skip>${skip.saving.reports}</skip>
-            </configuration>
-            <executions>
-              <execution>
-                <id>save_reports</id>
-                <phase>post-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>cp</executable>
-                  <arguments>
-                    <argument>-a</argument>
-                    <argument>${project.build.directory}/site/serenity/.</argument>
-                    <argument>${basedir}/reports/${build.time}/report/</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-      <properties>
-        <combine.items.file>
-          ${ti.m.mtls.output.directory}/combine_items_prod.json
-        </combine.items.file>
-        <tiger.config.file>
-          ${ti.m.mtls.output.directory}/tiger-prod.yml
-        </tiger.config.file>
-        <tim.truststore>
-          ${ti.m.mtls.output.directory}/gemRoot/cert/gem/gemTruststore.p12
-        </tim.truststore>
-        <tim.truststore.pw>${env.PROD_TRUSTSTORE_PW}</tim.truststore.pw>
-        <tim.keystore>
-          ${ti.m.mtls.output.directory}/gemRoot/cert/gem/gemKeystore.p12
-        </tim.keystore>
-        <tim.keystore.pw>${env.PROD_KEYSTORE_PW}</tim.keystore.pw>
-        <timeout>240</timeout>
-        <pollInterval>5</pollInterval>
-        <claimDuration>600</claimDuration>
-        <soft-filter.to.hard>true</soft-filter.to.hard>
-        <cutest.count.format>txt,json</cutest.count.format>
-        <skip.save.tiger-yml>true</skip.save.tiger-yml>
-      </properties>
-      <dependencies>
-        <dependency>
-          <groupId>de.gematik.tim.test</groupId>
-          <artifactId>TI-Messenger-mTLS-Certs</artifactId>
-          <version>${ti.m.mtls.certs.version}</version>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>reference-ci</id>
-      <build>
-        <resources>
-          <resource>
-            <directory>src/main/resources</directory>
-            <filtering>true</filtering>
-            <includes>
-              <include>**/versions.txt</include>
-            </includes>
-          </resource>
-        </resources>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>3.5.1</version>
-            <configuration>
-              <skip>${skip.saving.reports}</skip>
-            </configuration>
-            <executions>
-              <execution>
-                <id>save_reports</id>
-                <phase>post-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>cp</executable>
-                  <arguments>
-                    <argument>-a</argument>
-                    <argument>${project.build.directory}/site/serenity/.</argument>
-                    <argument>${basedir}/reports/${build.time}/report/</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-      <properties>
-        <combine.items.file>
-          ${ti.m.mtls.output.directory}/combine_items_prod.json
-        </combine.items.file>
-        <tiger.config.file>
-          ${ti.m.mtls.output.directory}/tiger-prod.yml
-        </tiger.config.file>
-        <tim.truststore>
-          ${ti.m.mtls.output.directory}/gemRoot/cert/gem/gemTruststore.p12
-        </tim.truststore>
-        <tim.truststore.pw>${env.PROD_TRUSTSTORE_PW}</tim.truststore.pw>
-        <tim.keystore>
-          ${ti.m.mtls.output.directory}/gemRoot/cert/gem/gemKeystore.p12
-        </tim.keystore>
-        <tim.keystore.pw>${env.PROD_KEYSTORE_PW}</tim.keystore.pw>
-        <timeout>240</timeout>
-        <pollInterval>5</pollInterval>
-        <claimDuration>300</claimDuration>
-        <soft-filter.to.hard>true</soft-filter.to.hard>
-        <cutest.count.format>txt,json</cutest.count.format>
-        <skip.saving.reports>false</skip.saving.reports>
-      </properties>
-    </profile>
-    <profile>
       <id>disable-prepare-items</id>
-      <activation>
-        <property>
-          <name>profile.ci</name>
-        </property>
-      </activation>
       <build>
         <plugins>
           <plugin>
@@ -532,106 +338,6 @@
         <cutest.break.request>false</cutest.break.request>
         <cutest.break.tablesize>false</cutest.break.tablesize>
       </properties>
-    </profile>
-    <profile>
-      <id>polarion-upload</id>
-      <properties>
-        <testRun>TI-M_Testsuite</testRun>
-        <polarion.project>releaseTIMessenger1101</polarion.project>
-        <serenityReportsFolderPath>
-          ${basedir}/reports/${build.time}/report
-        </serenityReportsFolderPath>
-      </properties>
-      <build>
-        <plugins>
-          <!--      Done with "cp" to keep timestamp-->
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>3.5.1</version>
-            <configuration>
-              <skip>${skip.saving.reports}</skip>
-            </configuration>
-            <executions>
-              <execution>
-                <id>save_reports</id>
-                <phase>post-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>cp</executable>
-                  <arguments>
-                    <argument>-a</argument>
-                    <argument>${project.build.directory}/site/serenity/.</argument>
-                    <argument>${basedir}/reports/${build.time}/report/</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>de.gematik</groupId>
-            <artifactId>gematik-polarion-maven-plugin</artifactId>
-            <version>${polarion.toolbox.version}</version>
-            <executions>
-              <execution>
-                <id>upload</id>
-                <configuration>
-                  <username>${env.POLARION_CREDENTIALS_USR}</username>
-                  <password>${env.POLARION_CREDENTIALS_PSW}</password>
-                  <project>${polarion.project}</project>
-                  <testRun>${testRun}</testRun>
-                  <serenityReportsFolderPath>
-                    ${serenityReportsFolderPath}
-                  </serenityReportsFolderPath>
-                </configuration>
-                <phase>post-integration-test</phase>
-                <goals>
-                  <goal>upload-testresults</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>polarion-sync</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>de.gematik</groupId>
-            <artifactId>gematik-polarion-maven-plugin</artifactId>
-            <version>${polarion.toolbox.version}</version>
-            <executions>
-              <execution>
-                <id>parse</id>
-                <goals>
-                  <goal>parse-bdd</goal>
-                </goals>
-                <configuration>
-                  <pathToBddFiles>${feature.template.dir}</pathToBddFiles>
-                  <fileExtension>.cute</fileExtension>
-                </configuration>
-              </execution>
-              <execution>
-                <id>sync</id>
-                <configuration>
-                  <username>${env.POLARION_CREDENTIALS_USR}</username>
-                  <password>${env.POLARION_CREDENTIALS_PSW}</password>
-                  <luceneQuery>cfInternalId:TIM_V2_*</luceneQuery>
-                  <project>Mainline_OPB1</project>
-                </configuration>
-                <goals>
-                  <goal>sync-testcases</goal>
-                </goals>
-                <phase>generate-resources</phase>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
     </profile>
     <!--      used to skip saving reports when tests are skipped-->
     <profile>

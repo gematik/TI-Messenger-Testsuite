@@ -57,6 +57,7 @@ import static de.gematik.tim.test.glue.api.TestdriverApiPath.MEDIA_DOWNLOAD_PATH
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.MEDIA_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.MESSAGE_ID_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.MESSAGE_PATH;
+import static de.gematik.tim.test.glue.api.TestdriverApiPath.MESSAGE_REPLACE_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOMS_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_ID_PATH;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.ROOM_ID_VARIABLE;
@@ -108,6 +109,7 @@ public enum TestdriverApiEndpoint {
   // ROOM
   GET_ROOMS(GET, ROOMS_PATH, UseDeviceAbility.class),
   GET_ROOM(GET, ROOM_ID_PATH, UseDeviceAbility.class, UseRoomAbility.class),
+  UPDATE_ROOM(PUT, ROOM_ID_PATH, UseDeviceAbility.class, UseRoomAbility.class),
   CREATE_ROOM(POST, ROOMS_PATH, UseDeviceAbility.class),
   FORGET_ROOM(DELETE, ROOM_ID_PATH, UseDeviceAbility.class, UseRoomAbility.class),
   INVITE_TO_ROOM(POST, ROOM_INVITE_PATH, UseDeviceAbility.class, UseRoomAbility.class),
@@ -122,6 +124,8 @@ public enum TestdriverApiEndpoint {
   EDIT_MESSAGE(PUT, MESSAGE_ID_PATH, UseDeviceAbility.class, UseRoomAbility.class),
   GET_MESSAGES(GET, MESSAGE_PATH, UseDeviceAbility.class, UseRoomAbility.class),
   DELETE_MESSAGE(DELETE, MESSAGE_ID_PATH, UseDeviceAbility.class, UseRoomAbility.class),
+  DELETE_REPLACE_MESSAGE(
+      DELETE, MESSAGE_REPLACE_PATH, UseDeviceAbility.class, UseRoomAbility.class),
 
   // HOMESERVER SEARCH
   SEARCH_ON_HOMESERVER(GET, HOMESERVER_SEARCH_PATH, UseDeviceAbility.class),

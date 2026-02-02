@@ -27,10 +27,14 @@ If you want to run and work with the test suite on a Windows computer you have t
 
 2. git config --system core.longpaths true
 
-(!) Note: if step 2 does not work or gives any error, you can also try running this command:
+[NOTE]
+====
+if step 2 does not work or gives any error, you can also try running this command:
 
-3. git config --global core.longpaths true
+git config --global core.longpaths true
+====
 
+Reference:
 https://stackoverflow.com/questions/22575662/filename-too-long-in-git-for-windows
 
 [#_set_up_certificates]
@@ -307,9 +311,13 @@ More information about dehydrated devices: link:https://github.com/gematik/TI-Me
 
 === Scope of the Example Serenity report
 
-For the provided Serenity report, the reference implementation is tested against the reference implementation. This is intended to support in your development, but *the format is not sufficient to meet the entry criteria*, as only one example per test case is executed in the report, while two examples are required for approval. The report is not always up to date and complete, although we strive to keep it up to date and complete.
+For the provided Serenity report, the reference implementation is tested against the reference implementation.
+This is intended to support in your development, but *the format is not sufficient to meet the entry criteria*, as only one example per test case is executed in the report, while two examples are required for approval.
+The report is not always up to date and complete, although we strive to keep it up to date and complete.
 
 This is the command we used to create the example Serenity report:
-```shell
-mvn -P oneonly,reference-ci,dont-break-preparation -DpoolGroupString=RU1 -Dcucumber.filter.tags=@Zul:Pro --no-transfer-progress
-```
+
+[source,shell]
+----
+mvn -P oneonly,prod,dont-break-preparation -DpoolGroupString=RU1 -Dcucumber.filter.tags=@Zul:Pro --no-transfer-progress
+----

@@ -6,7 +6,7 @@ info:
     
     This API contains all endpoints for version 1.1.x and version 2 (TIM Pro & TIM ePA) of the TI-Messenger. The tags named accordingly can be used to find the endpoints applicable for the desired version.
     Additionally each endpoint summary will contain a note describing whether the endpoint is used by an org-admin, a client or both.
-  version: 2.2.3
+  version: 2.3.0
   contact:
     name: gematik GmbH
     email: software-development@gematik.de
@@ -75,6 +75,10 @@ tags:
     description: All operations used in TI-Messenger Pro
   - name: TI-M_ePA
     description: All operations used in TI-Messenger ePA
+  - name: TI-M_Pro_V2
+    description: All operations used in TI-Messenger Pro V2
+  - name: TI-M_ePA_V2
+    description: All operations used in TI-Messenger ePA V2
 
 paths:
   /:
@@ -1127,13 +1131,41 @@ paths:
           $ref: "#/components/responses/DefaultResponse"
 
     delete:
-      summary: "Deletes a message. Used by clients."
+      summary: "Deletes a message by redacting it. Used by clients."
       tags:
         - message
         - TI-M_1.1.x
         - TI-M_Pro
         - TI-M_ePA
       operationId: deleteMessage
+      responses:
+        "204":
+          description: "Message deleted"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        default:
+          $ref: "#/components/responses/DefaultResponse"
+
+  /devices/{deviceId}/rooms/{roomId}/messages/{messageId}/replace:
+    parameters:
+      - $ref: "#/components/parameters/deviceId"
+      - $ref: "#/components/parameters/transactionIdHeader"
+      - $ref: "#/components/parameters/roomId"
+      - $ref: "#/components/parameters/messageId"
+
+    delete:
+      summary: "Deletes a message by replacing it. Used by clients."
+      tags:
+        - message
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+      operationId: deleteMessageViaReplace
       responses:
         "204":
           description: "Message deleted"
@@ -1160,7 +1192,7 @@ paths:
         - TI-M_Pro
         - TI-M_ePA
       operationId: getRooms
-      summary: "Get list of all rooms your account is associated with. Used by clients."
+      summary: "Get list of all rooms your account is associated with. This includes public rooms. Used by clients."
       responses:
         "200":
           description: "All associated rooms of the logged in account"
@@ -1228,6 +1260,37 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Room"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        default:
+          $ref: "#/components/responses/DefaultResponse"
+
+    put:
+      tags:
+        - room
+        - TI-M_1.1.x
+        - TI-M_Pro
+        - TI-M_ePA
+      summary: "Change the room settings. Used by clients."
+      operationId: updateRoom
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Room"
+      responses:
+        "200":
+          description: "Room updated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Room"
+        "400":
+          $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -2083,6 +2146,14 @@ components:
         isPro:
           type: boolean
           description: "Whether this client runs the TI-Messenger version Pro"
+        isVersionThree:
+          type: boolean
+          description: |
+            Whether this client runs the TI-Messenger version Pro or ePA in the updated version including the new and extended delete functions.
+            Additionally, isInsurance or isPro have to be set.
+        isReferenceImplementation:
+          type: boolean
+          description: "Whether this client is the reference implementation. Used to determine additional send functionalities."
 
     ClientSoftwareInfo:
       description: "General information about the client software"
@@ -3098,10 +3169,20 @@ components:
           type: string
           enum: [ private, public ]
           description: "The visibility of the room"
+        joinRule:
+          type: string
+          enum: [ public, knock, invite, private, restricted, knock_restricted ]
+          description: "The type of rules used for users wishing to join this room"
+        isFederated:
+          type: boolean
+          description: "Whether users on other servers can join this room"
+        historyVisibility:
+          type: string
+          enum: [ invited, joined, shared, world_readable ]
+          description: "Who can see the room history"
         isEncrypted:
           type: boolean
-          readOnly: true
-          description: "The room should always be encrypted"
+          description: "Since ePA/Pro version 1.2 it is allowed to create both, encrypted and unencrypted rooms"
         roomId:
           type: string
           description: "The room identifier. Must be returned in response to a createRoom request. Is used to identify a specific room."
