@@ -34,7 +34,7 @@ import org.springframework.http.HttpStatus;
 
 public abstract class WithHomeserverForwardingTask implements Task {
 
-  String USER_AGENT = "X-TIM-User-Agent";
+  private static final String USER_AGENT = "X-TIM-User-Agent";
 
   @Override
   public <T extends Actor> void performAs(T actor) {

@@ -21,10 +21,6 @@
 package de.gematik.tim.test.glue.api.info;
 
 import de.gematik.tim.test.glue.api.TestdriverApiEndpoint;
-import de.gematik.tim.test.glue.api.TestdriverApiInteraction;
-import java.util.ArrayList;
-import java.util.List;
-
 import net.serenitybdd.screenplay.rest.interactions.RestInteraction;
 
 public interface BuildWithUserAgentTask {

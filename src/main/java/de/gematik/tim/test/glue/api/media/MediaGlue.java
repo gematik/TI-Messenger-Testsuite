@@ -27,9 +27,9 @@ import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
 import static de.gematik.tim.test.glue.api.media.DownloadAuthenticatedMediaQuestion.downloadAuthenticatedMedia;
 import static de.gematik.tim.test.glue.api.media.DownloadMediaQuestion.downloadMedia;
 import static de.gematik.tim.test.glue.api.media.UploadMediaTask.uploadMedia;
-import static de.gematik.tim.test.glue.api.message.GetRoomMessageQuestion.messageFromSenderWithTextInActiveRoom;
-import static de.gematik.tim.test.glue.api.message.SendDirectMessageTask.sendDirectMessageTo;
-import static de.gematik.tim.test.glue.api.message.SendMessageTask.sendMessage;
+import static de.gematik.tim.test.glue.api.message.questions.GetRoomMessageQuestion.messageFromSenderWithTextInActiveRoom;
+import static de.gematik.tim.test.glue.api.message.tasks.SendDirectMessageTask.sendDirectMessageTo;
+import static de.gematik.tim.test.glue.api.message.tasks.SendMessageTask.sendMessage;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.checkRoomMembershipState;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.checkRoomMembershipStateInDirectChatOf;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.checkRoomVersion;
@@ -45,7 +45,6 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 import de.gematik.tim.test.glue.api.exceptions.TestRunException;
-import de.gematik.tim.test.glue.api.message.MessageContentFileWrapper;
 import de.gematik.tim.test.glue.api.room.UseRoomAbility;
 import de.gematik.tim.test.models.MessageContentFileDTO;
 import de.gematik.tim.test.models.MessageContentInfoDTO;
@@ -153,20 +152,35 @@ public class MediaGlue {
     Path path = Path.of(RESOURCES_PATH + fileName);
     Base64.Encoder base64Enc = Base64.getEncoder();
     try (FileInputStream fis = new FileInputStream(path.toFile())) {
-      assertThat(base64Enc.encodeToString(receivedMedia)).as("receivedMedia (in base64) should have the expected content").isEqualTo(base64Enc.encodeToString(fis.readAllBytes()));
+      assertThat(base64Enc.encodeToString(receivedMedia))
+          .as("receivedMedia (in base64) should have the expected content")
+          .isEqualTo(base64Enc.encodeToString(fis.readAllBytes()));
     }
-    assertThat(message.getBody()).as("the body of the MessageDTO should be the body of a created message").isEqualTo(getCreatedMessage(fileName).getBody());
+    assertThat(message.getBody())
+        .as("the body of the MessageDTO should be the body of a created message")
+        .isEqualTo(getCreatedMessage(fileName).getBody());
   }
 
   private void checkRequiredMessageProperties(
       MessageDTO receivedMessage, String msgType, String expectedMimetype) {
     MessageContentInfoDTO receivedMessageInfo = receivedMessage.getInfo();
-    assertThat(receivedMessage.getMsgtype()).as("received MessageDTO should have the expected msgType").isEqualTo(msgType);
-    assertThat(receivedMessage.getType()).as("received MessageDTO should have the expected type").isEqualTo("m.room.message");
-    assertThat(receivedMessage.getEventId()).as("received MessageDTO shouldn't have an eventId that is null or empty").isNotNull().isNotEmpty();
-    assertThat(receivedMessageInfo).as("received MessageDTO should have a non-null messageInfo").isNotNull();
+    assertThat(receivedMessage.getMsgtype())
+        .as("received MessageDTO should have the expected msgType")
+        .isEqualTo(msgType);
+    assertThat(receivedMessage.getType())
+        .as("received MessageDTO should have the expected type")
+        .isEqualTo("m.room.message");
+    assertThat(receivedMessage.getEventId())
+        .as("received MessageDTO shouldn't have an eventId that is null or empty")
+        .isNotNull()
+        .isNotEmpty();
+    assertThat(receivedMessageInfo)
+        .as("received MessageDTO should have a non-null messageInfo")
+        .isNotNull();
     String actualMimetype = receivedMessageInfo.getMimetype();
-    assertThat(actualMimetype).as("received MessageDTO should have the expected mimetype").isEqualTo(expectedMimetype);
+    assertThat(actualMimetype)
+        .as("received MessageDTO should have the expected mimetype")
+        .isEqualTo(expectedMimetype);
   }
 
   private void checkRequiredFileProperties(MessageDTO receivedMessage) {

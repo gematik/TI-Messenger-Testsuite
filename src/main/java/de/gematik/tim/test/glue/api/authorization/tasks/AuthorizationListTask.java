@@ -41,7 +41,7 @@ public abstract class AuthorizationListTask implements Task {
 
   private List<GroupNameDTO> groupNames;
 
-  public AuthorizationListTask(TestdriverApiEndpoint endpoint) {
+  protected AuthorizationListTask(TestdriverApiEndpoint endpoint) {
     this.endpoint = endpoint;
   }
 

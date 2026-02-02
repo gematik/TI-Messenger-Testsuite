@@ -12,20 +12,22 @@
   <description>Properties and dependencies for Testsuite</description>
 
   <properties>
-    <revision>3.3.4</revision>
+    <revision>3.0.0</revision>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <java.version>17</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.source.plugin.version>3.4.0</maven.source.plugin.version>
 
     <cucumber-test-combinations-maven-plugin.version>
-      2.11.5
+      2.11.8
     </cucumber-test-combinations-maven-plugin.version>
-    <tiger.version>4.0.9</tiger.version>
-    <serenity.core.version>4.2.34</serenity.core.version>
+    <tiger.version>4.1.16</tiger.version>
+    <serenity.core.version>5.1.0</serenity.core.version>
     <polarion.toolbox.version>3.0.3-212</polarion.toolbox.version>
-    <ti.m.mtls.certs.version>2.1.2</ti.m.mtls.certs.version>
+    <ti.m.mtls.certs.version>2.1.4</ti.m.mtls.certs.version>
 
+    <serenity.report.directory>${project.build.directory}/site/serenity</serenity.report.directory>
     <ti.m.mtls.output.directory>${project.build.directory}/profile-resources</ti.m.mtls.output.directory>
     <tim.shared.properties>${ti.m.mtls.output.directory}/shared.properties</tim.shared.properties>
     <feature_dir>${project.build.directory}/features/</feature_dir>
@@ -38,11 +40,12 @@
     <feature.template.dir.V2>
       ${feature.template.basedir}/FeatureFiles/TI-M_V2
     </feature.template.dir.V2>
+    <feature.template.dir.V3>
+      ${feature.template.basedir}/FeatureFiles/TI-M_V3
+    </feature.template.dir.V3>
     <feature.template.dir>
       ${feature.template.dir.V2}
     </feature.template.dir>
-
-    <sonar.coverage.exclusions>**/*</sonar.coverage.exclusions>
     <feature.tables.max_rows>9999</feature.tables.max_rows>
     <maven.build.timestamp.format>yyyy-MM-dd_HH_mm_ss</maven.build.timestamp.format>
     <skip.saving.reports>false</skip.saving.reports>
@@ -128,7 +131,7 @@
     <dependency>
       <groupId>com.nimbusds</groupId>
       <artifactId>nimbus-jose-jwt</artifactId>
-      <version>10.5</version>
+      <version>10.7</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -139,7 +142,7 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.5.18</version>
+      <version>1.5.26</version>
     </dependency>
     <dependency>
       <groupId>jakarta.xml.bind</groupId>
@@ -149,7 +152,40 @@
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>**/versions.txt</include>
+        </includes>
+      </resource>
+    </resources>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.14.1</version>
+        <configuration>
+          <encoding>${project.build.sourceEncoding}</encoding>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+          <debug>true</debug>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>${maven.source.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>de.gematik</groupId>
         <artifactId>cucumber-test-combinations-maven-plugin</artifactId>
@@ -217,6 +253,28 @@
                 ($.clientInfo.isInsurance or
                 $.clientInfo.isPro)
               </expression>
+            </tagExpression>
+            <tagExpression>
+              <tag>epaClientV3</tag>
+              <expression>
+                $.clientInfo.canSendMessages and
+                $.clientInfo.isInsurance and
+                $.clientInfo.isVersionThree and
+                not($.clientInfo.isPro)
+              </expression>
+            </tagExpression>
+            <tagExpression>
+              <tag>proClientV3</tag>
+              <expression>
+                $.clientInfo.canSendMessages and
+                $.clientInfo.isPro and
+                $.clientInfo.isVersionThree and
+                not($.clientInfo.isInsurance)
+              </expression>
+            </tagExpression>
+            <tagExpression>
+              <tag>refImpl</tag>
+              <expression>$.clientInfo.isReferenceImplementation</expression>
             </tagExpression>
           </tagExpressions>
           <propertyExpressions>
@@ -305,7 +363,7 @@
       <plugin>
         <groupId>org.openapitools</groupId>
         <artifactId>openapi-generator-maven-plugin</artifactId>
-        <version>7.15.0</version>
+        <version>7.19.0</version>
         <executions>
           <execution>
             <goals>
@@ -341,6 +399,7 @@
           <execution>
             <configuration>
               <skip>false</skip>
+              <reportDirectory>${serenity.report.directory}</reportDirectory>
               <featuresDir>${feature_dir}</featuresDir>
               <includes>
                 <include>**/*.feature</include>

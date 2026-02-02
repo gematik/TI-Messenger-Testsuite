@@ -26,6 +26,9 @@ import static de.gematik.tim.test.glue.api.room.UseRoomAbility.addRoomToActor;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.createTopic;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueRoomName;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
+import static de.gematik.tim.test.models.CreateRoomRequestDTO.HistoryVisibilityEnum;
+import static de.gematik.tim.test.models.CreateRoomRequestDTO.JoinRuleEnum;
+import static de.gematik.tim.test.models.CreateRoomRequestDTO.RoomAccessEnum;
 import static de.gematik.tim.test.models.CreateRoomRequestDTO.RoomAccessEnum.PRIVATE;
 import static de.gematik.tim.test.models.RoomMembershipStateDTO.JOIN;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -39,6 +42,12 @@ public class CreateRoomTask implements Task {
 
   private String roomName;
   private String topic;
+  private RoomAccessEnum roomAccess = PRIVATE;
+  private JoinRuleEnum joinRule;
+  private HistoryVisibilityEnum historyVisibility;
+  private Boolean isEncrypted;
+
+  private boolean canBeCreated = true;
 
   public static CreateRoomTask createRoom() {
     return new CreateRoomTask();
@@ -54,17 +63,51 @@ public class CreateRoomTask implements Task {
     return this;
   }
 
+  public CreateRoomTask withRoomAccess(CreateRoomRequestDTO.RoomAccessEnum roomAccess) {
+    this.roomAccess = roomAccess;
+    return this;
+  }
+
+  public CreateRoomTask withJoinRule(CreateRoomRequestDTO.JoinRuleEnum joinRule) {
+    this.joinRule = joinRule;
+    return this;
+  }
+
+  public CreateRoomTask withEncryption(Boolean isEncrypted) {
+    this.isEncrypted = isEncrypted;
+    return this;
+  }
+
+  public CreateRoomTask withHistoryVisibility(
+      CreateRoomRequestDTO.HistoryVisibilityEnum historyVisibility) {
+    this.historyVisibility = historyVisibility;
+    return this;
+  }
+
+  public CreateRoomTask roomCanBeCreated(boolean canBeCreated) {
+    this.canBeCreated = canBeCreated;
+    return this;
+  }
+
   @Override
   public <T extends Actor> void performAs(T actor) {
     String uniqueName = createUniqueRoomName();
     CreateRoomRequestDTO requestDTO =
-        new CreateRoomRequestDTO().roomAccess(PRIVATE).name(uniqueName).theme(topic);
+        new CreateRoomRequestDTO()
+            .roomAccess(roomAccess)
+            .name(uniqueName)
+            .theme(topic)
+            .joinRule(joinRule)
+            .historyVisibility(historyVisibility)
+            .isEncrypted(isEncrypted);
 
     actor.attemptsTo(CREATE_ROOM.request().with(req -> req.body(requestDTO)));
-    RoomDTO room = parseResponse(RoomDTO.class);
-    assertThat(room.getName()).isEqualTo(uniqueName);
-    assertThat(room.getRoomAccess().getValue()).isEqualTo(PRIVATE.getValue());
-    addRoomToActor(roomName, room, actor);
-    actor.remember(room.getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX, JOIN);
+    if (canBeCreated) {
+      RoomDTO room = parseResponse(RoomDTO.class);
+      assertThat(room.getName()).isEqualTo(uniqueName);
+      assertThat(room.getRoomAccess().getValue()).isEqualTo(roomAccess.getValue());
+      addRoomToActor(roomName, room, actor);
+      actor.remember(room.getRoomId() + OWN_ROOM_MEMBERSHIP_STATUS_POSTFIX, JOIN);
+    }
   }
 }

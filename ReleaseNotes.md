@@ -10,6 +10,26 @@
 [
 `docu TI-Messenger Version 2`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite_Version2.adoc)
 
+## Release 3.0.0
+
+### Known issues
+
+- Release 2.3.4 was unfortunately released using the wrong tag (tag 3.3.4)
+- V3 tests and documentation are not yet included and will be released once internal testing is finished
+- Changes to the api might potentially be breaking
+
+### Changes
+
+- Bumps dependencies
+- Prepares glue code for upcoming V3 tests
+
+### Features
+
+- test driver API: adds a new client capability to distinguish the reference implementation
+- test driver API: adds a new client capability to support the upcoming TI-Messenger version ePA/Pro v3
+- test driver API: adds new room properties to support public rooms
+- test driver API: adds new PUT method to update the room properties (operationId: updateRoom)
+
 ## Release 2.3.4
 
 ### Changes
