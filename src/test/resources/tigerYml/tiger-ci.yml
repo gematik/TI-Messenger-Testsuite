@@ -1,0 +1,484 @@
+# default local Tiger Proxy
+tigerProxy:
+  tls:
+    forwardMutualTlsIdentity: "${TIM_KEYSTORE};${TIM_KEYSTORE_PW};pkcs12"
+
+servers:
+  testdriverApi-A-WIN-Client:
+    type: externalJar
+    startupTimeoutSec: 240
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8080/actuator/health
+    environment:
+      - SERVER_PORT=8080
+      - info.app.title=a_win_c
+      - info.app.homeserver=https://localhost:8080
+      - info.app.clientInfo.canAdministrateFhirOrganization=false
+      - info.app.clientInfo.canAdministrateFhirPractitioner=true
+      - info.app.clientInfo.canSendMessages=true
+      - info.app.clientInfo.isInsurance=false
+      - info.app.clientInfo.isPro=false
+      - spring.application.name=A_Windows_Client
+      - db.port=${TIM_DB_PORT:5432}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx512m
+
+  testdriverApi-A-ORG:
+    type: externalJar
+    dependsUpon: testdriverApi-A-WIN-Client
+    startupTimeoutSec: 240
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8081/actuator/health
+    environment:
+      - SERVER_PORT=8081
+      - info.app.title=a_org
+      - info.app.homeserver=https://localhost:8080
+      - info.app.clientInfo.canAdministrateFhirOrganization=true
+      - info.app.clientInfo.canAdministrateFhirPractitioner=false
+      - info.app.clientInfo.canSendMessages=false
+      - info.app.clientInfo.isInsurance=false
+      - info.app.clientInfo.isPro=false
+      - spring.application.name=A_ORG
+      - db.port=${TIM_DB_PORT:5432}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx512m
+
+  testdriverApi-B-WIN-Client:
+    type: externalJar
+    startupTimeoutSec: 240
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8082/actuator/health
+    environment:
+      - SERVER_PORT=8082
+      - info.app.title=b_win_c
+      - info.app.homeserver=https://localhost:8082
+      - info.app.clientInfo.canAdministrateFhirOrganization=false
+      - info.app.clientInfo.canAdministrateFhirPractitioner=true
+      - info.app.clientInfo.canSendMessages=true
+      - info.app.clientInfo.isInsurance=false
+      - info.app.clientInfo.isPro=false
+      - spring.application.name=B_Windows_Client
+      - db.port=${TIM_DB_PORT:5432}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx512m
+
+  testdriverApi-B-ORG:
+    type: externalJar
+    dependsUpon: testdriverApi-B-WIN-Client
+    startupTimeoutSec: 240
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8083/actuator/health
+    environment:
+      - SERVER_PORT=8083
+      - info.app.title=b_org
+      - info.app.homeserver=https://localhost:8082
+      - info.app.clientInfo.canAdministrateFhirOrganization=true
+      - info.app.clientInfo.canAdministrateFhirPractitioner=false
+      - info.app.clientInfo.canSendMessages=false
+      - info.app.clientInfo.isInsurance=false
+      - info.app.clientInfo.isPro=false
+      - spring.application.name=B_ORG
+      - db.port=${TIM_DB_PORT:5432}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx512m
+
+  testdriverApi-C-IOS-Insurant:
+    type: externalJar
+    startupTimeoutSec: 240
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8084/actuator/health
+    environment:
+      - SERVER_PORT=8084
+      - info.app.title=c_ios_insurant
+      - info.app.homeserver=https://localhost:8084
+      - info.app.clientInfo.canAdministrateFhirOrganization=false
+      - info.app.clientInfo.canAdministrateFhirPractitioner=false
+      - info.app.clientInfo.canSendMessages=true
+      - info.app.clientInfo.isInsurance=true
+      - info.app.clientInfo.isPro=false
+      - spring.application.name=C_IOS_Insurant
+      - db.port=${TIM_DB_PORT:5432}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx512m
+      - matrix.client.versions=r0.0.1,r0.1.0,r0.2.0,r0.3.0,r0.4.0,r0.5.0,r0.6.0,r0.6.1,v1.1,v1.2,v1.3,v1.11
+
+  testdriverApi-C-ORG:
+    type: externalJar
+    dependsUpon: testdriverApi-C-IOS-Insurant
+    startupTimeoutSec: 240
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8085/actuator/health
+    environment:
+      - SERVER_PORT=8085
+      - info.app.title=d_org
+      - info.app.homeserver=https://localhost:8084
+      - info.app.clientInfo.canAdministrateFhirOrganization=true
+      - info.app.clientInfo.canAdministrateFhirPractitioner=false
+      - info.app.clientInfo.canSendMessages=false
+      - info.app.clientInfo.isInsurance=false
+      - info.app.clientInfo.isPro=false
+      - spring.application.name=C_ORG
+      - db.port=${TIM_DB_PORT:5432}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx512m
+      - matrix.client.versions=r0.0.1,r0.1.0,r0.2.0,r0.3.0,r0.4.0,r0.5.0,r0.6.0,r0.6.1,v1.1,v1.2,v1.3,v1.11
+
+  testdriverApi-D-AND-Insurant:
+    type: externalJar
+    startupTimeoutSec: 240
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8086/actuator/health
+    environment:
+      - SERVER_PORT=8086
+      - info.app.title=d_and_insurant
+      - info.app.homeserver=https://localhost:8086
+      - info.app.clientInfo.canAdministrateFhirOrganization=false
+      - info.app.clientInfo.canAdministrateFhirPractitioner=false
+      - info.app.clientInfo.canSendMessages=true
+      - info.app.clientInfo.isInsurance=true
+      - info.app.clientInfo.isPro=false
+      - spring.application.name=D_Android_Insurant
+      - db.port=${TIM_DB_PORT:5432}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx512m
+      - matrix.client.versions=r0.0.1,r0.1.0,r0.2.0,r0.3.0,r0.4.0,r0.5.0,r0.6.0,r0.6.1,v1.1,v1.2,v1.3,v1.11,v1.12
+
+  testdriverApi-D-ORG:
+    type: externalJar
+    dependsUpon: testdriverApi-D-AND-Insurant
+    startupTimeoutSec: 240
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8087/actuator/health
+    environment:
+      - SERVER_PORT=8087
+      - info.app.title=d_org
+      - info.app.homeserver=https://localhost:8086
+      - info.app.clientInfo.canAdministrateFhirOrganization=true
+      - info.app.clientInfo.canAdministrateFhirPractitioner=false
+      - info.app.clientInfo.canSendMessages=false
+      - info.app.clientInfo.isInsurance=false
+      - info.app.clientInfo.isPro=false
+      - spring.application.name=D_Org
+      - db.port=${TIM_DB_PORT:5432}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx512m
+      - matrix.client.versions=r0.0.1,r0.1.0,r0.2.0,r0.3.0,r0.4.0,r0.5.0,r0.6.0,r0.6.1,v1.1,v1.2,v1.3,v1.11
+
+  testdriverApi-E-WIN-Pro:
+    type: externalJar
+    startupTimeoutSec: 240
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8088/actuator/health
+    environment:
+      - SERVER_PORT=8088
+      - info.app.title=e_win_pro
+      - info.app.homeserver=https://localhost:8088
+      - info.app.clientInfo.canAdministrateFhirOrganization=false
+      - info.app.clientInfo.canAdministrateFhirPractitioner=true
+      - info.app.clientInfo.canSendMessages=true
+      - info.app.clientInfo.isInsurance=false
+      - info.app.clientInfo.isPro=true
+      - spring.application.name=E_Windows_Pro
+      - db.port=${TIM_DB_PORT:5432}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx512m
+      - matrix.client.versions=r0.0.1,r0.1.0,r0.2.0,r0.3.0,r0.4.0,r0.5.0,r0.6.0,r0.6.1,v1.1,v1.2,v1.3,v1.11
+
+  testdriverApi-E-ORG:
+    type: externalJar
+    dependsUpon: testdriverApi-E-WIN-Pro
+    startupTimeoutSec: 240
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8089/actuator/health
+    environment:
+      - SERVER_PORT=8089
+      - info.app.title=e_org
+      - info.app.homeserver=https://localhost:8088
+      - info.app.clientInfo.canAdministrateFhirOrganization=true
+      - info.app.clientInfo.canAdministrateFhirPractitioner=false
+      - info.app.clientInfo.canSendMessages=false
+      - info.app.clientInfo.isInsurance=false
+      - info.app.clientInfo.isPro=false
+      - spring.application.name=E_Org
+      - db.port=${TIM_DB_PORT:5432}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx512m
+      - matrix.client.versions=r0.0.1,r0.1.0,r0.2.0,r0.3.0,r0.4.0,r0.5.0,r0.6.0,r0.6.1,v1.1,v1.2,v1.3,v1.11
+
+  testdriverApi-F-WIN-Pro:
+    type: externalJar
+    startupTimeoutSec: 240
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8090/actuator/health
+    environment:
+      - SERVER_PORT=8090
+      - info.app.title=f_win_pro
+      - info.app.homeserver=https://localhost:8090
+      - info.app.clientInfo.canAdministrateFhirOrganization=false
+      - info.app.clientInfo.canAdministrateFhirPractitioner=true
+      - info.app.clientInfo.canSendMessages=true
+      - info.app.clientInfo.isInsurance=false
+      - info.app.clientInfo.isPro=true
+      - spring.application.name=F_Windows_Pro
+      - db.port=${TIM_DB_PORT:5432}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx512m
+      - matrix.client.versions=r0.0.1,r0.1.0,r0.2.0,r0.3.0,r0.4.0,r0.5.0,r0.6.0,r0.6.1,v1.1,v1.2,v1.3,v1.11
+
+  testdriverApi-F-ORG:
+    type: externalJar
+    dependsUpon: testdriverApi-F-WIN-Pro
+    startupTimeoutSec: 240
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8091/actuator/health
+    environment:
+      - SERVER_PORT=8091
+      - info.app.title=f_org
+      - info.app.homeserver=https://localhost:8090
+      - info.app.clientInfo.canAdministrateFhirOrganization=true
+      - info.app.clientInfo.canAdministrateFhirPractitioner=false
+      - info.app.clientInfo.canSendMessages=false
+      - info.app.clientInfo.isInsurance=false
+      - info.app.clientInfo.isPro=false
+      - spring.application.name=F_Org
+      - db.port=${TIM_DB_PORT:5432}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx512m
+      - matrix.client.versions=r0.0.1,r0.1.0,r0.2.0,r0.3.0,r0.4.0,r0.5.0,r0.6.0,r0.6.1,v1.1,v1.2,v1.3,v1.11
+
+  testdriverApi-G-WIN-Pro:
+    type: externalJar
+    startupTimeoutSec: 240
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8092/actuator/health
+    environment:
+      - SERVER_PORT=8092
+      - info.app.title=g_win_pro
+      - info.app.homeserver=https://localhost:8092
+      - info.app.clientInfo.canAdministrateFhirOrganization=false
+      - info.app.clientInfo.canAdministrateFhirPractitioner=true
+      - info.app.clientInfo.canSendMessages=true
+      - info.app.clientInfo.isInsurance=false
+      - info.app.clientInfo.isPro=true
+      - spring.application.name=G_Windows_Pro
+      - db.port=${TIM_DB_PORT:5432}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx512m
+      - matrix.client.versions=r0.0.1,r0.1.0,r0.2.0,r0.3.0,r0.4.0,r0.5.0,r0.6.0,r0.6.1,v1.1,v1.2,v1.3,v1.11
+
+  testdriverApi-G-ORG:
+    type: externalJar
+    dependsUpon: testdriverApi-G-WIN-Pro
+    startupTimeoutSec: 240
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8093/actuator/health
+    environment:
+      - SERVER_PORT=8093
+      - info.app.title=g_org
+      - info.app.homeserver=https://localhost:8092
+      - info.app.clientInfo.canAdministrateFhirOrganization=true
+      - info.app.clientInfo.canAdministrateFhirPractitioner=false
+      - info.app.clientInfo.canSendMessages=false
+      - info.app.clientInfo.isInsurance=false
+      - info.app.clientInfo.isPro=false
+      - spring.application.name=G_Org
+      - db.port=${TIM_DB_PORT:5432}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx512m
+      - matrix.client.versions=r0.0.1,r0.1.0,r0.2.0,r0.3.0,r0.4.0,r0.5.0,r0.6.0,r0.6.1,v1.1,v1.2,v1.3,v1.11,v1.12
+
+  testdriverApi-H-AND-Insurant-V3:
+    type: externalJar
+    startupTimeoutSec: 240
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8094/actuator/health
+    environment:
+      - SERVER_PORT=8094
+      - info.app.title=h_and_insurant_v3
+      - info.app.homeserver=https://localhost:8094
+      - info.app.clientInfo.canAdministrateFhirOrganization=false
+      - info.app.clientInfo.canAdministrateFhirPractitioner=false
+      - info.app.clientInfo.canSendMessages=true
+      - info.app.clientInfo.isInsurance=true
+      - info.app.clientInfo.isPro=false
+      - info.app.clientInfo.isVersionThree=true
+      - spring.application.name=H_Android_Insurant_V3
+      - db.port=${TIM_DB_PORT:5432}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx512m
+      - matrix.client.versions=r0.0.1,r0.1.0,r0.2.0,r0.3.0,r0.4.0,r0.5.0,r0.6.0,r0.6.1,v1.1,v1.2,v1.3,v1.11,v1.12
+
+  testdriverApi-H-ORG:
+    type: externalJar
+    dependsUpon: testdriverApi-H-AND-Insurant-V3
+    startupTimeoutSec: 240
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8095/actuator/health
+    environment:
+      - SERVER_PORT=8095
+      - info.app.title=h_org
+      - info.app.homeserver=https://localhost:8094
+      - info.app.clientInfo.canAdministrateFhirOrganization=true
+      - info.app.clientInfo.canAdministrateFhirPractitioner=false
+      - info.app.clientInfo.canSendMessages=false
+      - info.app.clientInfo.isInsurance=false
+      - info.app.clientInfo.isPro=false
+      - info.app.clientInfo.isVersionThree=true
+      - spring.application.name=H_Org
+      - db.port=${TIM_DB_PORT:5432}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx512m
+      - matrix.client.versions=r0.0.1,r0.1.0,r0.2.0,r0.3.0,r0.4.0,r0.5.0,r0.6.0,r0.6.1,v1.1,v1.2,v1.3,v1.11
+
+  testdriverApi-I-WIN-Pro-V3:
+    type: externalJar
+    startupTimeoutSec: 240
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8096/actuator/health
+    environment:
+      - SERVER_PORT=8096
+      - info.app.title=i_win_pro_v3
+      - info.app.homeserver=https://localhost:8096
+      - info.app.clientInfo.canAdministrateFhirOrganization=false
+      - info.app.clientInfo.canAdministrateFhirPractitioner=true
+      - info.app.clientInfo.canSendMessages=true
+      - info.app.clientInfo.isInsurance=false
+      - info.app.clientInfo.isPro=true
+      - info.app.clientInfo.isVersionThree=true
+      - spring.application.name=I_Windows_Pro_V3
+      - db.port=${TIM_DB_PORT:5432}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx512m
+      - matrix.client.versions=r0.0.1,r0.1.0,r0.2.0,r0.3.0,r0.4.0,r0.5.0,r0.6.0,r0.6.1,v1.1,v1.2,v1.3,v1.11
+
+  testdriverApi-I-ORG:
+    type: externalJar
+    dependsUpon: testdriverApi-I-WIN-Pro-V3
+    startupTimeoutSec: 240
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8097/actuator/health
+    environment:
+      - SERVER_PORT=8097
+      - info.app.title=i_org
+      - info.app.homeserver=https://localhost:8096
+      - info.app.clientInfo.canAdministrateFhirOrganization=true
+      - info.app.clientInfo.canAdministrateFhirPractitioner=false
+      - info.app.clientInfo.canSendMessages=false
+      - info.app.clientInfo.isInsurance=false
+      - info.app.clientInfo.isPro=false
+      - info.app.clientInfo.isVersionThree=true
+      - spring.application.name=I_Org
+      - db.port=${TIM_DB_PORT:5432}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx512m
+      - matrix.client.versions=r0.0.1,r0.1.0,r0.2.0,r0.3.0,r0.4.0,r0.5.0,r0.6.0,r0.6.1,v1.1,v1.2,v1.3,v1.11,v1.12
+
+  testdriverApi-J-AND-Pro-V3:
+    type: externalJar
+    startupTimeoutSec: 240
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8098/actuator/health
+    environment:
+      - SERVER_PORT=8098
+      - info.app.title=j_and_pro_v3
+      - info.app.homeserver=https://localhost:8098
+      - info.app.clientInfo.canAdministrateFhirOrganization=false
+      - info.app.clientInfo.canAdministrateFhirPractitioner=true
+      - info.app.clientInfo.canSendMessages=true
+      - info.app.clientInfo.isInsurance=false
+      - info.app.clientInfo.isPro=true
+      - info.app.clientInfo.isVersionThree=true
+      - spring.application.name=J_Android_Pro_V3
+      - db.port=${TIM_DB_PORT:5432}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx512m
+      - matrix.client.versions=r0.0.1,r0.1.0,r0.2.0,r0.3.0,r0.4.0,r0.5.0,r0.6.0,r0.6.1,v1.1,v1.2,v1.3,v1.11
+
+  testdriverApi-J-ORG:
+    type: externalJar
+    dependsUpon: testdriverApi-J-AND-Pro-V3
+    startupTimeoutSec: 240
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8099/actuator/health
+    environment:
+      - SERVER_PORT=8099
+      - info.app.title=j_org
+      - info.app.homeserver=https://localhost:8098
+      - info.app.clientInfo.canAdministrateFhirOrganization=true
+      - info.app.clientInfo.canAdministrateFhirPractitioner=false
+      - info.app.clientInfo.canSendMessages=false
+      - info.app.clientInfo.isInsurance=false
+      - info.app.clientInfo.isPro=false
+      - info.app.clientInfo.isVersionThree=true
+      - spring.application.name=J_Org
+      - db.port=${TIM_DB_PORT:5432}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx512m
+      - matrix.client.versions=r0.0.1,r0.1.0,r0.2.0,r0.3.0,r0.4.0,r0.5.0,r0.6.0,r0.6.1,v1.1,v1.2,v1.3,v1.11,v1.12
+
+  testdriverApi-K-AND-Ref-Impl:
+    type: externalJar
+    startupTimeoutSec: 240
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8100/actuator/health
+    environment:
+      - SERVER_PORT=8100
+      - info.app.title=k_and_ref_impl
+      - info.app.homeserver=https://localhost:8100
+      - info.app.clientInfo.canAdministrateFhirOrganization=false
+      - info.app.clientInfo.canAdministrateFhirPractitioner=true
+      - info.app.clientInfo.canSendMessages=true
+      - info.app.clientInfo.isInsurance=false
+      - info.app.clientInfo.isPro=true
+      - info.app.clientInfo.isVersionThree=true
+      - info.app.clientInfo.isReferenceImplementation=true
+      - spring.application.name=K_Android_Ref_Impl
+      - db.port=${TIM_DB_PORT:5432}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx512m
+      - matrix.client.versions=r0.0.1,r0.1.0,r0.2.0,r0.3.0,r0.4.0,r0.5.0,r0.6.0,r0.6.1,v1.1,v1.2,v1.3,v1.11
+
+  testdriverApi-K-ORG:
+    type: externalJar
+    dependsUpon: testdriverApi-K-AND-Ref-Impl
+    startupTimeoutSec: 240
+    source:
+      - "local:testdriverSim.jar"
+    healthcheckUrl: https://127.0.0.1:8101/actuator/health
+    environment:
+      - SERVER_PORT=8101
+      - info.app.title=k_org
+      - info.app.homeserver=https://localhost:8100
+      - info.app.clientInfo.canAdministrateFhirOrganization=true
+      - info.app.clientInfo.canAdministrateFhirPractitioner=false
+      - info.app.clientInfo.canSendMessages=false
+      - info.app.clientInfo.isInsurance=false
+      - info.app.clientInfo.isPro=false
+      - info.app.clientInfo.isVersionThree=true
+      - info.app.clientInfo.isReferenceImplementation=true
+      - spring.application.name=K_Org
+      - db.port=${TIM_DB_PORT:5432}
+      - db.host=${docker.host.hostname:localhost}
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx512m
+      - matrix.client.versions=r0.0.1,r0.1.0,r0.2.0,r0.3.0,r0.4.0,r0.5.0,r0.6.0,r0.6.1,v1.1,v1.2,v1.3,v1.11,v1.12

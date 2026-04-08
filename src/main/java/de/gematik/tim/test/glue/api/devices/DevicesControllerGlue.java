@@ -27,6 +27,7 @@ import static de.gematik.tim.test.glue.api.ActorMemoryKeys.IS_ORG_ADMIN;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.MX_ID;
 import static de.gematik.tim.test.glue.api.GeneralStepsGlue.checkResponseCode;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.GET_DEVICES;
+import static de.gematik.tim.test.glue.api.cleanup.CleanupTrigger.getAllApisUsedInTestSteps;
 import static de.gematik.tim.test.glue.api.cleanup.CleanupTrigger.sendCleanupRequest;
 import static de.gematik.tim.test.glue.api.devices.CheckClientKindTask.checkIs;
 import static de.gematik.tim.test.glue.api.devices.ClaimDeviceTask.claimDevice;
@@ -73,10 +74,12 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.cucumber.junit.CucumberOptions;
 import io.cucumber.plugin.event.TestCase;
+import io.cucumber.plugin.event.TestStep;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import lombok.Getter;
 import lombok.Setter;
@@ -85,7 +88,6 @@ import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
 
 @Slf4j
-@CucumberOptions(plugin = {"de.gematik.tim.test.glue.api.utils.cleaning.CucumberListener"})
 public class DevicesControllerGlue {
 
   @Getter @Setter private static boolean allowParallelClaim = true;
@@ -102,10 +104,22 @@ public class DevicesControllerGlue {
     if (TRUE.equals(CLAIM_PARALLEL) && allowParallelClaim) {
       setParallelFlag(true);
     }
-    TestCase testCase = TestCaseContext.getTestCase();
-    boolean cleanUpSuccess = sendCleanupRequest(testCase.getTestSteps());
-    if (!cleanUpSuccess) {
-      throw new TestRunException("Cleanup failed - scenario will be skipped");
+
+    final TestCase testCase = TestCaseContext.getTestCase();
+    final List<TestStep> testSteps = testCase.getTestSteps();
+    final Set<String> urlsToTrigger = getAllApisUsedInTestSteps(testSteps);
+    List<String> failedUrls = new ArrayList<>();
+    for (String url : urlsToTrigger) {
+      boolean cleanUpSuccess = sendCleanupRequest(url);
+      if (!cleanUpSuccess) {
+        failedUrls.add(url);
+      }
+    }
+    if (!failedUrls.isEmpty()) {
+      throw new TestRunException(
+          "Cleanup failed for the following URLs: "
+              + String.join(", ", failedUrls)
+              + " - scenario will be skipped");
     }
   }
 

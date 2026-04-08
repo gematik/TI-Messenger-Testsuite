@@ -137,6 +137,18 @@ public class RoomControllerGlue {
             .roomCanBeCreated(false));
   }
 
+  @When("{string} tries to create a public room {string}")
+  @Wenn("{string} versucht einen öffentlichen Chat-Raum {string} zu erstellen")
+  public void tryToCreatePublicRoom(String actorName, String roomName) {
+    Actor actor = theActorCalled(actorName);
+    actor.attemptsTo(
+        createRoom()
+            .withName(roomName)
+            .withJoinRule(CreateRoomRequestDTO.JoinRuleEnum.PUBLIC)
+            .roomCanBeCreated(false));
+    checkResponseCode(actorName, FORBIDDEN.value());
+  }
+
   @And("{string} invites {listOfStrings} into room {string}")
   @Und("{string} lädt {listOfStrings} in Chat-Raum {string} ein")
   public void inviteUserToChatRoomSuccessfully(
@@ -836,10 +848,12 @@ public class RoomControllerGlue {
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
     RoomDTO room = actor.abilityTo(UseRoomAbility.class).getActive();
 
+    //noinspection IfCanBeSwitch
     if (propertyName.equals("join_rule")) {
       JoinRuleEnum joinRule = room.getJoinRule();
-      assertThat(joinRule != null)
-          .as(format("Expected join_rule to match %s, but was null instead", propertyValue));
+      assertThat(joinRule)
+          .as(format("Expected join_rule to match %s, but was null instead", propertyValue))
+          .isNotNull();
       assertThat(joinRule.getValue().equals(propertyValue))
           .as(
               format(
@@ -848,8 +862,9 @@ public class RoomControllerGlue {
           .isTrue();
     } else if (propertyName.equals("isEncrypted")) {
       Boolean isEncrypted = room.getIsEncrypted();
-      assertThat(isEncrypted != null)
-          .as(format("Expected isEncrypted to match %s, but was null instead", propertyValue));
+      assertThat(isEncrypted)
+          .as(format("Expected isEncrypted to match %s, but was null instead", propertyValue))
+          .isNotNull();
       assertThat(isEncrypted.equals(Boolean.valueOf(propertyValue)))
           .as(
               format(
@@ -857,8 +872,9 @@ public class RoomControllerGlue {
                   propertyValue, isEncrypted));
     } else if (propertyName.equals("roomAccess")) {
       RoomAccessEnum roomAccess = room.getRoomAccess();
-      assertThat(roomAccess != null)
-          .as(format("Expected roomAccess to match %s, but was null instead", propertyValue));
+      assertThat(roomAccess)
+          .as(format("Expected roomAccess to match %s, but was null instead", propertyValue))
+          .isNotNull();
       assertThat(roomAccess.getValue().equals(propertyValue))
           .as(
               format(
@@ -866,10 +882,11 @@ public class RoomControllerGlue {
                   propertyValue, roomAccess.getValue()));
     } else if (propertyName.equals("history_visibility")) {
       HistoryVisibilityEnum historyVisibility = room.getHistoryVisibility();
-      assertThat(historyVisibility != null)
+      assertThat(historyVisibility)
           .as(
               format(
-                  "Expected history_visibility to match %s, but was null instead", propertyValue));
+                  "Expected history_visibility to match %s, but was null instead", propertyValue))
+          .isNotNull();
       assertThat(historyVisibility.getValue().equals(propertyValue))
           .as(
               format(
@@ -877,16 +894,26 @@ public class RoomControllerGlue {
                   propertyValue, historyVisibility.getValue()));
     } else if (propertyName.equals("m.federate")) {
       Boolean isFederated = room.getIsFederated();
-      assertThat(isFederated != null)
+      assertThat(isFederated)
           .as(format("Expected m.federate to match %s, but was null instead", propertyValue));
       assertThat(isFederated.equals(Boolean.valueOf(propertyValue)))
           .as(
               format(
                   "Expected room property m.federate to match %s, but was %s instead",
-                  propertyValue, isFederated));
+                  propertyValue, isFederated))
+          .isNotNull();
     } else {
       throwNotImplementedRoomProperty(propertyName);
     }
+  }
+
+  @Then("{string} checks, if the property {string} in chat with {string} has the value {string}")
+  @Dann(
+      "{string} prüft, ob die Eigenschaft {string} im Chat mit {string} mit dem Wert {string} befüllt ist")
+  public void checkChatProperty(
+      String actorName, String propertyName, String chatPartner, String propertyValue) {
+    String roomName = DIRECT_CHAT_NAME + theActorCalled(chatPartner).recall(MX_ID);
+    checkRoomProperty(actorName, propertyName, roomName, propertyValue);
   }
 
   @And("{string} sets the property {string} in the room {string} to the value {string}")
@@ -897,18 +924,22 @@ public class RoomControllerGlue {
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
     RoomDTO room = actor.abilityTo(UseRoomAbility.class).getActive();
     if (propertyName.equals("history_visibility")) {
-      if (propertyValue.equals("world_readable")) {
-        room.setHistoryVisibility(HistoryVisibilityEnum.WORLD_READABLE);
-        actor.attemptsTo(updateRoom().withRoom(room));
-        checkResponseCode(actorName, OK.value());
-        checkRoomProperty(actorName, propertyName, roomName, propertyValue);
-      } else {
-        throwNotImplementedPropertyValue(propertyName, propertyValue);
-      }
+      changeHistoryVisibility(room, propertyValue);
+      actor.attemptsTo(updateRoom().withRoom(room));
+      checkResponseCode(actorName, OK.value());
+      checkRoomProperty(actorName, propertyName, roomName, propertyValue);
     } else {
       throwNotImplementedRoomProperty(propertyName);
     }
     checkRoomMembershipState();
+  }
+
+  @Then("{string} sets the property {string} in the chat with {string} to the value {string}")
+  @Dann("{string} setzt die Eigenschaft {string} im Chat mit {string} auf den Wert {string}")
+  public void updateChatProperty(
+      String actorName, String propertyName, String chatPartner, String propertyValue) {
+    String roomName = DIRECT_CHAT_NAME + theActorCalled(chatPartner).recall(MX_ID);
+    updateRoomProperty(actorName, propertyName, roomName, propertyValue);
   }
 
   @Then("{string} tries to set the property {string} in room {string} at the value {string}")
@@ -919,15 +950,49 @@ public class RoomControllerGlue {
     Actor actor = theActorCalled(actorName);
     actor.abilityTo(UseRoomAbility.class).setActive(roomName);
     RoomDTO room = actor.abilityTo(UseRoomAbility.class).getActive();
+    // noinspection IfCanBeSwitch
     if (propertyName.equals("join_rule")) {
-      if (propertyValue.equals("public")) {
-        room.setJoinRule(JoinRuleEnum.PUBLIC);
-        actor.attemptsTo(updateRoom().withRoom(room));
-      } else {
-        throwNotImplementedPropertyValue(propertyName, propertyValue);
-      }
+      changeJoinRule(room, propertyValue);
+    } else if (propertyName.equals("history_visibility")) {
+      changeHistoryVisibility(room, propertyValue);
+    } else if (propertyName.equals("roomAccess")) {
+      changeRoomAccess(room, propertyValue);
     } else {
       throwNotImplementedRoomProperty(propertyName);
+    }
+    actor.attemptsTo(updateRoom().withRoom(room));
+  }
+
+  private void changeJoinRule(RoomDTO room, String propertyValue) {
+    if (propertyValue.equals("public")) {
+      room.setJoinRule(JoinRuleEnum.PUBLIC);
+    } else if (propertyValue.equals("knock")) {
+      room.setJoinRule(JoinRuleEnum.KNOCK);
+    } else {
+      throwNotImplementedPropertyValue("join_rule", propertyValue);
+    }
+  }
+
+  private void changeHistoryVisibility(RoomDTO room, String propertyValue) {
+    //noinspection IfCanBeSwitch
+    if (propertyValue.equals("world_readable")) {
+      room.setHistoryVisibility(HistoryVisibilityEnum.WORLD_READABLE);
+    } else if (propertyValue.equals("joined")) {
+      room.setHistoryVisibility(HistoryVisibilityEnum.JOINED);
+    } else if (propertyValue.equals("shared")) {
+      room.setHistoryVisibility(HistoryVisibilityEnum.SHARED);
+    } else if (propertyValue.equals("invited")) {
+      room.setHistoryVisibility(HistoryVisibilityEnum.INVITED);
+    } else {
+      throwNotImplementedPropertyValue("history_visibility", propertyValue);
+    }
+  }
+
+  private void changeRoomAccess(RoomDTO room, String propertyValue) {
+    if (propertyValue.equals("public")) {
+      room.setRoomAccess(RoomAccessEnum.PUBLIC);
+    } else {
+      throwNotImplementedPropertyValue("roomAccess", propertyValue);
     }
   }
 

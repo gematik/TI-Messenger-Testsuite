@@ -23,6 +23,7 @@ package de.gematik.tim.test.glue.api.cleanup;
 import static de.gematik.tim.test.glue.api.devices.UseDeviceAbility.TEST_CASE_ID_HEADER;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.prepareApiNameForHttp;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.getTestcaseId;
+import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.BUILD_DIRECTORY;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.COMBINE_ITEMS_FILE_NAME;
 import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.COMBINE_ITEMS_FILE_URL;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -75,7 +76,8 @@ public class CleanupTrigger {
 
   static {
     try {
-      File combinedItemsFile = new File("target/generated-combine/" + COMBINE_ITEMS_FILE_NAME);
+      File combinedItemsFile =
+          new File(BUILD_DIRECTORY + "/generated-combine/" + COMBINE_ITEMS_FILE_NAME);
       if (!combinedItemsFile.exists()) {
         combinedItemsFile = new File(COMBINE_ITEMS_FILE_URL);
       }
@@ -91,37 +93,45 @@ public class CleanupTrigger {
       combineItemsUrls.addAll(
           combineItems.stream().map(CombineItem::getUrl).filter(Objects::nonNull).toList());
     } catch (IOException e) {
-      throw new InitializationException(e.getMessage());
+      throw new InitializationException(
+          "Initialisation of combineItems file was not successful", e);
     }
   }
 
   @SneakyThrows
   @SuppressWarnings("java:S2142")
-  public static boolean sendCleanupRequest(List<TestStep> testSteps) {
-    final Set<String> urlsToTrigger = getAllApisUsedInTestSteps(testSteps);
-    log.info(
-        "Cleaning up before tests using {} urlsToTiger: {}",
-        urlsToTrigger.size(),
-        '[' + String.join(", ", urlsToTrigger) + ']');
-    final List<Callable<UrlAndResponseStatus>> calls = createCalls(urlsToTrigger);
-    for (final Future<UrlAndResponseStatus> future : executorService.invokeAll(calls)) {
-      try {
-        final UrlAndResponseStatus urlAndStatus = future.get();
-        final HttpStatus status = HttpStatus.valueOf(urlAndStatus.status);
-        if (!status.is2xxSuccessful()) {
-          log.info(
-              "Couldn't clean up before test for url {} . got status {}/{}",
-              urlAndStatus.url,
-              status.value(),
-              status.getReasonPhrase());
-          return false;
-        }
-      } catch (InterruptedException | ExecutionException e) {
-        log.error("Was not able to clean up all urls before test.", e);
+  public static boolean sendCleanupRequest(String urlToTrigger) {
+    log.info("Cleaning up before tests using URL: {}", urlToTrigger);
+
+    final Callable<UrlAndResponseStatus> call = createCall(urlToTrigger);
+    try {
+      final Future<UrlAndResponseStatus> future = executorService.submit(call);
+      final UrlAndResponseStatus urlAndStatus = future.get();
+      final HttpStatus status = HttpStatus.valueOf(urlAndStatus.status);
+      if (!status.is2xxSuccessful()) {
+        log.info(
+            "Couldn't clean up before test for url {} . got status {}/{}",
+            urlAndStatus.url,
+            status.value(),
+            status.getReasonPhrase());
         return false;
       }
+    } catch (InterruptedException | ExecutionException e) {
+      log.error("Was not able to clean up all urls before test.", e);
+      return false;
     }
     return true;
+  }
+
+  private static Callable<UrlAndResponseStatus> createCall(String urlToTrigger) {
+    return () -> {
+      HttpPost post = new HttpPost(urlToTrigger);
+      post.setHeader(TEST_CASE_ID_HEADER, getTestcaseId());
+      try (CloseableHttpResponse response = cleanUpClient.get().execute(post)) {
+        int status = response.getStatusLine().getStatusCode();
+        return new UrlAndResponseStatus(urlToTrigger, status);
+      }
+    };
   }
 
   public static void removeClientOnCleanupTrigger() {
@@ -130,24 +140,8 @@ public class CleanupTrigger {
 
   private record UrlAndResponseStatus(String url, int status) {}
 
-  private static List<Callable<UrlAndResponseStatus>> createCalls(Set<String> urlToTrigger) {
-    return urlToTrigger.stream()
-        .map(
-            url ->
-                (Callable<UrlAndResponseStatus>)
-                    () -> {
-                      HttpPost post = new HttpPost(url);
-                      post.setHeader(TEST_CASE_ID_HEADER, getTestcaseId());
-                      try (CloseableHttpResponse response = cleanUpClient.get().execute(post)) {
-                        int status = response.getStatusLine().getStatusCode();
-                        return new UrlAndResponseStatus(url, status);
-                      }
-                    })
-        .toList();
-  }
-
   @SneakyThrows
-  private static Set<String> getAllApisUsedInTestSteps(List<TestStep> testSteps) {
+  public static Set<String> getAllApisUsedInTestSteps(List<TestStep> testSteps) {
     Optional<DataTableArgument> dataTable = getDataTable(testSteps);
     if (dataTable.isEmpty()) {
       return Set.of();

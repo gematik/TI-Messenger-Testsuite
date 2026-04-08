@@ -1,0 +1,31 @@
+# default local Tiger Proxy
+tigerProxy:
+  tls:
+    forwardMutualTlsIdentity: "${TIM_KEYSTORE};${TIM_KEYSTORE_PW};pkcs12"
+
+servers:
+  testdriverApi-A-WIN-Client:
+    type: externalUrl
+    source:
+      - https://127.0.0.1:8080
+    healthcheckUrl: https://127.0.0.1:8080/actuator/health
+
+  testdriverApi-A-ORG:
+    type: externalUrl
+    dependsUpon: testdriverApi-A-WIN-Client
+    source:
+      - https://127.0.0.1:8081
+    healthcheckUrl: https://127.0.0.1:8081/actuator/health
+
+  testdriverApi-B-WIN-Client:
+    type: externalUrl
+    source:
+      - https://127.0.0.1:8082
+    healthcheckUrl: https://127.0.0.1:8082/actuator/health
+
+  testdriverApi-B-ORG:
+    type: externalUrl
+    dependsUpon: testdriverApi-B-WIN-Client
+    source:
+      - https://127.0.0.1:8083
+    healthcheckUrl: https://127.0.0.1:8083/actuator/health

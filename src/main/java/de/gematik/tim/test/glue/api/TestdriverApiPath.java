@@ -42,6 +42,7 @@ public final class TestdriverApiPath {
   public static final String INFO_PATH = "/";
   public static final String WELL_KNOWN_HOMESERVER_PATH = "/.well-known/matrix/client";
   public static final String SUPPORTED_VERSIONS_PATH = "/_matrix/client/versions";
+  public static final String SYNAPSE_VERSIONS_PATH = "/_synapse/admin/v1/server_version";
 
   // DEVICE
   public static final String DEVICES_PATH = "/devices";
@@ -77,7 +78,7 @@ public final class TestdriverApiPath {
   // HOMESERVER
   public static final String HOMESERVER_SEARCH_PATH = DEVICE_ID_PATH + "/homeserver/search";
 
-  // FHIR PRACTIONER
+  // FHIR PRACTITIONER
   public static final String FHIR_BASE_PATH = DEVICE_ID_PATH + "/fhir";
   public static final String FHIR_SEARCH_PRACTITIONER_PATH =
       FHIR_BASE_PATH + "/searchPractitionerInFhirDirectory";

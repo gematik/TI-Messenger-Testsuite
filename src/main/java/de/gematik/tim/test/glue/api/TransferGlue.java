@@ -25,4 +25,6 @@ import static lombok.AccessLevel.PRIVATE;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor(access = PRIVATE)
-public final class TransferGlue {}
+public final class TransferGlue {
+
+}

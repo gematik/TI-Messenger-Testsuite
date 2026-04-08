@@ -478,7 +478,7 @@ image::Tag.png[float="left"]
 
 {empty} +
 
-Der BDD-Parameterizer (auch Kombinations-Plugin genannt) wird dazu genutzt die Testdaten-Kombinationen, in diesem Fall die APIs, zu steuern.
+Der BDD-Parameterizer (auch Cucumber-Test-Kombinations-Plugin genannt) wird dazu genutzt die Testdaten-Kombinationen, in diesem Fall die APIs, zu steuern.
 Somit wird gewährleistet, dass genau das richtige Set an Daten für den jeweiligen Fokus des Testfalls erzeugt wird und dann in Iterationen ausgeführt werden kann.
 
 *Die combine_items.json*
@@ -486,7 +486,7 @@ Somit wird gewährleistet, dass genau das richtige Set an Daten für den jeweili
 Grundlage hierfür ist das kartesische Produkt aller möglichen Kombinationen der in der generierten Target combine_items.json (target/generated-combine/combine_items.json) enthaltenen Schnittstellen.
 Mithilfe von Filtern, die direkt im .cute-File (später feature-File) gesetzt werden, kann nun diese Liste verkleinert und fokussiert werden.
 
-Die *combine_items.json im Target Folder* (target/generated-combine/combine_items.json) wird aus der *Source combine_items.json* (src/test/resources/combine_items.json) und den aus der *Testtreiber Schnittstelle zum Device ausgelesenen Daten* (definiert in der parent-pom.xml) erzeugt.
+Die *combine_items.json im Target Folder* (target/generated-combine/combine_items.json) wird aus der *Source combine_items.json* (/combine_items.json) und den aus der *Testtreiber Schnittstelle zum Device ausgelesenen Daten* (definiert in der parent-pom.xml) erzeugt.
 
 - Source combine_items.json - Bereitstellen der Schnittstelle (url).
 Evtl. zusätzliche Tags und Properties.
@@ -499,7 +499,7 @@ Beispiel einer Source combine_items.json:
 .Abbildung{counter:my-example-number: 1}: Source combine_items.json
 image:SourceCombineInclPool.png[float="center"]
 
-In der Source combine_items.json (src/test/resources/combine_items.json) enthalten sind:
+In der Source combine_items.json (/combine_items.json) enthalten sind:
 
 - (Pflicht) *„value“*: Frei wählbarer Text (muss die URL zur Testtreiber Schnittstelle des jeweiligen Devices enthalten, wenn die Variable „url“ nicht befüllt wird)
 - (Optional) *„url“*: URL zur Testtreiber Schnittstelle des jeweiligen Devices
@@ -678,7 +678,7 @@ image::Tag.png[float="left"]
 
 *‚new‘ Tag & ‚newonly‘ Profil*
 
-Wenn der Tag ‚new‘ in einer Schnittstelle in der Source combine-items.json (src/test/resources/combine_items.json) gesetzt wurde (und damit auch in der Target combine_items.json enthalten ist) und das newonly Profil dazu gewählt wird, werden nach dem Durchlauf der Filter nur diejenigen Kombinationen genutzt, in denen eben der ‚new‘ Tag vorhanden ist.
+Wenn der Tag ‚new‘ in einer Schnittstelle in der Source combine-items.json (/combine_items.json) gesetzt wurde (und damit auch in der Target combine_items.json enthalten ist) und das newonly Profil dazu gewählt wird, werden nach dem Durchlauf der Filter nur diejenigen Kombinationen genutzt, in denen eben der ‚new‘ Tag vorhanden ist.
 
 Zum Beispiel von zuvor:
 
@@ -698,7 +698,7 @@ Wir sehen nun, dass nur Kombinationen erzeugt wurden, in denen unsere ‚new‘ 
 Hintergrund hierfür ist, dass so bestimmte Schnittstellen dediziert bzw. auch im IOP getestet werden können, wenn der Fokus nur diese Schnittstellen inkl. aller dazugehörigen Kombinationen ist.
 
 [TIP]
-[black]#*_Der ‚new‘ Tag wird nicht automatisch erzeugt, sondern muss nach Bedarf manuell vergeben bzw. entfernt werden in der Source combine_items.json (src/test/resources/combine_items.json)._*#
+[black]#*_Der ‚new‘ Tag wird nicht automatisch erzeugt, sondern muss nach Bedarf manuell vergeben bzw. entfernt werden in der Source combine_items.json (/combine_items.json)._*#
 
 *Der 'practitioner' Tag*
 

@@ -1,0 +1,57 @@
+# default local Tiger Proxy
+tigerProxy:
+  tls:
+    forwardMutualTlsIdentity: "${TIM_KEYSTORE};${TIM_KEYSTORE_PW};pkcs12"
+
+servers:
+  testdriverApi-H-AND-Insurant-V3:
+    type: externalUrl
+    source:
+      - https://127.0.0.1:8094
+    healthcheckUrl: https://127.0.0.1:8094/actuator/health
+
+  testdriverApi-H-ORG:
+    type: externalUrl
+    dependsUpon: testdriverApi-H-AND-Insurant-V3
+    source:
+      - https://127.0.0.1:8095
+    healthcheckUrl: https://127.0.0.1:8095/actuator/health
+
+  testdriverApi-I-WIN-Pro-V3:
+    type: externalUrl
+    source:
+      - https://127.0.0.1:8096
+    healthcheckUrl: https://127.0.0.1:8096/actuator/health
+
+  testdriverApi-I-ORG:
+    type: externalUrl
+    dependsUpon: testdriverApi-I-WIN-Pro-V3
+    source:
+      - https://127.0.0.1:8097
+    healthcheckUrl: https://127.0.0.1:8097/actuator/health
+
+  testdriverApi-J-AND-Pro-V3:
+    type: externalUrl
+    source:
+      - https://127.0.0.1:8098
+    healthcheckUrl: https://127.0.0.1:8098/actuator/health
+
+  testdriverApi-J-ORG:
+    type: externalUrl
+    dependsUpon: testdriverApi-J-AND-Pro-V3
+    source:
+      - https://127.0.0.1:8099
+    healthcheckUrl: https://127.0.0.1:8099/actuator/health
+
+  testdriverApi-K-AND-Ref-Impl:
+    type: externalUrl
+    source:
+      - https://127.0.0.1:8100
+    healthcheckUrl: https://127.0.0.1:8100/actuator/health
+
+  testdriverApi-K-ORG:
+    type: externalUrl
+    dependsUpon: testdriverApi-K-AND-Ref-Impl
+    source:
+      - https://127.0.0.1:8101
+    healthcheckUrl: https://127.0.0.1:8101/actuator/health

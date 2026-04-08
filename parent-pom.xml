@@ -12,20 +12,23 @@
   <description>Properties and dependencies for Testsuite</description>
 
   <properties>
-    <revision>3.0.0</revision>
+    <revision>3.0.1</revision>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <java.version>17</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.source.plugin.version>3.4.0</maven.source.plugin.version>
 
     <cucumber-test-combinations-maven-plugin.version>
       2.11.8
     </cucumber-test-combinations-maven-plugin.version>
-    <tiger.version>4.1.16</tiger.version>
-    <serenity.core.version>5.1.0</serenity.core.version>
+    <tiger.version>4.2.5</tiger.version>
+    <serenity.core.version>5.3.10</serenity.core.version>
     <polarion.toolbox.version>3.0.3-212</polarion.toolbox.version>
-    <ti.m.mtls.certs.version>2.1.4</ti.m.mtls.certs.version>
+    <ti.m.mtls.certs.version>2.2.4</ti.m.mtls.certs.version>
+    <maven.exec.plugin.version>3.6.3</maven.exec.plugin.version>
+    <maven.source.plugin.version>3.4.0</maven.source.plugin.version>
+    <maven.dependency.plugin.version>3.9.0</maven.dependency.plugin.version>
+
 
     <serenity.report.directory>${project.build.directory}/site/serenity</serenity.report.directory>
     <ti.m.mtls.output.directory>${project.build.directory}/profile-resources</ti.m.mtls.output.directory>
@@ -50,7 +53,7 @@
     <maven.build.timestamp.format>yyyy-MM-dd_HH_mm_ss</maven.build.timestamp.format>
     <skip.saving.reports>false</skip.saving.reports>
     <combine.items.file>
-      ${project.basedir}/src/test/resources/combine_items.json
+      ${project.basedir}/combine_items.json
     </combine.items.file>
     <tim.truststore>${env.TIM_TRUSTSTORE}</tim.truststore>
     <tim.truststore.pw>${env.TIM_TRUSTSTORE_PW}</tim.truststore.pw>
@@ -137,17 +140,18 @@
     <dependency>
       <groupId>com.nimbusds</groupId>
       <artifactId>nimbus-jose-jwt</artifactId>
-      <version>10.7</version>
+      <version>10.8</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-      <version>2.21.1</version>
+      <version>2.21.2</version>
     </dependency>
     <dependency>
       <groupId>net.minidev</groupId>
       <artifactId>json-smart</artifactId>
       <version>2.6.0</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>commons-beanutils</groupId>
@@ -168,13 +172,13 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.42</version>
+      <version>1.18.44</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.5.26</version>
+      <version>1.5.32</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -184,7 +188,7 @@
     <dependency>
       <groupId>jakarta.xml.bind</groupId>
       <artifactId>jakarta.xml.bind-api</artifactId>
-      <version>4.0.4</version>
+      <version>4.0.5</version>
     </dependency>
   </dependencies>
 
@@ -202,7 +206,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.14.1</version>
+        <version>3.15.0</version>
         <configuration>
           <encoding>${project.build.sourceEncoding}</encoding>
           <source>${java.version}</source>
@@ -380,7 +384,7 @@
       <plugin>
         <groupId>io.github.git-commit-id</groupId>
         <artifactId>git-commit-id-maven-plugin</artifactId>
-        <version>9.0.2</version>
+        <version>9.1.0</version>
         <executions>
           <execution>
             <id>get_git_infos</id>
@@ -400,7 +404,7 @@
       <plugin>
         <groupId>org.openapitools</groupId>
         <artifactId>openapi-generator-maven-plugin</artifactId>
-        <version>7.19.0</version>
+        <version>7.21.0</version>
         <executions>
           <execution>
             <goals>
@@ -459,7 +463,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.5.4</version>
+        <version>3.5.5</version>
         <configuration>
           <environmentVariables>
             <TIGER_TESTENV_CFGFILE>${tiger.config.file}</TIGER_TESTENV_CFGFILE>
