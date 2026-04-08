@@ -76,47 +76,61 @@ import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 public class TestsuiteInitializer {
 
   public static final String FEATURE_PATH_PROPERTY_NAME = "feature_dir";
+  public static final String FEATURE_PATH;
   public static final String CLEAR_ROOMS_PROPERTY_NAME = "clearRooms";
-  public static final String MVN_PROPERTIES_LOCATION = "./target/classes/mvn.properties";
-  public static final String CLAIM_PARALLEL_PROPERTY_NAME = "claimParallel";
-  public static final String POLL_INTERVAL_PROPERTY_NAME = "pollInterval";
-  public static final String TIMEOUT_PROPERTY_NAME = "timeout";
-  public static final String HTTP_TIMEOUT_PROPERTY_NAME = "httpTimeout";
-  public static final String RUN_WITHOUT_RETRY_PROPERTY_NAME = "runWithoutRetry";
-  public static final String CLAIM_DURATION_PROPERTY_NAME = "claimDuration";
-  public static final String COMBINE_ITEMS_FILE_PROPERTY_NAME = "combine.items.file";
-  public static final String CHECK_ROOM_STATE_FAIL_PROPERTY_NAME = "skipRoomStateCheck";
-  public static final Integer MAX_RETRY_CLAIM_REQUEST;
   public static final Boolean CLEAR_ROOMS;
-  public static final Integer CLAIM_DURATION;
+  public static final String CLAIM_PARALLEL_PROPERTY_NAME = "claimParallel";
   public static final Boolean CLAIM_PARALLEL;
+  public static final String NO_PARALLEL_TAG = "@Ctl:NoParallel";
+  public static final String POLL_INTERVAL_PROPERTY_NAME = "pollInterval";
+  public static final Long POLL_INTERVAL_DEFAULT = 1L;
+  public static final String TIMEOUT_PROPERTY_NAME = "timeout";
+  public static final Long TIMEOUT_DEFAULT = 10L;
+  public static final String HTTP_TIMEOUT_PROPERTY_NAME = "httpTimeout";
+  public static final Integer HTTP_TIMEOUT;
+  public static final String RUN_WITHOUT_RETRY_PROPERTY_NAME = "runWithoutRetry";
   public static final boolean RUN_WITHOUT_RETRY;
-  public static final boolean CHECK_ROOM_STATE_FAIL;
-  public static final String CERT_CN;
+  public static final String CLAIM_DURATION_PROPERTY_NAME = "claimDuration";
+  public static final Integer CLAIM_DURATION;
+  public static final String COMBINE_ITEMS_FILE_PROPERTY_NAME = "combine.items.file";
   public static final String COMBINE_ITEMS_FILE_NAME;
   public static final String COMBINE_ITEMS_FILE_URL;
-  public static final String FEATURE_PATH;
-  public static final String INDIVIDUAL_LOG_PATH = "./target/individual-log.json";
+  public static final String CHECK_ROOM_STATE_FAIL_PROPERTY_NAME = "skipRoomStateCheck";
+  public static final boolean CHECK_ROOM_STATE_FAIL;
+  public static final String MAX_RETRY_CLAIM_REQUEST_NAME = "maxRetryClaimRequest";
+  public static final Integer MAX_RETRY_CLAIM_REQUEST;
+  public static final String BUILD_DIRECTORY_PROPERTY_NAME = "buildDirectory";
+  public static final String DEFAULT_BUILD_DIRECTORY = "target";
+
+  public static String MVN_PROPERTIES_LOCATION = "./target/classes/mvn.properties";
+  public static String BUILD_DIRECTORY;
+  public static String INDIVIDUAL_LOG_PATH = "./target/individual-log.json";
+  public static Long TIMEOUT;
   public static final String FEATURE_ENDING = "feature";
   public static final String KEY_STORE_ENV_VAR = "TIM_KEYSTORE";
   public static final String KEY_STORE_PW_ENV_VAR = "TIM_KEYSTORE_PW";
   public static final String RUN_WITHOUT_CERT = "no configured cert found";
-  public static final String MAX_RETRY_CLAIM_REQUEST_NAME = "maxRetryClaimRequest";
-  public static final String NO_PARALLEL_TAG = "@Ctl:NoParallel";
-  public static final Long TIMEOUT_DEFAULT = 10L;
-  public static final Long POLL_INTERVAL_DEFAULT = 1L;
-  public static final Integer HTTP_TIMEOUT;
+  public static final String CERT_CN;
+
   @Getter private static final Jackson2Mapper fhirMapper;
-  public static Long TIMEOUT;
   static Long pollInterval;
 
   static {
+    BUILD_DIRECTORY = System.getProperty(BUILD_DIRECTORY_PROPERTY_NAME);
+
     Properties properties = new Properties();
     try {
+      if (BUILD_DIRECTORY == null) {
+        BUILD_DIRECTORY = DEFAULT_BUILD_DIRECTORY;
+      }
+      MVN_PROPERTIES_LOCATION =
+          MVN_PROPERTIES_LOCATION.replace(DEFAULT_BUILD_DIRECTORY, BUILD_DIRECTORY);
+      INDIVIDUAL_LOG_PATH = INDIVIDUAL_LOG_PATH.replace(DEFAULT_BUILD_DIRECTORY, BUILD_DIRECTORY);
+
       FileInputStream fileStream = FileUtils.openInputStream(new File(MVN_PROPERTIES_LOCATION));
       properties.load(fileStream);
     } catch (IOException e) {
-      log.error("Could not find any maven properties at " + MVN_PROPERTIES_LOCATION);
+      log.error("Could not find any maven properties at {}", MVN_PROPERTIES_LOCATION);
       throw new IllegalArgumentException(e);
     }
     String timeoutString = properties.getProperty(TIMEOUT_PROPERTY_NAME);

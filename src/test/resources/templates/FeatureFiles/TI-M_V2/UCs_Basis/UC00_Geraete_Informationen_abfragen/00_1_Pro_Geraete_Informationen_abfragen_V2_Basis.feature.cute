@@ -17,6 +17,7 @@ Funktionalität: 00 (1) Abfragen der Schnittstellen-Information und die Geräte-
   TF 1 - 2 Schnittstellen-Information
   TF 3 - 4 Geräte-Liste
   TF 5     Matrix Version prüfen
+  TF 6     Synapse Server Version abfragen
 
   @Ctl:SchnittstellenDatenPro
   @TCID:TIM_V2_BASIS_AF_000101 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
@@ -81,3 +82,15 @@ Funktionalität: 00 (1) Abfragen der Schnittstellen-Information und die Geräte-
 
     Beispiele:
     | ApiName1 |
+
+  @Ctl:SchnittstellenDatenPro
+  @TCID:TIM_V2_BASIS_AF_000106 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 00.01.06 Abfrage der Synapse-Server-Version
+    Angenommen A fragt an Schnittstelle <ApiName1> die Home-Server-Adresse ab
+    Wenn A die Synapse-Server-Version vom Home-Server abfragt
+    Dann wird Synapse-Server-Version an A zurückgegeben
+
+  @Filter(ApiName1.hasTag("proClient")||(ApiName1.hasTag("proClient")&&ApiName1.hasTag("practitioner")))
+
+      Beispiele:
+      | ApiName1 |

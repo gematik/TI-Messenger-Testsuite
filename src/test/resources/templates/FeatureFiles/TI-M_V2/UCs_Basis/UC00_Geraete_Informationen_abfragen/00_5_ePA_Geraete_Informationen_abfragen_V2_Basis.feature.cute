@@ -17,6 +17,7 @@ Funktionalität: 00 (5) Abfragen der Schnittstellen-Information und die Geräte-
   TF 1     Schnittstellen-Information
   TF 2     Geräte-Liste
   TF 3     Matrix Version prüfen
+  TF 4     Synapse Server Version abfragen
 
   @Ctl:SchnittstellenDatenEpa
   @TCID:TIM_V2_ePA_AF_000501 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
@@ -55,3 +56,15 @@ Funktionalität: 00 (5) Abfragen der Schnittstellen-Information und die Geräte-
 
     Beispiele:
     | ApiName1 |
+
+  @Ctl:SchnittstellenDatenEpa
+  @TCID:TIM_V2_ePA_AF_000504 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 00.05.04 Abfrage der Synapse-Server-Version
+    Angenommen A fragt an Schnittstelle <ApiName1> die Home-Server-Adresse ab
+    Wenn A die Synapse-Server-Version vom Home-Server abfragt
+    Dann wird Synapse-Server-Version an A zurückgegeben
+
+    @Filter(ApiName1.hasTag("epaClient"))
+
+      Beispiele:
+      | ApiName1 |

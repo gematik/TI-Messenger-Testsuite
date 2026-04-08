@@ -1,0 +1,148 @@
+# default local Tiger Proxy
+tigerProxy:
+  tls:
+    forwardMutualTlsIdentity: "${TIM_KEYSTORE};${TIM_KEYSTORE_PW};pkcs12"
+
+servers:
+  testdriverApi-A-WIN-Client:
+    type: externalUrl
+    source:
+      - https://127.0.0.1:8080
+    healthcheckUrl: https://127.0.0.1:8080/actuator/health
+
+  testdriverApi-A-ORG:
+    type: externalUrl
+    dependsUpon: testdriverApi-A-WIN-Client
+    source:
+      - https://127.0.0.1:8081
+    healthcheckUrl: https://127.0.0.1:8081/actuator/health
+
+  testdriverApi-B-WIN-Client:
+    type: externalUrl
+    source:
+      - https://127.0.0.1:8082
+    healthcheckUrl: https://127.0.0.1:8082/actuator/health
+
+  testdriverApi-B-ORG:
+    type: externalUrl
+    dependsUpon: testdriverApi-B-WIN-Client
+    source:
+      - https://127.0.0.1:8083
+    healthcheckUrl: https://127.0.0.1:8083/actuator/health
+
+  testdriverApi-C-IOS-Insurant:
+    type: externalUrl
+    source:
+      - https://127.0.0.1:8084
+    healthcheckUrl: https://127.0.0.1:8084/actuator/health
+
+  testdriverApi-C-ORG:
+    type: externalUrl
+    dependsUpon: testdriverApi-C-IOS-Insurant
+    source:
+      - https://127.0.0.1:8085
+    healthcheckUrl: https://127.0.0.1:8085/actuator/health
+
+  testdriverApi-D-AND-Insurant:
+    type: externalUrl
+    source:
+      - https://127.0.0.1:8086
+    healthcheckUrl: https://127.0.0.1:8086/actuator/health
+
+  testdriverApi-D-ORG:
+    type: externalUrl
+    dependsUpon: testdriverApi-D-AND-Insurant
+    source:
+      - https://127.0.0.1:8087
+    healthcheckUrl: https://127.0.0.1:8087/actuator/health
+
+  testdriverApi-E-WIN-Pro:
+    type: externalUrl
+    source:
+      - https://127.0.0.1:8088
+    healthcheckUrl: https://127.0.0.1:8088/actuator/health
+
+  testdriverApi-E-ORG:
+    type: externalUrl
+    dependsUpon: testdriverApi-E-WIN-Pro
+    source:
+      - https://127.0.0.1:8089
+    healthcheckUrl: https://127.0.0.1:8089/actuator/health
+
+  testdriverApi-F-WIN-Pro:
+    type: externalUrl
+    source:
+      - https://127.0.0.1:8090
+    healthcheckUrl: https://127.0.0.1:8090/actuator/health
+
+  testdriverApi-F-ORG:
+    type: externalUrl
+    dependsUpon: testdriverApi-F-WIN-Pro
+    source:
+      - https://127.0.0.1:8091
+    healthcheckUrl: https://127.0.0.1:8091/actuator/health
+
+  testdriverApi-G-WIN-Pro:
+    type: externalUrl
+    source:
+      - https://127.0.0.1:8092
+    healthcheckUrl: https://127.0.0.1:8092/actuator/health
+
+  testdriverApi-G-ORG:
+    type: externalUrl
+    dependsUpon: testdriverApi-G-WIN-Pro
+    source:
+      - https://127.0.0.1:8093
+    healthcheckUrl: https://127.0.0.1:8093/actuator/health
+
+  testdriverApi-H-AND-Insurant-V3:
+    type: externalUrl
+    source:
+      - https://127.0.0.1:8094
+    healthcheckUrl: https://127.0.0.1:8094/actuator/health
+
+  testdriverApi-H-ORG:
+    type: externalUrl
+    dependsUpon: testdriverApi-H-AND-Insurant-V3
+    source:
+      - https://127.0.0.1:8095
+    healthcheckUrl: https://127.0.0.1:8095/actuator/health
+
+  testdriverApi-I-WIN-Pro-V3:
+    type: externalUrl
+    source:
+      - https://127.0.0.1:8096
+    healthcheckUrl: https://127.0.0.1:8096/actuator/health
+
+  testdriverApi-I-ORG:
+    type: externalUrl
+    dependsUpon: testdriverApi-I-WIN-Pro-V3
+    source:
+      - https://127.0.0.1:8097
+    healthcheckUrl: https://127.0.0.1:8097/actuator/health
+
+  testdriverApi-J-AND-Pro-V3:
+    type: externalUrl
+    source:
+      - https://127.0.0.1:8098
+    healthcheckUrl: https://127.0.0.1:8098/actuator/health
+
+  testdriverApi-J-ORG:
+    type: externalUrl
+    dependsUpon: testdriverApi-J-AND-Pro-V3
+    source:
+      - https://127.0.0.1:8099
+    healthcheckUrl: https://127.0.0.1:8099/actuator/health
+
+  testdriverApi-K-AND-Ref-Impl:
+    type: externalUrl
+    source:
+      - https://127.0.0.1:8100
+    healthcheckUrl: https://127.0.0.1:8100/actuator/health
+
+  testdriverApi-K-ORG:
+    type: externalUrl
+    dependsUpon: testdriverApi-K-AND-Ref-Impl
+    source:
+      - https://127.0.0.1:8101
+    healthcheckUrl: https://127.0.0.1:8101/actuator/health

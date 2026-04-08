@@ -26,10 +26,10 @@ import static de.gematik.tim.test.glue.api.utils.TestsuiteInitializer.TIMEOUT;
 import de.gematik.test.tiger.lib.TigerDirector;
 import de.gematik.test.tiger.proxy.TigerProxy;
 import java.util.Arrays;
+import org.apache.http.HttpHost;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.HttpHost;
 import org.apache.http.message.BasicHeader;
 
 public class ClientFactory {

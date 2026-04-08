@@ -10,6 +10,34 @@
 [
 `docu TI-Messenger Version 2`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite_Version2.adoc)
 
+## Release 3.0.1
+
+### Known issues
+
+- V3 tests and documentation are not yet included and will be released once internal testing is finished
+
+### Changes
+
+- Updates the V2 Example Serenity report
+- Extended the existing glue code to support changing room properties for v3 tests.
+- Bumps dependencies
+
+  Thanks to dotWee:
+- Security: remediated multiple high/critical dependency vulnerabilities
+- excluded vulnerable transitive `org.yaml:snakeyaml:android:1.23` from `javafaker`
+- added Maven Enforcer rule to block `org.yaml:snakeyaml` versions `< 2.0`
+- bumped `com.fasterxml.jackson.core:jackson-core` to `2.20.1`
+- bumped `net.minidev:json-smart` to `2.5.2`
+- pinned `ch.qos.logback:logback-core` to `1.5.26`
+- excluded `commons-collections` from `commons-beanutils` path
+- bumped `org.assertj:assertj-core` to `3.27.7`
+- Security fixes cover: CVE-2022-1471, CVE-2022-25857, sonatype-2026-000642, CVE-2024-57699, CVE-2025-11226,
+  sonatype-2024-3350, CVE-2026-24400
+
+### Features
+
+- Adds test for version V2 to request Synapse version without validation
+
 ## Release 3.0.0
 
 ### Known issues
