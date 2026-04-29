@@ -1,0 +1,220 @@
+# language: de
+@File:FeatureFile_11X_01_V3_Basis @Ctl:UseCaseV3_11X_Basis
+@PRODUKT:TI-M_Client_Basis @PRODUKT:TI-M_FD_Basis
+@ZulV3:Pro @ZulV3:ProKK
+@DeltaV3:Pro @DeltaV3:ProKK
+@AFO-ID:A_25395-03
+@AFO-ID:A_28145
+
+Funktionalität: 11X. (1) Message Types (Basis Spec) [V3]
+
+  In diesen Testfällen soll das Versenden und Empfangen von den in Matrix spezifizierten Message Types (inkl. ihrer
+  Konformität zur Matrix Spezifiaktion) überprüft werden.
+
+  Wichtig: Die Gematik behält sich vor die Typen/Files der Attachments (m.image, m.file, m.audio, m.video) jederzeit zu
+  ändern oder zu erweitern, da die Struktur dieser Matrix-Events davon unbetroffen ist.
+
+  COMMENT: Basis
+  A_25395-03   Matrix Module - Instant Messaging
+  A_28145      Versenden von msgtypes
+
+  Inhalt
+    TF   1 - 2  m.text (Chat/Raum) [senden und empfangen]
+    TF   3 - 4  m.file (Chat/Raum) [senden und empfangen] (txt)
+    TF   5 - 6  m.file (Chat/Raum) [senden und empfangen] (pdf)
+    TF   7 - 8  m.file (Chat/Raum) [senden und empfangen] (zip)
+
+  @Ctl:AllowAll @Ctl:MsgType
+    @TCID:TIM_V3_BASIS_AF_11X0101 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 11X.01.01 Message Types - Chat - AllowAll - Org-User sendet Nachricht (m.text) an anderen Org-User
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2>  |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Wenn       "A" schreibt "B" direkt "Testnachricht 1" als "m.text"
+    Und        "B" erhält eine Einladung von "A"
+    Und        "B" bestätigt eine Einladung von "A"
+    Dann       "B" empfängt eine Nachricht "Testnachricht 1" von "A" als "m.text"
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName2,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("proClientV3"))
+    @Filter(ApiName2.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:AllowAll @Ctl:MsgType
+    @TCID:TIM_V3_BASIS_AF_11X0102 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 11X.01.02 Message Types - Raum - AllowAll - Org-User sendet Nachricht (m.text) an anderen Org-User
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2>  |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Wenn       "A" sendet die Nachricht "Testnachricht 1" als "m.text" an den Raum "TIM Testraum 1"
+    Dann       "B" empfängt eine Nachricht "Testnachricht 1" als "m.text" von "A" im Raum "TIM Testraum 1"
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName2,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("proClientV3"))
+    @Filter(ApiName2.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:AllowAll @Ctl:Attachment @Ctl:MsgType
+    @TCID:TIM_V3_BASIS_AF_11X0103 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 11X.01.03 Message Types - Chat - AllowAll - Org-User sendet ein m.file Attachment (txt) über Matrix-Protokoll v1.11 an Org-User
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2>  |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Wenn       "A" sendet ein Attachment "datei.txt" direkt an "B" als "m.file"
+    Und        "B" erhält eine Einladung von "A"
+    Und        "B" bestätigt eine Einladung von "A"
+    Dann       "B" empfängt das Attachment "datei.txt" von "A" über Matrix-Protokoll v1.11 als "m.file"
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName2,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("proClientV3"))
+    @Filter(ApiName2.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:AllowAll @Ctl:Attachment @Ctl:MsgType
+    @TCID:TIM_V3_BASIS_AF_11X0104 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 11X.01.04 Message Types - Raum - AllowAll - Org-User sendet ein m.file Attachment (txt) über Matrix-Protokoll v1.11 an Org-User
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2>  |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
+    Wenn       "A" sendet ein Attachment "datei.txt" als "m.file" an den Raum "TIM Testraum 1"
+    Dann       "B" empfängt das Attachment "datei.txt" von "A" im Raum "TIM Testraum 1" über Matrix-Protokoll v1.11 als "m.file"
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName2,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("proClientV3"))
+    @Filter(ApiName2.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:AllowAll @Ctl:Attachment @Ctl:MsgType
+    @TCID:TIM_V3_BASIS_AF_11X0105 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 11X.01.05 Message Types - Chat - AllowAll - Org-User sendet ein m.file Attachment (pdf) über Matrix-Protokoll v1.11 an Org-User
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2>  |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Wenn       "A" sendet ein Attachment "datei.pdf" direkt an "B" als "m.file"
+    Und        "B" erhält eine Einladung von "A"
+    Und        "B" bestätigt eine Einladung von "A"
+    Dann       "B" empfängt das Attachment "datei.pdf" von "A" über Matrix-Protokoll v1.11 als "m.file"
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName2,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("proClientV3"))
+    @Filter(ApiName2.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:AllowAll @Ctl:Attachment @Ctl:MsgType
+    @TCID:TIM_V3_BASIS_AF_11X0106 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 11X.01.06 Message Types - Raum - AllowAll - Org-User sendet ein m.file Attachment (pdf) über Matrix-Protokoll v1.11 an Org-User
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2>  |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
+    Wenn       "A" sendet ein Attachment "datei.pdf" als "m.file" an den Raum "TIM Testraum 1"
+    Dann       "B" empfängt das Attachment "datei.pdf" von "A" im Raum "TIM Testraum 1" über Matrix-Protokoll v1.11 als "m.file"
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName2,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("proClientV3"))
+    @Filter(ApiName2.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+ @Ctl:AllowAll @Ctl:Attachment @Ctl:MsgType
+    @TCID:TIM_V3_BASIS_AF_11X0107 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 11X.01.07 Message Types - Chat - AllowAll - Org-User sendet ein m.file Attachment (zip) über Matrix-Protokoll v1.11 an Org-User
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2>  |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Wenn       "A" sendet ein Attachment "TestZIP.zip" direkt an "B" als "m.file"
+    Und        "B" erhält eine Einladung von "A"
+    Und        "B" bestätigt eine Einladung von "A"
+    Dann       "B" empfängt das Attachment "TestZIP.zip" von "A" über Matrix-Protokoll v1.11 als "m.file"
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName2,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("proClientV3"))
+    @Filter(ApiName2.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:AllowAll @Ctl:Attachment @Ctl:MsgType
+    @TCID:TIM_V3_BASIS_AF_11X0108 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 11X.01.08 Message Types - Raum - AllowAll - Org-User sendet ein m.file Attachment (zip) über Matrix-Protokoll v1.11 an Org-User
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1> |
+      | B | PRO_CLIENT  | <ApiName2>  |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
+    Wenn       "A" sendet ein Attachment "TestZIP.zip" als "m.file" an den Raum "TIM Testraum 1"
+    Dann       "B" empfängt das Attachment "TestZIP.zip" von "A" im Raum "TIM Testraum 1" über Matrix-Protokoll v1.11 als "m.file"
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName2,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("proClientV3"))
+    @Filter(ApiName2.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |

@@ -1,0 +1,120 @@
+# language: de
+@File:FeatureFile_13X_01_V3_ePA @Ctl:UseCaseV3_13X_ePA
+@PRODUKT:TI-M_Client_ePA @PRODUKT:TI-M_FD_ePA
+@ZulV3:ePA
+@DeltaV3:ePA
+@AFO-ID:A_26015-02
+@AFO-ID:A_28587
+
+Funktionalität: 13X. (5) Öffentliche Räume (ePA Spec) [V3]
+
+  Dieser Anwendungsfall verhindert ePA-Akteuren öffentliche Räume für den eigenen Home Server anzulegen und in diesen
+  Nachrichten posten.
+
+  COMMENT: ePA
+  A_26015-02   Unterbindung öffentlicher / unverschlüsselter Räume (Client)
+  A_28587      Unterbindung der Abfrage öffentlicher Räume (Fachdienst)
+
+  Inhalt
+  TF 1        Unterbindung der Erstellung öffentlicher Räume (Negativ)
+  TF 2  -  3  Änderung der Chat-/ Raumeinstellungen (Negativ)
+  TF 4        Unterbindung unverschlüsselter Räume (Negativ)
+  TF 5  -  6  Public Rooms Anfragen (GET/POST) (Negativ)
+
+  @Ctl:AllowAll
+  @TCID:TIM_V3_ePA_AF_13X0501 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  Szenariogrundriss: 13X.05.01 Öffentliche Räume - Raum - Unterbindung öffentlicher Räume (Negativ)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT | <ApiName1A> |
+    Wenn       "A" versucht einen öffentlichen Chat-Raum "TIM Testraum 1" zu erstellen
+    Dann       erhält "A" einen Responsecode 403
+
+    @Filter(ApiName1A.hasTag("epaClientV3"))
+
+    Beispiele:
+      | ApiName1A |
+
+  @Ctl:AllowAll
+  @TCID:TIM_V3_ePA_AF_13X0502 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  Szenariogrundriss: 13X.05.02 Öffentliche Räume - Chat - Änderung der Raumeinstellungen für Chat
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1A> |
+      | B | PRO_CLIENT  | <ApiName1B> |
+    Und        "B" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" schreibt "B" direkt "Testnachricht 1"
+    Wenn       "A" versucht die Eigenschaft "history_visibility" im Chat mit "B" auf den Wert "world_readable" zu setzen
+    Dann       erhält "A" einen Responsecode 403
+    Wenn       "A" versucht die Eigenschaft "roomAccess" im Chat mit "B" auf den Wert "public" zu setzen
+    Dann       erhält "A" einen Responsecode 403
+    Wenn       "A" versucht die Eigenschaft "join_rule" im Chat mit "B" auf den Wert "public" zu setzen
+    Dann       erhält "A" einen Responsecode 403
+    Wenn       "A" versucht die Eigenschaft "join_rule" im Chat mit "B" auf den Wert "knock" zu setzen
+    Dann       erhält "A" einen Responsecode 403
+
+    @Shuffle(true) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1A.hasTag("epaClientV3"))
+    @Filter(ApiName1B.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B |
+
+  @Ctl:AllowAll
+  @TCID:TIM_V3_ePA_AF_13X0503 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  Szenariogrundriss: 13X.05.03 Öffentliche Räume - Raum - Änderung der Raumeinstellungen für Raum
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT | <ApiName1A> |
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Wenn       "A" versucht die Eigenschaft "history_visibility" im Raum "TIM Testraum 1" auf den Wert "world_readable" zu setzen
+    Dann       erhält "A" einen Responsecode 403
+    Wenn       "A" versucht die Eigenschaft "roomAccess" im Raum "TIM Testraum 1" auf den Wert "public" zu setzen
+    Dann       erhält "A" einen Responsecode 403
+    Wenn       "A" versucht die Eigenschaft "join_rule" im Raum "TIM Testraum 1" auf den Wert "public" zu setzen
+    Dann       erhält "A" einen Responsecode 403
+    Wenn       "A" versucht die Eigenschaft "join_rule" im Raum "TIM Testraum 1" auf den Wert "knock" zu setzen
+    Dann       erhält "A" einen Responsecode 403
+
+    @Filter(ApiName1A.hasTag("epaClientV3"))
+
+    Beispiele:
+      | ApiName1A |
+
+  @Ctl:AllowAll
+  @TCID:TIM_V3_ePA_AF_13X0504 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  Szenariogrundriss: 13X.05.04 Öffentliche Räume - Raum - Unterbindung unverschlüsselter Räume (Negativ)
+    Angenommen Es werden folgende Clients reserviert:
+        | A | EPA_CLIENT | <ApiName1> |
+    Wenn       "A" versucht einen Chat-Raum "TIM Testraum 1" mit den Eigenschaften privat und unverschlüsselt zu erstellen
+    Dann       erhält "A" einen Responsecode 403
+
+    @Filter(ApiName1.hasTag("epaClientV3"))
+    Beispiele:
+      | ApiName1 |
+
+  @Ctl:ApiCheck
+  @TCID:TIM_V3_ePA_AF_13X0505 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  Szenariogrundriss: 13X.05.05 API Checks - Verbot Public Rooms Anfragen (GET)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+    Wenn       A fragt an seinem HomeServer die API "/_matrix/client/v3/publicRooms" über ein "GET" ab
+    Dann       erhält "A" einen Responsecode 403
+
+    @Filter(ApiName1.hasTag("epaClientV3"))
+
+    Beispiele:
+      | ApiName1 |
+
+  @Ctl:ApiCheck
+  @TCID:TIM_V3_ePA_AF_13X0506 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  Szenariogrundriss: 13X.05.06 API Checks - Verbot Public Rooms Anfragen (POST)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT  | <ApiName1> |
+    Wenn       A fragt an seinem HomeServer die API "/_matrix/client/v3/publicRooms" über ein POST ab
+    Dann       erhält "A" einen Responsecode 403
+
+    @Filter(ApiName1.hasTag("epaClientV3"))
+
+    Beispiele:
+      | ApiName1 |

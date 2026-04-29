@@ -51,7 +51,7 @@ To speed up the request, please provide us with the following information for th
 
 [source txt]
 ----
-organizstion name: <my company>
+organisation name: <my company>
 locality name: <Berlin>
 DNS list: <testdriver1.ru.mycompany.com, testdriver2.ru.mycompany.com> or <*.ru.mycompany.com>
 ----
@@ -162,13 +162,20 @@ Instructions for this can be found link:DevGuide.adoc#Disable-TLS[in the DevGuid
 
 ==== Configure the certificate revocation list for mTLS
 
-We provide and maintain a certificate revocation list (CRL) for the mTLS connection between the test drivers: link:{sourcedir}/src/main/resources/tiMessengerTestDriver.crl[tiMessengerTestDriver.crl].
+We provide and maintain a certificate revocation list (CRL) in the binary DER format for the mTLS connection between the test drivers: link:{sourcedir}/src/main/resources/tiMessengerTestDriver.crl[tiMessengerTestDriver.crl].
+In case you need the .pem format for your server, you can convert the provided .crl file using the following command:
+
+[source,bash]
+----
+openssl crl -inform DER -in tiMessengerTestDriver.crl -outform PEM -out tiMessengerTestDriver.crl.pem
+----
+
 Up until now no certificates were compromised, but we strongly recommend to configure your connection with the provided list to be ready in case it's ever needed.
 At the moment the list contains several certificates that were revoked due to a domain change or technical issues.
 
-In case you want to report a compromised certificate, please follow the instructions at link:https://github.com/gematik/TI-Messenger-Testsuite/blob/main/SECURITY.md[SECURITY.md].
+In case you want to report a compromised certificate, please contact us via e-mail or follow the instructions at link:https://github.com/gematik/TI-Messenger-Testsuite/blob/main/SECURITY.md[SECURITY.md].
 
-In case we update the CRL and the reason is a compromised certificate, we will announce this in the link:{sourcedir}/ReleaseNotes.md[ReleaseNotes.md] and on our link:https://wiki.gematik.de/spaces/TIMCOMP/pages/604603166/TI-Messenger+Compass+-+The+TI-M+Blog[Blog].
+In case we update the CRL and the reason is in fact a compromised certificate, we will announce this in the link:{sourcedir}/ReleaseNotes.md[ReleaseNotes.md] and on our link:https://wiki.gematik.de/spaces/TIMCOMP/pages/604603166/TI-Messenger+Compass+-+The+TI-M+Blog[Blog].
 
 === Add test driver interface
 
@@ -305,19 +312,21 @@ Repeated executions are summarized in a common report.
 Additionally, each run is saved in the root directory in the link:{rootdir}reports[reports] folder along with its report and the feature files used.
 
 You can find an example of a Serenity report in the folder link:{rootdir}serenityReportExample[serenityReportExample].
-This report contains successful Pro tests executed against the reference implementation.
-Test cases for dehydrated devices are now available.
-More information about dehydrated devices: link:https://github.com/gematik/TI-Messenger-Testsuite/blob/main/doc/userguide/Testsuite_Version2.adoc#7-4-dehydrated-devices[Dehydrated Devices]
+This report contains successful Pro V3 tests executed against the reference implementation.
+
+An old report for version 2 of the test suite can be found in the released link:https://github.com/gematik/TI-Messenger-Testsuite/releases/tag/3.0.1[version 3.0.1 on GitHub].
+To not overload the repository with too many files, we have removed the old report from the main branch.
 
 === Scope of the Example Serenity report
 
 For the provided Serenity report, the reference implementation is tested against the reference implementation.
 This is intended to support in your development, but *the format is not sufficient to meet the entry criteria*, as only one example per test case is executed in the report, while two examples are required for approval.
-The report is not always up to date and complete, although we strive to keep it up to date and complete.
+Since version 3 of the test suite is very new, the report might not be complete nor fully correct yet.
+We strive to improve it continuously, and if you find any issues or have suggestions for improvement, please let us know.
 
 This is the command we used to create the example Serenity report:
 
 [source,shell]
 ----
-mvn -P oneonly,prod,dont-break-preparation -DpoolGroupString=RU1 -Dcucumber.filter.tags=@Zul:Pro --no-transfer-progress
+mvn verify -f prod-pom.xml --no-transfer-progress -P oneonly,dont-break-preparation,V3 -DpoolGroupString=RU1 -Dcucumber.filter.tags=@ZulV3:Pro
 ----

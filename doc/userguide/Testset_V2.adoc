@@ -1,0 +1,1647 @@
+:toc-title: Inhaltsverzeichnis
+:toc:
+:toclevels: 4
+
+:table-caption: Tabelle
+
+:important-caption: pass:[<span class="icon" style="font-size: 5em; color: red;">&#8505;</span>]
+:tip-caption:  pass:[&#128681;]
+:sectanchors:
+
+:classdia-caption: Class diagram
+:seqdia-caption: Sequence diagram
+
+:source-highlighter: prettify
+
+:imagesdir: ../../doc/images
+:imagesoutdir: ../images
+:testdir: ../../Tests
+:sourcedir: ../../src
+:plantumldir: ../plantuml
+:rootdir: ../../
+
+[[id0,Inhaltsverzeichnis]]
+= TI-Messenger Testsuite - Testset V2
+
+image::gematikLogoRight.png[float="right"]
+
+== TI-Messenger Testsuite - Testset V2
+
+{empty} +
+
+gematik | Version 1.0 | 02.04.2026
+
+Dokumentenhistorie
+
+[cols='10%,10%,10%,60%,10%']
+|===
+| *Version*  |*Stand*      | *Kap.*            | *Grund der Änderung, besondere Hinweise*                            | *Bearbeiter*
+| 1.0        | 02.04.2026  |                   | initiale Erstellung                                                 | gematik
+
+
+|===
+
+{empty} +
+
+====
+*Hinweis zur Sprachverwendung*
+
+In diesem Dokument wird das generische Maskulinum verwendet, um die Lesbarkeit zu erleichtern.
+Sämtliche Bezeichnungen beziehen sich gleichermaßen auf alle Geschlechter.
+Die gewählte Form umfasst somit sowohl männliche, weibliche als auch diverse Personen und soll niemanden ausschließen.
+====
+
+[IMPORTANT]
+====
+Dieses Dokument ist als Erweiterung und Ergänzung zur bestehenden link:Testsuite.adoc[Testsuite] zu verstehen und baut auf den bereits etablierten Informationen und Grundlagen auf.
+Es dient der weiterführenden und detaillierteren Erläuterung einzelner Aspekte, die für die vollständige Nutzung und das Verständnis der neuen TI-Messenger Testsetversion von Bedeutung sind.
+
+Bitte beachten Sie, dass dieses Dokument nicht als alleinige Quelle betrachtet werden sollte.
+Es wird empfohlen, die Informationen stets in Kombination mit der Hauptdokumentation zu nutzen, um ein umfassendes Verständnis der Themen zu gewährleisten.
+====
+
+{empty} +
+
+image::Intro.png[float="left"]
+=== 1. Einführung und Gültigkeit
+
+{empty} +
+
+In den nachfolgenden Kapiteln finden Sie sämtliche zusätzliche Informationen zu den bereitgestellten Testfällen sowie zur Funktionalität des *Testset Version 2* für den TI-Messenger.
+
+Diese Dokumentation ergänzt die bereits vorhandene Datei link:Testsuite.adoc[Testsuite.adoc], in der die grundlegenden Funktionen der Testsuite ausführlich beschrieben sind.
+
+Hier werden ausschließlich zusätzliche Punkte behandelt, die speziell das Testset in der Version 2 betreffen.
+Für weiterführende Informationen verweisen wir auf link:Testsuite.adoc[Testsuite.adoc].
+
+Alle wichtigen Informationen für die Hersteller sind wie folgt gekennzeichnet.
+
+[TIP]
+[black]#*_Wichtige Informationen für die Hersteller_*#
+
+*Gültigkeit*
+
+Das TI-Messenger *Testset V2* ist ab folgenden Spezifikations- und Produkttypsteckbriefversionen gültig:
+
+[cols='1,3,3']
+|===
+| *Ausprägung*        | *Spezifikationsversion (ab)*               |*Produkttypsteckbriefversion (ab)*
+| Pro                 | Basis Spec 1.0.0 & Pro Spec 1.0.0          | Client 1.0.0-0 & Fachdienst 1.0.0-0
+| Pro KK              | Basis Spec 1.0.0 & Pro Spec 1.0.0          | Client 1.0.0-0 & Fachdienst 1.0.0-0
+| ePA                 | Basis Spec 1.0.0 & ePA Spec 1.0.0          | Client 1.0.0-0 & Fachdienst 1.0.0-0
+|===
+
+Alle Dokumente sind hier einzusehen: link:https://gemspec.gematik.de/docs/[gemSpecPages].
+
+[.text-right]
+<<id0,Inhaltsverzeichnis>>
+
+image::Tag.png[float="left"]
+
+=== 2. Tags und Testausführung des Testsets zur Zulassung
+
+[.id=kapitel-Rollen]
+{empty} +
+
+image::Tag.png[float="left"]
+
+==== 2.1 Tags
+
+*Tags zur Steuerung des Testsets zur Zulassung:*
+
+[cols='1,3']
+|===
+| *Tagname* | *Beschreibung*
+| @Zul:Pro        | Testfälle relevant für eine TI-M Pro Zulassung
+| @Zul:ProKK      | Testfälle relevant für eine TI-M Pro Zulassung für Krankenkassen
+| @Zul:ePA        | Testfälle relevant für eine TI-M ePA Zulassung
+| @NB:JA          | Testfälle die die gematik als Nebenbestimmungen akzeptieren kann (nur für Krankenkassen)
+| @NB:NEIN        | Testfälle die die gematik nicht als Nebenbestimmungen akzeptieren kann
+| @NB:ONEONLY     | Testfälle die die gematik als Nebenbestimmungen akzeptieren kann (nur für Krankenkassen), wenn nachgewiesen werden kann,
+dass technisch nur ein Device nutzbar ist
+|===
+
+{empty} +
+
+image::Tag.png[float="left"]
+
+==== 2.2 Testausführung verschiedener Zulassungstestsets
+
+{empty} +
+
+[[img_folderStructure2]]
+.Abbildung{counter:my-example-number: 1}: Ordnerstruktur der TI-Messenger Testsuite
+image:FolderStructure2.png[float="center"]
+
+Der "Basis" Folder ist für alle Zulassungen angelegt und enthält Tests zu Anwendungsfällen und Anforderungen, die sich aus der TI-M Basis Spezifikation ergeben.
+
+Aufbauend hierauf enthalten die Folder "Pro" und "ePA" weiterführende Tests zu den jeweiligen Spezifikationen, die ebenfalls entsprechende Anwendungsfälle und Anforderungen beinhalten.
+
+Hieraus ergeben sich verschiedene Testsets, die über diverse Tags unterschieden werden können:
+
+- *Zulassung TI-M Pro*
+
+Auszuführen z.B. mit `mvn clean install -Dcucumber.filter.tags=@Zul:Pro`
+
+- *Zulassung TI-M Pro für Krankenkassen ohne HBA Funktionalität*
+
+Auszuführen z.B. mit `mvn clean install -Dcucumber.filter.tags=@Zul:ProKK`
+
+- *Zulassung TI-M ePA*
+
+Auszuführen z.B. mit `mvn clean install -Dcucumber.filter.tags=@Zul:ePA`
+
+[TIP]
+[black]#*_Weitere Informationen zu Möglichkeiten, die zur Ausführung von Testfällen oder Feature Files zur Verfügung stehen, und auch die Definition der Testfilter sind in der link:Testsuite.adoc[Testsuite.adoc] dokumentiert._*#
+
+[.text-right]
+<<id0,Inhaltsverzeichnis>>
+
+image::Tests.png[float="left"]
+
+=== 3. Testfallliste
+
+////
+
+mit diesen grep Befehl kann eine neue/aktuelle Testfallliste erstellt werden
+
+cd <git_home>/ti-m-testsuite/src/test/resources/templates/Zulassungstests/Testrun
+
+grep Szenariogrundriss * |while read var; do   set -- $var ;   shift 2;   echo $*; done
+bzw.
+grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
+
+////
+
+{empty} +
+
+image::Tests.png[float="left"]
+
+==== 3.1 Basis
+
+[[id80,Nach oben]]
+{empty} +
+
+[[id81,Nach oben]]
+*UC00_Geraete_Informationen_abfragen*
+
+[cols='^6%,90%']
+|===
+|00.01.01| Abfragen der Schnittstellen-Information durch Pro-User-Client
+|00.01.02| Abfragen der Schnittstellen-Information durch Org-Admin-Client
+|00.01.03| Abfragen der Geräte-Liste durch Pro-User-Client
+|00.01.04| Abfragen der Geräte-Liste durch Org-Admin-Client
+|00.01.05| Abfrage der Matrix-Server-Version
+|===
+
+[cols='^6%,90%']
+|===
+|00.05.01| Abfragen der Schnittstellen-Information durch ePA-User-Client
+|00.05.02| Abfragen der Geräte-Liste durch ePA-User-Client
+|00.05.03| Abfrage der Matrix-Server-Version
+|===
+
+[.text-center]
+<<id81,Nach oben>>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<<id80,Testfall Liste>>
+
+[[id82,Nach oben]]
+*UC03_Foederationszugehoerigkeit_pruefen*
+
+[cols='^6%,90%']
+|===
+|03.01.01| Föderationszugehörigkeit prüfen - Chat - Test-Client "A" versucht User außerhalb der Föderation einzuladen (ProClient)
+|03.01.02| Föderationszugehörigkeit prüfen - Raum - Test-Client "A" versucht User außerhalb der Föderation einzuladen (ProClient)
+|===
+
+[cols='^6%,90%']
+|===
+|03.05.01| Föderationszugehörigkeit prüfen - Chat - Test-Client "A" versucht User außerhalb der Föderation einzuladen (Versicherter)
+|03.05.02| Föderationszugehörigkeit prüfen - Raum - Test-Client "A" versucht User außerhalb der Föderation einzuladen (Versicherter)
+|===
+
+[.text-center]
+<<id82,Nach oben>>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<<id80,Testfall Liste>>
+
+[[id83,Nach oben]]
+*UC04_Austausch_von_Events_zwischen_Akteuren_innerhalb_einer_Organisation*
+
+[cols='^6%,90%']
+|===
+|04.01.01| Austausch von Events innerhalb einer Organisation - Chat - User sendet Nachricht an anderen User über HomeServer
+|04.01.02| Austausch von Events innerhalb einer Organisation - Raum - User sendet Nachricht an anderen User über HomeServer
+|04.01.03| Austausch von Events innerhalb einer Organisation - Chat - User sendet Nachricht an anderen User über Healthcareservice
+|04.01.04| Austausch von Events innerhalb einer Organisation - Raum - User sendet Nachricht an anderen User über Healthcareservice
+|04.01.05| Austausch von Events innerhalb einer Organisation - Chat - Löschen einer Nachricht durch User
+|04.01.06| Austausch von Events innerhalb einer Organisation - Raum - Löschen einer Nachricht durch User
+|04.01.07| Austausch von Events innerhalb einer Organisation - Chat - Ändern einer Nachricht durch User
+|04.01.08| Austausch von Events innerhalb einer Organisation - Raum - Ändern einer Nachricht durch User
+|04.01.09| Austausch von Events innerhalb einer Organisation - Raum - AllowAll - User sendet eine Nachricht an ausgeloggten User (Positiv)
+|04.01.10| Austausch von Events innerhalb einer Organisation - Raum - AllowAll - User sendet eine Nachricht an ausgeloggten User (negativ)
+|04.01.11| Austausch von Events innerhalb einer Organisation - Chat - AllowAll - User sendet und ändert eine Nachricht an ausgeloggten User (Positiv)
+|04.01.12| Austausch von Events innerhalb einer Organisation - Raum - AllowAll - User sendet und ändert eine Nachricht an ausgeloggten User (Positiv)
+|04.01.13| Austausch von Events innerhalb einer Organisation - Raum - AllowAll - User sendet ein Attachment an ausgeloggten User über Matrix-Protokoll v1.11
+|04.01.15| Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Gruppenchat - Drei User schreiben sich gegenseitig
+|===
+
+[cols='^6%,90%']
+|===
+|04.04.01| Austausch von Events innerhalb einer Organisation - Chat - AllowAll - HBA User schreibt HBA User
+|04.04.02| Austausch von Events innerhalb einer Organisation - Raum - AllowAll - HBA User schreibt HBA User
+|===
+
+[cols='^6%,90%']
+|===
+|04.09.01| Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Versicherte vom gleichen HomeServer schreiben sich
+|04.09.02| Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Versicherte vom gleichen HomeServer löschen Nachrichten
+|04.09.03| Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Versicherte vom gleichen HomeServer ändern Nachrichten
+|04.09.04| Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Versicherter "A" sendet eine Nachricht an ausgeloggten Versicherten "B" (Positiv)
+|04.09.05| Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Versicherter "A" sendet eine Nachricht an ausgeloggten Versicherten "B" (negativ)
+|04.09.06| Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Versicherter "A" ändert und sendet eine Nachricht an ausgeloggten Versicherten "B" (Positiv)
+|04.09.07| Austausch von Events innerhalb einer Organisation - Raum - AllowAll - Versicherter "A" sendet Attachment an ausgeloggten Versicherten "B" (Positiv)
+|===
+
+[.text-center]
+<<id83,Nach oben>>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<<id80,Testfall Liste>>
+
+[[id84,Nach oben]]
+*UC05_Einladung_von_Akteuren_ausserhalb_einer_Organisation*
+
+[cols='^6%,90%']
+|===
+|05.01.01| Einladung außerhalb einer Organisation - Chat - AllowAll - User schreibt anderen User über Healthcaresevice
+|05.01.02| Einladung außerhalb einer Organisation - Raum - AllowAll - User schreibt anderen User über Healthcaresevice
+|05.01.03| Einladung außerhalb einer Organisation - Chat - BlockAll - User schreibt anderen User über Healthcaresevice
+|05.01.04| Einladung außerhalb einer Organisation - Raum - BlockAll - User schreibt anderen User über Healthcaresevice
+|05.01.05| Einladung außerhalb einer Organisation - Raum - AllowAll - User AllowAll (blockt/entblockt User)
+|05.01.06| Einladung außerhalb einer Organisation - Chat - AllowAll - User AllowAll (2 User blockt/entblockt)
+|05.01.07| Einladung außerhalb einer Organisation - Raum - AllowAll - User AllowAll wird von geblocktem und ungeblocktem User eingeladen
+|05.01.08| Einladung außerhalb einer Organisation - Raum - BlockAll - User BlockAll (blockt/entblockt User)
+|05.01.09| Einladung außerhalb einer Organisation - Chat - BlockAll - User BlockAll (2 User blockt/entblockt)
+|05.01.10| Einladung außerhalb einer Organisation - Raum - BlockAll - User BlockAll wird von ungeblockten und geblocktem User eingeladen
+|05.01.11| Einladung außerhalb einer Organisation - Raum - MixedMode - User (versucht)lädt anderen User ein
+|05.01.12| Einladung außerhalb einer Organisation - Chat - DomainBlock - User blockt/ unblockt Server-Namen
+|05.01.13| Einladung außerhalb einer Organisation - Raum - DomainBlock - User blockt/ unblockt Server-Namen
+|05.01.14| Einladung außerhalb einer Organisation - Chat - DomainBlock - User allow/unallow Server-Namen
+|05.01.15| Einladung außerhalb einer Organisation - Raum - DomainBlock - User allow/unallow Server-Namen
+|05.01.16| Einladung außerhalb einer Organisation - Chat - AllowAll - User lehnt Einladung ab
+|05.01.17| Einladung außerhalb einer Organisation - Raum - AllowAll - User lehnt Einladung ab
+|05.01.18| Einladung außerhalb einer Organisation - Chat - BlockAll - User lehnt Einladung ab
+|05.01.19| Einladung außerhalb einer Organisation - Raum - BlockAll - User lehnt Einladung ab
+|05.01.20| Einladung außerhalb einer Organisation - Chat - AllowAll - Dritter Nutzer wird in Chat eingeladen werden
+|05.01.21| Einladung außerhalb einer Organisation - Chat - BlockAll - Dritter Nutzer wird in Chat eingeladen werden
+|05.01.22| Einladung außerhalb einer Organisation - AllowAll - Eintragung in Liste von anderem Berechtigungsmodus
+|05.01.23| Einladung außerhalb einer Organisation - AllowAll - Eintragung eines Server-Namen in Liste von anderem Berechtigungsmodus
+|05.01.24| Einladung außerhalb einer Organisation - AllowAll - Löschen in Liste von anderem Berechtigungsmodus
+|05.01.25| Einladung außerhalb einer Organisation - AllowAll - Löschen eines Server-Namen in Liste von anderem Berechtigungsmodus
+|05.01.26| Einladung außerhalb einer Organisation - BlockAll - Eintragung in Liste von anderem Berechtigungsmodus
+|05.01.27| Einladung außerhalb einer Organisation - BlockAll - Eintragung eines Server-Namen in Liste von anderem Berechtigungsmodus
+|05.01.28| Einladung außerhalb einer Organisation - BlockAll - Löschen in Liste von anderem Berechtigungsmodus
+|05.01.29| Einladung außerhalb einer Organisation - BlockAll - Löschen eines Server-Namen in Liste von anderem Berechtigungsmodus
+|05.01.30| Einladung außerhalb einer Organisation - AllowAll - Eintrag doppelter MXID Einträge in BlockListe
+|05.01.31| Einladung außerhalb einer Organisation - BlockAll - Eintrag doppelter MXID Einträge in AllowListe
+|05.01.32| Einladung außerhalb einer Organisation - AllowAll - Einträge bleiben trotz Logout erhalten
+|05.01.33| Einladung außerhalb einer Organisation - BlockAll - Einträge bleiben trotz Logout erhalten
+|===
+
+[cols='^6%,90%']
+|===
+|05.02.01| Einladung außerhalb einer Organisation - Chat - User sucht anderen HBA-User
+|05.02.02| Einladung außerhalb einer Organisation - Raum - User sucht anderen HBA-User
+|===
+
+[cols='^6%,90%']
+|===
+|05.03.01| Einladung außerhalb einer Organisation - AllowAll - Chat - HBA-User sucht anderen User
+|05.03.02| Einladung außerhalb einer Organisation - AllowAll - Raum - HBA-User sucht anderen User
+|05.03.03| Einladung außerhalb einer Organisation - BlockAll - Chat - HBA-User sucht anderen User
+|05.03.04| Einladung außerhalb einer Organisation - BlockAll - Raum - HBA-User sucht anderen User
+|===
+
+[cols='^6%,90%']
+|===
+|05.04.01| Einladung außerhalb einer Organisation - Chat - AllowAll - HBA User lädt anderen HBA User ein
+|05.04.02| Einladung außerhalb einer Organisation - Raum - AllowAll - HBA User lädt anderen HBA User ein
+|===
+
+[cols='^6%,90%']
+|===
+|05.05.01| Einladung außerhalb einer Organisation - Chat - AllowAll - ePA-User lädt Org-User ein
+|05.05.02| Einladung außerhalb einer Organisation - Raum - AllowAll - ePA-User lädt Org-User ein
+|05.05.03| Einladung außerhalb einer Organisation - Chat - AllowAll - Dritter Nutzer (Org-User) wird von ePA-User in Chat eingeladen werden
+|===
+
+[cols='^6%,90%']
+|===
+|05.06.01| Einladung außerhalb einer Organisation - Chat - AllowAll - Org-User lädt ePA-User ein
+|05.06.02| Einladung außerhalb einer Organisation - Raum - AllowAll - Org-User lädt ePA-User ein
+|05.06.03| Einladung außerhalb einer Organisation - Chat - BlockAll - Org-User lädt ePA-User ein
+|05.06.04| Einladung außerhalb einer Organisation - Raum - BlockAll - Org-User lädt ePA-User ein
+|05.06.05| Einladung außerhalb einer Organisation - Chat - AllowAll - ePA-User AllowAll (blockt/entblockt Org-User)
+|05.06.06| Einladung außerhalb einer Organisation - Raum - AllowAll - ePA-User AllowAll (2 User blockt/entblockt)
+|05.06.07| Einladung außerhalb einer Organisation - Raum - AllowAll - ePA-User AllowAll wird von geblocktem und ungeblocktem User eingeladen
+|05.06.08| Einladung außerhalb einer Organisation - Chat - BlockAll - ePA-User BlockAll (allow/unallow User)
+|05.06.09| Einladung außerhalb einer Organisation - Raum - BlockAll - ePA-User BlockAll (2 User allow/unallow)
+|05.06.10| Einladung außerhalb einer Organisation - Raum - BlockAll - ePA-User BlockAll wird von allow und unallow User eingeladen
+|05.06.11| Einladung außerhalb einer Organisation - Raum - MixedMode - User (versucht)lädt ePA-User ein
+|05.06.12| Einladung außerhalb einer Organisation - Chat - DomainBlock - ePA-User blockt/ unblockt Domain
+|05.06.13| Einladung außerhalb einer Organisation - Raum - DomainBlock - ePA-User blockt/ unblockt Domain
+|05.06.14| Einladung außerhalb einer Organisation - Chat - DomainBlock - ePA-User allow/ unallow Domain
+|05.06.15| Einladung außerhalb einer Organisation - Raum - DomainBlock - ePA-User allow/ unallow Domain
+|05.06.16| Einladung außerhalb einer Organisation - Chat - AllowAll - ePA-User lehnt Einladung ab
+|05.06.17| Einladung außerhalb einer Organisation - Raum - AllowAll - ePA-User lehnt Einladung ab
+|05.06.18| Einladung außerhalb einer Organisation - Chat - BlockAll - ePA-User lehnt Einladung ab
+|05.06.19| Einladung außerhalb einer Organisation - Raum - BlockAll - ePA-User lehnt Einladung ab
+|05.06.20| Einladung außerhalb einer Organisation - Chat - AllowAll - Dritter Nutzer wird in Chat eingeladen werden (ePA)
+|05.06.21| Einladung außerhalb einer Organisation - Chat - BlockAll - Dritter Nutzer (ePA-User) wird von Org-User in Chat eingeladen werden
+|05.06.22| Einladung außerhalb einer Organisation - AllowAll - Eintragung in Liste von anderem Berechtigungsmodus (ePA-User)
+|05.06.23| Einladung außerhalb einer Organisation - AllowAll - Eintragung eines Server-Namen in Liste von anderem Berechtigungsmodus (ePA-User)
+|05.06.24| Einladung außerhalb einer Organisation - AllowAll - Löschen in Liste von anderem Berechtigungsmodus (ePA-User)
+|05.06.25| Einladung außerhalb einer Organisation - AllowAll - Löschen eines Server-Namen in Liste von anderem Berechtigungsmodus (ePA-User)
+|05.06.26| Einladung außerhalb einer Organisation - BlockAll - Eintragung in Liste von anderem Berechtigungsmodus (ePA-User)
+|05.06.27| Einladung außerhalb einer Organisation - BlockAll - Eintragung eines Server-Namen in Liste von anderem Berechtigungsmodus (ePA-User)
+|05.06.28| Einladung außerhalb einer Organisation - BlockAll - Löschen in Liste von anderem Berechtigungsmodus (ePA-User)
+|05.06.29| Einladung außerhalb einer Organisation - BlockAll - Löschen eines Server-Namen in Liste von anderem Berechtigungsmodus (ePA-User)
+|05.06.30| Einladung außerhalb einer Organisation - AllowAll - Eintrag doppelter MXID Einträge in BlockListe
+|05.06.31| Einladung außerhalb einer Organisation - BlockAll - Eintrag doppelter MXID Einträge in AllowListe
+|05.06.32| Einladung außerhalb einer Organisation - AllowAll - Einträge bleiben trotz Logout erhalten
+|05.06.33| Einladung außerhalb einer Organisation - BlockAll - Einträge bleiben trotz Logout erhalten
+|===
+
+[cols='^6%,90%']
+|===
+|05.07.01| Einladung außerhalb einer Organisation - Chat - AllowAll - ePA-User lädt HBA-User ein
+|05.07.02| Einladung außerhalb einer Organisation - Raum - AllowAll - ePA-User lädt HBA-User ein
+|===
+
+[cols='^6%,90%']
+|===
+|05.08.01| Einladung außerhalb einer Organisation - Chat - AllowAll - HBA-User lädt ePA-User ein
+|05.08.02| Einladung außerhalb einer Organisation - Raum - AllowAll - HBA-User lädt ePA-User ein
+|===
+
+[.text-center]
+<<id84,Nach oben>>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<<id80,Testfall Liste>>
+
+[[id85,Nach oben]]
+*UC06_Austausch_von_Events_zwischen_Akteuren_ausserhalb_einer_Organisation*
+
+[cols='^6%,90%']
+|===
+|06.01.01| Austausch von Events außerhalb einer Organisation - Chat - AllowAll - User sendet Nachricht an anderen User über Healthcareservice
+|06.01.02| Austausch von Events außerhalb einer Organisation - Raum - AllowAll - User sendet Nachricht an anderen User über Healthcareservice
+|06.01.03| Austausch von Events außerhalb einer Organisation - Chat - AllowAll - Löschen einer Nachricht durch User
+|06.01.04| Austausch von Events außerhalb einer Organisation - Raum - AllowAll - Löschen einer Nachricht durch User
+|06.01.05| Austausch von Events außerhalb einer Organisation - Chat - AllowAll - Ändern einer Nachricht durch User
+|06.01.06| Austausch von Events außerhalb einer Organisation - Raum - AllowAll - Ändern einer Nachricht durch User
+|06.01.07| Austausch von Events außerhalb einer Organisation - Raum - AllowAll - User sendet eine Nachricht an ausgeloggten User (Positiv)
+|06.01.08| Austausch von Events außerhalb einer Organisation - Raum - AllowAll - User sendet eine Nachricht an ausgeloggten User (Negativ)
+|06.01.09| Austausch von Events außerhalb einer Organisation - Chat - AllowAll - User sendet und ändert eine Nachricht an ausgeloggten User (Positiv)
+|06.01.10| Austausch von Events außerhalb einer Organisation - Raum - AllowAll - User sendet und ändert eine Nachricht an ausgeloggten User (Positiv)
+|06.01.11| Austausch von Events außerhalb einer Organisation - Raum - AllowAll - User sendet ein Attachment an ausgeloggten User über Matrix-Protokoll v1.11
+|06.01.13| Austausch von Events außerhalb einer Organisation - Raum - AllowAll - Gruppenchat - Drei User schreiben sich gegenseitig
+|===
+
+[cols='^6%,90%']
+|===
+|06.03.01| Austausch von Events außerhalb einer Organisation - Chat - AllowAll - HBA-User sendet Nachricht an User
+|06.03.02| Austausch von Events außerhalb einer Organisation - Raum - AllowAll - HBA-User sendet Nachricht an User
+|===
+
+[cols='^6%,90%']
+|===
+|06.04.01| Austausch von Events außerhalb einer Organisation - Chat - AllowAll - HBA User schreibt HBA User
+|06.04.02| Austausch von Events außerhalb einer Organisation - Chat - AllowAll - HBA User schreibt HBA User
+|===
+
+[cols='^6%,90%']
+|===
+|06.05.01| Austausch von Events außerhalb einer Organisation - Chat - AllowAll - ePA-User sendet Nachricht an anderen User über Healthcareservice
+|06.05.02| Austausch von Events außerhalb einer Organisation - Raum - AllowAll - ePA-User sendet Nachricht an anderen User über Healthcareservice
+|06.05.03| Austausch von Events außerhalb einer Organisation - Chat - AllowAll - Löschen einer Nachricht durch ePA-User
+|06.05.04| Austausch von Events außerhalb einer Organisation - Raum - AllowAll - Löschen einer Nachricht durch ePA-User
+|06.05.05| Austausch von Events außerhalb einer Organisation - Chat - AllowAll - Ändern einer Nachricht durch ePA-User
+|06.05.06| Austausch von Events außerhalb einer Organisation - Raum - AllowAll - Ändern einer Nachricht durch ePA-User
+|06.05.07| Austausch von Events außerhalb einer Organisation - Raum - AllowAll - ePA-User sendet eine Nachricht an ausgeloggten User (Positiv)
+|06.05.08| Austausch von Events außerhalb einer Organisation - Raum - AllowAll - ePA-User sendet eine Nachricht an ausgeloggten User (negativ)
+|06.05.09| Austausch von Events außerhalb einer Organisation - Chat - AllowAll - ePA-User sendet und ändert eine Nachricht an ausgeloggten User (Positiv)
+|06.05.10| Austausch von Events außerhalb einer Organisation - Raum - AllowAll - ePA-User sendet und ändert eine Nachricht an ausgeloggten User (Positiv)
+|06.05.11| Austausch von Events außerhalb einer Organisation - Raum - AllowAll - ePA User sendet ein Attachment an ausgeloggten User über Matrix-Protokoll v1.11
+|===
+
+[cols='^6%,90%']
+|===
+|06.06.01| Austausch von Events außerhalb einer Organisation - Chat - Org-User sendet Nachricht an ePA-User
+|06.06.02| Austausch von Events außerhalb einer Organisation - Raum - Org-User sendet Nachricht an ePA-User
+|06.06.03| Austausch von Events außerhalb einer Organisation - Chat - Löschen einer Nachricht durch Org-User im Chat mit ePA-User
+|06.06.04| Austausch von Events außerhalb einer Organisation - Raum - Löschen einer Nachricht durch Org-User im Raum mit ePA-User
+|06.06.05| Austausch von Events außerhalb einer Organisation - Chat - Ändern einer Nachricht durch Org-User im Chat mit ePA-User
+|06.06.06| Austausch von Events außerhalb einer Organisation - Raum - Ändern einer Nachricht durch Org-User im Raum mit ePA-User
+|06.06.07| Austausch von Events außerhalb einer Organisation - Raum - AllowAll - Org-User sendet eine Nachricht an ausgeloggten ePA-User (Positiv)
+|06.06.08| Austausch von Events außerhalb einer Organisation - Raum - AllowAll - Org-User sendet eine Nachricht an ausgeloggten ePA-User (negativ)
+|06.06.09| Austausch von Events außerhalb einer Organisation - Chat - AllowAll - Org-User sendet und ändert eine Nachricht an ausgeloggten ePA-User (Positiv)
+|06.06.10| Austausch von Events außerhalb einer Organisation - Raum - AllowAll - Org-User sendet und ändert eine Nachricht an ausgeloggten ePA-User (Positiv)
+|06.06.11| Austausch von Events außerhalb einer Organisation - Raum - AllowAll - Org-User sendet ein Attachment an ausgeloggten User über Matrix-Protokoll an ePA-User v1.11
+|===
+
+[cols='^6%,90%']
+|===
+|06.07.01| Austausch von Events außerhalb einer Organisation - Chat - ePA-User sendet Nachricht an HBA-User
+|06.07.02| Austausch von Events außerhalb einer Organisation - Raum - ePA-User sendet Nachricht an HBA-User
+|===
+
+[cols='^6%,90%']
+|===
+|06.08.01| Austausch von Events außerhalb einer Organisation - Chat - HBA-User sendet Nachricht an ePA-User
+|06.08.02| Austausch von Events außerhalb einer Organisation - Raum - HBA-User sendet Nachricht an ePA-User
+|===
+
+[.text-center]
+<<id85,Nach oben>>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<<id80,Testfall Liste>>
+
+[[id86,Nach oben]]
+*UC08X_Eintraege_im_VZD-FHIR-Directory_suchen*
+
+[cols='^6%,90%']
+|===
+|08X.01.01| Einträge im VZD-FHIR-Directory suchen - AllowAll - User sucht Healthcareservice im VZD
+|08X.01.02| Einträge im VZD-FHIR-Directory suchen - AllowAll - User sucht Healthcareservice teilqualifiziert im VZD
+|===
+
+[cols='^6%,90%']
+|===
+|08X.02.01| Einträge im VZD-FHIR-Directory suchen - AllowAll - User sucht anderen HBA-User im VZD
+|08X.02.02| Einträge im VZD-FHIR-Directory suchen - AllowAll - User sucht anderen HBA-User teilqualifiziert im VZD
+|===
+
+[cols='^6%,90%']
+|===
+|08X.03.01| Einträge im VZD-FHIR-Directory suchen - AllowAll - HBA-User sucht Healthcareservice im VZD
+|08X.03.02| Einträge im VZD-FHIR-Directory suchen - AllowAll - HBA-User sucht Healthcareservice teilqualifiziert im VZD
+|===
+
+[cols='^6%,90%']
+|===
+|08X.04.01| Einträge im VZD-FHIR-Directory suchen - AllowAll - HBA-User sucht anderen HBA-User im VZD
+|08X.04.02| Einträge im VZD-FHIR-Directory suchen - AllowAll - HBA-User sucht anderen HBA-User teilqualifiziert im VZD
+|===
+
+[cols='^6%,90%']
+|===
+|08X.05.01| Einträge im VZD-FHIR-Directory suchen - AllowAll - ePA-User sucht HealthCareService im VZD
+|08X.05.02| Einträge im VZD-FHIR-Directory suchen - AllowAll - ePA-User sucht Healthcareservice teilqualifiziert im VZD
+|===
+
+[cols='^6%,90%']
+|===
+|08X.07.01| Einträge im VZD-FHIR-Directory suchen - AllowAll - ePA-User sucht anderen HBA-User im VZD
+|08X.07.02| Einträge im VZD-FHIR-Directory suchen - AllowAll - ePA-User sucht anderen HBA-User teilqualifiziert im VZD
+|===
+
+[.text-center]
+<<id86,Nach oben>>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<<id80,Testfall Liste>>
+
+[[id87,Nach oben]]
+*UC09X_Room_States_ueberpruefen_und_Raumversion*
+
+[cols='^6%,90%']
+|===
+|09X.01.01| Room States - Chat - Default Room State und Raumversion (Org-User)
+|09X.01.02| Room States - Raum - Default Room State und Raumversion (Org-User)
+|===
+
+[cols='^6%,90%']
+|===
+|09X.04.01| Room States - Chat - Default Room State (HBA-User an HBA-User)
+|09X.04.02| Room States - Raum - Default Room State (HBA-User an HBA-User)
+|===
+
+[cols='^6%,90%']
+|===
+|09X.05.01| Room States - Chat - Default Room State (ePA-User an Org-User)
+|09X.05.02| Room States - Raum - Default Room State (ePA-User an Org-User)
+|===
+
+[.text-center]
+<<id87,Nach oben>>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<<id80,Testfall Liste>>
+
+[[id88,Nach oben]]
+*UC10X_API_Checks*
+
+[cols='^6%,90%']
+|===
+|10X.01.01 API| Checks - Verbot von URL-Previews (Org-User)
+|10X.01.02 API| Checks - Verbot von URL-Previews (Org-User)
+|10X.01.03 API| Checks - Deprecated Media Endpunkte auf dem gleichen HomeServer (Org-User)
+|10X.01.04 API| Checks - Deprecated Media Endpunkte auf unterschiedlichen HomeServern (Org-User)
+|10X.01.05 API| Checks - Support Endpunkt (Org-User)
+|10X.01.06 API| Checks - Authentisierung von Profilabfragen
+|10X.01.07 API| Checks - Authentisierung von Profilabfragen mit avatar_url
+|10X.01.08 API| Checks - Authentisierung von Profilabfragen mit displayname
+|10X.01.09 API| Checks - Standardisierte Fehlermeldungen für unbekannte Endpunkte
+|10X.01.10 API| Checks - Standardisierte Fehlermeldungen für unbekannte Methoden
+|===
+
+[cols='^6%,90%']
+|===
+|10X.05.01| API Checks - Verbot von URL-Previews (Org-User)
+|10X.05.02| API Checks - Verbot von URL-Previews (Org-User)
+|10X.05.03| API Checks - Deprecated Media Endpunkte auf unterschiedlichen HomeServern (ePA User sendet Attachment)
+|10X.05.04| API Checks - Support Endpunkt (ePA-User)
+|10X.05.05| API Checks - Authentisierung von Profilabfragen
+|10X.05.06| API Checks - Authentisierung von Profilabfragen mit avatar_url
+|10X.05.07| API Checks - Authentisierung von Profilabfragen mit displayname
+|10X.05.08| API Checks - Standardisierte Fehlermeldungen für unbekannte Endpunkte
+|10X.05.09| API Checks - Standardisierte Fehlermeldungen für unbekannte Methoden
+|===
+
+[cols='^6%,90%']
+|===
+|10X.06.01| API Checks - Deprecated Media Endpunkte auf unterschiedlichen HomeServern (ePA User empfängt Attachment)
+|===
+
+[.text-center]
+<<id88,Nach oben>>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<<id80,Testfall Liste>>
+
+[[id89,Nach oben]]
+*UC11X_MessageTypes*
+
+[cols='^6%,90%']
+|===
+|11X.01.01| Message Types - Chat - AllowAll - Org-User sendet Nachricht (m.text) an anderen Org-User
+|11X.01.02| Message Types - Raum - AllowAll - Org-User sendet Nachricht (m.text) an anderen Org-User
+|11X.01.03| Message Types - Chat - AllowAll - Org-User sendet Nachricht (m.emote) an anderen Org-User
+|11X.01.04| Message Types - Raum - AllowAll - Org-User sendet Nachricht (m.emote) an anderen Org-User
+|11X.01.05| Message Types - Chat - AllowAll - Org-User sendet Nachricht (m.notice) an anderen Org-User
+|11X.01.06| Message Types - Raum - AllowAll - Org-User sendet Nachricht (m.notice) an anderen Org-User
+|11X.01.07| Message Types - Chat - AllowAll - Org-User sendet Location (m.location) an anderen Org-User
+|11X.01.08| Message Types - Raum - AllowAll - Org-User sendet Location (m.location) an anderen Org-User
+|11X.01.09| Message Types - Chat - AllowAll - Org-User sendet ein m.image Attachment (jpg) über Matrix-Protokoll v1.11 an Org-User
+|11X.01.10| Message Types - Raum - AllowAll - Org-User sendet ein m.image Attachment (jpg) über Matrix-Protokoll v1.11 an Org-User
+|11X.01.11| Message Types - Chat - AllowAll - Org-User sendet ein m.image Attachment (png) über Matrix-Protokoll v1.11 an Org-User
+|11X.01.12| Message Types - Raum - AllowAll - Org-User sendet ein m.image Attachment (png) über Matrix-Protokoll v1.11 an Org-User
+|11X.01.13| Message Types - Chat - AllowAll - Org-User sendet ein m.file Attachment (txt) über Matrix-Protokoll v1.11 an Org-User
+|11X.01.14| Message Types - Raum - AllowAll - Org-User sendet ein m.file Attachment (txt) über Matrix-Protokoll v1.11 an Org-User
+|11X.01.15| Message Types - Chat - AllowAll - Org-User sendet ein m.file Attachment (pdf) über Matrix-Protokoll v1.11 an Org-User
+|11X.01.16| Message Types - Raum - AllowAll - Org-User sendet ein m.file Attachment (pdf) über Matrix-Protokoll v1.11 an Org-User
+|11X.01.17| Message Types - Chat - AllowAll - Org-User sendet ein m.audio Attachment (mp3) über Matrix-Protokoll v1.11 an Org-User
+|11X.01.18| Message Types - Raum - AllowAll - Org-User sendet ein m.audio Attachment (mp3) über Matrix-Protokoll v1.11 an Org-User
+|11X.01.19| Message Types - Chat - AllowAll - Org-User sendet ein m.audio Attachment (wav) über Matrix-Protokoll v1.11 an Org-User
+|11X.01.20| Message Types - Raum - AllowAll - Org-User sendet ein m.audio Attachment (wav) über Matrix-Protokoll v1.11 an Org-User
+|11X.01.21| Message Types - Chat - AllowAll - Org-User sendet ein m.video Attachment (mp4) über Matrix-Protokoll v1.11 an Org-User
+|11X.01.22| Message Types - Raum - AllowAll - Org-User sendet ein m.video Attachment (mp4) über Matrix-Protokoll v1.11 an Org-User
+|11X.01.23| Message Types - Chat - AllowAll - Org-User sendet ein m.video Attachment (mov) über Matrix-Protokoll v1.11 an Org-User
+|11X.01.24| Message Types - Raum - AllowAll - Org-User sendet ein m.video Attachment (mov) über Matrix-Protokoll v1.11 an Org-User
+|===
+
+[cols='^6%,90%']
+|===
+|11X.05.01| Message Types - Chat - AllowAll - ePA-User sendet Nachricht (m.text) an Org-User
+|11X.05.02| Message Types - Raum - AllowAll - ePA-User sendet Nachricht (m.text) an Org-User
+|11X.05.03| Message Types - Chat - AllowAll - ePA-User sendet Nachricht (m.emote) an Org-User
+|11X.05.04| Message Types - Raum - AllowAll - ePA-User sendet Nachricht (m.emote) an Org-User
+|11X.05.05| Message Types - Chat - AllowAll - ePA-User sendet Nachricht (m.notice) an Org-User
+|11X.05.06| Message Types - Raum - AllowAll - ePA-User sendet Nachricht (m.notice) an Org-User
+|11X.05.07| Message Types - Chat - AllowAll - ePA-User sendet Location (m.location) an Org-User
+|11X.05.08| Message Types - Raum - AllowAll - ePA-User sendet Location (m.location) an Org-User
+|11X.05.09| Message Types - Chat - AllowAll - ePA-User sendet ein m.image Attachment (jpg) über Matrix-Protokoll v1.11 an Org-User
+|11X.05.10| Message Types - Raum - AllowAll - ePA-User sendet ein m.image Attachment (jpg) über Matrix-Protokoll v1.11 an Org-User
+|11X.05.11| Message Types - Chat - AllowAll - ePA-User sendet ein m.image Attachment (png) über Matrix-Protokoll v1.11 an Org-User
+|11X.05.12| Message Types - Raum - AllowAll - ePA-User sendet ein m.image Attachment (png) über Matrix-Protokoll v1.11 an Org-User
+|11X.05.13| Message Types - Chat - AllowAll - ePA-User sendet ein m.file Attachment (txt) über Matrix-Protokoll v1.11 an Org-User
+|11X.05.14| Message Types - Raum - AllowAll - ePA-User sendet ein m.file Attachment (txt) über Matrix-Protokoll v1.11 an Org-User
+|11X.05.15| Message Types - Chat - AllowAll - ePA-User sendet ein m.file Attachment (pdf) über Matrix-Protokoll v1.11 an Org-User
+|11X.05.16| Message Types - Raum - AllowAll - ePA-User sendet ein m.file Attachment (pdf) über Matrix-Protokoll v1.11 an Org-User
+|11X.05.17| Message Types - Chat - AllowAll - ePA-User sendet ein m.audio Attachment (mp3) über Matrix-Protokoll v1.11 an Org-User
+|11X.05.18| Message Types - Raum - AllowAll - ePA-User sendet ein m.audio Attachment (mp3) über Matrix-Protokoll v1.11 an Org-User
+|11X.05.19| Message Types - Chat - AllowAll - ePA-User sendet ein m.audio Attachment (wav) über Matrix-Protokoll v1.11 an Org-User
+|11X.05.20| Message Types - Raum - AllowAll - ePA-User sendet ein m.audio Attachment (wav) über Matrix-Protokoll v1.11 an Org-User
+|11X.05.21| Message Types - Chat - AllowAll - ePA-User sendet ein m.video Attachment (mp4) über Matrix-Protokoll v1.11 an Org-User
+|11X.05.22| Message Types - Raum - AllowAll - ePA-User sendet ein m.video Attachment (mp4) über Matrix-Protokoll v1.11 an Org-User
+|11X.05.23| Message Types - Chat - AllowAll - ePA-User sendet ein m.video Attachment (mov) über Matrix-Protokoll v1.11 an Org-User
+|11X.05.24| Message Types - Raum - AllowAll - ePA-User sendet ein m.video Attachment (mov) über Matrix-Protokoll v1.11 an Org-User
+|===
+
+[cols='^6%,90%']
+|===
+|11X.06.01| Message Types - Chat - AllowAll - Org-User sendet Nachricht (m.text) an ePA-User
+|11X.06.02| Message Types - Raum - AllowAll - Org-User sendet Nachricht (m.text) an ePA-User
+|11X.06.03| Message Types - Chat - AllowAll - Org-User sendet Nachricht (m.emote) an ePA-User
+|11X.06.04| Message Types - Raum - AllowAll - Org-User sendet Nachricht (m.emote) an ePA-User
+|11X.06.05| Message Types - Chat - AllowAll - Org-User sendet Nachricht (m.notice) an ePA-User
+|11X.06.06| Message Types - Raum - AllowAll - Org-User sendet Nachricht (m.notice) an ePA-User
+|11X.06.07| Message Types - Chat - AllowAll - Org-User sendet Location (m.location) an ePA-User
+|11X.06.08| Message Types - Raum - AllowAll - Org-User sendet Location (m.location) an ePA-User
+|11X.06.09| Message Types - Chat - AllowAll - Org-User sendet ein m.image Attachment (jpg) über Matrix-Protokoll v1.11 an ePA-User
+|11X.06.10| Message Types - Raum - AllowAll - Org-User sendet ein m.image Attachment (jpg) über Matrix-Protokoll v1.11 an ePA-User
+|11X.06.11| Message Types - Chat - AllowAll - Org-User sendet ein m.image Attachment (png) über Matrix-Protokoll v1.11 an ePA-User
+|11X.06.12| Message Types - Raum - AllowAll - Org-User sendet ein m.image Attachment (png) über Matrix-Protokoll v1.11 an ePA-User
+|11X.06.13| Message Types - Chat - AllowAll - Org-User sendet ein m.file Attachment (txt) über Matrix-Protokoll v1.11 an ePA-User
+|11X.06.14| Message Types - Raum - AllowAll - Org-User sendet ein m.file Attachment (txt) über Matrix-Protokoll v1.11 an ePA-User
+|11X.06.15| Message Types - Chat - AllowAll - Org-User sendet ein m.file Attachment (pdf) über Matrix-Protokoll v1.11 an ePA-User
+|11X.06.16| Message Types - Raum - AllowAll - Org-User sendet ein m.file Attachment (pdf) über Matrix-Protokoll v1.11 an ePA-User
+|11X.06.17| Message Types - Chat - AllowAll - Org-User sendet ein m.audio Attachment (mp3) über Matrix-Protokoll v1.11 an ePA-User
+|11X.06.18| Message Types - Raum - AllowAll - Org-User sendet ein m.audio Attachment (mp3) über Matrix-Protokoll v1.11 an ePA-User
+|11X.06.19| Message Types - Chat - AllowAll - Org-User sendet ein m.audio Attachment (wav) über Matrix-Protokoll v1.11 an ePA-User
+|11X.06.20| Message Types - Raum - AllowAll - Org-User sendet ein m.audio Attachment (wav) über Matrix-Protokoll v1.11 an ePA-User
+|11X.06.21| Message Types - Chat - AllowAll - Org-User sendet ein m.video Attachment (mp4) über Matrix-Protokoll v1.11 an ePA-User
+|11X.06.22| Message Types - Raum - AllowAll - Org-User sendet ein m.video Attachment (mp4) über Matrix-Protokoll v1.11 an ePA-User
+|11X.06.23| Message Types - Chat - AllowAll - Org-User sendet ein m.video Attachment (mov) über Matrix-Protokoll v1.11 an ePA-User
+|11X.06.24| Message Types - Raum - AllowAll - Org-User sendet ein m.video Attachment (mov) über Matrix-Protokoll v1.11 an ePA-User
+|===
+
+[.text-center]
+<<id89,Nach oben>>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<<id80,Testfall Liste>>
+
+[[id90,Nach oben]]
+*UC12X_Multi_Device*
+
+[cols='^6%,90%']
+|===
+|12X.01.01| Multi Device - Events außerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices
+|12X.01.02| Multi Device - Events außerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices - Erhalt vorheriger Nachrichten
+|12X.01.03| Multi Device - Events innerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices
+|12X.01.04| Multi Device - Events innerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices - Erhalt vorheriger Nachrichten
+|===
+
+[cols='^6%,90%']
+|===
+|12X.05.01| Multi Device - Events außerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices
+|12X.05.02| Multi Device - Events außerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices - Erhalt vorheriger Nachrichten
+|===
+
+[.text-center]
+<<id90,Nach oben>>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<<id80,Testfall Liste>>
+
+[.text-right]
+<<id0,Inhaltsverzeichnis>>
+
+image::Tests.png[float="left"]
+
+==== 3.2 ePA
+
+[[id91,Nach oben]]
+{empty} +
+
+[[id92,Nach oben]]
+*UC02_Anmeldung_eines_Akteurs*
+
+[cols='^6%,90%']
+|===
+|02.05.01| Anmeldung eines Akteurs - Erfolgreiche Anmeldung eines Akteurs (ePA Client)
+|===
+
+[.text-center]
+<<id92,Nach oben>>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<<id80,Testfall Liste>>
+
+[[id93,Nach oben]]
+*UC03_Berechtigungsmanagement*
+
+[cols='^6%,90%']
+|===
+|03.09.01| TI-M ePA - Berechtigungsmanagement - Chat - Versicherter versucht Versicherten einzuladen (AllowAll)
+|03.09.02| TI-M ePA - Berechtigungsmanagement - Raum - Versicherter versucht Versicherten einzuladen (BlockAll)
+|===
+
+[.text-center]
+<<id93,Nach oben>>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<<id80,Testfall Liste>>
+
+[[id94,Nach oben]]
+*UC04X_Spezial_VZD-FHIR-Directory Suche*
+
+[cols='^6%,90%']
+|===
+|04X.05.01| FHIR-VZD Sichtbarkeit für Versicherte setzen - AllowAll - ePA User kann Health Care Service Endpunkt im Status "hide-versicherte" nicht finden
+|===
+
+[cols='^6%,90%']
+|===
+|04X.07.01| FHIR-VZD Sichtbarkeit für Versicherte setzen - AllowAll - ePA User kann HBA User im Status "hide-versicherte" nicht finden
+|===
+
+[.text-center]
+<<id94,Nach oben>>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<<id80,Testfall Liste>>
+
+[[id95,Nach oben]]
+*UC05X_Spezial_Berechtigungskonfiguration_Benutzergruppen*
+
+[cols='^6%,90%']
+|===
+|05X.05.01| Spezial Berechtigungskonfiguration Benutzergruppen - Chat - GruppenBlock - User AllowAll blockt/entblockt Gruppe (ePA User versucht Org User zu kontaktieren)
+|05X.05.02| Spezial Berechtigungskonfiguration Benutzergruppen - Raum - GruppenBlock - User AllowAll blockt/entblockt Gruppe (ePA User versucht Org User zu kontaktieren)
+|05X.05.03| Spezial Berechtigungskonfiguration Benutzergruppen - Chat - GruppenAllow - User BlockAll allow/unallow Gruppe (ePA User versucht Org User zu kontaktieren)
+|05X.05.04| Spezial Berechtigungskonfiguration Benutzergruppen - Raum - GruppenAllow - User BlockAll allow/unallow Gruppe (ePA User versucht Org User zu kontaktieren)
+|===
+
+[.text-center]
+<<id95,Nach oben>>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<<id80,Testfall Liste>>
+
+[[id96,Nach oben]]
+*UC06X_Ergaenzungen_zur_Matrix_Spezifikation*
+
+[cols='^6%,90%']
+|===
+|06X.09.01| Ergänzungen zur Matrix-Spezifikation - Verbot von Suchabfragen im eigenen HomeServer (ePA-User)
+|===
+
+[.text-center]
+<<id96,Nach oben>>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<<id80,Testfall Liste>>
+
+[.text-right]
+<<id0,Inhaltsverzeichnis>>
+
+{empty} +
+
+image::Tests.png[float="left"]
+
+==== 3.3 Pro
+
+[[id97,Nach oben]]
+{empty} +
+
+[[id98,Nach oben]]
+*UC01_Organisationsressourcen_im_Verzeichnisdienst_hinzufuegen*
+
+[cols='^6%,90%']
+|===
+|01.01.01| Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen
+|01.01.02| Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen und MXID im Endpoint ändern
+|01.01.03| Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen/ändern, Endpoint anlegen/ändern und löschen
+|01.01.04| Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin mit zwei Endpoints anlegen und löschen
+|01.01.05| Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen und Endpointname aktualisieren
+|01.01.06| Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare Service mit Funktionsaccount-Endpointname anlegen
+|===
+
+[.text-center]
+<<id98,Nach oben>>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<<id80,Testfall Liste>>
+
+[[id99,Nach oben]]
+*UC02_Akteur_(User-HBA)_im_Verzeichnisdienst_hinzufuegen*
+
+[cols='^6%,90%']
+|===
+|02.04.01| Akteur im Verzeichnisdienst - Hinzufügen/Löschen - HBA User sucht HBA User gleicher Organisation
+|02.04.02| Akteur im Verzeichnisdienst - Hinzufügen/Löschen - HBA User sucht HBA User anderer Organisation
+|===
+
+[cols='^6%,90%']
+|===
+|02.02.01| Akteur im Verzeichnisdienst - Hinzufügen/Löschen - HBA-User löscht Eintrag und ist nicht auffindbar für HBA-User gleicher Organisation
+|02.02.02| Akteur im Verzeichnisdienst - Hinzufügen/Löschen - HBA-User löscht Eintrag und ist nicht auffindbar für HBA-User anderer Organisation
+|===
+
+[.text-center]
+<<id99,Nach oben>>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<<id80,Testfall Liste>>
+
+[[id100,Nach oben]]
+*UC03_FHIR-VZD_Sichtbarkeit_fuer_Versicherte_setzen*
+
+[cols='^6%,90%']
+|===
+|03.01.01| FHIR-VZD Sichtbarkeit für Versicherte setzen - AllowAll - HealthCare Service setzt seinen Status auf endpointVisibility auf hide-versicherte
+|===
+
+[cols='^6%,90%']
+|===
+|03.03.01| FHIR-VZD Sichtbarkeit für Versicherte setzen - AllowAll - HBA User setzt seinen Status auf endpointVisibility auf hide-versicherte
+|===
+
+[.text-center]
+<<id100,Nach oben>>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<<id80,Testfall Liste>>
+
+[[id101,Nach oben]]
+*UC04_Anmeldung_eines_Akteurs*
+
+[cols='^6%,90%']
+|===
+|04.01.01| Anmeldung eines Akteurs - Erfolgreiche Anmeldung eines Akteurs (ProClient)
+|04.01.02| Anmeldung eines Akteurs - Erfolgreiche Anmeldung eines Akteurs (OrgAdmin)
+|===
+
+[.text-center]
+<<id101,Nach oben>>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<<id80,Testfall Liste>>
+
+[[id102,Nach oben]]
+*UC05_Einladung_von_Akteuren_innerhalb_einer_Organisation*
+
+[cols='^6%,90%']
+|===
+|05.01.00A| Einladung innerhalb einer Organisation - User sucht anderen User im HomeServer
+|05.01.00B| Einladung innerhalb einer Organisation - User sucht HealthCareService im HomeServer
+|05.01.00C| Einladung innerhalb einer Organisation - GruppenBlock - User AllowAll blockt/entblockt Gruppe
+|05.01.00D| Einladung innerhalb einer Organisation - GruppenBlock - User BlockAll allow/unallow Gruppe
+|05.01.01| Einladung innerhalb einer Organisation - Chat - AllowAll - User lädt anderen User ein
+|05.01.02| Einladung innerhalb einer Organisation - Raum - AllowAll - User lädt anderen User ein
+|05.01.03| Einladung innerhalb einer Organisation - Chat - BlockAll - User lädt anderen User ein
+|05.01.04| Einladung innerhalb einer Organisation - Raum - BlockAll - User lädt anderen User ein
+|05.01.05| Einladung innerhalb einer Organisation - Chat - AllowAll - User AllowAll (blockt/entblockt User)
+|05.01.06| Einladung innerhalb einer Organisation - Raum - AllowAll - User AllowAll (2 User blockt/entblockt)
+|05.01.07| Einladung innerhalb einer Organisation - Raum - AllowAll - User AllowAll wird von geblocktem und ungeblocktem User eingeladen
+|05.01.08| Einladung innerhalb einer Organisation - Chat - BlockAll - User BlockAll (allow/unallow User)
+|05.01.09| Einladung innerhalb einer Organisation - Raum - BlockAll - User BlockAll (2 User allow/unallow)
+|05.01.10| Einladung innerhalb einer Organisation - Raum - BlockAll - User BlockAll wird von allow und unallow User eingeladen
+|05.01.11| Einladung innerhalb einer Organisation - Raum - MixedMode - User (versucht)lädt anderen User ein
+|05.01.12| Einladung innerhalb einer Organisation - Chat - DomainBlock - User blockt/ unblockt Server-Namen
+|05.01.13| Einladung innerhalb einer Organisation - Raum - DomainBlock - User blockt/ unblockt Server-Namen
+|05.01.14| Einladung innerhalb einer Organisation - Chat - DomainBlock - User allow/ unallow Server-Namen
+|05.01.15| Einladung innerhalb einer Organisation - Raum - DomainBlock - User allow/ unallow Server-Namen
+|05.01.16| Einladung innerhalb einer Organisation - Chat - AllowAll - User lehnt Einladung ab
+|05.01.17| Einladung innerhalb einer Organisation - Raum - AllowAll - User lehnt Einladung ab
+|05.01.18| Einladung innerhalb einer Organisation - Chat - BlockAll - User lehnt Einladung ab
+|05.01.19| Einladung innerhalb einer Organisation - Raum - BlockAll - User lehnt Einladung ab
+|05.01.20| Einladung innerhalb einer Organisation - Chat - AllowAll - Dritter Nutzer wird in Chat eingeladen werden
+|05.01.21| Einladung innerhalb einer Organisation - Chat - BlockAll - Dritter Nutzer wird in Chat eingeladen werden
+|05.01.22| Einladung innerhalb einer Organisation - AllowAll - Eintragung in Liste von anderem Berechtigungsmodus
+|05.01.23| Einladung innerhalb einer Organisation - AllowAll - Eintragung eines Server-Namen in Liste von anderem Berechtigungsmodus
+|05.01.24| Einladung innerhalb einer Organisation - AllowAll - Löschen in Liste von anderem Berechtigungsmodus
+|05.01.25| Einladung innerhalb einer Organisation - AllowAll - Löschen eines Server-Namen in Liste von anderem Berechtigungsmodus
+|05.01.26| Einladung innerhalb einer Organisation - BlockAll - Eintragung in Liste von anderem Berechtigungsmodus
+|05.01.27| Einladung innerhalb einer Organisation - BlockAll - Eintragung eines Server-Namen in Liste von anderem Berechtigungsmodus
+|05.01.28| Einladung innerhalb einer Organisation - BlockAll - Löschen in Liste von anderem Berechtigungsmodus
+|05.01.29| Einladung innerhalb einer Organisation - BlockAll - Löschen eines Server-Namen in Liste von anderem Berechtigungsmodus
+|05.01.30| Einladung innerhalb einer Organisation - AllowAll - Eintrag doppelter MXID Einträge in BlockListe
+|05.01.31| Einladung innerhalb einer Organisation - BlockAll - Eintrag doppelter MXID Einträge in AllowListe
+|05.01.32| Einladung innerhalb einer Organisation - AllowAll - Einträge bleiben trotz Logout erhalten
+|05.01.33| Einladung innerhalb einer Organisation - BlockAll - Einträge bleiben trotz Logout erhalten
+|===
+
+[cols='^6%,90%']
+|===
+|05.03.01| Einladung innerhalb einer Organisation - Chat - AllowAll - HBA User lädt anderen User ein
+|05.03.02| Einladung innerhalb einer Organisation - Raum - AllowAll - HBA User lädt anderen User ein
+|05.03.03| Einladung innerhalb einer Organisation - Chat - BlockAll - HBA User lädt anderen User ein
+|05.03.04| Einladung innerhalb einer Organisation - Raum - BlockAll - HBA User lädt anderen User ein
+|===
+
+[cols='^6%,90%']
+|===
+|05.04.01| Einladung innerhalb einer Organisation - Chat - AllowAll - HBA User lädt anderen HBA User ein
+|05.04.02| Einladung innerhalb einer Organisation - Raum - AllowAll - HBA User lädt anderen HBA User ein
+|===
+
+[.text-center]
+<<id102,Nach oben>>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<<id80,Testfall Liste>>
+
+[[id103,Nach oben]]
+*UC06X_Berechtigungskonfiguration_Benutzergruppen*
+
+[cols='^6%,90%']
+|===
+|06X.01.01| Berechtigungskonfiguration Benutzergruppen - AllowAll - GruppenBlock - User blockt/entblockt Gruppe
+|06X.01.02| Berechtigungskonfiguration Benutzergruppen - BlockAll - GruppenAllow - User allow/unallow Gruppe
+|06X.01.03| Berechtigungskonfiguration Benutzergruppen - AllowAll - GruppenBlock - Einträge bleiben trotz Logout erhalten
+|06X.01.04| Berechtigungskonfiguration Benutzergruppen - BlockAll - GruppenAllow - Einträge bleiben trotz Logout erhalten
+|===
+
+[.text-center]
+<<id103,Nach oben>>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<<id80,Testfall Liste>>
+
+[[id104,Nach oben]]
+<<id0,Inhaltsverzeichnis>>
+
+image::Tests.png[float="left"]
+
+=== 4. Feature File AFO Liste
+
+{empty} +
+
+In folgenden Listen sind alle Feature Files und die in den Tests behandelten AFOs aufgeführt.
+
+[TIP]
+[black]#*_Da die Testsuite auf End-to-End Tests beruht, wird keine Gewähr für die Vollständigkeit der Testabdeckung einzelner AFOs übernommen._*#
+
+[.text-right]
+<<id0,Inhaltsverzeichnis>>
+
+{empty} +
+
+image::Tests.png[float="left"]
+
+==== 4.1 Basis
+
+{empty} +
+
+===== UC00_Geraete_Informationen_abfragen
+
+{empty} +
+
+*00_1_Pro_Geraete_Informationen_abfragen_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|A_25641-01| Matrix Spezifikationsversion
+|===
+
+*00_5_ePA_Geraete_Informationen_abfragen_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|A_25641-01| Matrix Spezifikationsversion
+|===
+
+{empty} +
+
+===== UC03_Foederationszugehoerigkeit_pruefen
+
+{empty} +
+
+*03_1_OrgXXX__Foederationszugehoerigkeit_pruefen_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10064-02| Föderationszugehörigkeit eines Messenger-Service prüfen
+|===
+
+*03_5_ePAXXX_Foederationszugehoerigkeit_pruefen_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10064-02| Föderationszugehörigkeit eines Messenger-Service prüfen
+|===
+
+{empty} +
+
+===== UC04_Austausch_von_Events_zwischen_Akteuren_innerhalb_einer_Organisation
+
+{empty} +
+
+*04_1_OrgOrg_Austausch_Events_innerhalb_Organisation_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10063-01|Austausch von Events zwischen Akteuren innerhalb einer Organisation
+|A_25575    |Löschen von Nachrichten
+|A_25576    |Lokales Löschen bei Entfernung von Nachrichten aus dem Room State
+|A_25492    |Löschfunktion des Clients
+|A_26574    |Entschlüsseln von Nachrichten nach Wiederanmeldung
+|A_26575    |Ablage von Schlüsseln zum Entschlüsseln von Nachrichten nach Wiederanmeldung
+|A_25395-01 |Matrix Module - Direct Messaging/Event Replacements
+|A_26077    |Server-seitiges Schlüssel-Backup
+|===
+
+*04_4_HBAHBA_Austausch_Events_innerhalb_Organisation_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10063-01|Austausch von Events zwischen Akteuren innerhalb einer Organisation
+|===
+
+*04_9_ePAePA_Austausch_Events_innerhalb_Organisation_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10063-01|Austausch von Events zwischen Akteuren innerhalb einer Organisation
+|A_25575    |Löschen von Nachrichten
+|A_25576    |Lokales Löschen bei Entfernung von Nachrichten aus dem Room State
+|A_25492    |Löschfunktion des Clients
+|A_26574    |Entschlüsseln von Nachrichten nach Wiederanmeldung
+|A_26575    |Ablage von Schlüsseln zum Entschlüsseln von Nachrichten nach Wiederanmeldung
+|A_25395-01 |Matrix Module - Direct Messaging/Event Replacements
+|A_26077    |Server-seitiges Schlüssel-Backup
+|===
+
+{empty} +
+
+===== UC05_Einladung_von_Akteuren_ausserhalb_einer_Organisation
+
+{empty} +
+
+*05_1_OrgOrg_Einladung_Akteuren_ausserhalb_Organisation_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10061-04| Einladung von Akteuren außerhalb einer Organisation
+|A_25045-01 | Funktionsumfang der Berechtigungskonfiguration
+|A_25046    | Durchsetzung der Berechtigungskonfiguration - Client
+|A_25043    | Berechtigungskonfiguration in Accountdaten speichern
+|===
+
+{empty} +
+
+*05_2_OrgHBA_Einladung_Akteuren_ausserhalb_Organisation_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10061-04| Einladung von Akteuren außerhalb einer Organisation
+|A_25045-01 | Funktionsumfang der Berechtigungskonfiguration
+|A_25046    | Durchsetzung der Berechtigungskonfiguration - Client
+|===
+
+*05_3_HBAOrg_Einladung_Akteuren_ausserhalb_Organisation_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10061-04| Einladung von Akteuren außerhalb einer Organisation
+|A_25045-01 | Funktionsumfang der Berechtigungskonfiguration
+|A_25046    | Durchsetzung der Berechtigungskonfiguration - Client
+|===
+
+*05_4_HBAHBA_Einladung_Akteuren_ausserhalb_Organisation_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10061-04| Einladung von Akteuren außerhalb einer Organisation
+|A_25045-01 | Funktionsumfang der Berechtigungskonfiguration
+|A_25046    | Durchsetzung der Berechtigungskonfiguration - Client
+|===
+
+*05_5_ePAOrg_Einladung_Akteuren_ausserhalb_Organisation_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10061-04| Einladung von Akteuren außerhalb einer Organisation
+|A_25045-01 | Funktionsumfang der Berechtigungskonfiguration
+|A_25046    | Durchsetzung der Berechtigungskonfiguration - Client
+|===
+
+*05_6_OrgePA_Einladung_Akteuren_ausserhalb_Organisation_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10061-04| Einladung von Akteuren außerhalb einer Organisation
+|A_25045-01 | Funktionsumfang der Berechtigungskonfiguration
+|A_25046    | Durchsetzung der Berechtigungskonfiguration - Client
+|A_25043    | Berechtigungskonfiguration in Accountdaten speichern
+|===
+
+*05_7_ePAHBA_Einladung_Akteuren_ausserhalb_Organisation_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10061-04| Einladung von Akteuren außerhalb einer Organisation
+|A_25045-01 | Funktionsumfang der Berechtigungskonfiguration
+|A_25046    | Durchsetzung der Berechtigungskonfiguration - Client
+|===
+
+*05_8_HBAePA_Einladung_Akteuren_ausserhalb_Organisation_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10061-04| Einladung von Akteuren außerhalb einer Organisation
+|A_25045-01 | Funktionsumfang der Berechtigungskonfiguration
+|A_25046    | Durchsetzung der Berechtigungskonfiguration - Client
+|===
+
+{empty} +
+
+===== UC06_Austausch_von_Events_zwischen_Akteuren_ausserhalb_einer_Organisation
+
+{empty} +
+
+*06_1_OrgOrg_Austausch_Events_ausserhalb_Organisation_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10062-03|Austausch von Events zwischen Akteuren außerhalb einer Organisation
+|A_25575    |Löschung von Nachrichten
+|A_25576    |Lokales Löschen bei Entfernung von Nachrichten aus dem Room State
+|A_25492    |Löschfunktion des Clients
+|A_26574    |Entschlüsseln von Nachrichten nach Wiederanmeldung
+|A_26575    |Ablage von Schlüsseln zum Entschlüsseln von Nachrichten nach Wiederanmeldung
+|A_25395-01 |Matrix Module - Direct Messaging/Event Replacements
+|A_26077    |Server-seitiges Schlüssel-Backup
+|===
+
+*06_3_HBAOrg_Austausch_Events_ausserhalb_Organisation_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10062-03|Austausch von Events zwischen Akteuren außerhalb einer Organisation
+|===
+
+*06_4_HBAHBA_Austausch_Events_ausserhalb_Organisation_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10062-03|Austausch von Events zwischen Akteuren außerhalb einer Organisation
+|===
+
+*06_5_ePAOrg_Austausch_Events_ausserhalb_Organisation_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10062-03|Austausch von Events zwischen Akteuren außerhalb einer Organisation
+|A_25575    |Löschung von Nachrichten
+|A_25576    |Lokales Löschen bei Entfernung von Nachrichten aus dem Room State
+|A_25492    |Löschfunktion des Clients
+|A_26574    |Entschlüsseln von Nachrichten nach Wiederanmeldung
+|A_26575    |Ablage von Schlüsseln zum Entschlüsseln von Nachrichten nach Wiederanmeldung
+|A_25395-01 |Matrix Module - Direct Messaging/Event Replacements
+|A_26077    |Server-seitiges Schlüssel-Backup
+|===
+
+*06_6_OrgePA_Austausch_Events_ausserhalb_Organisation_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10062-03|Austausch von Events zwischen Akteuren außerhalb einer Organisation
+|A_25575    |Löschung von Nachrichten
+|A_25576    |Lokales Löschen bei Entfernung von Nachrichten aus dem Room State
+|A_25492    |Löschfunktion des Clients
+|A_26574    |Entschlüsseln von Nachrichten nach Wiederanmeldung
+|A_26575    |Ablage von Schlüsseln zum Entschlüsseln von Nachrichten nach Wiederanmeldung
+|A_25395-01 |Matrix Module - Direct Messaging/Event Replacements
+|A_26077    |Server-seitiges Schlüssel-Backup
+|===
+
+*06_7_ePAHBA_Austausch_Events_ausserhalb_Organisation_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10062-03|Austausch von Events zwischen Akteuren außerhalb einer Organisation
+|===
+
+*06_8_HBAePA_Austausch_Events_ausserhalb_Organisation_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10062-03|Austausch von Events zwischen Akteuren außerhalb einer Organisation
+|===
+
+{empty} +
+
+===== UC08X_Eintraege_im_VZD-FHIR-Directory_suchen
+
+{empty} +
+
+*08X_1_OrgOrg_Eintraege_im_VZD-FHIR-Directory_suchen_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|A_25479|Search Token
+|A_25428|VZD-FHIR-Directory Inhalte
+|===
+
+*08X_2_OrgHBA_Eintraege_im_VZD-FHIR-Directory_suchen_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|A_25479|Search Token
+|A_25428|VZD-FHIR-Directory Inhalte
+|===
+
+*08X_3_HBAOrg_Eintraege_im_VZD-FHIR-Directory_suchen_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|A_25479|Search Token
+|A_25428|VZD-FHIR-Directory Inhalte
+|===
+
+*08X_4_HBAHBA_Eintraege_im_VZD-FHIR-Directory_suchen_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|A_25479|Search Token
+|A_25428|VZD-FHIR-Directory Inhalte
+|===
+
+*08X_5_ePAOrg_Eintraege_im_VZD-FHIR-Directory_suchen_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|A_25479|Search Token
+|A_25428|VZD-FHIR-Directory Inhalte
+|===
+
+*08X_7_ePAHBA_Eintraege_im_VZD-FHIR-Directory_suchen_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|A_25479|Search Token
+|A_25428|VZD-FHIR-Directory Inhalte
+|===
+
+{empty} +
+
+===== UC09X_Room_States_ueberpruefen_und_Raumversion
+
+{empty} +
+
+*09X_1_OrgOrg_Room_States_ueberpruefen_und_Raumversion_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|A_25813-01|Pflichtparameter bei der Chatroom-Erzeugung für föderierte und intersektorale Kommunikation
+|A_25814-01|Verwendung des Raumtypen für föderierte und intersektorale Kommunikation als Standard
+|A_25426   |Verwendung des Chatroom-Typen für föderierte und intersektorale Kommunikation
+|A_26248   |Default-Raumversion beim Erstellen von Räumen
+|A_26338-01|Erzeugung und Verwendung der Custom State Events für Raumnamen und -thema
+|===
+
+*09X_4_HBAHBA_Room_States_ueberpruefen_und_Raumversion_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|A_25813-01|Pflichtparameter bei der Chatroom-Erzeugung für föderierte und intersektorale Kommunikation
+|A_25814-01|Verwendung des Raumtypen für föderierte und intersektorale Kommunikation als Standard
+|A_25426   |Verwendung des Chatroom-Typen für föderierte und intersektorale Kommunikation
+|A_26248   |Default-Raumversion beim Erstellen von Räumen
+|A_26338-01|Erzeugung und Verwendung der Custom State Events für Raumnamen und -thema
+|===
+
+*09X_5_ePAOrg_Room_States_ueberpruefen_und_Raumversion_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|A_25813-01|Pflichtparameter bei der Chatroom-Erzeugung für föderierte und intersektorale Kommunikation
+|A_25814-01|Verwendung des Raumtypen für föderierte und intersektorale Kommunikation als Standard
+|A_25426   |Verwendung des Chatroom-Typen für föderierte und intersektorale Kommunikation
+|A_26248   |Default-Raumversion beim Erstellen von Räumen
+|A_26338-01|Erzeugung und Verwendung der Custom State Events für Raumnamen und -thema
+|===
+
+{empty} +
+
+===== UC10X_API_Checks
+
+{empty} +
+
+*10X_1_OrgOrg_API_Checks_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|A_26344   |Verbot von URL-Previews
+|A_26263   |Unauthenticated Media
+|A_26265   |TI-M FD Org-Admin Support
+|A_26289   |Authentisierung von Profilabfragen
+|A_25641-01|Matrix Spezifikationsversion - Standard error response
+|===
+
+*10X_5_ePAOrg_API_Checks_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|A_26344   |Verbot von URL-Previews
+|A_26263   |Unauthenticated Media
+|A_26265   |TI-M FD Org-Admin Support
+|A_26289   |Authentisierung von Profilabfragen
+|A_25641-01|Matrix Spezifikationsversion - Standard error response
+|===
+
+*10X_6_OrgePA_API_Checks_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|A_26263   |Unauthenticated Media
+|===
+
+{empty} +
+
+===== UC11X_MessageTypes
+
+{empty} +
+
+*11X_1_OrgOrg_MessageTypes_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|A_25395-01|Matrix Module - Instant Messaging
+|===
+
+*11X_5_ePAOrg_MessageTypes_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|A_25395-01|Matrix Module - Instant Messaging
+|===
+
+*11X_6_OrgePA_MessageTypes_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|A_25395-01|Matrix Module - Instant Messaging
+|===
+
+{empty} +
+
+===== UC12X_Multi_Device
+
+{empty} +
+
+*12X_1_OrgOrg_MultiDevice_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|A_25514|Key-Sharing zwischen Geräten eines Akteurs
+|===
+
+*12X_5_ePAOrg_MultiDevice_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|A_25514|Key-Sharing zwischen Geräten eines Akteurs
+|===
+
+[.text-right]
+<<id0,Inhaltsverzeichnis>>
+
+{empty} +
+
+image::Tests.png[float="left"]
+
+==== 4.2 ePA
+
+{empty} +
+
+===== UC02_Anmeldung_eines_Akteurs
+
+{empty} +
+
+*02_5_ePAOrg_Anmeldung_eines_Akteurs_V2_ePA.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10234|Identifikation und Login eines Benutzers
+|===
+
+{empty} +
+
+===== UC03_Berechtigungsmanagement
+
+{empty} +
+
+*03_9_ePAePA_Berechtigungsmanagement_V2_ePA.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10233|Versicherteneinladung unterbinden
+|A_25705 |AF_10233 - Versicherteneinladung unterbinden
+|===
+
+{empty} +
+
+===== UC04X_Spezial_VZD-FHIR-Directory Suche
+
+{empty} +
+
+*04X_5_ePAOrg_VZD-FHIR-Directory Suche_V2_ePA.feature*
+
+[cols='^6%,90%']
+|===
+|A_25681-01|VZD-FHIR-Directory Suche
+|===
+
+*04X_7_ePAHBA_VZD-FHIR-Directory Suche_V2_ePA.feature*
+
+[cols='^6%,90%']
+|===
+|A_25681-01|VZD-FHIR-Directory Suche
+|===
+
+{empty} +
+
+===== UC05X_Spezial_Berechtigungskonfiguration_Benutzergruppen
+
+{empty} +
+
+*05_5_ePAOrg_Spezial_Berechtigungskonfiguration_Benutzergruppen_V2_ePA.feature*
+
+[cols='^6%,90%']
+|===
+|ePA: A_25704  |AF_10233 - Versicherteneinladung erlauben
+|Basis: A_25046|Durchsetzung der Berechtigungskonfiguration - Client
+|===
+
+{empty} +
+
+===== UC06X_Ergaenzungen_zur_Matrix_Spezifikation
+
+{empty} +
+
+*06X_9_ePAePA_Ergaenzungen_zur_Matrix_Spezifikation_V2_ePA.feature*
+
+[cols='^6%,90%']
+|===
+|A_26375  | Verbot von Suchabfragen
+|===
+
+[.text-right]
+<<id0,Inhaltsverzeichnis>>
+
+{empty} +
+
+image::Tests.png[float="left"]
+
+==== 4.3 Pro
+
+{empty} +
+
+===== UC01_Organisationsressourcen_im_Verzeichnisdienst_hinzufuegen
+
+{empty} +
+
+*01_1_OrgOrg_Organisationsressourcen_im_Verzeichnisdienst_hinzufuegen_V2_Pro.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10059-02|Organisationsressourcen im Verzeichnisdienst hinzufügen
+|A_25546    |ConnectionType persönlicher Funktionsaccount
+|===
+
+{empty} +
+
+===== UC02_Akteur_(User-HBA)_im_Verzeichnisdienst_hinzufuegen
+
+{empty} +
+
+*02_2_OrgHBA_Akteur_(User-HBA)_im_Verzeichnisdienst_hinzufuegen_V2_Pro.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10058-02|Akteur (User-HBA) im Verzeichnisdienst hinzufügen
+|===
+
+*02_4_HBAHBA_Akteur_(User-HBA)_im_Verzeichnisdienst_hinzufuegen_V2_Pro.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10058-02|Akteur (User-HBA) im Verzeichnisdienst hinzufügen
+|===
+
+{empty} +
+
+===== UC03_FHIR-VZD_Sichtbarkeit_fuer_Versicherte_setzen
+
+{empty} +
+
+*03_1_OrgOrg_FHIR-VZD_Sichtbarkeit_fuer_Versicherte_setzen_V2_Pro.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10377  |Organization - FHIR-VZD Sichtbarkeit für Versicherte setzen
+|A_26172-01|Schnittstelle für die VZD-FHIR-Directory Suche
+|===
+
+*03_3_HBAOrg_FHIR-VZD_Sichtbarkeit_fuer_Versicherte_setzen_V2_Pro.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10377  |Organization - FHIR-VZD Sichtbarkeit für Versicherte setzen
+|A_26172-01|Schnittstelle für die VZD-FHIR-Directory Suche
+|===
+
+{empty} +
+
+===== UC04_Anmeldung_eines_Akteurs
+
+{empty} +
+
+*04_1_Org_Anmeldung_eines_Akteurs_V2_Pro.feature*
+
+[cols='^6%,90%']
+|===
+|AF_10057-04|Anmeldung eines Akteurs am Messenger-Service
+|===
+
+{empty} +
+
+===== UC05_Einladung_von_Akteuren_innerhalb_einer_Organisation
+
+{empty} +
+
+*05_1_OrgOrg_Einladung_von_Akteuren_innerhalb_einer_Organisation_V2_Pro.feature*
+
+[cols='^6%,90%']
+|===
+|Pro: AF_10104-03 |Einladung von Akteuren innerhalb einer Organisation
+|Basis: A_25045-01|Funktionsumfang der Berechtigungskonfiguration
+|Basis: A_25046   |Durchsetzung der Berechtigungskonfiguration - Client
+|===
+
+*05_3_HBAOrg_Einladung_von_Akteuren_innerhalb_einer_Organisation_V2_Pro.feature*
+
+[cols='^6%,90%']
+|===
+|Pro: AF_10104-03 |Einladung von Akteuren innerhalb einer Organisation
+|Basis: A_25045-01|Funktionsumfang der Berechtigungskonfiguration
+|Basis: A_25046   |Durchsetzung der Berechtigungskonfiguration - Client
+|===
+
+*05_4_HBAHBA_Einladung_von_Akteuren_innerhalb_einer_Organisation_V2_Pro.feature*
+
+[cols='^6%,90%']
+|===
+|Pro: AF_10104-03 |Einladung von Akteuren innerhalb einer Organisation
+|Basis: A_25045-01|Funktionsumfang der Berechtigungskonfiguration
+|Basis: A_25046   |Durchsetzung der Berechtigungskonfiguration - Client
+|===
+
+{empty} +
+
+===== UC06X_Berechtigungskonfiguration_Benutzergruppen
+
+{empty} +
+
+*06X_1_OrgOrg_Berechtigungskonfiguration_Benutzergruppen_V2_Basis.feature*
+
+[cols='^6%,90%']
+|===
+|A_26390|Schema der Berechtigungskonfiguration
+|===
+
+{empty} +
+
+[.text-right]
+<<id0,Inhaltsverzeichnis>>
+
+image::Tests.png[float="left"]
+
+=== 5. End Disclaimer
+
+{empty} +
+
+Dieses Dokument versteht sich als Zusatz zur link:Testsuite.adoc[Testsuite.adoc].
+Weitere ergänzende Informationen rund um die Testsuite und ihren Funktionsweisen, die in diesem Dokument nicht besprochen worden sind, müssen der link:Testsuite.adoc[Testsuite.adoc] entnommen werden und haben weiterhin Gültigkeit.
+
+Beide Dokumente besitzen in Kombination Gültigkeit.
+
+[TIP]
+[black]#*Diese erweiterte Dokumentation zum Testset V2 und die link:Testsuite.adoc[Testsuite.adoc] Dokumentation müssen in Kombination von Herstellern beachtet werden.*#
+
+[.text-right]
+<<id0,Inhaltsverzeichnis>>
+

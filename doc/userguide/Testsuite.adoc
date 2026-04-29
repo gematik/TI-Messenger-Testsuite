@@ -2,6 +2,7 @@
 :toc:
 :toclevels: 4
 
+:table-caption: Tabelle
 
 :important-caption: pass:[<span class="icon" style="font-size: 5em; color: red;">&#8505;</span>]
 :tip-caption:  pass:[&#128681;]
@@ -20,26 +21,34 @@
 :rootdir: ../../
 
 [[id0,Inhaltsverzeichnis]]
-= TI-Messenger-Dienst Release 1.1.2
+= TI-Messenger Testsuite
 
 image::gematikLogoRight.png[float="right"]
 
-== TI-Messenger-Dienst Testsuite
+== TI-Messenger Testsuite
 
 {empty} +
 
-gematik | Version 1.1 | Stand: 18.04.2024
+gematik | Version 1.0 | 02.04.2026
 
 Dokumentenhistorie
 
 [cols='10%,10%,10%,60%,10%']
 |===
-| *Version*  |*Stand*      | *Kap.* | *Grund der Änderung, besondere Hinweise* | *Bearbeiter*
-| 1.0        | 24.01.2023  |        | initiale Erstellung                               | gematik
-| 1.1        | 18.04.2024  |        | Kapitel 9.2 und 9.3 neu                           | gematik
-| 1.2        | 27.08.2025  |        | kleinere Klarstellungen                           | gematik
-| 1.3        | 19.12.2025  |        | Anpassung Einleitung                              | gematik
+| *Version*  |*Stand*      | *Kap.*            | *Grund der Änderung, besondere Hinweise*                            | *Bearbeiter*
+| 1.0        | 02.04.2026  |                   | initiale Erstellung                                                 | gematik
+
 |===
+
+{empty} +
+
+====
+*Hinweis zur Sprachverwendung*
+
+In diesem Dokument wird das generische Maskulinum verwendet, um die Lesbarkeit zu erleichtern.
+Sämtliche Bezeichnungen beziehen sich gleichermaßen auf alle Geschlechter.
+Die gewählte Form umfasst somit sowohl männliche, weibliche als auch diverse Personen und soll niemanden ausschließen.
+====
 
 {empty} +
 
@@ -48,7 +57,19 @@ image::Intro.png[float="left"]
 
 {empty} +
 
-In den folgenden Kapiteln sind alle nötigen Informationen zu den bereitgestellten Testfällen und der Funktionalität der Testsuite beschrieben.
+In den nachfolgenden Kapiteln finden Sie sämtliche erforderlichen Informationen zu den bereitgestellten Testfällen sowie zur Funktionalität der Testsuite für den TI-Messenger.
+{empty} +
+
+Diese Dokumentation ist gültig für TI-Messenger ab:
+
+[cols='1,3,3']
+|===
+| *Ausprägung*        | *Spezifikationsversion (ab)*               |*Produkttypsteckbriefversion (ab)*
+| Pro                 | Basis Spec 1.0.0 & Pro Spec 1.0.0          | Client 1.0.0-0 & Fachdienst 1.0.0-0
+| ePA                 | Basis Spec 1.0.0 & ePA Spec 1.0.0          | Client 1.0.0-0 & Fachdienst 1.0.0-0
+|===
+
+In dieser Dokumentation werden alle Punkte behandelt, die den TI-Messenger Pro und ePA betreffen.
 
 Alle wichtigen Informationen für die Hersteller sind wie folgt gekennzeichnet.
 
@@ -57,327 +78,320 @@ Alle wichtigen Informationen für die Hersteller sind wie folgt gekennzeichnet.
 
 [IMPORTANT]
 ====
-Dieses Dokument ist auch Grundlage für nachfolgende Dokumentationen der TI-Messenger Testsuite.
-
-Diese weiterführenden Versionen der Dokumentation (adoc) bauen auf die in diesem Dokument (adoc) etablierten Informationen und Grundlagen auf.
-
-Nachfolgende Dokumentationsversionen besitzen ebenfalls Gültigkeit und sind an die entsprechenden TI-Messenger Versionen gebunden.
+Wichtige Informationen für die Hersteller
 ====
 
+*Die Testsuite behandelt folgende zulassungsfähige Client- und Fachdienstausprägungen*:
+
+- TI-Messenger Pro (basierend auf den TI-M Spezifikationen: _Basis_ und zusätzlich _Pro_)
+- TI-Messenger Pro für Krankenkassen ohne HBA Funktionalität (basierend auf den TI-M Spezifikationen: _Basis_ und zusätzlich _Pro_)
+- TI-Messenger ePA (basierend auf den TI-M Spezifikationen: _Basis_ und zusätzlich _ePA_)
+
+Grundlage sind folgende Spezifikationen:
+
+link:https://gemspec.gematik.de/docs/gemSpec/gemSpec_TI-M_Basis/latest/[TI-Messenger - Basis]
+
+link:https://gemspec.gematik.de/docs/gemSpec/gemSpec_TI-M_Pro/latest/[TI-Messenger - Pro]
+
+link:https://gemspec.gematik.de/docs/gemSpec/gemSpec_TI-M_ePA/latest/[TI-Messenger - ePA]
+
+{empty} +
+
+*Erweiterte Testsuitedokumentation*
+
+[IMPORTANT]
+[black]#*_Dieses Dokument versteht sich als Basis zu den erweiterten Dokumentationen, die je Testsetversion vorhanden sind._*#
+
+Beide Dokumente besitzen in Kombination Gültigkeit.
+
+Ab welcher Spezifikationsversion die jeweilige Testsetversion gültig ist, ist den erweiterten Dokumentationen zu entnehmen.
+
+Die erweiterten Testsetdokumentationen sind unter doc/userguide zu finden und sind wie folgt benamt:
+
+- Testset_V(Testsetversionsnummer).adoc
+
+Z.B.: Testset_V2.adoc oder Testset_V3.adoc usw.
+
+Die Testsetversionsnummer ist passend zu den jeweiligen Foldern der Feature Files src/test/resources/templates/FeatureFiles gewählt.
+
+{empty} +
+
+[TIP]
+[black]#*_Für welche Spezifikationsversionen die Tests Gültigkeit besitzen, Maven Befehle für verschiedene Zulassungstests, Spezial-Tags, Testfallliste und FeatureFile-AFO-Listen sind den erweiterten Testsetdokumentationen zu entnehmen._*#
+
+[.text-right]
+<<id0,Inhaltsverzeichnis>>
+
+image:Akteur1.png[float="left"]image:Akteur2.png[float="left"]
+
+=== 2. Rollen im TI-Messenger-Dienst
+
+[.id=kapitel-Rollen]
+{empty} +
+
+Im Kontext des TI-M-Dienstes werden verschiedene Rollen definiert, deren Funktionalitäten je nach Version des TI-Messengers variieren.
+Eine detailliertere Beschreibung dieser Rollen findet sich im Kapitel <<3. Rollen in der TI-Messenger-Testsuite>>.
+Die folgende <<img_Rollen>> zeigt eine Übersicht der Rollen:
+
+[[img_Rollen]]
+.Abbildung{counter:my-example-number: 1}. Rollen im TI-Messenger-Dienst
+image:Rollen_maskulin.png[float="center"]
+
+Die Nutzer lassen sich grundsätzlich in zwei Gruppen unterteilt:
+**User** und **Organisationsadministratoren (Org-Admins)**.
+Die Funktionen dieser beiden Basisrollen sind in der folgenden
+<<table-roles, Tabelle 1. Rollen: User vs. Org-Admin>> aufgeführt:
+
+[[table-roles]]
+.Rollen: User vs. Org-Admin
+|===
+| User | Org-Admin
+
+|- kann sich gegenüber einem Messenger-Service
+authentisieren
+
+- kann sich an einem Messenger-Service anmelden. |
+- kann Messenger-Services für seine Organisation registrieren
+
+- kann Authentifizierungsmethoden für Akteure an Messenger-Services seiner Organisation festlegen
+
+- kann die Accounts der Akteure dieser Messenger-Services verwalten
+
+- kann die Matrix-Homeserver-Konfigurationen für seine Organisation vornehmen
+|===
+
+[TIP]
+[black]#*_Allgemein kann sich ein **User** am Messenger-Dienst anmelden und authentifizieren, während der **Org-Admin**, zusätzlich zu anderen Aufgaben, die Verantwortung für das Account-Management übernimmt und den TI-Messenger registriert._*#
+
+[.text-right]
+<<id0,Inhaltsverzeichnis>>
+
+=== 3. Rollen in der TI-Messenger-Testsuite
+
+{empty} +
+In der TI-Messenger-Testsuite werden die Akteure mit den unterschiedlichen Rollen verwendet.
+Ihre Namensgebung unterscheidet sich in der Testsuite von den zuvor erwähnten Rollennamen im TI-Messenger, wie die folgende
+<<img_Rollen_testsuite>> verdeutlicht.
+
+[[img_Rollen_testsuite]]
+.Abbildung{counter:my-example-number: 1}: Rollen in der TI-Messenger-Testsuite
+image:Rollen_Testsuite.png[float="center"]
+
+Links neben dem Pfeil sind die Rollennamen, die zuvor im Kapitel <<2. Rollen im TI-Messenger-Dienst, 2. Rollen im TI-Messenger-Dienst>> erwähnt wurden, in einem transparenten Farbton dargestellt.
+Der jeweilige Pfeil verweist auf den Namen des Akteurs mit der entsprechenden Rolle, wie er in der Testsuite gekennzeichnet ist.
+
+Beim pass:[<span style="color: #3be36a;">TI-Messenger ePA</span>] nimmt der User die Rolle des
+pass:[<span style="color: #3be36a;">EPA_CLIENT</span>] an.
+Die grundlegende Funktionalität bleibt dabei unverändert.
+
+In der Version **pass:[<span style="color: #196c50;">TI-Messenger Pro</span>]** gibt es zwei verschiedene Usereinteilungen: den **pass:[<span style="color: #196c50;">PRO_CLIENT</span>]** und
+**pass:[<span style="color: #196c50;">PRO_PRACTITIONER</span>]**.
+
+[TIP]
+[black]#*_Der **pass:[<span style="color: #196c50;">PRO_CLIENT</span>]** unterscheidet sich vom
+pass:[<span style="color: #3be36a;">EPA_CLIENT</span>] im Wesentlichen durch die Nutzung eines anderen Frontends sowie durch ein erweitertes Berechtigungskonzept._*#
+
+[TIP]
+[black]#*_Ein TI-Messenger User, der im Besitz eines HBA ist, kann zum
+**pass:[<span style="color: #196c50;">PRO_PRACTITIONER</span>]** werden.
+Hierfür ist eine Registrierung mit dem HBA beim zentralen IDP-Dienst erforderlich.
+Dadurch kann sich der User zum Beispiel als Arzt im VZD hinterlegen (siehe AF_10058 Pro Spec)._*#
+
+[TIP]
+[black]#*_Auch der **pass:[<span style="color: #196c50;">ORG_ADMIN</span>]** verfügt über zusätzliche Funktionen, wie die Verwaltung von Einträgen im Organisationsverzeichnis des VZDs._*#
+
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
 
 image::TI-Messenger.png[float="left"]
-==== 1.1 TI-Messenger-Dienst Systemübersicht
+
+=== 4. Berechtigungskonzept
+
+In fast allen Testfällen der Testsuite wird das Berechtigungskonzept als Grundlage der einzelnen Tests gebraucht.
+Daher wird dieses hier etwas genauer erläutert.
+Änderungen zwischen den Versionen können den Spezifikationen entnommen werden.
+
+Das Berechtigungskonzept der TI-Messenger Pro und ePA unterscheidet sich grundlegend von dem der Produktversion 1.1.x und wird u.a. auch von der Testsuite betrachtet.
 
 {empty} +
 
-Bei der Umsetzung der Funktionalitäten des TI-Messenger-Dienstes sind mehrere Komponenten beteiligt, die durch verschiedene Anbieter bereitgestellt werden.
-Die folgende Abbildung zeigt alle an der TI-Messenger-Architektur beteiligten Komponenten mit deren Schnittstellen.
+image::TI-Messenger.png[float="left"]
+==== 4.1 Berechtigungskonzept - Basis
 
-.Abbildung{counter:my-example-number: 1}: Komponenten der TI-Messenger-Architektur und deren Schnittstellen (gemSpec_TI-Messenger-Dienst)
-image:System.png[float="center"]
+Das Berechtigungsmanagement sieht 2 Stufen der Prüfung vor:
+
+1. Zuerst erfolgt eine Prüfung auf Seiten des Fachdienstes durch den Messenger-Proxy.
+2. Eine Prüfung auf Empfängerseite erfolgt durch den Fachdienst bzw. den TI-M Client je nach Spezifikationsversion.
+
+Genauere Informationen zur Basisfunktionalität können durch die Spezifikation erlangt werden.
+link:https://gemspec.gematik.de/docs/gemSpec/gemSpec_TI-M_Basis/latest/#5.2[Basis - Berechtigungsmanagement]
+
+Die Basisfunktionalität umfasst, dass ein Akteur des TI-Messengers selbst entscheiden kann, wer ihn kontaktieren darf und wer nicht.
+link:https://gemspec.gematik.de/docs/gemSpec/gemSpec_TI-M_Basis/latest/#5.2.2[Basis - Akteursspezifische Berechtigungskonfiguration]
+
+[[img_Basis_Berechtigung]]
+.Abbildung{counter:my-example-number: 1}: Berechtigungen setzen (Basis)
+image:Basis_Berechtigung.png[float="center"]
+
+Neben den Basiseinstellungen "AllowAll" und "BlockAll", die es ermöglichen, gezielt anderen Usern des TI-Messengers eine Kommunikationsaufnahme zu erlauben bzw. zu unterbinden, gibt es weitere Festlegungen in den Pro- bzw. ePA-Spezifikationen.
 
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
 
 image::TI-Messenger.png[float="left"]
 
-==== 1.2 TI-Messenger-Dienst Anwendungsfälle
+==== 4.2 Berechtigungskonzept - Pro
 
-{empty} +
+Zusätzlich zur Basisfunktionalität (siehe 4.1) hat ein Nutzer eines TI-Messengers Pro zusätzliche Optionen.
 
-Für jeden zu testenden Anwendungsfall wurde ein Feature File angelegt.
-In diesem Feature File befinden sich dann die einzelnen Tests für den jeweiligen Anwendungsfall.
+Für die Akteure des TI-M Pro wird die Möglichkeit geschaffen, bestimmte Nutzergruppen in der Berechtigungskonfiguration auswählen zu können.
+Als erste Benutzergruppe wird die Gruppe der Versicherten eingeführt.
+Diese kann dann dementsprechend geblockt oder erlaubt werden, je nach Basiseinstellung.
 
-[cols='^1,1,6,4']
-|===
-| *Feature File* | *AF Nummer*               | *Beschreibung*                                               | *Anmerkung*
-|                | AF_10103                  | Authentisieren einer Organisation am TI-Messenger-Dienst     | wird nicht mit der Testsuite getestet ^1)^
-|                | AF_10060                  | Bereitstellung eines Messenger-Service für eine Organisation | wird nicht mit der Testsuite getestet ^1)^
-| 03             | AF_10059                  | Organisationsressourcen im Verzeichnisdienst hinzufügen      |
-| 04             | AF_10057                  | Anmeldung eines Akteurs am Messenger-Service                 |
-| 05             | AF_10058                  | Akteur (User-HBA) im Verzeichnisdienst hinzufügen            |
-| 06             | AF_10064                  | Föderationszugehörigkeit eines Messenger-Service prüfen      | Die Positivtests des Anwendungsfalls werden im AF_10104 und AF_10061 implizit mitgetestet
-| 07             | AF_10104                  | Einladung von Akteuren innerhalb eines Messenger-Service     |
-| 08             | AF_10063                  | Austausch von Events innerhalb eines Messenger-Service       |
-| 09             | AF_10061                  | Einladung von Akteuren anderer Messenger-Services            |
-| 10             | AF_10062                  | Austausch von Events zwischen anderen Messenger-Services     |
-| 11             | AF_10061                  | Einladung von Akteuren via Freigabeliste                     |
-|===
+[[img_Pro_Berechtigung]]
+.Abbildung{counter:my-example-number: 1}: Berechtigungen setzen (Pro)
+image:Pro_Berechtigung.png[float="center"]
 
-^1)^ Die Schnittstelle am Registrierungs-Dienst wird nicht durch die gematik normativ vorgegeben.
-Sie bietet einem Akteur in der Rolle "Org-Admin" einer Organisation die Möglichkeit, Messenger-Services für seine Organisation zu administrieren.
-Bei dieser Schnittstelle bleibt es dem TI-Messenger-Anbieter überlassen diese in geeigneter Form bereitzustellen.
-Die gematik gibt lediglich grundlegende bereitzustellende Funktionen vor und führt auch keine Tests an dieser Schnittstelle durch.
-
-*Info*: Teile der Anwendungsfälle AF_10104 & AF_10061 (Einladung) werden implizit in den Anwendungsfällen AF_10063 & AF_10062 (Eventaustausch) mitgetestet, da diese Preconditions für den Eventaustausch darstellen und somit nicht doppelt getestet werden.
+Siehe:
+link:https://gemspec.gematik.de/docs/gemSpec/gemSpec_TI-M_Pro/latest/#5.3[Pro - Berechtigungsmanagement - Anpassungen]
 
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
 
 image::TI-Messenger.png[float="left"]
 
-==== 1.3 Zusätzliche Anwendungsfälle
+==== 4.3 Berechtigungskonzept - ePA
+
+Zusätzlich zur Basisfunktionalität (siehe 4.1) muss für Nutzer des TI-M ePA verhindert werden, dass ein Versicherter einen anderen Versicherten einladen kann.
+Diese Prüfung soll am Fachdienst erfolgen.
+
+[[img_ePA_Berechtigung]]
+.Abbildung{counter:my-example-number: 1}: Versicherteneinladung unterbinden
+image:ePA_Berechtigung.png[float="center"]
+
+In nur einer Konstellation können zwei TI-M ePA Nutzer zusammen in einem Raum sein und kommunizieren:
+
+- Wenn der zweite TI-M ePA-Nutzer von einem TI-M Pro-Nutzer in einen bereits bestehenden Raum eingeladen wird, in dem sich auch der erste TI-M ePA-Nutzer befindet.
+
+Siehe:
+link:https://gemspec.gematik.de/docs/gemSpec/gemSpec_TI-M_ePA/latest/#5.3[ePA - Berechtigungsmanagement - Anpassungen]
+
+[.text-right]
+<<id0,Inhaltsverzeichnis>>
+
+image::Firewall.png[float="left"]
+
+=== 5. Aufbau und Struktur der Testsuite
 
 {empty} +
+Mit der TI-Messenger Testsuite Version 2 werden Anwendungsfälle und Anforderungen, welche in drei verschiedenen Spezifikationen spezifiziert wurden, getestet.
+Der Aufbau der Testsuite ist daher vielschichtig.
 
-Neben den Anwendungsfällen, die in der Spezifikation beschrieben sind, wurden noch drei weitere Anwendungsfälle für die Tests definiert.
-In diesen Anwendungsfällen werden Room States, Gruppenchats und die Nutzung von mehreren Geräten getestet.
-Die Anfrage der Geräte-Information aller Schnittstellen hat nur informativen Charakter.
+[.text-right]
+<<id0,Inhaltsverzeichnis>>
 
-[cols='^1,1,6,4']
+image::Firewall.png[float="left"]
+==== 5.1 Ordnerstruktur der TI-Messenger Testsuite
+
+Die <<img_folderStructure>> veranschaulicht die Ordnerstruktur der Testsuite.
+Zunächst sind die Anwendungsfälle gemäß den jeweiligen Spezifikationen in spezifischen Ordnern organisiert:
+_UCs_Basis_, _UCs_ePA_ und _UCs_Pro_.
+
+[[img_folderStructure]]
+.Abbildung{counter:my-example-number: 1}: Ordnerstruktur der TI-Messenger Testsuite
+image:FolderStructure2.png[float="center"]
+
+Innerhalb dieser Ordner gibt es Unterordner, die Testfälle zu den jeweiligen Anwendungsfällen in den entsprechenden Spezifikationen enthalten.
+Die Unterordner werden hier als _UCXX_ bezeichnet.
+
+_UC_ steht für _Use Case_ (Anwendungsfall), und die Zahl dahinter kennzeichnet die Nummerierung gemäß der link:https://gemspec.gematik.de/docs/gemSpec/gemSpec_TI-M_Basis/latest/#5.1[Spezifikation].
+
+Falls hinter der Zahl noch ein _X_ steht (zum Beispiel in `UCs_Basis/UC10X_...`), bedeutet dies, dass es sich nicht um einen in der Spezifikation klassifizierten Use Case handelt.
+Die Testfälle decken dennoch einen thematischen Teil der Spezifikation ab.
+
+[.text-right]
+<<id0,Inhaltsverzeichnis>>
+
+image::Firewall.png[float="left"]
+
+==== 5.2 Nummerierung der Feature Files
+
+Wie bereits in Kapitel <<2. Rollen im TI-Messenger-Dienst>> beschrieben, variieren die Rollen je nach Version des TI-Messengers.
+Dennoch können einige Rollen, wie etwa die des TI-Messengers ePA (z.B. pass:[<span style="color: #3be36a;">EPA_CLIENT</span>]), auch Anwendungsfälle aus der Basisspezifikation ausführen.
+
+Deshalb enthalten die Unterordner der _UC_-Ordner nummerierte Feature-Dateien.
+Diese Dateien folgen einer einheitlichen Namenskonvention:
+_"UsecaseNummer_Nummerierung_beteiligteRollen_UsecaseName_TestsetVersion_betreffendeSpec.feature.cute"_.
+Die Bedeutung der einzelnen Parameter, die in den Namen enthalten sind, wird in
+<<table-roles, Tabelle 2. Übersicht der Parameter der Feature File Namen>> erläutert.
+
+[[table-naming]]
+.Übersicht der Parameter der Feature File Namen
+[cols="1,4",options="header"]
 |===
-| *Feature File* | *AF Nummer* | *Beschreibung*                                               | *Anmerkung*
-| 00             | ohne        | Abfragen der Geräte-Information aller Schnittstellen         | informativ
-| 12             | ohne        | Gruppen Chats                                                |
-| 13             | ohne        | Nutzung von mehreren Geräten                                 |
-| 14             | ohne        | Room States überprüfen                                       |
+| Parameter                 | Beschreibung
+| UsecaseNummer             | Nummer des Anwendungsfalls, so wie in der Spezifikation angegeben, z. B. _UC03_.
+| Nummerierung              | Zusätzliche Nummerierung zur Unterscheidung von FeatureFile-Varianten.
+| beteiligteRollen          | Rollen, die an diesem Anwendungsfall beteiligt sind. Hierbei gilt folgende Nomenklatur: +
+pass:[<span style="color: #3be36a;">EPA_CLIENT</span>] -> `ePA`, +
+pass:[<span style="color: #196c50;">PRO_CLIENT</span>] -> `Org` (steht für Organisationsmitglied) und +
+pass:[<span style="color: #196c50;">PRO_PRACTITIONER</span>] -> `HBA`
+| UsecaseName               | Der Name oder die Beschreibung des Anwendungsfalles.
+| TestsetVersion            | Version des Testsets, z.B. V2 oder V3.
+| betreffendeSpec           | Verweis auf die Spezifikation, die dieser Use Case betrifft.
+| .feature                  | Endung der Testdatei im Feature-Format (Gherkin).
+| .cute                     | Dateikonvention zur Verarbeitung im Testsuite spezifischen Maven-Plugin.
 |===
 
-[.text-right]
-<<id0,Inhaltsverzeichnis>>
+Die Nummerierung folgt einem bestimmten Schema, welches in
+<<img_featureStructure>> dargestellt ist.
 
-image:Akteur2.png[float="left"]image:Akteur1.png[float="left"]
+[[img_featureStructure]]
+.Abbildung{counter:my-example-number: 1}: Übersicht der Feature-File Nummerierungen
+image:FeatureStructure.png[float="center"]
 
-=== 2. Akteure des TI-Messenger-Diensts
+Grundsätzlich beziehen sich die Nummerierungen eins bis vier auf alle Feature-Files, die Tests für die Zulassung der TI-Messenger-Produktlinie Pro enthalten.
+Es gibt jedoch eine Einschränkung: Krankenkassen, die keine HBA-Funktionalität besitzen, können ausschließlich mit den Tests der Feature-Files mit den Nummerierungen eins und zwei geprüft werden.
+Die Nummerierungen fünf bis neun sind für die Tests und die Zulassung der Produktlinie ePA relevant.
 
-{empty} +
-
-Es wird zwischen zwei Gruppen von Akteuren unterschieden, die verschiedene Funktionen/Aktionen ausführen können.
-In Kapitel 3 werden diese differenzierter beschrieben.
-
-Die Zuordnung der Anwendungsfälle zu den einzelnen Gruppen von Akteuren sehen wie folgt aus:
-
-.Abbildung{counter:my-example-number: 1}: Anwendungsfälle Org-Admin
-image:UC_org_admin.png[float="center"]
-
-.Abbildung{counter:my-example-number: 1}: Anwendungsfälle User/ User-HBA
-image:UC_user_HBA.png[float="center"]
+Am Anfang jedes Feature-Files sind entsprechende Zulassungstags angegeben, die kennzeichnen, für welche Zulassung die enthaltenen Tests bestimmt sind.
+Eine detaillierte Beschreibung der einzelnen Tags und ihrer Funktionalität ist im Kapitel <<id6,Tags und Filter>> zu finden.
 
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
 
-image::Testsuite.png[float="left"]
+image::Firewall.png[float="left"]
 
-=== 3. Akteure in der TI-Messenger-Testsuite
+==== 5.3 Aufbau innerhalb der Feature Files
 
-{empty} +
+Wie bereits erwähnt, befinden sich am Anfang jedes Feature-Files verschiedene Tags, die das gesamte File und alle darin enthaltenen Testfälle beschreiben.
+Eine ausführlichere Erläuterung der einzelnen Tags finden Sie in Kapitel
+<<id6,Tags und Filter>>.
 
-image::HBA.png[float="left"]
+Nach den Tags folgt ein Abschnitt, der den Anwendungsfall entsprechend der jeweiligen Spezifikation beschreibt, auf den sich die Tests in diesem Feature-File beziehen.
+Anschließend an die Aufführung der relevanten Anwendungsfälle und Anforderungen werden die betreffenden Testfälle im Detail dargestellt.
 
-==== 3.1 HBA - User
+Eine Ausnahme von der Nummerierung der einzelnen Testszenarien gibt es im Feature-File `05_1_OrgOrg_Einladung_von_Akteuren_innerhalb_einer_Organisation_V2_Pro.feature.cute` (exemplarisch hier für die V2):
+Hier gibt es die Testfälle A bis D. Diese spezielle Benennung dient dazu, die Funktionalitäten, die für Anwendungsfall fünf der Pro-Spezifikation getestet werden, konsistent mit den Tests für Anwendungsfall fünf der Basis-Spezifikation zu halten.
+Da jedoch bei der Einladung von Akteuren innerhalb einer Organisation die Suche auf dem Homeserver eine zusätzliche Rolle spielt – was bei der Einladung von Akteuren außerhalb einer Organisation nicht relevant ist – wurden die Testfälle mit A bis D gekennzeichnet, um die Konsistenz der Nummerierung und Funktionalitäten zu bewahren.
 
-{empty} +
-
-Die Rolle "User-HBA" kann ausschließlich von einem Leistungserbringer eingenommen werden.
-Die Authentifizierung des Akteurs erfolgt hierbei über seinen HBA.
-Ein Akteur in der Rolle "User-HBA" kann seine MXID im Personenverzeichnis im VZD-FHIR-Directory hinterlegen, damit andere Akteure in der Rolle "User-HBA", die ebenfalls die eigene MXID auf dem VZD-FHIR-Directory hinterlegt haben, ihn kontaktieren können.
-
-[TIP]
-[black]#*_Für Akteure Practitioner müssen HBAs von den Herstellern bestellt werden <<id43,Anforderungen an die Clients>>._*#
+Im Anschluss daran folgen die einzelnen Testfälle.
 
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
 
-image:Akteur2.png[float="left"]image:Akteur1.png[float="left"]
-
-==== 3.2 Organisations User
-
+[[id6,Tags und Filter]]
 {empty} +
 
-Die Rolle "User" kann von einem Leistungserbringer sowie von einem Mitarbeiter im Gesundheitswesen eingenommen werden.
-Die Authentifizierung des Akteurs erfolgt hierbei nicht über eine SMC-B oder einen HBA, sondern über ein vom Messenger-Service bereitgestelltes Authentifizierungsverfahren.
-Für einen Akteur in der Rolle "User" kann dessen MXID im Organisationsverzeichnis auf dem VZD-FHIR-Directory durch den Org-Admin hinterlegt werden, um für Akteure außerhalb seiner Organisation auffindbar zu werden. +
-{empty} +
-Die Organisationsuser können auch gleichzeitig HBA-User sein.
-Das bedeutet die Organisation trägt die MXID der HBA-User in den Endpoint eines Healthcare Services im Organisationsverzeichnis auf dem VZD-FHIR-Directory ein.
-
-[TIP]
-[black]#*_Für die Einrichtung von Organisationsuser werden eine Domain und eine Organisation benötigt <<id41,Messenger-Service für eine Organisation>>._*#
-
-[.text-right]
-<<id0,Inhaltsverzeichnis>>
-
-image:SMC-B.png[float="left"]
-
-==== 3.3 Org-Admin
-
-{empty} +
-
-Die Rolle "Org-Admin" stellt eine besondere Rolle im TI-Messenger Kontext dar.
-Leistungserbringer oder Mitarbeiter einer Organisation können diese Rolle einnehmen, nachdem sie ihre Organisation zuvor erfolgreich am Registrierungs-Dienst unter Verwendung ihrer SMC-B authentifiziert haben.
-Nach der erfolgreichen Authentifizierung wird ein Admin-Account am Registrierungs-Dienst vom TI-Messenger-Fachdienst angelegt.
-Mit der Anmeldung am Registrierungs-Dienst über den Admin-Account nimmt ein Akteur die Rolle "Org-Admin" ein.
-Dieser kann Messenger-Services für seine Organisation registrieren und Einträge im Organisationsverzeichnis des VZD-FHIR-Directory verwalten.
-
-[TIP]
-[black]#*_Für die Akteure Org-Admins müssen SMC-Bs von den Herstellern bestellt werden <<id43,Anforderungen an die Clients>>._*#
-
-[.text-right]
-<<id0,Inhaltsverzeichnis>>
-
-image:Hersteller.png[float="left"]
-
-=== 4. Bereitstellungen der Hersteller
-
-{empty} +
-
-Um die Testsuite ausführen zu können sind bestimmte Bereitstellungen durch die Hersteller erforderlich.
-Folgende Absätze beschreiben die benötigten Bereitstellungen der Hersteller.
-{empty} +
-{empty} +
-
-image:KH.png[float="left"]
-
-[[id41,Messenger-Service für eine Organisation]]
-==== 4.1 Messenger-Service für eine Organisation
-
-{empty} +
-
-[TIP]
-[black]#*_Testkarten (HBA/SMC-B) müssen von den Herstellern bestellt werden siehe <<id43,Anforderungen an die Clients>>._*#
-
-[TIP]
-[black]#*_Für die Ausführung der Testsuite werden eine Domain und eine Organisation benötigt.
-Diese Domain und Organisation müssen von den Herstellern vor Beginn der Testphase eingerichtet werden und die Daten an die gematik übermittelt werden._*#
-
-[TIP]
-[black]#*_Die verwendeten Akteure/User müssen von den Herstellern auf dem Homeserver eingerichtet werden._*#
-
-.Abbildung{counter:my-example-number: 1}: Testkonfiguration
-image:TestKonfiguration.png[float="center"]
-
-[.text-right]
-<<id0,Inhaltsverzeichnis>>
-
-image:Smartphone.png[float="left"]
-
-==== 4.2 Test Clients mit Testtreiberschnittstelle
-
-{empty} +
-
-Das folgende Bild zeigt die Inbetriebnahme der Testtreiberschnittstelle und der Clients.
-Die Clients können über eine externe oder interne Testtreiberschnittstelle mit der Testsuite remote oder local verbunden werden.
-Diese Leistung muss von jedem Hersteller erbracht werden.
-Welche Clients eingesetzt werden, können die Hersteller selbstständig entscheiden.
-Es werden nur bereitgestellte Clients zugelassen. +
-Clients mit den gleichen Eigenschaften werden unter einer URL zusammengefasst.
-Dabei ist zu beachten, dass OrgAdmins immer eine eigene Schnittstelle benötigen, auch falls sie sonst alle anderen Eigenschaften eines Clients teilen.
-Diese URL wird dann in die Konfigurationsdatei 'combine_items.json' eingetragen.
-In dieser Datei werden alle Testobjekte verwaltet.
-
-.Abbildung{counter:my-example-number: 1}: Zusammenspiel Testtreiber und Clients
-image:Clients.png[float="center"]
-
-Die unterschiedlichen Testtreibeschnittstellen werden mit mTLS gesichert.
-Eine unterstützende Anleitung hierzu befindet sich link:GettingStarted.adoc#_set_up_certificates[hier].
-
-[.text-right]
-<<id0,Inhaltsverzeichnis>>
-
-image:Smartphone.png[float="left"]
-
-[[id43,Anforderungen an die Clients]]
-==== 4.3 Anforderungen an die Clients
-
-{empty} +
-
-Die Testsuite benötigt für die Ausführung der Tests eine bestimmte Anzahl von Clients.
-Besonders die Tests für den Gruppen Chat benötigen diverse Endgeräte. +
-
-[TIP]
-[black]#*_Grundsätzlich müssen an jeder Schnittstelle mindestens drei Geräte zur Verfügung stehen (z.B. 3 x IOS Clients, 3 x Android Clients, 3 x Windows Clients usw.).
-Ausgenommen von dieser Festlegung ist der Org-Admin, hier ist ein Gerät ausreichend._*#
-
-[TIP]
-[black]#*_Die Clients benötigen Testidentitäten (SMC-B/HBA Karten).
-Die Kartenbestellung erfolgt über das gematik Fachportal: +
-https://fachportal.gematik.de/gematik-onlineshop/testkarten?ai%5Baction%5D=detail&ai%5Bcontroller%5D=Catalog&ai%5Bd_name%5D=Testkarte-eGK-G2&ai%5Bd_pos%5D=1_*#
-
-[TIP]
-[black]#*_Welche Testkarten müssen bestellt werden: +
-1. "TestKarte SMC-B G2.1 Krankenhaus" oder "TestKarte SMC-B G2.1 Arztpraxis" +
-&nbsp; &nbsp; &nbsp;(1x für OrgAdmin Schnittstelle) +
-2. "TestKarte HBA G2.1 Arzt" (3x pro Schnittstelle)_*#
-
-[TIP]
-[black]#*_Wenn mehrere Hersteller oder Personen eines Herstellers eine Testressource gleichzeitig nutzen wollen, muss die Anzahl der Clients dementsprechend erhöht werden, da eine Testsuite pro Run die oben genannte Anzahl an Devices benötigt_*#
-
-[.text-right]
-<<id0,Inhaltsverzeichnis>>
-
-image:User.png[float="left"]
-
-==== 4.4 Verwaltung der Ressourcen
-
-{empty} +
-
-Hinter jeder Schnittstelle des Testtreiber Moduls verbergen sich ggf. mehrere Devices (siehe 4.3) mit der gleichen Grundkonfiguration.
-Diese Grundkonfiguration betrifft:
-
-- Client Version (Version vom TI-M)
-- Betriebssystem (Os)
-- Typ (Org-Admin oder Messenger-Client)
-
-Pro Device muss neben allen anderen Daten genau 1 User inkl Passwort hinterlegt werden (1:1 Beziehung).
-
-Dies gilt für Messenger-Clients ebenso wie für Org-Admin Clients.
-
-Wenn hinter dem Messenger-Client Device eine HBA liegt, um HBA Interaktionen z.B. mit dem VZD durchzuführen, müssen der User des Devices und der Name auf der HBA übereinstimmen.
-Somit kann sich dann der eingeloggte und hinterlegte User auch als HBA authentifizieren.
-
-*Der hinterlegte User muss auf dem Homeserver bzw. der TI-M Instanz registriert sein*, sodass eine Anmeldung im TI-M über die Testtreiber Schnittstelle mittels POST Login möglich wird.
-
-Vor dem Start eines Testfalls wird eine Anfrage an den POST /-Endpunkt (signalTestStart) gesendet.
-Diese dient dazu, einen Clean-up durchzuführen – zum Beispiel das Aufräumen von Nutzern, Räumen und FHIR-Ressourcen im VZD.
-Die Ausführung des Testfalls beginnt erst nach dem Erhalt eines erfolgreichen Statuscodes (2xx).
-Auf diese Weise wird sichergestellt, dass wiederholte Tests zwischen Systemen nicht aufgrund versehentlich zurückgelassener Ressourcen fehlschlagen.
-
-Der Start eines Testfalls sieht dann wie folgt aus:
-
-- Get Info - Abfragen der Info Schnittstelle, an der alle wichtigen Informationen des Devices hinterlegt sind
-- Get Device - Liste aller Device einer Schnittstelle werden abgefragt
-- Claim Device - Ein Device im Status ‘unclaimed’ wird für den Testlauf geclaimt
-- Post Login - Leerer Request Post Login mit der Device ID und der Response:
-
-.Abbildung{counter:my-example-number: 1}: Response Login
-image:Response_Login.png[float="center"]
-
-[TIP]
-[black]#*_Wie der Testtreiber Schnittstellen Dokumentation zu entnehmen ist, wird ausschließlich ‚BasicAuth‘ genutzt._*#
-
-[TIP]
-[black]#*_Grundsätzlich liegt hinter jedem Device exakt ein User inkl.
-Passwort._*#
-
-[TIP]
-[black]#*_Wenn es sich um einen Practitioner-Client Device handelt, muss der User mit dem auf der hinterlegten HBA übereinstimmen_*#
-
-[TIP]
-[black]#*_Die Verwaltung der Domain, der Organisationen und der User liegt in der Verantwortung der Hersteller._*#
-
-[TIP]
-[black]#*_Weiterhin müssen die Hersteller die Schnittstellen für die TI-Messenger-Testsuite aktuell halten._*#
-
-[.text-right]
-<<id0,Inhaltsverzeichnis>>
-
-image:Server.png[float="left"]
-
-=== 5. Referenzimplementierung
-
-{empty} +
-
-Die gematik stellt eine TI-Messenger-Dienst Referenzimplementierung zur Verfügung.
-Zur Sicherstellung der Interoperabilität zwischen verschiedenen TI-Messenger-Fachdiensten innerhalb des TI-Messenger-Dienstes muss der TI-Messenger-Dienst (TI-Messenger-Client und TI-Messenger-Fachdienst) eines TI-Messenger-Anbieters gegen die Referenzimplementierung (TI-Messenger-Client und TI-Messenger-Fachdienst) getestet werden.
-
-[.text-right]
-<<id0,Inhaltsverzeichnis>>
-
-image::Tags.png[float="left"]
+image::Tag.png[float="left"]
 
 === 6. Tags und Filter
+
+{empty} +
+Über Tags und Filter können dedizierte Sets der Testsuite oder auch nur einzelne Testfälle bzw.
+Feature Files ausgeführt werden.
+
+Die Nutzung dieser Tags dienen sowohl der Ausführung als auch der Verknüpfung zu einem Testmanagement Tool (Polarion), um die Verbindung von Feature Files und Anforderungen abzubilden.
 
 {empty} +
 
@@ -385,119 +399,191 @@ image::Tag.png[float="left"]
 
 ==== 6.1 Tags zur Steuerung der Testsuite
 
+[[id1,Zurück]]
 {empty} +
 
-*Tags für die Berechtigungsprüfung:*
+*Testset Tags die zur Steuerung der Testsuite verwendet werden:*
 
 [cols='1,3']
 |===
-| *Tag Name* | *Beschreibung*
-| @BP:       | Tests mit Berechtigungsprüfung Es gibt weiterhin Tags für die <<id1,erfolgreiche>> und
-für die <<id2,nicht erfolgreiche>> Berechtigungsprüfung.
+| *Tagname*        | *Beschreibung*
+| @ZulVX:XX         | Testfälle relevant für eine Zulassung (z.B. TI-M Pro)
+
+                      Bildungsregel: @ZulV[Testsetversionsnummer]:[Zulassungsgegenstand]
+| @DeltaVX:XX       | Neue/angepasste Testfälle, die das Delta zur jeweiligen vorigen Testsetversion abbilden
+
+                      Bildungsregel: @DeltaV[Testsetversionsnummer]:[Zulassungsgegenstand]
 |===
 
-*Tags die zur Steuerung der Testsuite verwendet werden:*
+[IMPORTANT]
+====
+Delta Tags können pro Feature File nur im Header (für alle Testfälle des Feature Files) oder an einzelnen
+Testszenarien gesetzt werden. Eine Kombination von beidem in einem Feature File ist nicht zulässig.
+====
 
-[cols='1,3']
-|===
-| *Tag Name*              | *Beschreibung*
-| @Ctl:NoParallel         | Parallel Claim für einzelne Testfälle ausschalten
-| @Ctl:Additional         | zusätzliche Tests, die kein direktes Akzeptanz-Kriterium bzw. keinen
-Anwendungsfall haben
-| @Ctl:AdditionalIOP      | zusätzliche Tests, die mehrere HomeServer benötigen und für IOP Tests
-genutzt werden
-| @Ctl:UseCase            | Tests die UseCases aus der Spezifikation abbilden
-| @Ctl:OneHomeServer      | Tests die mit nur einem Homeserver ausgeführt werden können
-| @Ctl:SchnittstellenInfo | Tests die Schnittstellen Informationen abfragen
-| @Ctl:OrgAdmin           | OrgAdmin Tests
-| @Ctl:Chat               | Tests die einen Chat benutzen
-| @Ctl:SearchPart         | Tests mit teilqualifizierter Suche
-| @Ctl:Raum               | Tests die einen Raum benutzen
-| @Ctl:InviteReject        | Tests mit abgelehnter Einladung
-| @Ctl:RejectThird        | Tests Einladung von Dritten wir abgelehnt
-| @Ctl:MsgForward         | Tests senden Nachrichten von A nach B
-| @Ctl:MsgBackward        | Tests senden Nachrichten von B nach A
-| @Ctl:MsgDelete          | Tests mit gelöschten Nachrichten
-| @Ctl:MsgLogout          | Tests mit Offline-Geräten
-| @Ctl:Attachment         | Tests mit Attachments
-| @Ctl:Forbidden          | Berechtigungsprüfung lehnt Verbindung ab
-| @Ctl:Freigabeliste      | Tests mit der Freigabeliste
-| @Ctl:Gruppenchat        | Gruppenchat
-| @Ctl:GruppenchatGroß    | Gruppenchat mit mindestens 5 HomeServern
-| @Ctl:GruppenchatPool    | Gruppenchat mit 3 HomeServern
-| @Ctl:MultiDevices       | ein User verwendet mehrere Geräte
-| @Ctl:NOVZD              | Tests die den VZD nicht benötigen
-| @Ctl:BasicTest          | BasicTest zur Verifizierung der Testsuitefunktionen/ Teststeps
-|===
+[TIP]
+[black]#*_Tags für die einzelnen Testssets zu den Zulassungstests und zur Erfüllung der Eingangskriterien sind in den erweiterten Dokumentationen zur jeweiligen Testsetversion unter doc/userguide zu finden._*#
 
-*Zusätzlichen Tag zur Unterscheidung der Feature-Files:*
+{empty} +
+*Thematische Tags die zur Steuerung der Testsuite verwendet werden:*
 
 [cols='1,3']
 |===
-| *Tag Name* | *Beschreibung*
-| @File:     | Filename
+
+| *Tagname*                    | *Beschreibung*
+| @Ctl:UseCaseVX_XX_XX | Ausführen von mehreren FeatureFiles eines UseCases
+
+                                 Bildungsregel: @Ctl:UseCaseV[Testsetversionsnummer] _ [UseCase Nummer] _ [Spezifikation]
+| @Ctl:SchnittstellenInfo       | Tests die Schnittstellen Informationen abfragen
+| @Ctl:SchnittstellenDatenPro   | Tests für die Infos, Geräte und MatrixVersion an den Schnittstellen für Pro Clients
+| @Ctl:SchnittstellenDatenEpa   | Tests für die Infos, Geräte und MatrixVersion an den Schnittstellen für ePA Clients
+| @Ctl:OneHomeServer            | Tests die mit nur einem Homeserver ausgeführt werden können
+| @Ctl:OrgAdmin                 | OrgAdmin Tests
+| @Ctl:SearchPart               | Tests mit teilqualifizierter Suche
+| @Ctl:InviteReject             | Tests mit abgelehnter Einladung
+| @Ctl:Attachment               | Tests mit Attachments
+| @Ctl:MsgDelete                | Tests mit gelöschten Nachrichten
+| @Ctl:MsgDeleteRedact          | Tests mit durch 'Redact' gelöschten Nachrichten
+| @Ctl:MsgDeleteReplace         | Tests mit durch 'Replace' gelöschten Nachrichten
+| @Ctl:MsgType                  | Tests für die Matrix Message Types
+| @Ctl:MsgEdit                  | Tests mit geänderten Nachrichten
+| @Ctl:MsgDehydrated            | Tests mit Offline-Geräten
+| @Ctl:VZD                      | Tests die den VZD benötigen
+| @Ctl:AllowAll                 | Tests mit Berechtigung AllowAll
+| @Ctl:BlockAll                 | Tests mit Berechtigung BlockAll
+| @Ctl:MixedMode                | Tests mit Berechtigung AllowAll und BlockAll
+| @Ctl:Gruppenchat              | Gruppenchat
+| @Ctl:MultiDevices             | Ein User verwendet mehrere Geräte
+| @Ctl:BP                       | Tests für die Berechtigungsprüfung
+| @Ctl:DomainBP                 | Tests für das Blocken und Entblocken einer Domain (mit Domain ist hier der Server-Name nach Matrix 1.11 gemeint [z.B. "matrix.org"])
+| @Ctl:GruppenBP                | Tests für das Blocken und Entblocken einer Gruppe (Versicherte)
+| @Ctl:RoomStates               | Tests für die Prüfung der Default Room States
+| @Ctl:RoomVersion              | Tests für die Prüfung der Default Room Version
+| @Ctl:ApiCheck                 | Tests für die Überprüfung von vorhandenen, verbotenen, deprecated APIs
+| @Ctl:ProKKHBA                 | Pro für Krankenkassen Tests, in denen ein ProKK Client gegen einen Client mit HBA Funktionalität getestet wird
+
 |===
 
+{empty} +
+*Zusätzlicher Tag zur Unterscheidung der Feature-Files:*
+
+[cols='1,3']
+|===
+
+| *Tagname* | *Beschreibung*
+| @File: | Filename u.a. zur Ausführung einzelner Feature Files
+
+            z.B. @File:FeatureFile_XX_XX_VX_XX
+
+            Bildungsregel: @File:FeatureFile _ [UseCase Nummer] _ [interne Nummerierung] _ V[Testsetversionsnummer] _[Spezifikation]
+
+|===
+
+{empty} +
 *Tags für Polarion (Test-Management-Tool):*
 
 [cols='1,3']
 |===
-|*Tag Name*  | *Beschreibung*
-| @AF-ID:    | Verweis auf den Anwendungsfall (Spec und Polarion)
-| @AK-ID:    | Verweis auf das Akzeptanz-Kriterium (Spec und Polarion)
-| @PRIO:     | Testfall Priorität
-| @PRODUKT:  | Verknüpft das Szenario oder das Feature zu einem Produkt
-| @STATUS:   | Testfall Status
-| @TCID:     | Testfall ID
-| @TESTFALL: | Positiv/Negativ Test
+
+|*Tagname*   | *Beschreibung*
+| @AF-ID: | Verweis auf den Anwendungsfall (Spec und Polarion) | @AFO-ID: | Verweis auf die Anforderung (Spec und Polarion) | @PRIO: | Testfall Priorität | @PRODUKT: | Verknüpft das Szenario oder das Feature zu einem Produkt | @STATUS: | Testfall Status | @TCID: | Testfall ID | @TESTFALL: | Positiv/Negativ Test
+
 |===
 
+{empty} +
 *Plugin Tags:*
 
 [cols='1,3']
 |===
-| *Tag Name* | *Beschreibung*
-| @Plugin:   | Steuerung des cucumber-test-combinations Plugin. Dieser Tag ist ausschließlich im Report zu sehen, da unter ihm die Filter für das Plugin gesammelt dargestellt werden (siehe Kapitel 9)
+
+| *Tagname* | *Beschreibung*
+| @Plugin: | Steuerung des cucumber-test-combinations Plugin.
+Dieser Tag ist ausschließlich im Report zu sehen, da unter ihm die Filter für das Plugin gesammelt dargestellt werden (siehe Kapitel 10)
 
 |===
 
-*Cucumber Tag:*
+{empty} +
+*Testfall Tags:*
 
 [cols='1,3']
 |===
-| *Tag Name* | *Beschreibung*
-| @WIP       | Work in Progress
+
+| *Tagname* | *Beschreibung*
+| @WIP | Work in Progress (dieser Testfall wird während eines Runs nicht ausgeführt)
+
 |===
+
+{empty} +
+*Referenz Implementierung Tags:*
+
+[cols='1,3']
+|===
+
+| *Tagname*          | *Beschreibung*
+| @Ref:Mandatory | Testfälle/FeatureFiles für die zwingend die ReferenzImplementierung erforderlich ist
+
+|===
+
+{empty} +
+[IMPORTANT]
+====
+Der Tag "@Ref:Mandatory" dient u.a. auch dazu bestimmte Testfälle für einen Testrun (z.B. zur Erfüllung der Eingangskriterien) zu exkludieren.
+Weitere Informationen hierzu können den erweiterten Dokumentationen zur jeweiligen Testsetversion unter doc/userguide entnommen werden.
+
+====
 
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
 
 image::Tag.png[float="left"]
 
-==== 6.2 Combine Items, Tags und Properties für die Plugin Konfiguration
+==== 6.2 WIP Tag
 
 {empty} +
 
-Der BDD-Parameterizer (auch Cucumber-Test-Kombinations-Plugin genannt) wird dazu genutzt die Testdaten-Kombinationen, in diesem Fall die APIs, zu steuern.
+Ist ein Testszenario mit einem @WIP getaggt, dann ist dieser noch nicht vollständig implementiert.
+
+[[img_AtWIP]]
+.Abbildung{counter:my-example-number: 1}: @WIP Tag
+image:AtWIP.png[float="center"]
+
+Ein solches Testszenario wird bei einem Testrun ignoriert/übersprungen und nicht ausgeführt.
+So ist es möglich die Sets der Testsuite auszuführen, ohne auf Fehler zu stoßen, die sonst aus nicht vollständig implementierten Testfällen resultieren würden.
+
+Wenn das Testszenario vollständig implementiert und getestet wurde, wird seitens der gematik der Tag entfernt und der Test wird im Zuge der Zulassungen in bestimmten Testset getestet werden.
+
+Informationen hierzu entnehmen Sie dann den entsprechenden Release Notes.
+
+[.text-right]
+<<id0,Inhaltsverzeichnis>>
+
+image::Tag.png[float="left"]
+
+==== 6.3 Combine Items, Tags und Properties für die Plugin Konfiguration
+
+{empty} +
+
+Das Cucumber-Test-Kombinations-Plugin (siehe auch Github https://github.com/gematik/cucumber-test-combinations-maven-plugin[CuTest Plugin]) wird dazu genutzt die Testdaten-Kombinationen, in diesem Fall die APIs, zu steuern.
 Somit wird gewährleistet, dass genau das richtige Set an Daten für den jeweiligen Fokus des Testfalls erzeugt wird und dann in Iterationen ausgeführt werden kann.
 
 *Die combine_items.json*
 
 Grundlage hierfür ist das kartesische Produkt aller möglichen Kombinationen der in der generierten Target combine_items.json (target/generated-combine/combine_items.json) enthaltenen Schnittstellen.
-Mithilfe von Filtern, die direkt im .cute-File (später feature-File) gesetzt werden, kann nun diese Liste verkleinert und fokussiert werden.
+Mithilfe von Filtern, die direkt in den .feature.cute-Files gesetzt werden, kann nun diese Liste verkleinert und fokussiert werden.
 
 Die *combine_items.json im Target Folder* (target/generated-combine/combine_items.json) wird aus der *Source combine_items.json* (/combine_items.json) und den aus der *Testtreiber Schnittstelle zum Device ausgelesenen Daten* (definiert in der parent-pom.xml) erzeugt.
 
 - Source combine_items.json - Bereitstellen der Schnittstelle (url).
 Evtl. zusätzliche Tags und Properties.
-- parent-pom.xml - Tags und Properties, die über die Testtreiber-Schnittstelle vom Device als Info-Daten (im Folgenden als "Info-Daten" bezeichnet) ausgelesen werden und für alle Schnittstellen gelten.
-- Target combine_items.json - das Produkt aus Source combine_items.json und ausgelesenen Info-Daten (pom.xml).
+Ist vom Hersteller zu befüllen.
+- parent-pom.xml - Tags und Properties, die über die Testtreiber-Schnittstelle vom Device als Info-Daten (im Folgenden als "Info-Daten" bezeichnet, siehe src/main/resources/api/TiMessengerTestTreiber.yaml operationId: getInfo) ausgelesen werden und für alle Schnittstellen gelten.
+- Target combine_items.json - das Produkt aus Source combine_items.json und ausgelesenen Info-Daten (parent-pom.xml).
 Dies dient als Grundlage für die Kombinatorik.
 
 Beispiel einer Source combine_items.json:
 
-.Abbildung{counter:my-example-number: 1}: Source combine_items.json
-image:SourceCombineInclPool.png[float="center"]
+.Abbildung{counter:my-example-number: 9}: Source combine_items.json (Pro)
+image:SourceCombinePro.png[float="center"]
 
 In der Source combine_items.json (/combine_items.json) enthalten sind:
 
@@ -507,17 +593,20 @@ In der Source combine_items.json (/combine_items.json) enthalten sind:
 Sie helfen bei der Auswahl der zu verwendenden Schnittstellen und sind wichtig für das Pooling (siehe Kapitel 6.5).
 
 [TIP]
-[black]#*_Obwohl optional, sollte der Gruppenname für alle Geräte angegeben werden, wenn ein Pooling-Test gewünscht wird._*# - (Optional) *„tags“*: Tags, die nicht durch das Auslesen der Info-Daten gefüllt werden.
-Oder auch Tags, die durch das Auslesen der Info-Daten gefüllt werden und mit dem Wert in der combine_items.json verglichen werden sollen - (Optional) *„properties“*: Properties, die nicht durch das Auslesen der Info-Daten gefüllt werden.
+[black]#*_Obwohl optional, sollte der Gruppenname für alle Geräte angegeben werden, wenn ein Pooling-Test gewünscht wird._*#
+
+- (Optional) *„tags“*: Tags, die nicht durch das Auslesen der Info-Daten gefüllt werden.
+Oder auch Tags, die durch das Auslesen der Info-Daten gefüllt werden und mit dem Wert in der combine_items.json verglichen werden sollen
+- (Optional) *„properties“*: Properties, die nicht durch das Auslesen der Info-Daten gefüllt werden.
 Oder auch Properties, die durch das Auslesen der Info-Daten gefüllt werden und mit den Werten in der combine_items.json verglichen werden sollen
 
 *Vergleichsoptionen Tags*
 
-Hintergrund der Vergleichsoptionen von Tags und Properties ist, dass so z.B. schon vor dem Erstellen der Testdaten geprüft werden kann, dass die hinterlegten Devices an der genannten Schnittstelle den Anforderungen entsprechen, die notwendig sind.
+Hintergrund der Vergleichsoptionen von Tags und Properties ist, dass so z.B. schon vor dem Erstellen der Testdaten geprüft werden kann, dass die hinterlegten Devices an der genannten Schnittstelle den nötigen Anforderungen entsprechen.
 
 Tags, die in der Source combine_items.json angegeben sind und ebenfalls aus einem Device ausgelesen werden sollen (definiert in der parent-pom.xml), können miteinander verglichen werden.
 Dies geschieht case sensitive (1:1 Beziehung).
-Sollte sich der Tag in der combine_items.json und von dem in der parent-pom.xml definierten unterscheiden, wird der Tag aus der Source combine_items.json als zusätzlicher Tag gewertet und in die Target combine_items.json übernommen.
+Sollte sich der Tag in der combine_items.json von dem in der parent-pom.xml definierten unterscheiden, wird der Tag aus der Source combine_items.json als zusätzlicher Tag gewertet und in die Target combine_items.json übernommen.
 
 Beispiel:
 
@@ -546,7 +635,7 @@ Die Überprüfung erfolgt hier case sensitive (iOS – iOS; usw).
 | iOS                         | null                                    | Abbruch - Error
 |===
 
-Die potenitell möglichen Enum Werte sind in der Testtreiber Schnittstellenbeschreibung zu finden:
+Die potentiell möglichen Enum Werte sind in der Testtreiber Schnittstellenbeschreibung zu finden:
 
 .Abbildung{counter:my-example-number: 1}: OSInfo Schnittstellenbeschreibung
 image:OS_Info.png[float="center"]
@@ -578,7 +667,7 @@ Diese werden dann mit dem entsprechenden Wert befüllt und nicht wie bei Tags au
 Nach der Generierung der Target combine_items.json sieht die Schnittstelle (oben aus dem Beispiel) inkl. aller definierten und verglichenen Daten dann wie folgt aus:
 
 .Abbildung{counter:my-example-number: 1}: Target combine_items.json
-image:TargetCombineInclPool.png[float="center"]
+image:TargetCombinePro2.png[float="center"]
 
 [TIP]
 [black]#*_In der Target combine_items.json (target/generated-combine/combine_items.json) sind dann alle Schnittstellen zu den Testtreibern der einzelnen Devices inklusive aller notwendigen Daten hinterlegt.
@@ -587,63 +676,60 @@ Mithilfe dieser Daten können dann die Testdaten für die Feature Files erzeugt 
 Diese Tags und Properties dienen der direkten Steuerung der Testdaten, die zu einem bestimmten Testfall passen.
 In der Abbildung oben ist zu sehen:
 
-- Ein Client
+- Ein Pro Client
 - Welcher neu (new) zu testen ist (dieser Tag wird in Kapitel 6.3 noch genauer erläutert)
-- Dieser Client ist Preferred IOP (prefIOP) → Wird also in den IOP Tests bevorzugt genutzt
 - Hinter diesem Client liegt eine HBA, somit sind auch ‚Practitioner‘ Handlungen z.B. im VZD möglich
 - Bei diesem Client handelt es sich um einen 'client', mit dem man Nachrichten versenden kann
 
 Außerdem:
 
 - Der Client gehört zur company „Referenzimplementierung - gematik GmbH“
-- Wir befinden uns auf dem Homeserver „A“
-- Das Betriebssystem ist „IOS“
+- Wir befinden uns auf dem Homeserver „https://localhost:8080“
+- Das Betriebssystem ist „Windows“
 - Die Versionen von Client und Testtreiber API
-- Der Client gehört zu der Gruppe "Referenzimplementierung"
+- Der Client gehört zu der Gruppe "Referenz"
 
 Anhand dieser Werte, die auch jederzeit erweiterbar sind, können wir nun mit Filtern die Testdaten erzeugen, die exakt zu dem Vorhaben des Testfalls passen.
 
 Ein Beispiel:
 
-Gehen wir an dieser Stelle einfach davon aus, dass wir *3 verschiedene Clients (iOS, Android, Windows) mit je einer HBA* und *einen Org-Admin Client* für Anbieter A vorliegen haben für diesen Testfall:
+Gehen wir an dieser Stelle einfach davon aus, dass wir *3 verschiedene Pro Clients (iOS, Android, Windows) mit je einer HBA* und *einen Org-Admin Client* für Anbieter A vorliegen haben für dieses Testszenario:
 
 .Abbildung{counter:my-example-number: 1}: TestCase Steps
-image:TestCase.png[float="center"]
+image:ProTC.png[float="center"]
 
-Eine Chat-Kommunikation von 2 User mit einer HBA soll innerhalb einer Organisation über die Schnittstellen <ApiName1A> und <ApiName1B> stattfinden.
+Eine Chat-Kommunikation von 2 Pro Usern soll innerhalb einer Organisation über die Schnittstellen <ApiName1A> und <ApiName1B> stattfinden.
 
-Um nun das kartesische Produkt aller möglichen Kombinationen anzupassen, sagen wir nun:
+Um dann das kartesische Produkt aller möglichen Kombinationen anzupassen, sagen wir nun:
 
 - Alle Devices müssen auf dem gleichen Homeserver sein
 - Sie sollen sich auch selbst kombinieren dürfen (z.B. IOS mit IOS, Android mit Android)
-- Sie dürfen auch vice versa vorkommen (z.B. IOS-Android, Android-IOS)
-- ApiName1A soll ein Client sein (kein OrgAdmin)
-- ApiName1B soll ein Client sein (kein OrgAdmin)
-- ApiName1A soll eine HBA hinterliegen, um Practitioner Handlungen durchzuführen
-- ApiName1B soll eine HBA hinterliegen, um Practitioner Handlungen durchzuführen
+- Sie dürfen nicht vice versa vorkommen (z.B. IOS-Android, Android-IOS)
+- ApiName1A soll ein Pro Client sein (kein OrgAdmin)
+- ApiName1B soll ein Pro Client sein (kein OrgAdmin)
 
 Um dies zu erreichen werden nun folgende Filter mit Blick auf die Target combine_items.json angewandt:
 
 .Abbildung{counter:my-example-number: 1}: TestCase Filter
-image:TF_Filter.png[float="center"]
+image:ProTCFilter.png[float="center"]
 
-Der fertige Testfall sieht dann wie folgt aus:
+Das fertige Testszenario sieht dann wie folgt aus:
 
 .Abbildung{counter:my-example-number: 1}: TestCase Komplett
-image:TestCaseFertig.png[float="center"]
+image:ProTCReady.png[float="center"]
 
-Nach dem Run des Plug-Ins ist das Resultat zum Ausführen des Testfalls dann folgendes (hier zu finden: target/features/Zulassungstests/Testrun):
+Nach dem Run des Plugins ist das Resultat zum Ausführen des Testfalls dann folgendes (hier zu finden: target/features/Zulassungstests/Testrun):
 
 .Abbildung{counter:my-example-number: 1}: TestCase Parameter
-image:Kombi1.png[float="center"]
+image:ProKombi.png[float="center"]
 
-Wie wir nun sehen, wurde z.B. unser OrgAdmin Client ausgefiltert und eben die Kombinationen erzeugt, die wir brauchen bzw. oben beschrieben haben.
+Wie wir nun sehen, wurde z.B. unser OrgAdmin Client ausgefiltert und eben die Testfallkombinationen erzeugt, die wir brauchen bzw. oben beschrieben haben.
 
 Sichtbar ist in der Tabelle die Variable „Value“ aus der Target combine_items.json (target/generated-combine/combine_items.json), die einerseits frei wählbar ist oder die URL zur Testtreiber Schnittstelle enthält (siehe oben: Definition/Möglichkeiten in der Source combine_items.json).
 
 Dieses Verfahren dient der klaren Visualisierung, welche Devices in einem Test genutzt werden, da URLs nicht immer Aufschluss darüber geben, welches Device exakt damit verbunden ist.
 
-Es gibt weitere Filtermöglichkeiten, die auch in der TestSuite zum Einsatz kommen und in der Dokumentation zu finden sind:
+Es gibt weitere Filtermöglichkeiten, die auch in der Testsuite zum Einsatz kommen und in der Dokumentation zu finden sind:
 
 https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/Userguide.adoc
 
@@ -665,87 +751,76 @@ Hier ist beispielsweise definiert, dass alle Schnittstellen mit dem Wert 'orgAdm
 Es können auch dedizierte Vergleichswerte definiert werden, die dann einzelnen Schnittstellen in der combine_items.json zugeordnet werden können.
 Dies kann auch global in der parent-pom.xml geschehen, sodass dann an die Schnittstelle in der combine_items.json lediglich die ID weiter gegeben werden muss.
 
-Weitere Information zu den Möglichkeiten sind unter https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc#pooling[Plugin/doc/userguide] zu finden.
+Weitere Information zu den Möglichkeiten sind unter https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc#check-expressions[Plugin/doc/userguide] zu finden.
 
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
 
 image::Tag.png[float="left"]
 
-==== 6.3 Special Tags [ ‚new‘ tag,'newonly' Profil und 'Practitioner' & 'perfIOP' Tag]
+==== 6.4 Special Tags [ 'new' Tag, 'newonly' Profil und 'Practitioner' Tag]
 
 {empty} +
 
-*‚new‘ Tag & ‚newonly‘ Profil*
+*'new' Tag & 'newonly' Profil*
 
-Wenn der Tag ‚new‘ in einer Schnittstelle in der Source combine-items.json (/combine_items.json) gesetzt wurde (und damit auch in der Target combine_items.json enthalten ist) und das newonly Profil dazu gewählt wird, werden nach dem Durchlauf der Filter nur diejenigen Kombinationen genutzt, in denen eben der ‚new‘ Tag vorhanden ist.
+Wenn der Tag 'new' in einer Schnittstelle in der Source combine-items.json (/combine_items.json) gesetzt wurde (und damit auch in der Target combine_items.json enthalten ist) und das Maven Profil 'newonly' zur Ausführung gewählt wird, werden nach dem Durchlauf der Filter nur diejenigen Kombinationen genutzt, in denen eben der 'new' Tag vorhanden ist.
 
 Zum Beispiel von zuvor:
 
-Unsere Beispiel Schnittstelle (iOS)
+Unsere Beispiel Schnittstelle (Windows)
 
 .Abbildung{counter:my-example-number: 1}: Target combine_items.json
-image:TargetCombineInclPool.png[float="center"]
+image:TargetCombinePro2.png[float="center"]
 
-hat den Tag ‚new‘.
-Alle anderen haben diesen nicht (Android und Win).
-Wenn wir nun das newonly Profil auswählen und die Kombinationen erzeugen, bekommen wir folgendes Ergebniss:
+hat den Tag 'new'.
+Alle anderen haben diesen nicht (Android und iOS).
+Wenn wir nun das newonly Profil auswählen und die Kombinationen erzeugen, bekommen wir folgendes Ergebnis:
 
 .Abbildung{counter:my-example-number: 1}: TestCase Parameter mit "New" Profil
-image:KombiNew.png[float="center"]
+image:ProTCKombiNew.png[float="center"]
 
-Wir sehen nun, dass nur Kombinationen erzeugt wurden, in denen unsere ‚new‘ Schnittstelle vorkommt.
+Wir sehen nun, dass nur Kombinationen erzeugt wurden, in denen unsere 'new' Schnittstelle vorkommt.
 Hintergrund hierfür ist, dass so bestimmte Schnittstellen dediziert bzw. auch im IOP getestet werden können, wenn der Fokus nur diese Schnittstellen inkl. aller dazugehörigen Kombinationen ist.
 
 [TIP]
-[black]#*_Der ‚new‘ Tag wird nicht automatisch erzeugt, sondern muss nach Bedarf manuell vergeben bzw. entfernt werden in der Source combine_items.json (/combine_items.json)._*#
+[black]#*_Der 'new' Tag wird nicht automatisch erzeugt, sondern muss nach Bedarf manuell vergeben bzw. entfernt werden in der Source combine_items.json (/combine_items.json)._*#
 
 *Der 'practitioner' Tag*
 
-Der ‚practitioner Tag‘ ist derzeit (kann auch erweitert werden) eines von drei Tags, die über die Testtreiberschnittstelle am Info Endpunkt vom jeweiligen Device abgefragt werden.
-Diese drei Tags sind in der parent-pom.xml definiert (Erklärung zur parent-pom.xml weiter oben in Kapitel 6.2) und sind folgende:
+Der 'practitioner' Tag ist einer von mehreren Tags, die über die Testtreiberschnittstelle am Info Endpunkt vom jeweiligen Device abgefragt werden.
+Diese Tags sind in der parent-pom.xml definiert (Erklärung zur parent-pom.xml weiter oben in Kapitel 6.3) und sind z.B. folgende:
 
-- client – es handelt sich um einen User Client, der Nachrichten versenden darf
+- proClient – es handelt sich um einen Pro User Client, der Nachrichten versenden darf
+- epaClient – es handelt sich um einen ePA User Client, der Nachrichten versenden darf
+- epaOrProClient – es handelt sich um einen ePA oder Pro User Client, der Nachrichten versenden darf
 - orgAdmin – es handelt sich um einen OrgAdmin Client, der auf das Organisationsverzeichnis im VZD zugreifen darf
 - practitioner – hinter diesem Device ist eine HBA hinterlegt, sodass der User auch auf das Personenverzeichnis im VZD zugreifen darf
 
 Folgen wir nun unserem vorigen Beispiel und schauen auf die Tags, die einerseits vergeben und andererseits vom Device selbst ausgelesen wurden:
 
 .Abbildung{counter:my-example-number: 1}: Target combine_items.json
-image:TargetCombineInclPool.png[float="center"]
+image:TargetCombinePro2.png[float="center"]
 
-Wir haben es an dieser Schnittstelle also mit einem User Client („client“) zu tun, der auch eine HBA hinterlegt hat („practitioner“), um z.B. Einträge im Personenverzeichnis des VDZ zu tätigen.
+Wir haben es an dieser Schnittstelle also mit einem Pro User Client („proClient“) zu tun, der auch eine HBA hinterlegt hat („practitioner“), um z.B. Einträge im Personenverzeichnis des VZD zu tätigen.
 
 Somit ergeben sich als Verwendung dieses Devices nun zwei Möglichkeiten, die dann über die Filterung der Testdaten exakt zum Testfall passend erzeugt werden können:
 
-- Wir können dieses Device als HBA-User nutzen mit allen Handlungsmöglichkeiten, für die eine HBA Authentifizierung notwendig ist
+- Wir können dieses Device als HBA-User nutzen mit allen Handlungsmöglichkeiten, für die eine HBA Authentifizierung notwendig ist.
 - Wir können dieses Device aber auch als Organisation-User nutzen, indem wir im Testfall z.B. keine Aktionen im Personenverzeichnis im VZD durchführen, also die HBA nicht nutzen.
-
-*Das 'prefIOP' Tag*
-
-Dieser Client ist als Preferred IOP (prefIOP) gekennzeichnet → Wird also in den IOP Tests bevorzugt genutzt.
-Dieser Tag kann frei vergeben und in der Filterung der Testdaten genutzt werden.
-
-[TIP]
-[black]#*_Zur Nutzung des Tags 'prefIOP' muss immer ein Device gewählt werden, hinter dem eine HBA liegt.
-So ist sichergestellt, dass sowohl Tests im HBA Kontext und ohne diesen Kontext ausgeführt werden!_*#
-
-[TIP]
-[black]#*_Jeder Hersteller muss an jeder zum Testlauf gehörigen Instanz mindestens einen Client mit HBA Funktionalität mit den 'prefIOP' Tag in der combine_items.json versehen.
-Nur so ist gewährleistet, dass für alle Testfälle die entsprechenden Kombinationen gebildet werden können._*#
 
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
 
 image::Tag.png[float="left"]
 
-==== 6.4 Versionsfilter
+==== 6.5 Versionsfilter
 
 {empty} +
 
 *Versionsfilter*
 
-Das Feature ‚Versionsfilter‘ kann genutzt werden, um die Test Suite gegen eine vorher definierte Version des TI-Messengers laufen zu lassen.
+Das Feature ‚Versionsfilter‘ kann genutzt werden, um die Testsuite gegen eine vorher definierte Version des TI-Messengers laufen zu lassen.
 Weiter kann dieses Feature auch für einzelne Testfälle oder auch einzelne Parameter-Columns innerhalb eines Testfalls genutzt werden.
 Somit entsteht die Möglichkeit auch Versionen gegeneinander zu testen, was hier nun im Weiteren erläutert wird.
 
@@ -754,7 +829,7 @@ Als Versionen werden in diesem Filter die Client Versionen betrachtet, die an de
 Ein Beispiel:
 
 .Abbildung{counter:my-example-number: 1}: Target combine_items.json mit Versionen
-image:VersionFilterCombineItems.png[float="center"]
+image:TargetProCombineVersion.png[float="center"]
 
 Welcher Wert hier für das Feature Versionsfilter genutzt wird, wird in der parent-pom.xml konfiguriert:
 
@@ -762,7 +837,7 @@ Welcher Wert hier für das Feature Versionsfilter genutzt wird, wird in der pare
 image:VersionFilterPom.png[float="center"]
 
 [TIP]
-[black]#*_Wichtig: Default ist die VersionProperties mit >version< befüllt und muss ggf. angepasst werden passend zu den tatsächlich ausgelesenen und in der parent-pom.xml definierten Daten._*#
+[black]#*_Wichtig: Default ist die VersionProperty mit >version< befüllt und muss ggf. passend zu den tatsächlich ausgelesenen und in der parent-pom.xml definierten Daten angepasst werden._*#
 
 [TIP]
 [black]#*_Der Versionsparameter muss in Form von X , X.X , X.X.X or X.X.X.X etc. vorhanden sein, wobei X ein Integer sein muss!_*#
@@ -802,35 +877,36 @@ Hierzu können Versionsfilter für die Parameter genutzt werden, die dann im Nac
 
 Ein Beispiel:
 
-.Abbildung{counter:my-example-number: 1}: TestCase mit Versionsfilter #1
-image:VersionFilterTestCase.png[float="center"]
+.Abbildung{counter:my-example-number: 1}: Testszenario mit Versionsfilter #1
+image:VersionsfilterPro1.png[float="center"]
 
-In diesem Testfall werden nun zwei Schnittstellen genutzt.
+In diesem Testszenario werden zwei Schnittstellen genutzt.
 Es besteht nun die Möglichkeit jeder Schnittstelle einen Versionswert zuzuordnen.
-In unserem Bespiel würden wir nun für die Kombinatorik lediglich Schnittstellen mit der Client Version 1.1.1 gegen die Client Version 3.3.3 herangezogen, um die auszuführenden Targetfiles zu generieren.
+In unserem Beispiel würden für die Kombinatorik lediglich Schnittstellen mit der Client Version 1.1.1 gegen die Client Version 3.3.3 herangezogen, um die auszuführenden Featurefiles bzw.
+Testfälle zu generieren.
 
-Wollen wir nun einen separaten Testfall gänzlich gegen eine Version testen, können die Filter kombiniert werden.
+Wollen wir einen separaten Testfall gänzlich gegen eine Version testen, können die Filter kombiniert werden.
 
 Beispiel:
 
-.Abbildung{counter:my-example-number: 1}: TestCase mit Versionsfilter #2
-image:VersionFilterTestCase2.png[float="center"]
+.Abbildung{counter:my-example-number: 1}: Testszenario mit Versionsfilter #2
+image:VersionsfilterPro2.png[float="center"]
 
-So würde in der Kombinatorik und anschließenden Ausführung für beide Parameter des Testfalls lediglich Schnittstellen der Version 3.3.3 berücksichtigt.
+So würden in der Kombinatorik und anschließenden Ausführung für beide Parameter des Testfalls lediglich Schnittstellen der Version 3.3.3 berücksichtigt.
 
 Zwangsläufig müssen nicht alle Parameter mit einem Versionsfilter befüllt werden.
 Wir können in diesem Beispiel auch nur dem Parameter „ApiName1“ einen Versionsfilter geben.
 Für „ApiName2“ wird dann entweder der global gesetzte Filter in der parent-pom.xml genutzt oder sollte dieser nicht befüllt sein, eben alle anderen Schnittstellen, da hier keine Beschränkung vorliegt.
 
-.Abbildung{counter:my-example-number: 1}: TestCase mit Versionsfilter #3
-image:VersionFilterTestCase3.png[float="center"]
+.Abbildung{counter:my-example-number: 1}: Testszenario mit Versionsfilter #3
+image:VersionsfilterPro3.png[float="center"]
 
 [TIP]
-[black]#*_Wichtig: Versionsfilter auf Testfallebene übersteuern gesetzte Filter in der parent-pom.xml und auch in der Kommandozeile!!!_*#
+[black]#*_Wichtig: Versionsfilter auf Testszenarioebene übersteuern gesetzte Filter in der parent-pom.xml und auch in der Kommandozeile!!!_*#
 
 Die Hierarchie ist also wie folgt:
 
-Versionsfilter auf Testfallebene > Versionsfilter in der Kommandozeile > Versionsfilter in der parent-pom.xml
+Versionsfilter auf Testszenarioebene > Versionsfilter in der Kommandozeile > Versionsfilter in der parent-pom.xml
 
 Weitere Informationen sind, wie zuvor erwähnt, an folgender Stelle zu finden:
 
@@ -841,7 +917,7 @@ https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc
 
 image::Tag.png[float="left"]
 
-==== 6.5 Pooling
+==== 6.6 Pooling
 
 {empty} +
 
@@ -856,10 +932,10 @@ So besteht die Möglichkeit, dass z.B. mehrere Hersteller Teilnehmer eines IOP T
 Um dieses Feature zu nutzen, muss in einem ersten Schritt allen Items in der Source combine_items.json, die genutzt werden sollen, eine Gruppe zugeordnet werden.
 
 .Abbildung{counter:my-example-number: 1}: Source combine_items.json
-image:SourceCombineInclPool.png[float="center"]
+image:SourceCombinePro.png[float="center"]
 
 [TIP]
-[black]#*_Nachdem die Kombinationen durch das PlugIn erzeugt wurden, wird ein LogFile in ./target/generated-combine/usedGroups.json erzeugt.
+[black]#*_Nachdem die Kombinationen durch das Plugin erzeugt wurden, wird ein LogFile in ./target/generated-combine/usedGroups.json erzeugt.
 Daraus wird dann ersichtlich welche Gruppen an dem Testrun teilgenommen haben und welche nicht._*#
 
 .Abbildung{counter:my-example-number: 1}: Used Groups
@@ -874,14 +950,14 @@ image:PoolGroups.png[float="center"]
 
 So kann an dieser Stelle folgendes definiert werden:
 
-- groupPattern: Diese beschreiben welcher namentliche Wert einer Gruppe im Pool enthalten sein soll
+- groupPattern: Dieser beschreibt welcher namentliche Wert einer Gruppe im Pool enthalten sein soll
 - amount: Dieser Wert beschreibt die Anzahl der Gruppen, die im Pool vorkommen dürfen
 - strategy: Dieser Wert beschreibt die 'Matching' Strategie der groupPattern.
 In diesem Fall z.B. kann mit Wildcards gearbeitet werden
 
 Weitere Informationen zu diesen Werten und vor allem den Möglichkeiten der 'Matching' Strategien ist hier zu entnehmen: https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc#pooling[Plugin/doc/userguide]
 
-Die grundlegende Konfiguration des Poolings findet ebenfalls in der parent-pom.xml statt
+Die grundlegende Konfiguration des Poolings findet ebenfalls in der parent-pom.xml statt.
 
 Ein Beispiel:
 
@@ -890,8 +966,8 @@ image:PoolingPom.png[float="center"]
 
 Neben den zuvor beschriebenen Pools können so nun folgende Werte bestimmt werden:
 
-- defaultMatchStrategy: Hier wird der Default Wert für die 'Matching' Strategie definiert
-- poolSize: Hier kann eine fixe Pool-Größe definiert werden
+- defaultMatchStrategy: Hier wird der Default Wert für die 'Matching' Strategie definiert.
+- poolSize: Hier kann eine fixe Pool-Größe definiert werden.
 - excludedGroups: Mit diesem Wert können Gruppen definiert werden, die NICHT im Pool berücksichtigt werden sollen.
 - poolGroupString: Auf diesen Wert wird im Anschluss noch genauer eingegangen.
 An dieser Stelle kann dieser Wert auch fix gesetzt werden.
@@ -904,11 +980,11 @@ image:Pom_pooling.png[float="center"]
 
 Zur Ausführung eines Pools kann die Kommandozeile genutzt werden.
 
-Zum Beispiel kann hier nun, wenn die Werte in der parent-pom.xml als Parameter definiert sind, die größe des Pools und exkludierte Gruppen definiert werden:
+Zum Beispiel kann hier nun, wenn die Werte in der parent-pom.xml als Parameter definiert sind, die Größe des Pools und exkludierte Gruppen definiert werden:
 
  -DpoolSize=3 -DexcludedGroups='\*special'
 
-Des Weiteren ist es mittels poolGroupString möglich ganze Pools bzw deren Inhalt zu definieren:
+Des Weiteren ist es mittels poolGroupString möglich ganze Pools bzw. deren Inhalt zu definieren:
 
  -DpoolGroupString='*approved|BBB*|CCC*,3,WILDCARD;*open,,REGEX'
 
@@ -925,9 +1001,9 @@ Der dritte Wert definiert die 'Matching' Strategie.
 Nach einem ';' können noch weitere Definitionen getroffen werden, z.B. für andere 'Matching' Strategien.
 
 [TIP]
-[black]#*_Wichtig: Sollte in der Kommandozeile oder in der Konfiguration poolGroupString genutzt werden, überschreibt diese andere in der parent-pom.xml definierten Werte und Pools._*#
+[black]#*_Wichtig: Sollte in der Kommandozeile oder in der Konfiguration poolGroupString genutzt werden, überschreibt dieser andere in der parent-pom.xml definierte Werte und Pools._*#
 
-Wenn als Anzahl 0 oder nicht mitgegeben wird, werden alle passenden Gruppen genutzt.
+Wenn als Anzahl 0 oder nichts mitgegeben wird, werden alle passenden Gruppen genutzt.
 
 Wenn jedoch die Anzahl der Gruppen größer ist als die Größe des Pools, werden random Gruppen gewählt, bis die Größe des Pools erreicht ist.
 
@@ -945,589 +1021,448 @@ Weitere und tiefere Informationen sind unter https://github.com/gematik/cucumber
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
 
-image::Tag.png[float="left"]
+image::Testrun.png[float="left"]
 
-=== 7. Berechtigungsprüfung
+=== 7. Testausführung
 
 {empty} +
 
-image::Konzept.png[float="left"]
+image::Testrun.png[float="left"]
+==== 7.1 Testausführung generell
 
+{empty} +
 
-==== 7.1 Berechtigungskonzept
+Der Ordner in dem sich die Tests, die ausgeführt werden sollen, befinden, ist in der parent-pom.xml hinterlegt.
 
-{empty}  +
+[[img_Parent_Pom]]
+.Abbildung{counter:my-example-number2: 35}: Parent Pom Directory Beispiel
+image:ParentPom2.png[float="center"]
 
-Berechtigungskonzept - Stufe 1
+Siehe: link:../../parent-pom.xml[parent-pom.xml]
 
-In der 1. Stufe MUSS geprüft werden, ob die in der Anfrage enthaltenen Matrix-Domains zugehörig zur TI-Föderation sind.
-Ist dies der Fall, MUSS die Anfrage an den Matrix-Homeserver des Einladenden weitergeleitet werden.
-Ist dies nicht der Fall, MUSS die beabsichtigte Anfrage des Akteurs vom Messenger-Proxy des Einladenden abgelehnt werden.
-Nach der Weiterleitung an den Matrix-Homeserver prüft dieser, ob der eingeladene Akteur der gleichen Organisation angehört.
-Stellt der Matrix-Homeserver fest, das der eingeladene Akteur nicht zu seiner Domain gehört wird das Invite-Event an den Messenger-Proxy des einzuladenden Akteurs weitergeleitet.
-Dieser prüft erneut die Zugehörigkeit zur TI-Föderation (Stufe 1).
-Bei erfolgreicher Prüfung erfolgt dann die Weiterverarbeitung gemäß der Stufe 2.
+Sollte noch ein Testrun mit bestimmten Version ausgeführt werden wollen, dann muss der Wert in
+*<feature.template.dir>* angepasst werden.
 
-Berechtigungskonzept - Stufe 2
+Dieser Ordner und seine Unterordner dienen als Grundlage zur Bildung der Test-Examples und anschließender Ausführungen der Testsuite.
+Der konkrete Aufbau ist in *Kapitel 5* dieser Dokumenation beschrieben.
 
-In dieser Stufe prüft der Messenger-Proxy des Einzuladenden auf eine *vorliegende Freigabe*.
-Hierbei handelt es sich um eine Lookup-Table, in der alle erlaubten Akteure hinterlegt sind, von denen man eine Einladung in einen Chatraum akzeptiert.
-Ist ein Eintrag vom einladenden Akteur vorhanden, dann MUSS die beabsichtigte Einladung des Akteurs zugelassen werden.
-Ist dies nicht der Fall, MUSS die weitere Überprüfung gemäß der 3. Stufe erfolgen.
+[TIP]
+[black]#*_Alle in den POMs aufgeführten Versionen (Tiger, Cucumber, usw) sind von Seiten der gematik in Verbindung mit der Testsuite frei gegeben.
+Es steht jedem Hersteller frei auch für interne Tests andere Versionen zu nutzen, aber Grundlage für die Zulassungstests bilden immer die Versionen des letzten Releases der Testsuite._*#
 
-Berechtigungskonzept - Stufe 3
+Für die unterschiedlichen Tests werden verschiedene Clients benötigt.
+Ein vollständiger Testdurchlauf eines Zulassungstestsets ist daher nur möglich, wenn TI-M und Org-Admin Clients vorhanden sind, die zur Ausführung der Tests notwendig sind.
+Org-Admins und TI-M Clients benötigen jeweils eine eigene Testtreiberschnittstelle.
 
-In der letzten Stufe erfolgt die Prüfung ausgehend von den Einträgen der beteiligten Akteure im VZD-FHIR-Directory.
-Die Einladung MUSS zugelassen werden, wenn:
+Die benötigten Clients und entsprechenden Testtreiberschnittstellen unterscheiden sich zwischen den TI-M Ausprägungen:
 
-.. *die MXID des einzuladenden Akteurs im Organisationsverzeichnis hinterlegt und seine Sichtbarkeit in diesem Verzeichnis nicht eingeschränkt ist* oder
+- Pro Testset -> TI-M Pro Client + OrgAdmin und auf der Gegenseite TI-M Pro Client + OrgAdmin (z.B. Referenzimplementierung)
+- ePA Testset -> TI-M ePA Client und auf der Gegenseite TI-M Pro Client + OrgAdmin (z.B. Referenzimplementierung)
 
-.. *der einladende sowie der einzuladende Akteur im Personenverzeichnis hinterlegt sind und der einzuladende Akteur seine Sichtbarkeit in diesem Verzeichnis nicht eingeschränkt hat*
+Daher werden die Testsets für einzelne Zulassungen über die Tags gesteuert, damit auch nur die für eine bestimmt Zulassung vorgesehenen Tests der Suite angesprochen und ausgeführt.
+Die konkreten Tags zur Ausführung für die jeweils gültige Testsetversion sind den erweiterten Dokumentationen zu entnehmen.
 
-Ist die Prüfung nicht erfolgreich, dann MUSS die beabsichtigte Einladung des Akteurs vom Messenger-Proxy abgelehnt werden.
+[TIP]
+[black]#*_Bei der Ausführung der Testsuite immer (!) Filtertags berücksichtigen und nutzen, damit genau das gewünschte Set angesprochen und ausgeführt wird._*#
 
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
 
-image::Erfolgreich.png[float="left"]
+image::Testrun.png[float="left"]
 
-[[id1,erfolgreiche]]
-==== 7.2 Tags für die erfolgreichen Berechtigungsprüfungen
+==== 7.2 Testausführung verschiedener Zulassungstestsets
 
-{empty}  +
+{empty} +
 
-*Teilnehmer "A" kann alle Teilnehmer "B" einladen, wenn diese einen Eintrag für "A" in der Freigabeliste erstellt hat.*
+Der Aufbau der Testsuite ist in *Kapitel 5* beschrieben.
+Daraus ergeben sich mehrere Testsets, die für verschiedene Zulassungen genutzt werden.
 
-*Berechtigungsprüfung Stufe 2*
+[[img_folderStructure2]]
+.Abbildung{counter:my-example-number2: 1}: Ordnerstruktur der TI-Messenger Testsuite (als Beispiel hier V2)
+image:FolderStructure2.png[float="center"]
 
-[cols='30%,30%,15%,15%']
-|===
-| *Teilnehmer A*  |*Teilnehmer B*          | *Ergebnis* | *Tag*
-| alle            | alle mit Freigabe für A | ok         | @BP:FL
-|===
+Der "Basis" Folder ist für alle Zulassungen angelegt und entspricht Anwendungsfällen und Anforderungen, die sich aus der TI-M Basis Spezifikation ergeben.
+(link:https://gemspec.gematik.de/docs/gemSpec/gemSpec_TI-M_Basis/latest/[TI-M Basis Spezifikation])
 
-*Teilnehmer "A" lädt Teilnehmer "B" (ohne Freigabelisteneintrag) ein.*
+Aufbauend hierauf bilden die Folder "Pro" und "ePA" weiterführende Tests der jeweiligen Spezifikationen, die ebenfalls entsprechende Anwendungsfälle und Anforderungen zu Grunde haben.
+(link:https://gemspec.gematik.de/docs/gemSpec/gemSpec_TI-M_Pro/latest/[TI-M Pro Spezifikation]) (link:https://gemspec.gematik.de/docs/gemSpec/gemSpec_TI-M_ePA/latest/[TI-M ePA Spezifikation])
 
-*Berechtigungsprüfung Stufe 3a*
+Hieraus ergeben sich verschiedene Testsets:
 
-[cols='30%,30%,15%,15%']
-|===
-| *Teilnehmer A*           |*Teilnehmer B*           | *Ergebnis* | *Tag*
-| Personenverzeichnis      | Organisationsverzeichnis | ok         | @BP:P2O
-| Organisationsverzeichnis | Organisationsverzeichnis | ok         | @BP:O2O
-| ohne Eintrag             | Organisationsverzeichnis | ok         | @BP:N2O
-|===
+- *Zulassung TI-M Pro*
 
-*Berechtigungsprüfung Stufe 3b*
+- *Zulassung TI-M Pro für Krankenkassen ohne HBA Funktionalität*
 
-[cols='30%,30%,15%,15%']
-|===
-| *Teilnehmer A*           |*Teilnehmer B*           | *Ergebnis* | *Tag*
-| Personenverzeichnis      | Personenverzeichnis      | ok         | @BP:P2P
-|===
+- *Zulassung TI-M ePA*
 
-*Homeserver intern (beide Teilnehmer befinden sich auf demselben Homeserver)*
+[IMPORTANT]
+[black]#*_Die konkreten Maven Befehle zum Ausführen einzelner Zulassungstests sind den erweiterten Dokumentationen zu den verschiedenen Testsuite Versionen (V2, V3, etc) zu entnehmen._*#
 
-[cols='30%,30%,15%,15%']
-|===
-| *Teilnehmer A*           |*Teilnehmer B*           | *Ergebnis* | *Tag*
-| Personenverzeichnis      | ohne Eintrag             | ok         | @BP:P2N_intern
-| Organisationsverzeichnis | Personenverzeichnis      | ok         | @BP:O2P_intern
-| Organisationsverzeichnis | ohne Eintrag             | ok         | @BP:O2N_intern
-| ohne Eintrag             | Personenverzeichnis      | ok         | @BP:N2P_intern
-|===
+Die Testfälle bzw.
+Feature Files, die dann entsprechend des Befehls ausgeführt werden, sind *Kapitel 5* zu entnehmen.
+
+Es besteht auch jederzeit die Möglichkeit Maven Befehle zu erstellen und Tags für eigene Sets zu nutzen.
+So können beispielsweise einzelne Feature Files in einem Run miteinander kombiniert werden.
+
+[TIP]
+[black]#*_Wichtig hierbei: Für einen erfolgreichen Test Run, dürfen nur Tags von den Feature Files/Testfällen genutzt werden, die auch den entsprechenden Clients zugeordnet sind, die getestet werden sollen._*#
+
+Reine Pro Feature Files/Testfälle können nicht mit einem ePA Client ausgeführt werden, da bestimmte Spezifikations- und Zulassungsmerkmale erfüllt sein müssen.
+Dies wird über Filter vorgegeben und so können für den spezifischen Testfall nur z.B. TI-M Pro Clients Verwendung finden.
+
+Die geeigneten Clients für einen Testfall sind meist im ersten Testschritt in Kombination mit den Filtern zu entnehmen.
+
+So werden als Beispiel für Pro Tests des Testsets V2 eben auch passende Clients benötigt:
+
+[[img_claimClient]]
+.Abbildung{counter:my-example-number2: 1}: Beispiel Pro Client V2
+image:ClaimClient.png[float="center"]
+
+Oder eben für ein Pro V3 Testset ebenfalls passende Clients:
+
+[[img_claimClient]]
+.Abbildung{counter:my-example-number2: 1}: Beispiel Pro Client V3
+image:ExampleClientV3.png[float="center"]
+
+[TIP]
+[black]#*_Weitere Informationen zu Möglichkeiten, die zur Ausführung von Testfällen oder Feature Files zur Verfügung stehen, und auch die Definition der Testfilter sind in Kapitel 6 dokumentiert._*#
 
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
 
-image::Firewall.png[float="left"]
+image::Testrun.png[float="left"]
 
-[[id2,nicht erfolgreiche]]
-==== 7.3 Tags für die nicht erfolgreichen Berechtigungsprüfungen
+==== 7.3 Ausführung von Tests über bestimmte Testfall Tags
 
 {empty} +
 
-*Teilnehmer "A" lädt Teilnehmer "B" aus einer anderen Organisation (ohne Freigabelisteneintrag) ein.*
+Wenn eine bestimmte funktionale Gruppe von Testfällen ausgeführt werden soll, kann dies anhand von Testfall-Tags geschehen.
 
-*Berechtigungsprüfung nicht erfolgreich*
+[TIP]
+[black]#*_Wichtig:
+Für TI-M Pro für Krankenkassen ohne HBA Funktionalität können unter Umständen, abhängig von den unten beschriebenen Settings, auch reine TI-M Pro Testfälle mit der Nummerierung 3 gebildet werden.
+Aber alle zulassungsrelevanten TI-M Pro für Krankenkassen (ohne HBA Funktionalität) Testfälle werden ebenfalls anhand der Tags gebildet.
+(Zur Nummerierung der Feature Files siehe Kapitel 5.2)_*#
 
-[cols='30%,30%,15%,15%']
-|===
-| *Teilnehmer A*           |*Teilnehmer B*           | *Ergebnis* | *Tag*
-| Personenverzeichnis      | ohne Eintrag             | abgelehnt  | @BP_P2N_extern
-| Organisationsverzeichnis | Personenverzeichnis      | abgelehnt  | @BP_O2P_extern
-| Organisationsverzeichnis | ohne Eintrag             | abgelehnt  | @BP_O2N_extern
-| ohne Eintrag             | Personenverzeichnis      | abgelehnt  | @BP_N2P_extern
-|===
+Testfall-Tags sind unter <<id1,6.1>> beschrieben.
+
+Für die Ausführung sind allerdings Vorkehrungen zu treffen, die nun hier erläutert werden sollen.
+
+Wichtig sind:
+
+- Die zu testenden Clients (Welche Clients sollen getestet werden?)
+- Das Testset zur Ausführung (Welches Testset soll getestet werden?)
+- Einstellungen in der parent-pom.xml
+
+*Zu testenden Clients*
+
+Innerhalb dieser Testsuite gibt es derzeit drei Ausprägungen an Clients die getestet werden können und alle kommen für die Nutzung von Tags in Frage:
+
+- TI-M Pro Client
+- TI-M Pro Client für Krankenkassen ohne HBA Funktionalität
+- TI-M ePA Client
+
+Es muss sichergestellt werden, dass sich der Client und Org-Admin vom Zulassungskandidat (für TI-M ePA kein Org Admin notwendig) und vom Gegenspielers (z.B. der Referenzimplementierung) in der combine-items.json (/combine_items.json) und der tiger.yml befinden.
+
+[TIP]
+[black]#*_Der Gegenspieler (weitere TI-M Instanz) ist notwendig, wenn Testfall-Tags für die Ausführung genutzt werden, die Tests zwischen HomeServern ausführen.
+Testfall-Tags beziehen sich auf Funktionen und können auch UseCase übergreifend sein._*#
+
+So wird sichergestellt, dass auch nur die gewünschten Tests ausgeführt werden bzw.
+für diese Tests Beispiele gebildet werden.
+
+Beispiel:
+
+Zu testen ist ein TI-M Pro Client.
+
+Dazu müssen nun Einträge in die Source combine_items.json und die tiger.yml erfolgen.
+(Die nachfolgende Aufzählung dient der Übersichtlichkeit.
+Die Einträge erfolgen in die gleichen Files.)
+
+-> combine-items = Zu testender Client und der zugehörige Org Admin und
+
+-> combine-items = Client und der zugehörige Org Admin der Referenzimplementierung oder einer weiteren TI-M Pro Instanz
+
+-> tiger.yml = Zu testende Client und der zugehörige Org Admin
+
+-> tiger.yml = Client und der zugehörige Org Admin der Referenzimplementierung oder einer weiteren TI-M Pro Instanz
+
+Nach dem gleichen Prinzip ist ebenfalls für den TI-M ePA Client zu verfahren, wobei hier ein TI-M Pro Gegenspieler notwendig ist.
+Nur so kann gewährleistet werden, dass nicht auch Beispiele für nicht relevante Tests erzeugt werden.
+
+[TIP]
+[black]#*_In der combine-items.json und der tiger.yml sollten nur die am Test beteiligten Clients bzw.
+Schnittstellen vorhanden sein.
+Sollen weitere Einträge vorhanden sein, kann zur korrekten Auswahl der Testteilnehmer z.B. das Pooling Feature genutzt werden (Kapitel 6.6)._*#
+
+*Testset zur Ausführung*
+
+An dieser Stelle kann man nun den Tag der zu testenden Funktion der oben genannten Tabelle (Kapitel 6.1) entnehmen.
+
+In unserem Beispiel wählen wir den Tag: @Ctl:MixedMode.
+
+(Tests mit Berechtigung AllowAll und BlockAll (Kapitel 6.1))
+
+*Einstellungen in der Parent-Pom.xml*
+
+Um die Tests für den Tag @Ctl:MixedMode nun erfolgreich erzeugen und ausführen zu können, bedarf es noch einer temporären Anpassung in der Parent-Pom.
+
+Der Wert "cutest.break.tablesize" muss den Wert "false" haben.
+
+[[img_TableSite_Pom]]
+.Abbildung{counter:my-example-number2: 1}: TableSize in der Parent-Pom.xml
+image:TableSite_Pom.png[float="center"]
+
+Das Plugin versucht für alle Testfälle, die den MixedMode-Testfall-Tag besitzen, nun Beispiele zu erzeugen.
+Da dies aber auch Testfälle betreffen kann, die andere Client-Voraussetzungen benötigen, muss über den Wert TableSize verhindert werden, dass der Testrun abbricht, wenn für bestimmte Testfälle keine Beispiele erzeugt werden können.
+
+In unserem TI-M Pro Client Beispiel können z.B. keine Beispiele für TI-M ePA Testfälle erzeugt werden, da wir einen solchen Client nicht testen wollen.
+
+So werden nur Beispiele der Tests gebildet und ausgeführt, die zu den Clients und Org-Admins in unserer angepassten combine-items und tiger.yml passen.
+
+*Ausführung*
+
+Nun können die Tests unseres Beispiels mit diesem Befehl ausgeführt werden:
+
+`mvn clean install -Dcucumber.filter.tags=@Ctl:MixedMode`
+
+Es werden so alle Testfälle mit diesem Tag über alle Feature Files hinweg ausgeführt, die mit den zu testenden Clients kompatibel sind.
+
+[.text-right]
+<<id0,Inhaltsverzeichnis>>
+
+image:Server.png[float="left"]
+
+=== 8. Referenzimplementierung
+
+{empty} +
+
+Die gematik stellt eine TI-Messenger Pro Referenzimplementierung zur Verfügung.
+Zur Sicherstellung der Interoperabilität zwischen verschiedenen TI-Messenger-Fachdiensten innerhalb des TI-Messenger-Dienstes muss der TI-Messenger (TI-Messenger-Client und TI-Messenger-Fachdienst) eines TI-Messenger-Anbieters gegen die Referenzimplementierung (TI-Messenger-Client und TI-Messenger-Fachdienst) getestet werden.
+
+Die Ergebnisse der erfolgreichen Tests eines Zulassungsnehmers gegen die Referenzimplementierung und weitere Testdokumente sind der gematik gemäß Testplan bereits vor Zulassungsbeginn vorzulegen.
+(link:https://gemspec.gematik.de/docs/gemSpec/gemSpec_TI-M_Basis/latest/#4.2/[TI-M Basis Spezifikation - Test])
+
+[TIP]
+[black]#*_Die Referenzimplementierung ist eine TI-M Pro Instanz.
+Die Testsuite ist so konzipiert, dass alle Testsets, wie in 7.2 beschrieben, gegen diese getestet werden können._*#
+
+[TIP]
+[black]#*_Um die vollständige Nutzung der Referenzimplementierung zu ermöglichen, müssen Hersteller für deren Clients Kartenmaterial bestellen oder vorhalten.
+Dieses Kartenmaterial muss dann den Clients der Referenzimplementierung zugeordnet werden, damit sie die HBA-Funktionalität, die für bestimmte Tests erforderlich ist, über die Testtreiberschnittstellen nutzen können.
+Weitere Erläuterungen sind in <<id1,9.3>> zu finden._*#
+
+[.text-right]
+<<id0,Inhaltsverzeichnis>>
+
+image:Hersteller.png[float="left"]
+
+=== 9. Bereitstellung der Hersteller
+
+{empty} +
+
+Wie in link:https://gemspec.gematik.de/docs/gemSpec/gemSpec_TI-M_Basis/latest/#4.2[TI-M Basis Spezifikation - Test]
+beschrieben müssen Hersteller zu Zulassungsbeginn bestimmte Voraussetzungen erfüllen.
+
+Zu diesen Voraussetzungen zählen u.a. auch:
+
+- Bereitstellung einer Referenz- und Testinstanz
+- Übergabe der Testtreiber URLs an die gematik, über die die Tests seitens der gematik ausgeführt werden können (inkl.
+Einbindung der von der gematik bereit gestellten Zertifikate)
+
+Um die Testsuite ausführen zu können sind bestimmte Bereitstellungen durch die Hersteller erforderlich.
+Folgende Absätze beschreiben die benötigten Bereitstellungen der Hersteller.
+{empty} +
+{empty} +
+
+image:KH.png[float="left"]
+
+[[id41,Messenger-Service für eine Organisation]]
+==== 9.1 Messenger-Service für eine Organisation
+
+{empty} +
+
+[TIP]
+[black]#*_Testkarten (HBAs/SMC-Bs) müssen von den Herstellern bestellt werden siehe <<id43,Anforderungen an die Clients>>._*#
+
+[TIP]
+[black]#*_Für die Ausführung der Testsuite werden eine Domain und eine Organisation benötigt.
+Diese Domain und Organisation müssen von den Herstellern vor Beginn der Testphase eingerichtet werden und die Daten an die gematik übermittelt werden._*#
+
+[TIP]
+[black]#*_Die verwendeten Akteure/User müssen von den Herstellern auf dem Homeserver eingerichtet werden._*#
+
+.Abbildung{counter:my-example-number3: 40}: Testkonfiguration
+image:TestKonfiguration.png[float="center"]
+
+[.text-right]
+<<id0,Inhaltsverzeichnis>>
+
+image:Smartphone.png[float="left"]
+
+==== 9.2 Test Clients mit Testtreiberschnittstelle
+
+{empty} +
+
+Das folgende Bild zeigt die Inbetriebnahme der Testtreiberschnittstelle und der Clients.
+Die Clients können über eine externe oder interne Testtreiberschnittstelle mit der Testsuite remote oder local verbunden werden.
+Diese Leistung muss von jedem Hersteller erbracht werden.
+Welche Clients eingesetzt werden, können die Hersteller selbstständig entscheiden.
+Es werden nur bereitgestellte Clients zugelassen. +
+Clients mit den gleichen Eigenschaften werden unter einer URL zusammengefasst.
+Diese URL wird dann in die Konfigurationsdatei 'combine_items.json' eingetragen.
+In dieser Datei werden alle Testobjekte verwaltet.
+
+.Abbildung{counter:my-example-number3: 1}: Zusammenspiel Testtreiber und Clients
+image:Clients.png[float="center"]
+
+Die unterschiedlichen Testtreiberschnittstellen werden mit mTLS gesichert.
+Eine unterstützende Anleitung hierzu befindet sich link:GettingStarted.adoc#_set_up_certificates[hier].
+
+[.text-right]
+<<id0,Inhaltsverzeichnis>>
+
+image:Smartphone.png[float="left"]
+
+[[id43,Anforderungen an die Clients]]
+==== 9.3 Anforderungen an die Clients
+
+{empty} +
+
+Die Testsuite benötigt für die Ausführung der Tests eine bestimmte Anzahl an Clients.
+Besonders Tests für Gruppen Chats benötigen mehrere Endgeräte. +
+
+[TIP]
+[black]#*_Grundsätzlich müssen an jeder Schnittstelle mindestens drei Geräte zur Verfügung stehen (z.B. 3 x iOS Clients, 3 x Android Clients, 3 x Windows Clients usw.).
+Ausgenommen von dieser Festlegung ist der Org-Admin, hier ist ein Gerät ausreichend.
+Diese Regelung gilt unabhängig davon, ob ein TI-M Pro, TI-M ePA, etc. getestet werden soll._*#
+
+[TIP]
+[black]#*_Für die Zulassungstests der Ausprägung TI-M ePA wird keine Org-Admin Testtreiberschnittstelle benötigt._*#
+
+[TIP]
+[black]#*_Die Clients benötigen Testidentitäten (SMC-B/HBA Karten).
+Die Kartenbestellung erfolgt über das gematik Fachportal: +
+https://fachportal.gematik.de/gematik-onlineshop/testkarten?ai%5Baction%5D=detail&ai%5Bcontroller%5D=Catalog&ai%5Bd_name%5D=Testkarte-eGK-G2&ai%5Bd_pos%5D=1_*#
+
+[TIP]
+[black]#*_HBA Testkarten müssen auch in digitaler Form vorliegen, um diese z.B. auch für die Clients der Referenzimplementierung nutzen zu können.
+In der Anwenderdokumentation der Referenzimplementierung ist beschrieben, wie die Karten den einzelnen Clients zur Verfügung gestellt werden können._*#
+
+[TIP]
+[black]#*_Welche Testkarten müssen bestellt werden: +
+1. "TestKarte SMC-B G2.1 Krankenhaus" oder "TestKarte SMC-B G2.1 Arztpraxis" +
+&nbsp; &nbsp; &nbsp;(1x für OrgAdmin Schnittstelle) +
+2. "TestKarte HBA G2.1 Arzt" (3x pro Schnittstelle)_*#
+
+[TIP]
+[black]#*_Wenn mehrere Hersteller oder Personen eines Herstellers eine Testressource gleichzeitig nutzen wollen, muss die Anzahl der Clients dementsprechend erhöht werden, da eine Testsuite pro Run die oben genannte Anzahl an Devices benötigt._*#
+
+[.text-right]
+<<id0,Inhaltsverzeichnis>>
+
+image:User.png[float="left"]
+
+==== 9.4 Verwaltung der Ressourcen
+
+{empty} +
+
+Hinter jeder Schnittstelle des Testtreiber Moduls verbergen sich ggf. mehrere Devices (siehe 4.3) mit der gleichen Grundkonfiguration.
+Diese Grundkonfiguration betrifft:
+
+- Client Version (Version vom TI-M)
+- Betriebssystem (OS)
+- Typ (Org-Admin oder Messenger-Client)
+
+Für jeweils ein Device muss neben allen anderen Daten genau 1 User inkl.
+Passwort hinterlegt werden (1:1 Beziehung).
+
+Dies gilt für Messenger-Clients ebenso wie für Org-Admin Clients.
+
+Wenn hinter dem Messenger-Client Device eine HBA liegt, um HBA Interaktionen z.B. mit dem VZD durchzuführen, müssen der User des Devices und der Name auf der HBA übereinstimmen.
+Somit kann sich dann der eingeloggte und hinterlegte User auch als HBA authentifizieren.
+
+*Der hinterlegte User muss auf dem Homeserver bzw. der TI-M Instanz registriert sein*, sodass eine Anmeldung im TI-M über die Testtreiber Schnittstelle mittels POST Login möglich wird.
+
+Der Start eines Testfalls sieht dann wie folgt aus:
+
+- _Post signalStartTest_ - CleanUp vor dem Teststart
+- _Get Info_ - Abfragen der Info Schnittstelle, an der alle wichtigen Informationen des Devices hinterlegt sind
+- _Get Device_ - Liste aller Devices einer Schnittstelle werden abgefragt
+- _Claim Device_ - Ein Device im Status ‘unclaimed’ wird für den Testlauf geclaimt
+- _Post Login_ - Leerer Request Post Login mit der Device ID und der Response:
+
+.Abbildung{counter:my-example-number3: 1}: Response Login
+image:ResponseLoginV2.png[float="center"]
+
+[TIP]
+[black]#*_Wie der Testtreiber Schnittstellen Dokumentation zu entnehmen ist, wird ausschließlich ‚BasicAuth‘ genutzt._*#
+
+[TIP]
+[black]#*_Grundsätzlich muss hinter jedem Device exakt ein User inkl.
+Passwort liegen._*#
+
+[TIP]
+[black]#*_Wenn es sich um ein Practitioner-Client Device handelt, muss der User mit dem auf der hinterlegten HBA-Karte eingetragenen Nutzer übereinstimmen_*#
+
+[TIP]
+[black]#*_Die Verwaltung der Domain, der Organisationen und der User liegt in der Verantwortung der Hersteller._*#
+
+[TIP]
+[black]#*_Weiterhin müssen die Hersteller die Schnittstellen für die TI-Messenger-Testsuite aktuell halten und die dauerhafte Erreichbarkeit sicher stellen._*#
 
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
 
 image::Tests.png[float="left"]
 
-[[id8,Testfall Liste]]
-=== 8. Testfall Liste
+=== 10. Testfallliste
 
 {empty} +
 
-////
+[IMPORTANT]
+[black]#*_Die Testfallliste der verschiedenen Testsuite Versionen (V2, V3, etc) sind jeweils der entsprechenden erweiterten Dokumentation zu entnehmen._*#
 
-mit diesen grep Befehl kann eine neue/aktuelle Testfallliste erstellt werden
+{empty} +
 
-cd <git_home>/ti-m-testsuite/src/test/resources/templates/Zulassungstests/Testrun
+[.text-right]
+<<id0,Inhaltsverzeichnis>>
 
-grep Szenariogrundriss * |while read var; do   set -- $var ;   shift 2;   echo $*; done
-bzw.
-grep Szenariogrundriss * | sed 's/^[0-9]*_[A-Z,a-z,.,:, ,_,ß]*//g'
+image::Tests.png[float="left"]
 
-////
+=== 11. Feature File AFO Liste
 
-[[id81,Zurück]]
-*Abfragen der Geräte-Information aller Schnittstellen*
+{empty} +
 
-[cols='^6%,90%']
-|===
-|00.01| Abfragen der Schnittstellen-Information durch HBA-User-Client
-|00.02| Abfragen der Schnittstellen-Information durch Org-Admin-Client
-|00.03| Abfragen der Geräte-Liste durch HBA-User-Client
-|00.04| Abfragen der Geräte-Liste durch Org-Admin-Client
-|===
+[IMPORTANT]
+[black]#*_Die "Feature File AFO Liste" der verschiedenen Testsuite Versionen (V2, V3, etc) sind jeweils der entsprechenden erweiterten Dokumentation zu entnehmen._*#
 
-[.text-center]
-<<id81,Zurück>>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id8,Testfall Liste>>
-
-[[id82,Zurück]]
-*AF_1005 Organisationsressourcen im Verzeichnisdienst hinzufügen*
-
-[cols='^6%,90%']
-|===
-|03.01| Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen
-|03.02| Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen und MXID im Endpoint ändern
-|03.03| Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen/ändern, Endpoint anlegen/ändern und löschen
-|03.04| Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin mit zwei Endpoints anlegen und löschen
-|03.05| Organisationsressourcen im Verzeichnisdienst hinzufügen - Healthcare-Service durch Org-Admin anlegen und Endpointname aktualisieren
-|===
-
-[.text-center]
-<<id81,Zurück>>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id8,Testfall Liste>>
-
-[[id83,Zurück]]
-*AF_10057 Anmeldung eines Akteurs am Messenger-Service*
-
-[cols=' ^6%,90%']
-|===
-|04.01| Anmeldung eines Akteurs - Erfolgreiche Anmeldung eines Akteurs (HBA)
-|04.02| Anmeldung eines Akteurs - Erfolgreiche Anmeldung eines Akteurs (OrgAdmin)
-|===
-
-[.text-center]
-<<id82,Zurück>>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id8,Testfall Liste>>
-
-[[id84,Zurück]]
-*AF_10058 Akteur (User-HBA) im Verzeichnisdienst hinzufügen*
-
-[cols='^6%,90%']
-|===
-|05.01| Akteur im Verzeichnisdienst - Hinzufügen - HBA-User legt sich an und sucht seinen Eintrag
-|05.02| Akteur im Verzeichnisdienst - Hinzufügen - HBA-User legt sich an und sucht anderen Eintrag
-|05.03| Akteur im Verzeichnisdienst - Hinzufügen - HBA-User aus anderer Organisation sucht HBA-User Eintrag
-|05.04| Akteur im Verzeichnisdienst - Löschen - HBA-User löscht Eintrag
-|05.05| Akteur im Verzeichnisdienst - Löschen - HBA-User löscht Eintrag und ist nicht auffindbar für HBA-User anderer Organisation
-|05.06| Akteur im Verzeichnisdienst - Hinzufügen - Nicht erfolgreich ohne Authentication im Verzeichnisdienst
-|===
-
-[.text-center]
-<<id83,Zurück>>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id8,Testfall Liste>>
-
-[[id85,Zurück]]
-*AF_10064 Föderationszugehörigkeit eines Messenger-Service prüfen*
-
-[cols='^6%,90%']
-|===
-|06.01| Föderationszugehörigkeit prüfen - Chat - Test-Client "A" versucht User außerhalb der Föderation einzuladen (HBA-User)
-|06.02| Föderationszugehörigkeit prüfen - Raum - Test-Client "A" versucht User außerhalb der Föderation einzuladen (Org-User)
-|===
-
-[.text-center]
-<<id84,Zurück>>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id8,Testfall Liste>>
-
-[[id86,Zurück]]
-*AF_10104 Einladung von Akteuren innerhalb eines Messenger-Service*
-
-[cols='^6%,90%']
-|===
-|07.01| Einladung innerhalb einer Organisation - Einladung in Chat - Teilqualifizierte Suche (HBA-User an HBA-User)
-|07.02| Einladung innerhalb einer Organisation - Einladung in Raum - Teilqualifizierte Suche (HBA-User an HBA-User)
-|07.03| Einladung innerhalb einer Organisation - Einladung in Chat - Ablehnung der Einladung (HBA-User an HBA-User)
-|07.04| Einladung innerhalb einer Organisation - Einladung in Raum - Ablehnung der Einladung (HBA-User an HBA-User)
-|07.05| Einladung innerhalb einer Organisation - Einladung in Chat - Ablehnung der Einladung (Organisations-User an Organisations-User)
-|07.06| Einladung innerhalb einer Organisation - Einladung in Raum - Ablehnung der Einladung (Organisations-User an Organisations-User)
-|07.07| Einladung innerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (HBA)
-|07.08| Einladung innerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (OrgUser)
-|07.09| Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch HBA-User
-|07.10| Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch Organisations-User
-|07.11| Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch HBA-User
-|07.12| Einladung innerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch Organisations-User
-|07.13| Einladung innerhalb einer Organisation - Einladung in Chat - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
-|07.14| Einladung innerhalb einer Organisation - Einladung in Raum - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
-|07.15| Einladung innerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
-|07.16| Einladung innerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
-|07.17| Einladung innerhalb einer Organisation - Einladung in Chat - Teilqualifizierte Suche auf dem Homeserver
-|07.18| Einladung innerhalb einer Organisation - Einladung in Raum - Teilqualifizierte Suche auf dem Homeserver
-|===
-
-[.text-center]
-<<id87,Zurück>>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id8,Testfall Liste>>
-
-[[id87,Zurück]]
-*AF_10063 Austausch von Events innerhalb eines Messenger-Service*
-
-[cols=' ^6%,90%']
-|===
-|08.01| Events innerhalb einer Organisation - Chat - Test-Client "A" sendet und empfängt eine Nachricht
-|08.02| Events innerhalb einer Organisation - Raum - Test-Client "A" sendet eine Nachricht
-|08.03| Events innerhalb einer Organisation - Raum - Test-Client "B" sendet eine Nachricht
-|08.04| Events innerhalb einer Organisation - Chat - HBA-User sendet Organisations-User eine Nachricht
-|08.05| Events innerhalb einer Organisation - Raum - HBA-User sendet Organisations-User eine Nachricht
-|08.06| Events innerhalb einer Organisation - Chat - Organisations-User sendet Organisations-User eine Nachricht
-|08.07| Events innerhalb einer Organisation - Raum - Organisations-User sendet Organisations-User eine Nachricht
-|08.08| Events innerhalb einer Organisation - Chat - Organisations-User sendet HBA-User eine Nachricht
-|08.09| Events innerhalb einer Organisation - Raum - Organisations-User sendet HBA-User eine Nachricht
-|08.10| Events innerhalb einer Organisation - Chat - HBA-User "B" löscht eine Nachricht
-|08.11| Events innerhalb einer Organisation - Chat - Organisations-User "B" löscht eine Nachricht
-|08.12| Events innerhalb einer Organisation - Raum - HBA-User "A" löscht eine Nachricht
-|08.13| Events innerhalb einer Organisation - Raum - Organisations-User "A" löscht eine Nachricht
-|08.14| Events innerhalb einer Organisation - Raum - HBA-User "A" sendet eine Nachricht an ausgeloggten Test-Client "B"
-|08.15| Events innerhalb einer Organisation - Raum - Organisations-User "A" sendet eine Nachricht an ausgeloggten Test-Client "B"
-|08.16| Events innerhalb einer Organisation - Raum - HBA-User "A" sendet ein Attachment
-|08.17| Events innerhalb einer Organisation - Raum - Organisations-User "A" sendet ein Attachment
-|08.18| Events innerhalb einer Organisation - Raum - HBA-User "B" sendet ein Attachment
-|08.19| Events innerhalb einer Organisation - Raum - Organisations-User "B" sendet ein Attachment
-|08.20| Events innerhalb einer Organisation - Chat - Eventaustausch auf dem HomeServer
-|08.21| Events innerhalb einer Organisation - Raum - Eventaustausch auf dem HomeServer
-|===
-
-[.text-center]
-<<id86,Zurück>>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id8,Testfall Liste>>
-
-[[id88,Zurück]]
-*AF_10061 Einladung von Akteuren anderer Messenger-Services*
-
-[cols='^6%,90%']
-|===
-|09.01| Einladung außerhalb einer Organisation - Einladung in Chat - Teilqualifizierte Suche (HBA-User an HBA-User)
-|09.02| Einladung außerhalb einer Organisation - Einladung in Raum - Teilqualifizierte Suche (HBA-User an HBA-User)
-|09.03| Einladung außerhalb einer Organisation - Einladung in Chat - Organisations-User lädt HBA-User ein
-|09.04| Einladung außerhalb einer Organisation - Einladung in Chat - Ablehnung der Einladung (HBA-User an HBA-User)
-|09.05| Einladung außerhalb einer Organisation - Einladung in Raum - Ablehnung der Einladung (HBA-User an HBA-User)
-|09.06| Einladung außerhalb einer Organisation - Einladung in Chat - Ablehnung der Einladung (Organisations-User an Organisations-User)
-|09.07| Einladung außerhalb einer Organisation - Einladung in Raum - Ablehnung der Einladung (Organisations-User an Organisations-User)
-|09.08| Einladung außerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (HBA)
-|09.09| Einladung außerhalb einer Organisation - Einladung in Chat - Dritter Nutzer soll in Chat eingeladen werden (OrgUser)
-|09.10| Einladung außerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch HBA-User
-|09.11| Einladung außerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird gesucht durch Organisations-User
-|09.12| Einladung außerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch HBA-User
-|09.13| Einladung außerhalb einer Organisation - Im Verzeichnisdienst nicht registrierter Nutzer wird angeschrieben durch Organisations-User
-|09.14| Einladung außerhalb einer Organisation - Einladung in Chat - HBA-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
-|09.15| Einladung außerhalb einer Organisation - Einladung in Raum - HBA-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
-|09.16| Einladung außerhalb einer Organisation - Einladung in Chat - Organisations-User ohne Eintrag im Verzeichnisdienst versucht HBA-User einzuladen
-|09.17| Einladung außerhalb einer Organisation - Einladung in Raum - Organisations-User ohne Eintrag im Verzeichnisdienst versucht Organisations-User einzuladen
-|09.18| Einladung außerhalb einer Organisation - Negativ Suche - Qualifizierte Suche auf dem Homeserver
-|===
-
-[.text-center]
-<<id87,Zurück>>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id8,Testfall Liste>>
-
-[[id89,Zurück]]
-*AF_10062 Austausch von Events zwischen anderen Messenger-Services*
-
-[cols='^6%,90%']
-|===
-|10.01| Events außerhalb einer Organisation - Chat - Test-Client "A" sendet und empfängt eine Nachricht
-|10.02| Events außerhalb einer Organisation - Raum - Test-Client "A" sendet eine Nachricht
-|10.03| Events außerhalb einer Organisation - Raum - Test-Client "B" sendet eine Nachricht
-|10.04| Events außerhalb einer Organisation - Chat - HBA-User sendet Organisations-User eine Nachricht
-|10.05| Events außerhalb einer Organisation - Raum - HBA-User sendet Organisations-User eine Nachricht
-|10.06| Events außerhalb einer Organisation - Chat - Organisations-User sendet Organisations-User eine Nachricht
-|10.07| Events außerhalb einer Organisation - Raum - Organisations-User sendet Organisations-User eine Nachricht
-|10.08| Events außerhalb einer Organisation - Chat - Organisations-User sendet HBA-User eine Nachricht
-|10.09| Events außerhalb einer Organisation - Raum - Organisations-User sendet HBA-User eine Nachricht
-|10.10| Events außerhalb einer Organisation - Chat - HBA-User "B" löscht eine Nachricht
-|10.11| Events außerhalb einer Organisation - Chat - Organisations-User "B" löscht eine Nachricht
-|10.12| Events außerhalb einer Organisation - Raum - HBA-User "A" löscht eine Nachricht
-|10.13| Events außerhalb einer Organisation - Raum - Organisations-User "A" löscht eine Nachricht
-|10.14| Events außerhalb einer Organisation - Raum - HBA-User "A" sendet eine Nachricht an ausgeloggten "B"
-|10.15| Events außerhalb einer Organisation - Raum - Organisations-User "A" sendet eine Nachricht an ausgeloggten "B"
-|10.16| Events außerhalb einer Organisation - Raum - HBA-User "B" sendet ein Attachment
-|10.17| Events außerhalb einer Organisation - Raum - Organisations-User "B" sendet ein Attachment
-|10.18| Events außerhalb einer Organisation - Raum - HBA-User "A" sendet ein Attachment
-|10.19| Events außerhalb einer Organisation - Raum - Organisations-User "A" sendet ein Attachment
-|10.20| Events außerhalb einer Organisation - Raum - User verlässt den Chat
-|10.21| Events außerhalb einer Organisation - Raum - User verlässt den Raum
-|===
-
-[.text-center]
-<<id88,Zurück>>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id8,Testfall Liste>>
-
-[[id90,Zurück]]
-*Einladung von Akteuren via Freigabeliste*
-
-[cols='^6%,90%']
-|===
-|11.01| Einladung via Freigabeliste außerhalb einer Organisation - Raum - Beide User jeweils in Freigabeliste (HBA-User an HBA-User)
-|11.02| Einladung via Freigabeliste außerhalb einer Organisation - Chat - Beide User jeweils in Freigabeliste (HBA-User an HBA-User)
-|11.03| Einladung via Freigabeliste außerhalb einer Organisation - Chat - Nur ein User in Freigabeliste (Organisations-User an HBA-User)
-|11.04| Einladung via Freigabeliste außerhalb einer Organisation - Raum - Nur ein User in Freigabeliste (HBA-User an HBA-User)
-|11.05| Einladung via Freigabeliste außerhalb einer Organisation - Chat - Nur User in eigener Freigabeliste (HBA-User an HBA-User)
-|===
-
-[.text-center]
-<<id89,Zurück>>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id8,Testfall Liste>>
-
-[[id810,Zurück]]
-*Gruppen Chats*
-
-[cols='^6%,90%']
-|===
-|12.01| Events innerhalb einer Organisation - Gruppenchat - Test-Client "A" sendet eine Nachricht (HBA-User)
-|12.02| Events innerhalb einer Organisation - Gruppenchat - Test-Client "C" sendet eine Nachricht (HBA-User)
-|12.03| Events innerhalb einer Organisation - Gruppenchat - Test-Client "B" sendet eine Nachricht (Organisations-User)
-|12.03| Events innerhalb einer Organisation - Gruppenchat - Test-Client "B" sendet eine Nachricht (HBA-User lädt Organisations-User ein)
-|12.05| Events innerhalb/außerhalb einer Organisation - Gruppenchat - Test-Client "C" sendet eine Nachricht (Organisations-User)
-|12.06| Events innerhalb/außerhalb einer Organisation - Gruppenchat - Test-Client "D" sendet eine Nachricht (HBA-User lädt HBA- und Organisations-User ein)
-|===
-
-[.text-center]
-<<id90,Zurück>>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id8,Testfall Liste>>
-
-[[id811,Zurück]]
-*Nutzung von mehreren Geräten*
-
-[cols='^6%,90%']
-|===
-|13.01| Events außerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices
-|13.02| Events außerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices
-|13.03| Events außerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices - Erhalt vorheriger Nachrichten
-|13.04| Events außerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices - Erhalt vorheriger Nachrichten
-|13.05| Events innerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices
-|13.06| Events innerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices
-|13.07| Events innerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices - Erhalt vorheriger Nachrichten
-|13.08| Events innerhalb einer Organisation - Chat - Test-Client "A" mit 2 Devices - Erhalt vorheriger Nachrichten
-|===
-
-[.text-center]
-<<id810,Zurück>>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id8,Testfall Liste>>
-
-[[id812,Zurück]]
-*Room States überprüfen*
-
-[cols='^6%,90%']
-|===
-|14.01| Room States - Chat - Deafult Room State (HBA-User an HBA-User)
-|14.02| Room States - Raum - Deafult Room State (HBA-User an HBA-User)
-|14.03| Room States - Chat - Deafult Room State (Org-User an Org-User)
-|14.04| Room States - Raum - Deafult Room State (Org-User an Org-User)
-|===
-
-[.text-center]
-<<id811,Zurück>>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id8,Testfall Liste>>
-
-[[id813,Zurück]]
-*Gruppenchat mit 5 HomeServern*
-
-[cols='^6%,90%']
-|===
-|15.01| Events außerhalb einer Organisation - Gruppenchat mit 5 Teilnehmern - Test-Client "A" sendet eine Nachricht (HBA-User)
-|15.02| Events außerhalb einer Organisation - Gruppenchat mit 5 Teilnehmern - Test-Client "E" sendet eine Nachricht (HBA-User)
-|15.03| Events außerhalb einer Organisation - Gruppenchat mit 5 Teilnehmern - Test-Client "F" sendet eine Nachricht (Organisations-User)
-|===
-
-[.text-center]
-<<id812,Zurück>>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id8,Testfall Liste>>
-
-[[id814,Zurück]]
-*Gruppenchat mit 3 HomeServern*
-
-[cols='^6%,90%']
-|===
-|16.01| Events außerhalb einer Organisation - Gruppenchat mit 3 Teilnehmern - Test-Client "A" sendet eine Nachricht (HBA-User)
-|16.02| Events außerhalb einer Organisation - Gruppenchat mit 3 Teilnehmern - Test-Client "C" sendet eine Nachricht (HBA-User)
-|16.03| Events außerhalb einer Organisation - Gruppenchat mit 3 Teilnehmern - Test-Client "D" sendet eine Nachricht (Organisations-User)
-|16.04| Events außerhalb einer Organisation - Gruppenchat mit 3 Teilnehmern - Test-Client "C" sendet eine Nachricht (HBA-User lädt Organisations-User ein)
-|===
-
-[.text-center]
-<<id813,Zurück>>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<<id8,Testfall Liste>>
+{empty} +
 
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
 
 image::Testrun.png[float="left"]
 
-=== 9. Testausführung
-
-{empty} +
-{empty} +
-
-image::Testrun.png[float="left"]
-
-==== 9.1 Testausführung allgemein
-
-{empty} +
-
-*Die Testsuite wird mit maven gestartet werden:*
-
-maven clean verify
-
-*Es können auch vordefinierte Profile verwendet werden:*
-
-[cols='1,3']
-|===
-| newonly     | der Testschwerpunkt liegt auf neuen Elementen
-| oneonly     | jeder Testfall wird nur einmal ausgeführt
-| usetags     | es werden nur bestimmte Tags ausgeführt, default @Ctl:UseCase
-|===
-
-*Im Terminal kann dieses Tag und Konfigfiles überschrieben werden:*
-
-mvn clean verify -Dcucumber.filter.tags=@File:FeatureFile_04 -Poneonly
-
-mvn clean verify -Dcucumber.filter.tags=@TCID:TIM_11_AF_401 -Poneonly
-
-mvn clean verify -Dtiger.config.file=tiger-dev.yml
-
-*Im Terminal können HttpTimeout, Timeout und PollIntervall eingestellt werden*
-
-mvn clean verify -DhttpTimeout=_<Timeout in Sekunden>_ -Dtimeout=_<Timeout in Sekunden>_ -DpollInterval=_<PollIntervall in Sekunden>_
-
-Default:
-
-* HttpTimout = 180 Sekunden -> Timeout bis irgendeine Antwort erwartet wird (wird bei jeder neuen Anfrage wieder resettet)
-* Timeout = 10 Sekunden -> Zeit die bis auf die erwartete Antwort gewartet wird.
-Kann überschritten werden, wenn der Server nicht antwortet.
-Dann greift _HttpTimeout_
-* PollInterval = 1 Sekunde -> Zeit die gewartet wird bis nach einer nicht erwarteten Antwort eine weitere Request ausgesendet wird
-
-[WARNING]
-Das Timeout muss immer größer als das PollInterval sein!
-
-*Im Terminal kann das Pooling eingestellt werden*
-
-mvn clean install -DexcludedGroups='<Pattern>' -DpoolGroupString='<Pattern>,<Amount>,<MatchingStrategy>'
-
-Weitere Infos hierzu sind in Kapitel 6.5 vorhanden.
-
-*Im Terminal kann das vorherige Löschen aller aktiven Räume eingeschaltet werden*
-
-mvn clean install -DclearRooms=true
-
-Bitte beachten, dass mit diesem Schalter bei jedem Login eine weitere Anfrage gesendet wird und somit eine im Idealfall unnötige Belastung darstellt.
-
-image::Testrun.png[float="left"]
-
-==== 9.2 Zulassungstests
-
-{empty} +
-{empty} +
-
-Für das erfolgreiche Ausführen der Testfälle aus dem Folder "Zulassungstests" müssen aufseiten des Anbieters folgende Clients vorhanden sein:
-
-- 1 Client mit HBA Funktionalität (Testobjekt)
-- 1 Org-Admin (Testobjekt)
-
-Der Gegenpart (z.B. die Referenzimplementierung) benötigt:
-
-- 1 Client mit HBA Funktionalität
-- 1 Org-Admin
-
-[TIP]
-[black]#*_Zur Bereitstellung der Clients seitens des Herstellers ist Kapitel 4 nochmal zu erwähnen.
-Die obige Aufzählung dient der Übersichtlichkeit._*#
-
-Für den Folder Zulassungstests müssen jeweils ein Client mit HBA Funktionalität inkl Org-Admin pro Homeserver vorhanden sein.
-Dieses Testset bezieht sich auf den regulären Zulassungstest und ist unter src/test/resources/templates/FeatureFiles/TI-M_11X/Zulassungstests zu sehen.
-
-Für das Ausführen dieser Suite in Gänze reicht es den Befehlt "mvn clean install" zu nutzen. (siehe Kapitel 9.1)
-
-Die Combine Items kann dann z.B. wie folgt aussehen, wenn wir hier davon ausgehen, dass "A" der Hersteller ist und "B" z.B. die Referenzimplementierung oder zu Testzwecken eine weitere Instanz.
-
-.Abbildung{counter:my-example-number: 1}: Beispiel Combine Items Zulassungstests
-image:Combine_Zulass.png[float="center"]
-
-image::Testrun.png[float="left"]
-
-=== 10. Testreport
+=== 12. Testreport
 
 {empty} +
 
 Nach Ausführung eines Testruns werden Reports erzeugt.
+
+.Abbildung{counter:my-example-number3: 1}: Ordner 'report' im übergeordneten 'reports' Ordner
+image:ReportsFolder.png[float="center"]
+
 Diese sind in unter 'reports' zu finden und enthalten folgende Informationen:
 
 - Alle Feature Files, die für diesen Test Run generiert wurden
 - Die combine_items, die für die Kombinatorik genutzt wurde
-- Die used_groups, die in diesem Testrum genutzt wurden
-- Ein Rohdaten report
-- Ein Serenity Test Report
+- Die used_groups, die in diesem Testrun genutzt wurden
+- Einen Rohdaten Report
+- Einen Serenity Test Report
+
+[TIP]
+[black]#*_Als Eingangskriterien einzureichen sind die Reports aus dem "report" Verzeichnis inkl aller Unterverzeichnisse und nicht aus dem "target" Verzeichnis_*#
 
 Um den Serenity Report zu öffnen, nutzt man das File 'index.html' als Einstiegspunkt, zum Beispiel unter:
 
@@ -1536,44 +1471,45 @@ reports/2023-06-19_17_09_55/report/#index.html
 *Header*
 
 Im Header des Serenity Reports werden alle Gruppen und Testtreiberschnittstellen aufgeführt.
-So ist schon direkt zu sehen, welche Schnittstellen an diesem Test Run beteiligt waren.
+So ist direkt zu sehen, welche Schnittstellen an diesem Test Run beteiligt waren.
 
-.Abbildung{counter:my-example-number: 1}: Serenity Report Header
+.Abbildung{counter:my-example-number3: 1}: Serenity Report Header
 image:ReportHeader.png[float="center"]
 
 Dargestellt werden hier die am Testrun beteiligten Gruppen inkl. der dazugehörigen Schnittstellen und die Schnittstellen, die Teil des Testruns waren ohne zu einer Gruppe zu gehören.
 
 *Summary*
 
-.Abbildung{counter:my-example-number: 1}: Serenity Report Tabs
+.Abbildung{counter:my-example-number3: 1}: Serenity Report Tabs
 image:ReportsSummary.png[float="center"]
 
 In der Summary ist ein Überblick über alle in diesem Testrun gelaufenen Testfälle (Anzahl) inkl. der jeweiligen Ergebnisse und deren Runtime dargestellt.
 
-.Abbildung{counter:my-example-number: 1}: Serenity Report Überblick Resultate
+.Abbildung{counter:my-example-number3: 1}: Serenity Report Überblick Resultate
 image:ReportSummaryResults.png[float="center"]
 
-Unterhalb dieser Darstellung sind alle Tags, die in dem Testrun bzw der Testfälle vorhanden waren, aufgeführt.
-Diese dienen der Filterung bzw Analyse.
+Unterhalb dieser Darstellung sind alle Tags, die in dem Testrun bzw. den Testfällen vorhanden waren, aufgeführt.
+Diese dienen der Filterung bzw.
+Analyse.
 
-.Abbildung{counter:my-example-number: 1}: Serenity Report Überblick Tags
+.Abbildung{counter:my-example-number3: 1}: Serenity Report Überblick Tags
 image:ReportSummaryTags.png[float="center"]
 
 *Test Results*
 
-.Abbildung{counter:my-example-number: 1}: Serenity Report Tabs
+.Abbildung{counter:my-example-number3: 1}: Serenity Report Tabs
 image:ReportsTestresults.png[float="center"]
 
 Unterhalb des Tabs 'Test Results' des Reports sind alle ausgeführten Testfälle inkl. der dazugehörigen Testdaten aufgeführt.
-Diese Auslistung dient der Analyse und zeigt exakt, welche Testreiberschnittstellen welche Aktionen ausführen inkl. deren Response.
-Dazu ist es notwendig in die Testfälle selbst zu gehen und dann sie entsprechenden Runs zu öffnen:
+Diese Auflistung dient der Analyse und zeigt exakt, welche Testtreiberschnittstellen welche Aktionen ausführen inkl. deren Responses.
+Dazu ist es notwendig die Testfälle durch einen Klick zu öffnen und dann die entsprechenden Testschritte mit einem Klick auf das grüne Pfeilicon aufzuklappen:
 
-.Abbildung{counter:my-example-number: 1}: Serenity Report TestCase
+.Abbildung{counter:my-example-number3: 1}: Serenity Report TestCase
 image:ReportTestCaseInside.png[float="center"]
 
 Im unteren Bereich eines Testfalls ist Folgendes zu finden:
 
-.Abbildung{counter:my-example-number: 1}: Serenity Report TestCase zusätzliche Optionen
+.Abbildung{counter:my-example-number3: 1}: Serenity Report TestCase zusätzliche Optionen
 image:ReportTestCaseInsideUnder.png[float="center"]
 
 Die einzelnen Punkte sind wie folgt zu verstehen:
@@ -1581,17 +1517,17 @@ Die einzelnen Punkte sind wie folgt zu verstehen:
 - Rohdaten-Statistik-Total: Anzahl der einzelnen Rohdatentypen, die inkl aller zuvor gelaufenen Testfälle bisher mindestens erzeugt werden sollten (aufsummiert)
 - Rohdaten-Statistik: Anzahl der einzelnen Rohdatentypen, die innerhalb dieses Testfalls erzeugt werden sollten.
 - TestcaseId: Die Testcase ID inkl eine UUID (Eindeutigkeit) zur Verifizierung
-- RBelllog: Weitere Logart, die noch detaillierter ist
+- RBellog: Weitere Logart, die noch detaillierter die Requests und Responses darstellt
 
-Der Rbellog ist im Gegensatz zu dem Serenity Report noch etwas detaillierter und für tiefe Analysen vorgesehen.
-Dieser betrachtet genau den Testfall, in dem er aufgerufen wird:
+Das Rbellog ist im Gegensatz zum Serenity Report noch etwas detaillierter und für tiefe Analysen vorgesehen.
+Es enthält genau den Testfall, in dem es aufgerufen wird:
 
-.Abbildung{counter:my-example-number: 1}: Rbellog
+.Abbildung{counter:my-example-number3: 1}: Rbellog
 image:ReportRbellog.png[float="center"]
 
 image::Tests.png[float="left"]
 
-=== 11. Plugin Error Log
+=== 13. Plugin Error Log
 
 {empty} +
 
@@ -1601,19 +1537,19 @@ Dieses errorLog.txt ist dann in folgendem Folder zu finden:
 
 target/generated-combine
 
-Mögliche Fehler, die das PlugIn zum Abbruch bringen, können u.a. sein:
+Mögliche Fehler, die das Plugin zum Abbruch bringen, können u.a. sein:
 
 - Tabellen einzelner Testfälle können nicht gebildet werden, z.B. aufgrund fehlender Schnittstellen (oder mit Werten, die nicht zu den Filtern passen)
 - Vorbedingungen (in 6.2 beschrieben), wie z.B. die Anzahl der definierten Devices, sind nicht gegeben
 - Vergleichsoperationen (in 6.2 beschrieben) für Tags geben ein false zurück
-- Bei der Generierung von Pool Tests (in 6.5 beschrieben) sind zu wenige Gruppen oder Schnittstellen vorhanden, um diesen Run zu füllen (z.B. einen Pool Test für 4 Gruppen, nur 3 Gruppen vorhanden und keine weitere Schnittstelle um aufzufüllen)
+- Bei der Generierung von Pool Tests (in 6.5 beschrieben) sind zu wenige Gruppen oder Schnittstellen vorhanden, um diesen Run zu füllen (z.B. in einen Pool Test für 4 Gruppen sind nur 3 Gruppen vorhanden und es gibt keine weitere Schnittstelle um aufzufüllen)
 
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
 
 image::Tests.png[float="left"]
 
-=== 12. Testfall Beschreibungen
+=== 14. Testfall Beschreibungen
 
 {empty} +
 
@@ -1625,23 +1561,18 @@ Durch die Verwendung von Gherkin sind die einzelnen Teststeps selbst erklärend.
 
 image::Tests.png[float="left"]
 
-=== 13. Zusätzliche IOP Feature Files bzw Tests
+=== 15. End Disclaimer
 
 {empty} +
 
-Folgende Feature Files bzw Testfälle behandelt das Thema IOP in einem größeren Rahmen.
-Zur Ausführung der Tests bedarf es mehrerer zugelassener Anbieter und somit mehrerer Home Server Instanzen.
+Dieses Dokument versteht sich als Basis zu den erweiterten Dokumentationen, die je Testsetversion vorhanden sind.
+Beide Dokumente besitzen in Kombination Gültigkeit.
 
-Diese Feature Files werden hier abgelegt:
+Ab welcher Spezifikationsversion die jeweilige Testsetversion gültig ist, ist den erweiterten Dokumentationen zu entnehmen.
 
-src/test/resources/templates/Zusatztests/Testrun
-
-[cols='^1,1,6,4']
-|===
-| *Feature File* | *AF Nummer* | *Beschreibung*                      | *Anmerkung*
-| 14             | ohne        | Gruppenchat                         | Gruppenchat mit 5 Teilnehmern/HomeServern
-| 15             | ohne        | Gruppenchat                         | Gruppenchat mit 3 Teilnehmern/HomeServern
-|===
+[TIP]
+[black]#*_"Gültig ab" Spezifikationsversion, Maven Befehle für verschiedene Zulassungstests, Spezial-Tags, Testfallliste und FeatureFile-AFO-Liste sind den Dokumentationen Testset_V(Testsetversionsnummer).adoc zu entnehmen_*#
 
 [.text-right]
 <<id0,Inhaltsverzeichnis>>
+

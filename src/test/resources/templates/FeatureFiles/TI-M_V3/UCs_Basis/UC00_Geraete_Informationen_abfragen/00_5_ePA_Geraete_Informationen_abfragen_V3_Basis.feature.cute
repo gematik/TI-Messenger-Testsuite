@@ -1,0 +1,69 @@
+# language: de
+@File:FeatureFile_00_05_V3_Basis @Ctl:UseCaseV3_00_Basis
+@PRODUKT:TI-M_FD_Basis
+@ZulV3:ePA
+@AFO-ID:A_25641-01
+
+Funktionalität: 00 (5) Abfragen der Schnittstellen-Information und die Geräte-Liste aller Schnittstellen [V3]
+
+  Die folgenden Testfälle sollen die Funktionalität der Abfrage der Schnittstellen und Geräte Informationen sicherstellen,
+  die nicht weiter in der Spezifikationen des TI-Messengers beschrieben sind.
+
+  COMMENT: Basis
+  A_25641-01   Matrix Spezifikationsversion
+
+  Inhalt
+  TF 1     Schnittstellen-Information
+  TF 2     Geräte-Liste
+  TF 3     Matrix Version prüfen
+  TF 4     Synapse Server Version abfragen
+
+  @Ctl:SchnittstellenDatenEpa
+  @TCID:TIM_V3_ePA_AF_000501 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 00.05.01 Abfragen der Schnittstellen-Information durch ePA-User-Client
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT | <ApiName1> |
+    Wenn       "A" Informationen über den Testtreiber anfragt
+    Dann       werden Informationen über den Testtreiber an "A" zurückgegeben
+
+  @Filter(ApiName1.hasTag("epaClientV3"))
+
+    Beispiele:
+    | ApiName1 |
+
+  @Ctl:SchnittstellenDatenEpa
+  @TCID:TIM_V3_ePA_AF_000502 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 00.05.02 Abfragen der Geräte-Liste durch ePA-User-Client
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT | <ApiName1> |
+    Wenn       die Liste der Geräte abgerufen wird
+    Dann       prüfe ob "A" ein Gerät reserviert hat
+
+  @Filter(ApiName1.hasTag("epaClientV3"))
+
+    Beispiele:
+    | ApiName1 |
+
+  @Ctl:SchnittstellenDatenEpa
+  @TCID:TIM_V3_ePA_AF_000503 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 00.05.03 Abfrage der Matrix-Server-Version
+    Angenommen A fragt an Schnittstelle <ApiName1> die Home-Server-Adresse ab
+    Wenn A die supporteten Matrix-Versions vom Home-Server abfragt
+    Dann ist die unterstützte Matrix-Version "1.11"
+
+    @Filter(ApiName1.hasTag("epaClientV3"))
+
+    Beispiele:
+    | ApiName1 |
+
+  @Ctl:SchnittstellenDatenEpa
+  @TCID:TIM_V3_ePA_AF_000504 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 00.05.04 Abfrage der Synapse-Server-Version
+    Angenommen A fragt an Schnittstelle <ApiName1> die Home-Server-Adresse ab
+    Wenn A die Synapse-Server-Version vom Home-Server abfragt
+    Dann wird Synapse-Server-Version an A zurückgegeben
+
+    @Filter(ApiName1.hasTag("epaClientV3"))
+
+      Beispiele:
+      | ApiName1 |

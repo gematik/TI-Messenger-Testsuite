@@ -1,0 +1,265 @@
+# language: de
+@File:FeatureFile_16X_05_V3_Basis @Ctl:UseCaseV3_16X_Basis
+@PRODUKT:TI-M_Client_Basis @PRODUKT:TI-M_FD_Basis
+@ZulV3:ePA
+@DeltaV3:ePA
+@AFO-ID:A_25395-03
+@AFO-ID:A_25323-01
+
+Funktionalität: 16X (5) Room History Visibility (Basis Spec) [V3]
+
+  In diesen Testfällen soll das Empfangen von Nachrichten in Bezug auf die gewählte Einstellung der
+  "Room History Visibility" überprüft werden. Des Weiteren werden die Standardeinstellungen beim Anlegen
+  von Räumen geprüft.
+
+  COMMENT: Basis
+  A_25395-03  Matrix Module - Room History Visibility
+  A_25323-01  Standardeinstellungen beim Anlegen von Räumen
+
+  Inhalt
+  TF 1  - 2    Standardeinstellungen beim Anlegen von Räumen (Chat/Raum)
+  TF 3  - 4    Room History Visibility "Joined" (Chat/Raum) (unterschiedlicher HomeServer)
+  TF 5  - 6    Room History Visibility "Invtied" (Chat/Raum) (unterschiedlicher HomeServer)
+  TF 7         Room History Visibility "Shared" (Raum) (unterschiedlicher HomeServer) [Zurückgestellt]
+  TF 8         Room History Visibility Mixed Mode "Joined" & "Invited" (Raum) (unterschiedlicher HomeServer)
+
+ @Ctl:AllowAll
+    @TCID:TIM_V3_BASIS_AF_16X0501 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 16X.05.01 Room History Visibility - Chat - Standardeinstellungen beim Anlegen von Räumen
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Wenn       "A" schreibt "B" direkt "Testnachricht 1"
+    Und        "B" erhält eine Einladung von "A"
+    Und        "B" bestätigt eine Einladung von "A"
+    Dann       "B" empfängt eine Nachricht "Testnachricht 1" von "A"
+    Und        "B" prüft, ob die Eigenschaft "join_rule" im Chat mit "A" mit dem Wert "invite" befüllt ist
+    Und        "B" prüft, ob die Eigenschaft "history_visibility" im Chat mit "A" mit dem Wert "invited" befüllt ist
+    Und        "B" prüft, ob die Eigenschaft "isEncrypted" im Chat mit "A" mit dem Wert "true" befüllt ist
+    Und        "B" prüft, ob die Eigenschaft "roomAccess" im Chat mit "A" mit dem Wert "private" befüllt ist
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("epaClientV3"))
+    @Filter(ApiName2.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:AllowAll
+    @TCID:TIM_V3_BASIS_AF_16X0502 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 16X.05.02 Room History Visibility - Raum - Standardeinstellungen beim Anlegen von Räumen
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" prüft, ob die Eigenschaft "join_rule" im Raum "TIM Testraum 1" mit dem Wert "invite" befüllt ist
+    Und        "B" prüft, ob die Eigenschaft "history_visibility" im Raum "TIM Testraum 1" mit dem Wert "invited" befüllt ist
+    Und        "B" prüft, ob die Eigenschaft "isEncrypted" im Raum "TIM Testraum 1" mit dem Wert "true" befüllt ist
+    Und        "B" prüft, ob die Eigenschaft "roomAccess" im Raum "TIM Testraum 1" mit dem Wert "private" befüllt ist
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("epaClientV3"))
+    @Filter(ApiName2.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:AllowAll
+    @TCID:TIM_V3_BASIS_AF_16X0503 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 16X.05.03 Room History Visibility - Chat - Room History Visibility "Joined" auf unterschiedlichen HomeServern
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Wenn       "A" schreibt "B" direkt "Testnachricht 1"
+    Wenn       "A" setzt die Eigenschaft "history_visibility" im Chat mit "B" auf den Wert "joined"
+    Wenn       "A" schreibt "B" direkt "Testnachricht 2"
+    Und        "B" erhält eine Einladung von "A"
+    Und        "B" bestätigt eine Einladung von "A"
+    Dann       "B" empfängt eine Nachricht "Testnachricht 1" von "A"
+    Dann       "B" kann die Nachricht "Testnachricht 2" von "A" im Chat mit "A" nicht sehen [Retry 6 - 1]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("epaClientV3"))
+    @Filter(ApiName2.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:AllowAll
+    @TCID:TIM_V3_BASIS_AF_16X0504 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 16X.05.04 Room History Visibility - Raum - Room History Visibility "Joined" auf unterschiedlichen HomeServern
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" setzt die Eigenschaft "history_visibility" im Raum "TIM Testraum 1" auf den Wert "joined"
+    Wenn       "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Wenn       "A" sendet die Nachricht "Testnachricht 2" an den Raum "TIM Testraum 1"
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Wenn       "A" sendet die Nachricht "Testnachricht 3" an den Raum "TIM Testraum 1"
+    Dann       "B" empfängt eine Nachricht "Testnachricht 3" von "A" im Raum "TIM Testraum 1"
+    Dann       "B" kann die Nachricht "Testnachricht 2" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+    Dann       "B" kann die Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("epaClientV3"))
+    @Filter(ApiName2.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:AllowAll
+    @TCID:TIM_V3_BASIS_AF_16X0505 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 16X.05.05 Room History Visibility - Chat - Room History Visibility "invited" auf unterschiedlichen HomeServern
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Wenn       "A" schreibt "B" direkt "Testnachricht 1"
+    Und        "A" prüft, ob die Eigenschaft "history_visibility" im Chat mit "B" mit dem Wert "invited" befüllt ist
+    Wenn       "A" schreibt "B" direkt "Testnachricht 2"
+    Und        "B" erhält eine Einladung von "A"
+    Und        "B" bestätigt eine Einladung von "A"
+    Dann       "B" empfängt eine Nachricht "Testnachricht 1" von "A"
+    Dann       "B" empfängt eine Nachricht "Testnachricht 2" von "A"
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("epaClientV3"))
+    @Filter(ApiName2.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:AllowAll
+    @TCID:TIM_V3_BASIS_AF_16X0506 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 16X.05.06 Room History Visibility - Raum - Room History Visibility "invited" auf unterschiedlichen HomeServern
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" prüft, ob die Eigenschaft "history_visibility" im Raum "TIM Testraum 1" mit dem Wert "invited" befüllt ist
+    Wenn       "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Wenn       "A" sendet die Nachricht "Testnachricht 2" an den Raum "TIM Testraum 1"
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Wenn       "A" sendet die Nachricht "Testnachricht 3" an den Raum "TIM Testraum 1"
+    Dann       "B" empfängt eine Nachricht "Testnachricht 3" von "A" im Raum "TIM Testraum 1"
+    Dann       "B" empfängt eine Nachricht "Testnachricht 2" von "A" im Raum "TIM Testraum 1"
+    Dann       "B" kann die Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("epaClientV3"))
+    @Filter(ApiName2.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @WIP
+  @Ctl:AllowAll
+    @TCID:TIM_V3_BASIS_AF_16X0507 @PRIO:1 @TESTFALL:Positiv @STATUS:Zurückgestellt
+  Szenariogrundriss: 16X.05.07 Room History Visibility - Raum - Room History Visibility "shared" auf unterschiedlichen HomeServern
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" setzt die Eigenschaft "history_visibility" im Raum "TIM Testraum 1" auf den Wert "shared"
+    Wenn       "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Wenn       "A" sendet die Nachricht "Testnachricht 2" an den Raum "TIM Testraum 1"
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Wenn       "A" sendet die Nachricht "Testnachricht 3" an den Raum "TIM Testraum 1"
+    Dann       "B" empfängt eine Nachricht "Testnachricht 3" von "A" im Raum "TIM Testraum 1"
+    Dann       "B" empfängt eine Nachricht "Testnachricht 2" von "A" im Raum "TIM Testraum 1"
+    Dann       "B" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("epaClientV3"))
+    @Filter(ApiName2.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:AllowAll
+    @TCID:TIM_V3_BASIS_AF_16X0508 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 16X.05.08 Room History Visibility - Raum - Room History Visibility Mixed Mode "Joined" & "Invited" auf unterschiedlichen HomeServern
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2A> |
+      | C | PRO_CLIENT | <ApiName2B> |
+    Und        "A", "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" prüft, ob die Eigenschaft "history_visibility" im Raum "TIM Testraum 1" mit dem Wert "invited" befüllt ist
+    Wenn       "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Wenn       "A" sendet die Nachricht "Testnachricht 2" an den Raum "TIM Testraum 1"
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Wenn       "A" sendet die Nachricht "Testnachricht 3" an den Raum "TIM Testraum 1"
+    Dann       "B" empfängt eine Nachricht "Testnachricht 3" von "A" im Raum "TIM Testraum 1"
+    Dann       "B" empfängt eine Nachricht "Testnachricht 2" von "A" im Raum "TIM Testraum 1"
+    Dann       "B" kann die Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1" nicht sehen [Retry 6 - 1]
+    Und        "A" setzt die Eigenschaft "history_visibility" im Raum "TIM Testraum 1" auf den Wert "joined"
+    Und        "A" lädt "C" in Chat-Raum "TIM Testraum 1" ein
+    Wenn       "A" sendet die Nachricht "Testnachricht 4" an den Raum "TIM Testraum 1"
+    Und        "C" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "C" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Wenn       "A" sendet die Nachricht "Testnachricht 5" an den Raum "TIM Testraum 1"
+    Dann       "C" empfängt eine Nachricht "Testnachricht 5" von "A" im Raum "TIM Testraum 1"
+    Dann       "C" kann die Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1" nicht sehen [Retry 6 - 1]
+    Dann       "C" kann die Nachricht "Testnachricht 2" von "A" im Raum "TIM Testraum 1" nicht sehen [Retry 6 - 1]
+    Dann       "C" kann die Nachricht "Testnachricht 3" von "A" im Raum "TIM Testraum 1" nicht sehen [Retry 6 - 1]
+    Dann       "C" kann die Nachricht "Testnachricht 4" von "A" im Raum "TIM Testraum 1" nicht sehen [Retry 6 - 1]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1,homeserver,1) #
+    @Filter(!ApiName1.properties["homeserver"].equals(ApiName2A.properties["homeserver"]))
+    @Filter(ApiName2A.properties["homeserver"].equals(ApiName2B.properties["homeserver"]))
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("epaClientV3"))
+    @Filter(ApiName2A.hasTag("proClientV3"))
+    @Filter(ApiName2B.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1 | ApiName2A | ApiName2B |

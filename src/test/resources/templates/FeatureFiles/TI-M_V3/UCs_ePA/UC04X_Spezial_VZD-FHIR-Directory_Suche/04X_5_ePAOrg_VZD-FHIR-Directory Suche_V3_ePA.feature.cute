@@ -1,0 +1,47 @@
+# language: de
+@File:FeatureFile_04X_05_V3_ePA @Ctl:UseCaseV3_04X_ePA
+@PRODUKT:TI-M_Client_ePA @PRODUKT:VZD_FHIR
+@ZulV3:ePA
+@AFO-ID:A_25681-01
+
+Funktionalität: 04X. (5) VZD-FHIR-Directory Suche (ePA Spec) [V3]
+
+  Der TI-M Client ePA MUSS für die Suche im VZD-FHIR-Directory die Schnittstelle /fdv/search verwenden.
+
+  COMMENT: ePA
+  A_25681-01  VZD-FHIR-Directory Suche
+
+  Inhalt
+  TF 1      ePA User kann Health Care Service Endpunkt im Status "hide-versicherte" nicht finden
+
+  @Ctl:AllowAll @Ctl:OrgAdmin @Ctl:VZD
+    @TCID:TIM_V3_ePA_AF_04X0501 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  Szenariogrundriss: 04X.05.01 FHIR-VZD Sichtbarkeit für Versicherte setzen - AllowAll - ePA User kann Health Care Service Endpunkt im Status "hide-versicherte" nicht finden
+    Angenommen Es werden folgende Clients reserviert:
+      | A | ORG_ADMIN   | <ApiName1A> |
+      | B | PRO_CLIENT  | <ApiName1B> |
+      | C | EPA_CLIENT  | <ApiName2>  |
+    Und        "B", "C" setzen den eigenen Authorization Mode auf "AllowAll"
+    Wenn       "A" erstellt einen Healthcare-Service "HealthcareServiceName1" und setzen einen Endpunkt auf "B"
+    Dann       "C" findet "B" im Healthcare-Service "HealthcareServiceName1" über die FDV-Schnittstelle
+    Wenn       "A" setzt die endpointVisibility für die Endpunkt Extension von "B" im Healthcare-Service "HealthcareServiceName1" auf hide-versicherte
+    Und        "A" sieht die endpointVisibility für die Endpunkt Extension von "B" im Healthcare-Service "HealthcareServiceName1" auf hide-versicherte
+    Und        "C" findet "B" im Healthcare-Service "HealthcareServiceName1" über die FDV-Schnittstelle NICHT [Retry 6 - 1]
+    Wenn       "A" löscht die endpointVisibility hide-versicherte für die Endpunkt Extension von "B" im Healthcare-Service "HealthcareServiceName1"
+    Und        "A" sieht die endpointVisibility für die Endpunkt Extension von "B" im Healthcare-Service "HealthcareServiceName1" NICHT mehr auf dem Wert hide-versicherte [Retry 6 - 1]
+    Dann       "C" findet "B" im Healthcare-Service "HealthcareServiceName1" über die FDV-Schnittstelle
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName2,homeserver,1) #
+    @Filter(ApiName1A.properties["homeserver"].equals(ApiName1B.properties["homeserver"]))
+    @Filter(!ApiName1A.properties["homeserver"].equals(ApiName2.properties["homeserver"]))
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1A.hasTag("orgAdmin"))
+    @Filter(ApiName1B.hasTag("proClientV3"))
+    @Filter(ApiName2.hasTag("epaClientV3"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B | ApiName2 |
+
+
