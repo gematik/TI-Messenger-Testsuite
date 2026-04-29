@@ -1,0 +1,171 @@
+# language: de
+@File:FeatureFile_13X_01_V3_Pro @Ctl:UseCaseV3_13X_Pro
+@PRODUKT:TI-M_Client_Pro @PRODUKT:TI-M_FD_Pro
+@ZulV3:Pro @ZulV3:ProKK
+@DeltaV3:Pro @DeltaV3:ProKK
+@AFO-ID:A_25325-01
+@AFO-ID:A_26515-01
+@AFO-ID:A_28271
+@AFO-ID:A_25324-01
+
+Funktionalität: 13X. (1) Öffentliche Räume (Pro Spec) [V3]
+
+  Dieser Anwendungsfall ermöglicht es Akteuren öffentliche Räume für den eigenen Home Server anzulegen und in diesen
+  Nachrichten posten.
+
+  COMMENT: Pro
+  A_25325-01   Erzeugung öffentlicher Räume
+  A_26515-01   Zutrittsbeschränkung für öffentliche Räume
+  A_28271      Nachträgliches Erzeugen öffentlicher Räume
+  A_25324-01   Deaktivierung der Verschlüsselung beim Anlegen von Räumen
+
+  Inhalt
+  TF 1        User erstellt öffentlichen Raum (Raum)
+  TF 2 -  3   Nachrichtenempfang für öffentliche Räume (shared/world_readable)
+  TF 4        User anderer Home Server kann öffentlichen Raum nicht finden (Raum)
+  TF 5 -  6   Nachträgliches Erzeugen öffentlicher Räume (Raum/Chat)
+  TF 7        Deaktivierung der Verschlüsselung beim Anlegen von Räumen (Negativ)
+
+  @Ctl:AllowAll
+  @TCID:TIM_V3_PRO_AF_13X0101 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 13X.01.01 Öffentliche Räume - Raum - User erstellt öffentlichen Raum
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+    Wenn       "A" erstellt einen öffentlichen Chat-Raum "TIM Testraum 1"
+    Und        "A" prüft, ob die Eigenschaft "join_rule" im Raum "TIM Testraum 1" mit dem Wert "public" befüllt ist
+    Und        "A" prüft, ob die Eigenschaft "roomAccess" im Raum "TIM Testraum 1" mit dem Wert "public" befüllt ist
+    Und        "A" prüft, ob die Eigenschaft "history_visibility" im Raum "TIM Testraum 1" mit dem Wert "shared" befüllt ist
+    Und        "A" prüft, ob die Eigenschaft "isEncrypted" im Raum "TIM Testraum 1" mit dem Wert "false" befüllt ist
+    Und        "A" prüft, ob die Eigenschaft "m.federate" im Raum "TIM Testraum 1" mit dem Wert "false" befüllt ist
+    Dann       "B" findet den öffentlichen Raum "TIM Testraum 1"
+    Und        "B" betritt den Raum "TIM Testraum 1"
+    Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1A.hasTag("proClientV3"))
+    @Filter(ApiName1B.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B |
+
+  @Ctl:AllowAll
+  @TCID:TIM_V3_PRO_AF_13X0102 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 13X.01.02 Öffentliche Räume - Raum - Nachrichtenempfang für öffentliche Räume (shared)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+    Und        "A" erstellt einen öffentlichen Chat-Raum "TIM Testraum 1"
+    Und        "A" prüft, ob die Eigenschaft "history_visibility" im Raum "TIM Testraum 1" mit dem Wert "shared" befüllt ist
+    Wenn       "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Dann       "B" findet den öffentlichen Raum "TIM Testraum 1"
+    Dann       "B" bekommt beim Abruf der Nachrichten für Raum "TIM Testraum 1" den Responsecode 403
+    Und        "B" betritt den Raum "TIM Testraum 1"
+    Und        "B" ist dem Raum "TIM Testraum 1" beigetreten
+    Dann       "B" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1A.hasTag("proClientV3"))
+    @Filter(ApiName1B.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B |
+
+  @Ctl:AllowAll
+  @TCID:TIM_V3_PRO_AF_13X0103 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 13X.01.03 Öffentliche Räume - Raum - Nachrichtenempfang für öffentliche Räume (world readable)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1A> |
+      | B | PRO_CLIENT | <ApiName1B> |
+    Und        "A" erstellt einen öffentlichen Chat-Raum "TIM Testraum 1"
+    Und        "A" prüft, ob die Eigenschaft "history_visibility" im Raum "TIM Testraum 1" mit dem Wert "shared" befüllt ist
+    Und        "A" setzt die Eigenschaft "history_visibility" im Raum "TIM Testraum 1" auf den Wert "world_readable"
+    Wenn       "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Dann       "B" findet den öffentlichen Raum "TIM Testraum 1"
+    Dann       "B" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1A.hasTag("proClientV3"))
+    @Filter(ApiName1B.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B |
+
+  @Ctl:AllowAll
+  @TCID:TIM_V3_PRO_AF_13X0104 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 13X.01.04 Öffentliche Räume - Raum - User anderer Home Server kann öffentlichen Raum nicht finden
+    Angenommen Es werden folgende Clients reserviert:
+        | A | PRO_CLIENT | <ApiName1> |
+        | B | PRO_CLIENT | <ApiName2> |
+    Wenn       "A" erstellt einen öffentlichen Chat-Raum "TIM Testraum 1"
+    Und        "A" prüft, ob die Eigenschaft "m.federate" im Raum "TIM Testraum 1" mit dem Wert "false" befüllt ist
+    Dann       "B" kann den öffentlichen Raum "TIM Testraum 1" nicht finden
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("proClientV3"))
+    @Filter(ApiName2.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:AllowAll
+  @TCID:TIM_V3_PRO_AF_13X0105 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  Szenariogrundriss: 13X.01.05 Öffentliche Räume - Raum - Nachträgliches Erzeugen öffentlicher Räume (Raum)
+    Angenommen Es werden folgende Clients reserviert:
+        | A | PRO_CLIENT | <ApiName1> |
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Wenn       "A" versucht die Eigenschaft "join_rule" im Raum "TIM Testraum 1" auf den Wert "public" zu setzen
+    Dann       erhält "A" einen Responsecode 400
+
+    @Filter(ApiName1.hasTag("proClientV3"))
+    Beispiele:
+      | ApiName1 |
+
+  @Ctl:AllowAll
+  @TCID:TIM_V3_PRO_AF_13X0106 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  Szenariogrundriss: 13X.01.06 Öffentliche Räume - Chat - Nachträgliches Erzeugen öffentlicher Räume (Chat)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT  | <ApiName1A> |
+      | B | PRO_CLIENT  | <ApiName1B> |
+    Und        "B" setzt den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" schreibt "B" direkt "Testnachricht 2"
+    Wenn       "A" versucht die Eigenschaft "join_rule" im Chat mit "B" auf den Wert "public" zu setzen
+    Dann       erhält "A" einen Responsecode 400
+
+    @Shuffle(true) #
+    @EqualProperty(homeserver)
+    @AllowSelfCombine(true)
+    @AllowDoubleLineup(false)
+    @Filter(ApiName1A.hasTag("proClientV3"))
+    @Filter(ApiName1B.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1A | ApiName1B |
+
+  @Ctl:AllowAll
+  @TCID:TIM_V3_PRO_AF_13X0107 @PRIO:1 @TESTFALL:Negativ @STATUS:Implementiert
+  Szenariogrundriss: 13X.01.07 Öffentliche Räume - Raum - Deaktivierung der Verschlüsselung beim Anlegen von Räumen (Negativ)
+    Angenommen Es werden folgende Clients reserviert:
+        | A | PRO_CLIENT | <ApiName1> |
+    Wenn       "A" versucht einen Chat-Raum "TIM Testraum 1" mit den Eigenschaften privat und unverschlüsselt zu erstellen
+    Dann       erhält "A" einen Responsecode 403
+
+    @Filter(ApiName1.hasTag("proClientV3"))
+    Beispiele:
+      | ApiName1 |

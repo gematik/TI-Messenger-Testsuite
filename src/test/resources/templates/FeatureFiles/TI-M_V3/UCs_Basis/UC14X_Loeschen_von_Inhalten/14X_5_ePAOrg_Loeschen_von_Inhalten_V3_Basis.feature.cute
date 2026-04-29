@@ -1,0 +1,384 @@
+# language: de
+@File:FeatureFile_14X_05_V3_Basis @Ctl:UseCaseV3_14X_Basis
+@PRODUKT:TI-M_Client_Basis @PRODUKT:TI-M_FD_Basis
+@ZulV3:ePA
+@DeltaV3:ePA
+@AFO-ID:A_25575-01
+@AFO-ID:A_28355
+@AFO-ID:A_25576-01
+
+Funktionalität: 14X. (5) Löschen von Inhalten (Basis Spec) [V3]
+
+  Dieser Anwendungsfall behandelt das Löschen von Inhalten, u.a. ermöglicht es Akteuren im Client
+  Nachrichten zu löschen sowie Räume zu verlassen und zu löschen.
+
+    Wichtig: Die Gematik behält sich vor die Typen/Files von Attachments (m.file) jederzeit zu
+    ändern oder zu erweitern, da die Struktur dieser Matrix-Events davon unbetroffen ist.
+
+  COMMENT: Basis
+  A_25575-01 	  Nachrichtenbasiertes Löschen per Redaction
+  A_28355 		  Kaskadierung von Redactions bei Event Replacements
+  A_25576-01      Lokale Anwendung von Redactions
+
+  Inhalt
+
+  TF  1 -  2   Löschen von Nachrichten durch redact (Chat/Raum) (unterschiedlicher HomeServer)
+  TF  3 -  4   Löschen von geänderten Nachrichten durch redact (Chat/Raum) (unterschiedlicher HomeServer)
+  TF  5 -  6   Vom User durch redact gelöschte Nachricht wird auch lokal gelöscht (Chat/Raum) (unterschiedlicher HomeServer)
+  TF  7 -  8   Löschen von m.file Nachrichten durch redact (Chat/Raum) (unterschiedlicher HomeServer)
+  TF  9 - 10   Löschen von Nachrichten durch replace (Chat/Raum) (unterschiedlicher HomeServer)
+  TF 11 - 12   Löschen von geänderten Nachrichten durch replace (Chat/Raum) (unterschiedlicher HomeServer)
+
+  @Ctl:AllowAll @Ctl:MsgDelete @Ctl:MsgDeleteRedact
+  @TCID:TIM_V3_BASIS_AF_14X0501 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 14X.05.01 Löschen von Inhalten - Chat - Löschen von Nachrichten durch redact (unterschiedlicher HomeServer)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1> |
+      | B | EPA_CLIENT | <ApiName2> |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" schreibt "B" direkt "Testnachricht 1"
+    Und        "B" erhält eine Einladung von "A"
+    Und        "B" bestätigt eine Einladung von "A"
+    Und        "B" empfängt eine Nachricht "Testnachricht 1" von "A"
+    Und        "B" schreibt "A" direkt "Testnachricht 2"
+    Und        "A" empfängt eine Nachricht "Testnachricht 2" von "B"
+    Wenn       "B" löscht seine Nachricht "Testnachricht 2" im Chat mit "A" mit "redact"
+    Dann       "A" kann die Nachricht "Testnachricht 2" von "B" im Chat mit "B" nicht mehr sehen [Retry 6 - 1]
+    Und        "B" kann die Nachricht "Testnachricht 2" von "B" im Chat mit "A" nicht mehr sehen [Retry 6 - 1]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("proClientV3"))
+    @Filter(ApiName2.hasTag("epaClientV3"))
+
+    Beispiele:
+      | ApiName1| ApiName2 |
+
+  @Ctl:AllowAll @Ctl:MsgDelete @Ctl:MsgDeleteRedact
+    @TCID:TIM_V3_BASIS_AF_14X0502 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 14X.05.02 Löschen von Inhalten - Raum - Löschen von Nachrichten durch redact (unterschiedlicher HomeServer)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Und        "B" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
+    Wenn       "A" löscht seine Nachricht "Testnachricht 1" im Raum "TIM Testraum 1" mit "redact"
+    Dann       "B" kann die Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+    Und        "A" kann die Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("epaClientV3"))
+    @Filter(ApiName2.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+    @Ctl:AllowAll @Ctl:MsgDelete @Ctl:MsgDeleteRedact
+    @TCID:TIM_V3_BASIS_AF_14X0503 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    Szenariogrundriss: 14X.05.03 Löschen von Inhalten - Chat - Löschen von geänderter Nachrichten durch redact (unterschiedlicher HomeServer)
+      Angenommen Es werden folgende Clients reserviert:
+        | A | PRO_CLIENT | <ApiName1> |
+        | B | EPA_CLIENT | <ApiName2> |
+      Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+      Und        "A" schreibt "B" direkt "Testnachricht 1"
+      Und        "B" erhält eine Einladung von "A"
+      Und        "B" bestätigt eine Einladung von "A"
+      Und        "B" empfängt eine Nachricht "Testnachricht 1" von "A"
+      Und        "B" schreibt "A" direkt "Testnachricht 2"
+      Und        "A" empfängt eine Nachricht "Testnachricht 2" von "B"
+      Und        "B" ändert seine letzte Nachricht im Chat mit "A" in "Testnachricht 3"
+      Und        "A" empfängt eine Nachricht "Testnachricht 3" von "B"
+      Wenn       "B" löscht seine Nachricht "Testnachricht 3" im Chat mit "A" mit "redact"
+      Dann       "A" kann die Nachricht "Testnachricht 2" von "B" im Chat mit "B" nicht mehr sehen [Retry 6 - 1]
+      Und        "B" kann die Nachricht "Testnachricht 2" von "B" im Chat mit "A" nicht mehr sehen [Retry 6 - 1]
+      Dann       "A" kann die Nachricht "Testnachricht 3" von "B" im Chat mit "B" nicht mehr sehen [Retry 6 - 1]
+      Und        "B" kann die Nachricht "Testnachricht 3" von "B" im Chat mit "A" nicht mehr sehen [Retry 6 - 1]
+
+      @Shuffle(true) #
+      #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+      @DistinctProperty(homeserver)
+      @AllowSelfCombine(false)
+      @AllowDoubleLineup(true)
+      @Filter(ApiName1.hasTag("proClientV3"))
+      @Filter(ApiName2.hasTag("epaClientV3"))
+
+      Beispiele:
+        | ApiName1| ApiName2 |
+
+    @Ctl:AllowAll @Ctl:MsgDelete @Ctl:MsgDeleteRedact
+      @TCID:TIM_V3_BASIS_AF_14X0504 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    Szenariogrundriss: 14X.05.04 Löschen von Inhalten - Raum - Löschen von geänderter Nachrichten durch redact (unterschiedlicher HomeServer)
+      Angenommen Es werden folgende Clients reserviert:
+        | A | EPA_CLIENT | <ApiName1> |
+        | B | PRO_CLIENT | <ApiName2> |
+      Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+      Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+      Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+      Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+      Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+      Und        "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+      Und        "B" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
+      Dann       "A" ändert seine letzte Nachricht im Raum "TIM Testraum 1" in "Testnachricht 2"
+      Und        "B" empfängt eine Nachricht "Testnachricht 2" von "A" im Raum "TIM Testraum 1"
+      Wenn       "A" löscht seine Nachricht "Testnachricht 2" im Raum "TIM Testraum 1" mit "redact"
+      Dann       "B" kann die Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+      Und        "A" kann die Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+      Dann       "B" kann die Nachricht "Testnachricht 2" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+      Und        "A" kann die Nachricht "Testnachricht 2" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+
+      @Shuffle(true) #
+      #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+      @DistinctProperty(homeserver)
+      @AllowSelfCombine(false)
+      @AllowDoubleLineup(true)
+      @Filter(ApiName1.hasTag("epaClientV3"))
+      @Filter(ApiName2.hasTag("proClientV3"))
+
+      Beispiele:
+        | ApiName1 | ApiName2 |
+
+  @Ctl:AllowAll @Ctl:MsgDelete @Ctl:MsgDeleteRedact
+  @TCID:TIM_V3_BASIS_AF_14X0505 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 14X.05.05 Löschen von Inhalten - Chat - Vom User durch redact gelöschte Nachricht wird auch lokal gelöscht (unterschiedlicher HomeServer)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" schreibt "B" direkt "Testnachricht 1"
+    Und        "B" erhält eine Einladung von "A"
+    Und        "B" bestätigt eine Einladung von "A"
+    Und        "B" empfängt eine Nachricht "Testnachricht 1" von "A"
+    Wenn       "A" löscht seine Nachricht "Testnachricht 1" im Chat mit "B" mit "redact"
+    Dann       "A" kann die Nachricht "Testnachricht 1" von "A" im Chat mit "B" nicht mehr sehen [Retry 6 - 1]
+    Und        "A" loggt sich im TI-Messenger aus
+    Und        "B" kann die Nachricht "Testnachricht 1" von "A" im Chat mit "A" nicht mehr sehen [Retry 6 - 1]
+    Wenn       "A" loggt sich im TI-Messenger ein
+    Dann       "A" kann die Nachricht "Testnachricht 1" von "A" im Chat mit "B" nicht mehr sehen [Retry 6 - 1]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("epaClientV3"))
+    @Filter(ApiName2.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1| ApiName2 |
+
+  @Ctl:AllowAll @Ctl:MsgDelete @Ctl:MsgDeleteRedact
+  @TCID:TIM_V3_BASIS_AF_14X0506 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 14X.05.06 Löschen von Inhalten - Raum - Vom User durch redact gelöschte Nachricht wird auch lokal gelöscht (unterschiedlicher HomeServer)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Und        "B" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
+    Wenn       "A" löscht seine Nachricht "Testnachricht 1" im Raum "TIM Testraum 1" mit "redact"
+    Und        "A" kann die Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+    Und        "A" loggt sich im TI-Messenger aus
+    Dann       "B" kann die Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+    Wenn       "A" loggt sich im TI-Messenger ein
+    Und        "A" kann die Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("epaClientV3"))
+    @Filter(ApiName2.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+  @Ctl:AllowAll @Ctl:MsgDelete @Ctl:Attachment @Ctl:MsgDeleteRedact
+  @TCID:TIM_V3_BASIS_AF_14X0507 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 14X.05.07 Löschen von Inhalten - Chat - Löschen von m.file Nachrichten durch redact (unterschiedlicher HomeServer)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Wenn       "A" sendet ein Attachment "bild.jpg" direkt an "B" als "m.file"
+    Und        "B" erhält eine Einladung von "A"
+    Und        "B" bestätigt eine Einladung von "A"
+    Dann       "B" empfängt das Attachment "bild.jpg" von "A" über Matrix-Protokoll v1.11 als "m.file"
+    Wenn       "A" löscht mit "redact" die Nachricht, die für das Attachment "bild.jpg" im Chat mit "B" erzeugt wurde
+    Dann       "A" kann die Nachricht für das Attachment "bild.jpg" von "A" im Chat mit "B" nicht mehr sehen [Retry 6 - 1]
+    Und        "B" kann die Nachricht für das Attachment "bild.jpg" von "A" im Chat mit "A" nicht mehr sehen [Retry 6 - 1]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("epaClientV3"))
+    @Filter(ApiName2.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1| ApiName2 |
+
+  @Ctl:AllowAll @Ctl:MsgDelete @Ctl:Attachment @Ctl:MsgDeleteRedact
+    @TCID:TIM_V3_BASIS_AF_14X0508 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 14X.05.08 Löschen von Inhalten - Raum - Löschen von m.file Nachrichten durch redact (unterschiedlicher HomeServer)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Wenn       "A" sendet ein Attachment "audio.mp3" als "m.file" an den Raum "TIM Testraum 1"
+    Dann       "B" empfängt das Attachment "audio.mp3" von "A" im Raum "TIM Testraum 1" über Matrix-Protokoll v1.11 als "m.file"
+    Wenn       "A" löscht mit "redact" die Nachricht, die für das Attachment "audio.mp3" im Raum "TIM Testraum 1" erzeugt wurde
+    Dann       "B" kann die Nachricht für das Attachment "audio.mp3" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+    Und        "A" kann die Nachricht für das Attachment "audio.mp3" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("epaClientV3"))
+    @Filter(ApiName2.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+ @Ctl:AllowAll @Ctl:MsgDelete @Ctl:MsgDeleteReplace
+  @TCID:TIM_V3_BASIS_AF_14X0509 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 14X.05.09 Löschen von Inhalten - Chat - Löschen von Nachrichten durch replace (unterschiedlicher HomeServer)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | PRO_CLIENT | <ApiName1> |
+      | B | EPA_CLIENT | <ApiName2> |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" schreibt "B" direkt "Testnachricht 1"
+    Und        "B" erhält eine Einladung von "A"
+    Und        "B" bestätigt eine Einladung von "A"
+    Und        "B" empfängt eine Nachricht "Testnachricht 1" von "A"
+    Und        "B" schreibt "A" direkt "Testnachricht 2"
+    Und        "A" empfängt eine Nachricht "Testnachricht 2" von "B"
+    Wenn       "B" löscht seine Nachricht "Testnachricht 2" im Chat mit "A" mit "replace"
+    Dann       "A" kann die Nachricht "Testnachricht 2" von "B" im Chat mit "B" nicht mehr sehen [Retry 6 - 1]
+    Und        "B" kann die Nachricht "Testnachricht 2" von "B" im Chat mit "A" nicht mehr sehen [Retry 6 - 1]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("proClientV3"))
+    @Filter(ApiName2.hasTag("epaClientV3"))
+
+    Beispiele:
+      | ApiName1| ApiName2 |
+
+  @Ctl:AllowAll @Ctl:MsgDelete @Ctl:MsgDeleteReplace
+    @TCID:TIM_V3_BASIS_AF_14X0510 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+  Szenariogrundriss: 14X.05.10 Löschen von Inhalten - Raum - Löschen von Nachrichten durch replace (unterschiedlicher HomeServer)
+    Angenommen Es werden folgende Clients reserviert:
+      | A | EPA_CLIENT | <ApiName1> |
+      | B | PRO_CLIENT | <ApiName2> |
+    Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+    Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+    Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+    Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+    Und        "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+    Und        "B" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
+    Wenn       "A" löscht seine Nachricht "Testnachricht 1" im Raum "TIM Testraum 1" mit "replace"
+    Dann       "B" kann die Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+    Und        "A" kann die Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+
+    @Shuffle(true) #
+    #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+    @DistinctProperty(homeserver)
+    @AllowSelfCombine(false)
+    @AllowDoubleLineup(true)
+    @Filter(ApiName1.hasTag("epaClientV3"))
+    @Filter(ApiName2.hasTag("proClientV3"))
+
+    Beispiele:
+      | ApiName1 | ApiName2 |
+
+    @Ctl:AllowAll @Ctl:MsgDelete @Ctl:MsgDeleteReplace
+    @TCID:TIM_V3_BASIS_AF_14X0511 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    Szenariogrundriss: 14X.05.11 Löschen von Inhalten - Chat - Löschen von geänderter Nachrichten durch replace (unterschiedlicher HomeServer)
+      Angenommen Es werden folgende Clients reserviert:
+        | A | PRO_CLIENT | <ApiName1> |
+        | B | EPA_CLIENT | <ApiName2> |
+      Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+      Und        "A" schreibt "B" direkt "Testnachricht 1"
+      Und        "B" erhält eine Einladung von "A"
+      Und        "B" bestätigt eine Einladung von "A"
+      Und        "B" empfängt eine Nachricht "Testnachricht 1" von "A"
+      Und        "B" schreibt "A" direkt "Testnachricht 2"
+      Und        "A" empfängt eine Nachricht "Testnachricht 2" von "B"
+      Und        "B" ändert seine letzte Nachricht im Chat mit "A" in "Testnachricht 3"
+      Und        "A" empfängt eine Nachricht "Testnachricht 3" von "B"
+      Wenn       "B" löscht seine Nachricht "Testnachricht 3" im Chat mit "A" mit "replace"
+      Dann       "A" kann die Nachricht "Testnachricht 2" von "B" im Chat mit "B" nicht mehr sehen [Retry 6 - 1]
+      Und        "B" kann die Nachricht "Testnachricht 2" von "B" im Chat mit "A" nicht mehr sehen [Retry 6 - 1]
+      Dann       "A" kann die Nachricht "Testnachricht 3" von "B" im Chat mit "B" nicht mehr sehen [Retry 6 - 1]
+      Und        "B" kann die Nachricht "Testnachricht 3" von "B" im Chat mit "A" nicht mehr sehen [Retry 6 - 1]
+
+      @Shuffle(true) #
+      #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+      @DistinctProperty(homeserver)
+      @AllowSelfCombine(false)
+      @AllowDoubleLineup(true)
+      @Filter(ApiName1.hasTag("proClientV3"))
+      @Filter(ApiName2.hasTag("epaClientV3"))
+
+      Beispiele:
+        | ApiName1| ApiName2 |
+
+    @Ctl:AllowAll @Ctl:MsgDelete @Ctl:MsgDeleteReplace
+      @TCID:TIM_V3_BASIS_AF_14X0512 @PRIO:1 @TESTFALL:Positiv @STATUS:Implementiert
+    Szenariogrundriss: 14X.05.12 Löschen von Inhalten - Raum - Löschen von geänderter Nachrichten durch replace (unterschiedlicher HomeServer)
+      Angenommen Es werden folgende Clients reserviert:
+        | A | EPA_CLIENT | <ApiName1> |
+        | B | PRO_CLIENT | <ApiName2> |
+      Und        "A", "B" setzen den eigenen Authorization Mode auf "AllowAll"
+      Und        "A" erstellt einen Chat-Raum "TIM Testraum 1"
+      Und        "A" lädt "B" in Chat-Raum "TIM Testraum 1" ein
+      Und        "B" erhält eine Einladung in Raum "TIM Testraum 1" von "A"
+      Und        "B" bestätigt eine Einladung in Raum "TIM Testraum 1" von "A"
+      Und        "A" sendet die Nachricht "Testnachricht 1" an den Raum "TIM Testraum 1"
+      Und        "B" empfängt eine Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1"
+      Dann       "A" ändert seine letzte Nachricht im Raum "TIM Testraum 1" in "Testnachricht 2"
+      Und        "B" empfängt eine Nachricht "Testnachricht 2" von "A" im Raum "TIM Testraum 1"
+      Wenn       "A" löscht seine Nachricht "Testnachricht 2" im Raum "TIM Testraum 1" mit "replace"
+      Dann       "B" kann die Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+      Und        "A" kann die Nachricht "Testnachricht 1" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+      Dann       "B" kann die Nachricht "Testnachricht 2" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+      Und        "A" kann die Nachricht "Testnachricht 2" von "A" im Raum "TIM Testraum 1" nicht mehr sehen [Retry 6 - 1]
+
+      @Shuffle(true) #
+      #@MaxSameColumnProperty(ApiName1A,homeserver,1) #
+      @DistinctProperty(homeserver)
+      @AllowSelfCombine(false)
+      @AllowDoubleLineup(true)
+      @Filter(ApiName1.hasTag("epaClientV3"))
+      @Filter(ApiName2.hasTag("proClientV3"))
+
+      Beispiele:
+        | ApiName1 | ApiName2 |

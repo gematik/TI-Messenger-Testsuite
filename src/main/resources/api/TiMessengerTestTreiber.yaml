@@ -1,10 +1,10 @@
-openapi: 3.0.3
+openapi: 3.0.4
 info:
   title: TiMessengerTestDriver
   description: |
     ## REST interface to automate the test of a TI-Messenger client implementation.
     
-    This API contains all endpoints for version 1.1.x and version 2 (TIM Pro & TIM ePA) of the TI-Messenger. The tags named accordingly can be used to find the endpoints applicable for the desired version.
+    This API contains all endpoints for version 1.1.x, version 2 (TIM Pro & TIM ePA) and version 3 (TIM Pro & TIM ePA) of the TI-Messenger. The tags named accordingly can be used to find the endpoints applicable for the desired version.
     Additionally each endpoint summary will contain a note describing whether the endpoint is used by an org-admin, a client or both.
   version: 2.3.0
   contact:
@@ -71,14 +71,14 @@ tags:
     description: Authorization management operations
   - name: TI-M_1.1.x
     description: All operations used in TI-Messenger Version 1.1.x
-  - name: TI-M_Pro
-    description: All operations used in TI-Messenger Pro
-  - name: TI-M_ePA
-    description: All operations used in TI-Messenger ePA
   - name: TI-M_Pro_V2
     description: All operations used in TI-Messenger Pro V2
   - name: TI-M_ePA_V2
     description: All operations used in TI-Messenger ePA V2
+  - name: TI-M_Pro_V3
+    description: All operations used in TI-Messenger Pro V3
+  - name: TI-M_ePA_V3
+    description: All operations used in TI-Messenger ePA V3
 
 paths:
   /:
@@ -89,8 +89,10 @@ paths:
       tags:
         - info
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Returns the meta data of this interface. Used by Org-Admin and clients."
       operationId: getInfo
       responses:
@@ -109,8 +111,10 @@ paths:
       tags:
         - signalTestStart
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Indicates a test start, is used for clean up. Used by Org-Admin and clients."
       description: |
         Implementation is no longer optional! Testsuite sends a request to the involved test driver endpoints.
@@ -138,8 +142,10 @@ paths:
       tags:
         - devices
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Returns the connected devices and the information of the deposited HBA/SMC-B if existing. Used by Org-Admin and clients."
       operationId: getDevices
       responses:
@@ -166,8 +172,10 @@ paths:
       tags:
         - devices
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Claims a device for exclusive use. Used by Org-Admin and clients."
       description: |
         The claim duration (parameter: claimFor) needs to be reset at each call to the device
@@ -202,8 +210,10 @@ paths:
       tags:
         - devices
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Unclaims a previously claimed device. Used by Org-Admin and clients."
       operationId: unclaimDevice
       responses:
@@ -231,8 +241,10 @@ paths:
       tags:
         - account
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Returns the account data. Used by Org-Admin and clients."
       operationId: readAccount
       responses:
@@ -263,8 +275,10 @@ paths:
       tags:
         - login/logout
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       operationId: login
       requestBody:
         required: false
@@ -305,8 +319,10 @@ paths:
       tags:
         - login/logout
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       operationId: logout
       responses:
         "200":
@@ -329,8 +345,10 @@ paths:
       tags:
         - keyExchange
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Exports secret key for device synchronization. The key could be in any format but has to be understood by every provided test-driver-api per distributor! Used by clients."
       operationId: keyExport
       responses:
@@ -351,8 +369,10 @@ paths:
       tags:
         - keyExchange
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Imports secret key and executes synchronization. Used by clients."
       operationId: keyImport
       requestBody:
@@ -378,8 +398,8 @@ paths:
       tags:
         - orgAdminFhirOrganization
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_Pro_V3
       summary: "Get organization from the selected device. Used by Org-Admin."
       operationId: getOrganization
       responses:
@@ -401,7 +421,8 @@ paths:
       tags:
         - orgAdminFhirHealthcareService
         - TI-M_1.1.x
-        - TI-M_Pro
+        - TI-M_Pro_V2
+        - TI-M_Pro_V3
       summary: "Creates new healthcare-service and returns the resource of the created healthcareService. Used by Org-Admin."
       operationId: createHealthcareService
       requestBody:
@@ -431,7 +452,8 @@ paths:
       tags:
         - orgAdminFhirHealthcareService
         - TI-M_1.1.x
-        - TI-M_Pro
+        - TI-M_Pro_V2
+        - TI-M_Pro_V3
       summary: "Get healthcareService for this id. Used by Org-Admin."
       operationId: getHealthcareService
       responses:
@@ -450,7 +472,8 @@ paths:
       tags:
         - orgAdminFhirHealthcareService
         - TI-M_1.1.x
-        - TI-M_Pro
+        - TI-M_Pro_V2
+        - TI-M_Pro_V3
       summary: "Changes healthcareService accordingly. Used by Org-Admin."
       operationId: updateHealthcareService
       requestBody:
@@ -476,7 +499,8 @@ paths:
       tags:
         - orgAdminFhirHealthcareService
         - TI-M_1.1.x
-        - TI-M_Pro
+        - TI-M_Pro_V2
+        - TI-M_Pro_V3
       summary: "Delete healthcareService with this id. Used by Org-Admin."
       operationId: deleteHealthcareService
       responses:
@@ -497,7 +521,8 @@ paths:
       tags:
         - orgAdminFhirEndpoints
         - TI-M_1.1.x
-        - TI-M_Pro
+        - TI-M_Pro_V2
+        - TI-M_Pro_V3
       summary: "Get all endpoints for the healthcareService. Used by Org-Admin."
       description: "Get all endpoints for healthcare-service.
       (the search result could also contain all other resources that are related with it.
@@ -519,7 +544,8 @@ paths:
       tags:
         - orgAdminFhirEndpoints
         - TI-M_1.1.x
-        - TI-M_Pro
+        - TI-M_Pro_V2
+        - TI-M_Pro_V3
       summary: "Create endpoint. Used by Org-Admin."
       operationId: createEndpoint
       requestBody:
@@ -553,7 +579,8 @@ paths:
       tags:
         - orgAdminFhirEndpoints
         - TI-M_1.1.x
-        - TI-M_Pro
+        - TI-M_Pro_V2
+        - TI-M_Pro_V3
       operationId: getEndpoint
       responses:
         "200":
@@ -571,7 +598,8 @@ paths:
       tags:
         - orgAdminFhirEndpoints
         - TI-M_1.1.x
-        - TI-M_Pro
+        - TI-M_Pro_V2
+        - TI-M_Pro_V3
       summary: "Updates an endpoint. Used by Org-Admin."
       operationId: updateEndpoint
       requestBody:
@@ -597,7 +625,8 @@ paths:
       tags:
         - orgAdminFhirEndpoints
         - TI-M_1.1.x
-        - TI-M_Pro
+        - TI-M_Pro_V2
+        - TI-M_Pro_V3
       summary: "Deletes an endpoint. Used by Org-Admin."
       operationId: deleteEndpoint
       responses:
@@ -618,7 +647,8 @@ paths:
     post:
       tags:
         - orgAdminFhirEndpoints
-        - TI-M_Pro
+        - TI-M_Pro_V2
+        - TI-M_Pro_V3
       summary: "Set the endpointVisibility of the endpoint of the healthcare service to hide-versichert. Used by Org-Admin."
       operationId: setEndpointVisibilityOfHealthcareService
       responses:
@@ -644,7 +674,8 @@ paths:
     delete:
       tags:
         - orgAdminFhirEndpoints
-        - TI-M_Pro
+        - TI-M_Pro_V2
+        - TI-M_Pro_V3
       summary: "Remove the endpointVisibility of the endpoint of the healthcare service. Used by Org-Admin."
       operationId: removeEndpointVisibilityOfHealthcareService
       responses:
@@ -669,7 +700,8 @@ paths:
     post:
       tags:
         - practitionerFhirAdministration
-        - TI-M_Pro
+        - TI-M_Pro_V2
+        - TI-M_Pro_V3
       summary: "Set the endpointVisibility in the own practitioner FHIR resource to hide-versichert. Used by clients."
       operationId: setEndpointVisibility
       responses:
@@ -695,7 +727,8 @@ paths:
     delete:
       tags:
         - practitionerFhirAdministration
-        - TI-M_Pro
+        - TI-M_Pro_V2
+        - TI-M_Pro_V3
       summary: "Remove the endpointVisibility in the own Practitioner FHIR resource. Used by clients."
       operationId: removeEndpointVisibility
       responses:
@@ -721,7 +754,8 @@ paths:
       tags:
         - practitionerFhirAdministration
         - TI-M_1.1.x
-        - TI-M_Pro
+        - TI-M_Pro_V2
+        - TI-M_Pro_V3
       summary: "This request starts the OIDC authentication for getting access to change the own FHIR entry. Used by clients."
       operationId: authenticateOnFhirDirectory
       responses:
@@ -747,7 +781,8 @@ paths:
       tags:
         - practitionerFhirAdministration
         - TI-M_1.1.x
-        - TI-M_Pro
+        - TI-M_Pro_V2
+        - TI-M_Pro_V3
       summary: "Set the MXID in the own practitioner FHIR resource and the created endpoint. Used by clients."
       operationId: setMxidInFhirDirectory
       responses:
@@ -774,7 +809,8 @@ paths:
       tags:
         - practitionerFhirAdministration
         - TI-M_1.1.x
-        - TI-M_Pro
+        - TI-M_Pro_V2
+        - TI-M_Pro_V3
       summary: "Returns the own practitioner entry with belonging resources from the FHIR Directory. Used by clients."
       operationId: readMxidInFhirDirectory
       responses:
@@ -799,7 +835,8 @@ paths:
       tags:
         - practitionerFhirAdministration
         - TI-M_1.1.x
-        - TI-M_Pro
+        - TI-M_Pro_V2
+        - TI-M_Pro_V3
       summary: "Remove the MXID in the own Practitioner FHIR resource. Used by clients."
       operationId: removeMxidInFhirDirectory
       responses:
@@ -825,8 +862,10 @@ paths:
       tags:
         - searchOnHomeserver
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Returns a list of users on same homeserver that matches search parameters. Used by clients."
       operationId: searchOnHomeserver
       parameters:
@@ -865,9 +904,11 @@ paths:
       tags:
         - searchInFhirDirectory
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
-      summary: "Returns all belonging resources of an organization. Used by clients."
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
+      summary: "Returns all belonging resources of an organization. Used by OrgAdmins."
       operationId: searchOrganizationInFhirDirectory
       parameters:
         - name: healthcareServiceName
@@ -899,8 +940,6 @@ paths:
       tags:
         - searchInFhirDirectory
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
       summary: "Returns the found endpoints of the healthcare services matching the query. Used by clients."
       description: "Returns the found endpoints of the healthcare services matching the query.
       (the search result could also contain all other resources that are related with it.
@@ -937,8 +976,10 @@ paths:
       tags:
         - searchInFhirDirectory
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Returns the found Practitioner entries and its belonging location, endpoints and practitioner roles. Used by clients."
       operationId: searchPractitionerInFhirDirectory
       parameters:
@@ -977,8 +1018,10 @@ paths:
       tags:
         - message
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Send a direct message. Used by clients."
       description: "Send a direct message to another user.
       Should work without creating a dedicated room first.
@@ -1017,8 +1060,10 @@ paths:
       tags:
         - message
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Lists messages in room. Used by clients."
       operationId: getMessages
       responses:
@@ -1041,8 +1086,10 @@ paths:
       tags:
         - message
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Sends a new message. Used by clients."
       operationId: sendMessage
       requestBody:
@@ -1079,9 +1126,6 @@ paths:
       summary: "Get single message. Used by clients."
       tags:
         - message
-        - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
       operationId: getMessage
       responses:
         "200":
@@ -1104,8 +1148,10 @@ paths:
       tags:
         - message
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       operationId: editMessage
       requestBody:
         content:
@@ -1135,8 +1181,10 @@ paths:
       tags:
         - message
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       operationId: deleteMessage
       responses:
         "204":
@@ -1163,8 +1211,8 @@ paths:
       summary: "Deletes a message by replacing it. Used by clients."
       tags:
         - message
-        - TI-M_Pro_V2
-        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       operationId: deleteMessageViaReplace
       responses:
         "204":
@@ -1189,8 +1237,10 @@ paths:
       tags:
         - room
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       operationId: getRooms
       summary: "Get list of all rooms your account is associated with. This includes public rooms. Used by clients."
       responses:
@@ -1213,8 +1263,10 @@ paths:
       tags:
         - room
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Create a room. Used by clients."
       operationId: createRoom
       requestBody:
@@ -1249,8 +1301,10 @@ paths:
       tags:
         - room
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Get the room settings. Used by clients."
       operationId: getRoomSettings
       responses:
@@ -1273,8 +1327,10 @@ paths:
       tags:
         - room
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Change the room settings. Used by clients."
       operationId: updateRoom
       requestBody:
@@ -1304,8 +1360,10 @@ paths:
       tags:
         - room
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Forget this room. Used by clients."
       operationId: forgetRoom
       responses:
@@ -1330,8 +1388,10 @@ paths:
       tags:
         - room
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Invite a user into the room. Used by clients."
       operationId: inviteIntoRoom
       requestBody:
@@ -1367,8 +1427,10 @@ paths:
       tags:
         - room
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Join the room. Used by clients."
       operationId: joinRoom
       responses:
@@ -1397,8 +1459,10 @@ paths:
       tags:
         - room
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Leave the room. Used by clients."
       operationId: leaveRoom
       responses:
@@ -1427,8 +1491,8 @@ paths:
       tags:
         - room
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_Pro_V3
       summary: "Returns all state events of the room. Used by clients."
       operationId: getStateEvents
       responses:
@@ -1529,8 +1593,10 @@ paths:
       tags:
         - media
         - TI-M_1.1.x
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Uploads a file and returns its fileId. Used by clients."
       operationId: postMediaFile
       parameters:
@@ -1587,8 +1653,10 @@ paths:
     get:
       tags:
         - media
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Returns a previously uploaded file with authentication. Used by clients."
       description:
         "Since Matrix version 1.11 the download of media files is authenticated.
@@ -1615,8 +1683,10 @@ paths:
     get:
       tags:
         - authorizationManagement
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Returns the currently active authorization mode. Used by clients."
       operationId: getAuthorizationMode
       responses:
@@ -1632,8 +1702,10 @@ paths:
     post:
       tags:
         - authorizationManagement
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Selects the authorization mode. Used by clients."
       operationId: setAuthorizationMode
       requestBody:
@@ -1663,8 +1735,8 @@ paths:
     get:
       tags:
         - authorizationManagement
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
       summary: "Returns a list of all mxids, server-names and groups, which are allowed to contact the client. Used by clients."
       operationId: getAllowedUsersList
       responses:
@@ -1686,8 +1758,10 @@ paths:
     post:
       tags:
         - authorizationManagement
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Adds the users in the provided list to the list of allowed users. Used by clients."
       operationId: addAllowedUsersList
       requestBody:
@@ -1717,8 +1791,10 @@ paths:
     delete:
       tags:
         - authorizationManagement
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Deletes the provided users from the list of users allowed to contact the client. Used by clients."
       operationId: deleteAllowedUsersList
       requestBody:
@@ -1748,8 +1824,10 @@ paths:
     get:
       tags:
         - authorizationManagement
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Returns a list of all users, which are not allowed to contact the client. Used by clients."
       operationId: getBlockedUsersList
       responses:
@@ -1771,8 +1849,10 @@ paths:
     post:
       tags:
         - authorizationManagement
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Adds the users in the provided list to the list of blocked users and server-names. Used by clients."
       operationId: addBlockedUsersList
       requestBody:
@@ -1802,8 +1882,10 @@ paths:
     delete:
       tags:
         - authorizationManagement
-        - TI-M_Pro
-        - TI-M_ePA
+        - TI-M_Pro_V2
+        - TI-M_ePA_V2
+        - TI-M_Pro_V3
+        - TI-M_ePA_V3
       summary: "Deletes the provided users from the list of users not allowed to contact the client. Used by clients."
       operationId: deleteBlockedUsersList
       requestBody:
@@ -2149,7 +2231,7 @@ components:
         isVersionThree:
           type: boolean
           description: |
-            Whether this client runs the TI-Messenger version Pro or ePA in the updated version including the new and extended delete functions.
+            Whether this client runs the TI-Messenger version Pro or ePA in the updated version 3 including the new and extended delete functions.
             Additionally, isInsurance or isPro have to be set.
         isReferenceImplementation:
           type: boolean
@@ -3182,7 +3264,7 @@ components:
           description: "Who can see the room history"
         isEncrypted:
           type: boolean
-          description: "Since ePA/Pro version 1.2 it is allowed to create both, encrypted and unencrypted rooms"
+          description: "Since ePA/Pro version V3 it is allowed to create both, encrypted and unencrypted rooms"
         roomId:
           type: string
           description: "The room identifier. Must be returned in response to a createRoom request. Is used to identify a specific room."

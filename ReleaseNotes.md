@@ -5,10 +5,38 @@
 ## Link to TI-Messenger-testsuite
 
 [
-`docu TI-Messenger Version 1.1.X`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc)
+`docu Testsuite.adoc`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite.adoc)
 
 [
-`docu TI-Messenger Version 2`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testsuite_Version2.adoc)
+`docu Testset_V2.adoc`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testset_V2.adoc)
+
+[
+`docu Testset_V3.adoc`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testset_V3.adoc)
+
+## Release 3.1.1
+
+### Known issues
+
+- Example report for V3 tests is not yet available and will be added in a future release.
+
+### Changes
+
+- IMPORTANT: we updated from Java 17 to Java 21
+- Adjusted tagging in the Testtreiber API to explicitly mark API endpoints relevant for V3 tests.
+- This includes a renaming of the previously existing TI_M_Pro and TI_M_ePA tags to reflect the new tagging concept.
+- The V2 Example Serenity report was removed and is now only available in previous releases (newest one in Release
+  3.0.1)
+
+### Features
+
+- Release of Testset V3 - src/test/resources/templates/FeatureFiles/TI-M_V3
+- New documentation structure - new basic documentation for all testsets from V2 onwards - [
+  `Testsuite.adoc`](doc/userguide/Testsuite.adoc)
+- New documentation structure - new additional documentation for each testset - V2 [
+  `Testset_V2.adoc`](doc/userguide/Testset_V2.adoc) & V3 [`Testset_V3.adoc`](doc/userguide/Testset_V3.adoc)
+- Renaming documentation for Testsuite 1.1.X to [`Testsuite_11X.adoc`](doc/userguide/Testsuite_11X.adoc)(old/former
+  Testsuite.adoc)
+- Erased documentation Testsuite_Version2.adoc since it is not needed anymore due to new documentations
 
 ## Release 3.0.1
 
