@@ -254,11 +254,10 @@
           </execution>
         </executions>
       </plugin>
-      <!--      Done with "cp" to keep timestamp-->
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>${maven.exec.plugin.version}</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.1.0</version>
         <configuration>
           <skip>${skip.saving.reports}</skip>
         </configuration>
@@ -267,16 +266,14 @@
             <id>save_reports</id>
             <phase>post-integration-test</phase>
             <goals>
-              <goal>exec</goal>
+              <goal>run</goal>
             </goals>
             <configuration>
-              <executable>cp</executable>
-              <arguments>
-                <argument>-a</argument>
-                <argument>${project.build.directory}/site/serenity/.</argument>
-                <!--suppress UnresolvedMavenProperty -->
-                <argument>${basedir}/reports/${build.time}/report/</argument>
-              </arguments>
+              <target>
+                <copy todir="${basedir}/reports/${build.time}/report/" preservelastmodified="true">
+                  <fileset dir="${project.build.directory}/site/serenity"/>
+                </copy>
+              </target>
             </configuration>
           </execution>
         </executions>
