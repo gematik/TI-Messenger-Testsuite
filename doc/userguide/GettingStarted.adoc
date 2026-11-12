@@ -1,44 +1,80 @@
 :toc-title: Table of contents
 :toc:
-:toclevels: 4
-
-:tip-caption:  pass:[&#128681;]
+:toclevels: 2
 :sectanchors:
-
-:classdia-caption: Class diagram
-:seqdia-caption: Sequence diagram
-
 :source-highlighter: prettify
-
-:imagesdir: ../../doc/images
-:imagesoutdir: ../images
-:testdir: ../../Tests
 :sourcedir: ../../src
-:plantumldir: ../plantuml
 :rootdir: ../../
-== First Steps
+= Getting Started with the TI-Messenger-Testsuite
 
-=== Windows Set Up
+This guide takes you from the first checkout to a test report and a test suite that runs in your CI pipeline.
+Work through the chapters in order.
+Background on the concept, tags and filters is in the German link:Testsuite.adoc[test suite documentation].
 
-Due to long file- and path names you have to take action before checking out the test suite repository.
-If you want to run and work with the test suite on a Windows computer you have to enable GIT in Windows to deal with long file- and pathnames:
+[#_prerequisites]
+== Prerequisites
 
-1. Run Git Bash as administrator (right-clicking the app shortcut will show the option to Run as Administrator ) Run the following command:
+* JDK 21, Maven 3.9.x (tested on version 3.9.15), Git
+* One test driver per TI-Messenger client or org admin client you want to test, implementing the link:{sourcedir}/main/resources/api/TiMessengerTestTreiber.yaml[test driver interface]
+* mTLS certificates from gematik (see <<_set_up_certificates>>), but there are ways to start without them (see <<_disable_tls>>).
 
-2. git config --system core.longpaths true
+*Windows:* the repository contains long paths.
+Before cloning, run `git config --system core.longpaths true` in Git Bash as administrator (or `git config --global core.longpaths true` if that fails).
 
-[NOTE]
-====
-if step 2 does not work or gives any error, you can also try running this command:
+[#_get_the_test_suite]
+== Get the test suite
 
-git config --global core.longpaths true
-====
+You can clone the test suite from GitHub or download a release.
+But in case you want to propose a PR (see link:{rootdir}CONTRIBUTING.md[CONTRIBUTING.md]), you need a fork of the repository (see https://docs.github.com/en/pull-requests/how-tos/work-with-forks/fork-a-repo[Github-How to fork]).
+With a fork you can also version your own configuration and still receive the updates from gematik.
+If your configuration must not be public, use a private repository in your own Git server instead.
 
-Reference:
-https://stackoverflow.com/questions/22575662/filename-too-long-in-git-for-windows
+Put your configuration into *your own files* (see <<_use_your_own_pom>>) to avoid merge conflicts.
+Never commit keystores or passwords, the test suite reads them from environment variables.
+
+[#_how_the_test_suite_works]
+== How the test suite works
+
+Each TI-Messenger client (or org admin client) is controlled through a *test driver*, a link:{sourcedir}/main/resources/api/TiMessengerTestTreiber.yaml[test driver interface] provided by the vendor.
+The test suite sends the same test steps to the test drivers of different vendors, e.g. your client and the gematik reference implementation, and so tests their interoperability.
+
+image::../images/HighLevelTestSetup.png[]
+
+`mvn verify` runs these steps:
+
+. *Prepare* (`prepare-items`): the link:https://github.com/gematik/cucumber-test-combinations-maven-plugin[cucumber-test-combinations-maven-plugin] reads link:{rootdir}combine_items.json[combine_items.json], calls the info endpoint (`GET /`) of each test driver and adds tags and properties such as `proClientV3`, `orgAdmin` or `homeserver`.
+The rules are defined in link:{rootdir}parent-pom.xml[parent-pom.xml], the result is written to `target/generated-combine/combine_items.json`.
+. *Check* (`checkApis`): each test driver must provide enough devices (org admin: at least 1, client: at least 3).
+. *Combine*: the feature templates (`*.feature.cute` in link:{sourcedir}/test/resources/templates[src/test/resources/templates]) contain placeholders such as `<ApiName1A>` and filters such as `@Filter(ApiName1A.hasTag("proClientV3"))`.
+The plugin fills the `Examples` tables with all matching combinations of test drivers and writes the feature files to `target/features`.
+Each row is one test run.
+. *Test*: Tiger starts a local Tiger Proxy and Serenity BDD runs the scenarios.
+The proxy forwards the requests to the test drivers configured in link:{rootdir}tiger.yml[tiger.yml] and adds the mTLS client certificate.
+. *Report*: Serenity creates the report in `target/site/serenity`, which is copied to `reports/<timestamp>/report`.
+
+=== Actors, devices and usernames
+
+The scenarios use *actors* such as `A` and `B`, which are roles, not fixed users:
+
+[source,gherkin]
+----
+Given Following clients are claimed:
+  | A | PRO_CLIENT | <ApiName1A> |
+  | B | PRO_CLIENT | <ApiName1B> |
+----
+
+For each actor, the test suite claims a free device of the test driver (`POST /devices/{deviceId}/claim`) and logs in *without* login data (`POST /devices/{deviceId}/login`).
+The test driver then uses a *preconfigured account* (and the HBA/SMC-B of the device, if available) and returns its data, e.g. the MXID.
+The test suite remembers this data for the actor.
+
+When `A` searches for `B`, the test suite uses the MXID that `B`'s test driver returned at login.
+Your test driver therefore needs enough devices, each with a preconfigured test account.
+
+After each scenario, the test suite logs out and unclaims the devices.
+Each request contains the header `Test-Case-Id` (`<TestcaseId>/<TestrunUUID>`), so you can match the requests in your logs to a test run.
 
 [#_set_up_certificates]
-=== Set up certificates
+== Set up certificates
 
 The test driver interface is secured via mTLS.
 Since all communication runs through the Tiger Proxy, a client certificate must be provided to the Tiger Proxy.
@@ -53,50 +89,12 @@ To speed up the request, please provide us with the following information for th
 ----
 organisation name: <my company>
 locality name: <Berlin>
-DNS list: <testdriver1.ru.mycompany.com, testdriver2.ru.mycompany.com> or <*.ru.mycompany.com>
+DNS list: <testdriver1.tu.mycompany.com, testdriver2.tu.mycompany.com> or <*.tu.mycompany.com>
 ----
 
 For these URLs, gematik will create a server certificate, a client certificate, and all associated keys.
 
-==== Extract certificates
-
-The certificates and keys can be extracted from the `.p12`-File as follows (required passwords are provided in the accompanying `password` file):
-
-.Trusted-Certificate
-[source,bash]
-----
-openssl pkcs12 -info --in gemTruststore.p12 -nokeys > trustedCert.pem
-----
-
-.Server Certificate
-[source,bash]
-----
-openssl pkcs12 -info --in <yourName>ServerKeystore.p12 -nokeys > serverCert.pem
-----
-
-.Server Key
-[source,bash]
-----
-openssl pkcs12 -info --in <yourName>ServerKeystore.p12 -nocerts > serverKey.pem
-----
-
-.Client Certificate
-[source,bash]
-----
-openssl pkcs12 -info --in <yourName>ClientKeystore.p12 -nokeys > clientCert.pem
-----
-
-.Client Key
-[source,bash]
-----
-openssl pkcs12 -info --in <yourName>ClientKeystore.p12 -nocerts > clientKey.pem
-----
-
-[IMPORTANT]
-[red]#When a key is loaded from a .p12 file, a new password is set.
-This does not have to match the password in the provided `password`file.#
-
-==== Set up a server certificate
+=== Set up a server certificate
 
 A precise guide is not possible here.
 The setup may vary depending on the technology used.
@@ -140,7 +138,8 @@ server {
 }
 ----
 
-==== Set up a client certificate for mTLS
+[#_set_up_a_client_certificate_for_mtls]
+=== Set up a client certificate for mTLS
 
 The test driver interface uses mTLS.
 Therefore, a client certificate must be provided and passed to the Tiger Proxy.
@@ -158,9 +157,47 @@ This is done by specifying the following two environment variables:
 The respective stores should be in .p12 format.
 
 For local/internal development, the use of TLS can be bypassed.
-Instructions for this can be found link:DevGuide.adoc#Disable-TLS[in the DevGuide].
+Instructions for this can be found in the <<_disable_tls>> section.
 
-==== Configure the certificate revocation list for mTLS
+=== Extract certificates
+
+The certificates and keys can be extracted from the `.p12`-File as follows (required passwords are provided in the accompanying `password` file):
+
+.Trusted-Certificate
+[source,bash]
+----
+openssl pkcs12 -info --in gemTruststore.p12 -nokeys > trustedCert.pem
+----
+
+.Server Certificate
+[source,bash]
+----
+openssl pkcs12 -info --in <yourName>ServerKeystore.p12 -nokeys > serverCert.pem
+----
+
+.Server Key
+[source,bash]
+----
+openssl pkcs12 -info --in <yourName>ServerKeystore.p12 -nocerts > serverKey.pem
+----
+
+.Client Certificate
+[source,bash]
+----
+openssl pkcs12 -info --in <yourName>ClientKeystore.p12 -nokeys > clientCert.pem
+----
+
+.Client Key
+[source,bash]
+----
+openssl pkcs12 -info --in <yourName>ClientKeystore.p12 -nocerts > clientKey.pem
+----
+
+[IMPORTANT]
+[red]#When a key is loaded from a .p12 file, a new password is set.
+This does not have to match the password in the provided `password`file.#
+
+=== Configure the certificate revocation list for mTLS
 
 We provide and maintain a certificate revocation list (CRL) in the binary DER format for the mTLS connection between the test drivers: link:{sourcedir}/src/main/resources/tiMessengerTestDriver.crl[tiMessengerTestDriver.crl].
 In case you need the .pem format for your server, you can convert the provided .crl file using the following command:
@@ -177,60 +214,116 @@ In case you want to report a compromised certificate, please contact us via e-ma
 
 In case we update the CRL and the reason is in fact a compromised certificate, we will announce this in the link:{sourcedir}/ReleaseNotes.md[ReleaseNotes.md] and on our link:https://wiki.gematik.de/spaces/TIMCOMP/pages/604603166/TI-Messenger+Compass+-+The+TI-M+Blog[Blog].
 
-=== Add test driver interface
+[#_disable_tls]
+=== Disable TLS (local development only)
 
-The test driver interfaces that need to be tested are managed in the file link:{sourcedir}/combine_items.json[combine_items.json].
-To add a new test driver interface to the test suite, a corresponding entry must be added to this file.
+If you don't have certificates from gematik yet, you can disable mTLS for local development.
+This only works for a set-up without the reference implementation, for example two test drivers of your own instances.
+It's not recommended to create your own certificates, since the official certification can only happen with the gematik certificates.
+To disable mTLS, don't set the `TIM_KEYSTORE` variables, delete the `tls` block below `tigerProxy:` in your tiger.yml and use `http` URLs in your combine_items.json and tiger.yml.
 
-The `value` in link:{sourcedir}/combine_items.json[combine_items.json] can either represent the complete URL or an alias for better reference.
-The alias can be chosen freely.
-If an alias is used, the corresponding URL must be entered under `url`.
+.tiger.yml
+[source,yaml]
+----
+tigerProxy:
 
-.Here’s an example item with alias and URL:
+servers:
+  my-pro-client:
+    type: externalUrl
+    source:
+      - http://testdriver1.tu.mycompany.com
+  my-org-admin:
+    type: externalUrl
+    source:
+      - http://testdriver2.tu.mycompany.com
+----
+
+[#_configure_your_test_drivers]
+== Configure your test drivers
+
+Two files tell the test suite which test drivers to use:
+
+* *combine_items.json*: the list of test drivers, from which the plugin creates the test combinations.
+* *tiger.yml*: the Tiger configuration with the local Tiger Proxy and one server per test driver.
+
+[IMPORTANT]
+[red]#The `value` of each entry in combine_items.json must be equal to a server name in tiger.yml.#
+
+The files in the root folder are gematik's configuration for simulated test drivers.
+Use them as a reference and create your own files, e.g. in `my-config/`, which you reference in your own pom (see <<_use_your_own_pom>>).
+
+=== A minimal example
+
+Your TI-M Pro client and org admin client (`my-...`), with the reference implementation (`ref-...`) as counterpart:
+
+.my-config/combine_items.json
 [source,json]
 ----
 [
   {
-      "value": "API1",
-      "url": "https://<HOST_NAME>:<PORT>"
+    "value": "my-pro-client",
+    "url": "https://testdriver1.tu.mycompany.com",
+    "groups": ["my-company"]
   },
   {
-      "value": "API2",
-      "url": "https://<HOST_NAME>:<PORT>/rest/"
+    "value": "my-org-admin",
+    "url": "https://testdriver2.tu.mycompany.com",
+    "groups": ["my-company"]
   },
   {
-      "value": "API3",
-      "url": "https://<HOST_NAME>:<PORT>/ti-m-testtreiber"
+    "value": "ref-pro-client",
+    "url": "https://<test driver of the reference implementation>"
+  },
+  {
+    "value": "ref-org-admin",
+    "url": "https://<test driver of the reference implementation>/org-admin"
   }
 ]
 ----
 
-IMPORTANT: For the use of an `alias`, it is also necessary to enter it in the link:{rootdir}tiger.yml[tiger.yml] according to the following schema!
+* `value` (required): alias of the test driver, shown in the report.
+* `url` (required): URL of the test driver, incl. an additional path if needed.
+* `groups` (optional): to select only some test drivers for a run (pooling, see link:Testsuite.adoc#_6_6_pooling[Testsuite.adoc, chapter 6.6]).
+* `tags`, `properties` (optional): most are read from the info endpoint.
+If you set one that is also read, the plugin fails if the values don't match (see link:Testsuite.adoc#_6_3_combine_items_tags_und_properties_für_die_plugin_konfiguration[Testsuite.adoc, chapter 6.3]).
 
-[source,yml]
+.my-config/tiger.yml
+[source,yaml]
 ----
-# default local Tiger Proxy
-tigerProxy:
+tigerProxy: # <1>
   tls:
-    forwardMutualTlsIdentity: "${TIM_KEYSTORE};${TIM_KEYSTORE_PW};pkcs12" <1>
-  proxyRoutes:
-    - from: http://API1 <2>
-      to: https://<HOST_NAME>:<PORT>
-    - from: http://API2
-      to: https://<HOST_NAME>:<PORT>/rest/ <3>
-    - from: http://API3
-      to: https://<HOST_NAME>:<PORT>/ti-m-testtreiber/
+    forwardMutualTlsIdentity: "${TIM_KEYSTORE};${TIM_KEYSTORE_PW};pkcs12" # <2>
+
+servers:
+  my-pro-client: # <3>
+    type: externalUrl
+    source:
+      - https://testdriver1.tu.mycompany.com # <4>
+  my-org-admin:
+    type: externalUrl
+    source:
+      - https://testdriver2.tu.mycompany.com
+  ref-pro-client:
+    type: externalUrl
+    source:
+      - https://<test driver of the reference implementation>
+  ref-org-admin:
+    type: externalUrl
+    source:
+      - https://<test driver of the reference implementation>/org-admin
 ----
 
-<1> The default local Tiger Proxy must remain.
-<2> Under `proxyRoutes`, the individual routes can be specified for the proxy.
-From must start with http:// and match the value in link:{sourcedir}/combine_items.json[combine_items.json].
-Make sure that the specified URL ends with a trailing '/', otherwise the connection will fail.
-<3> Additional resources in the path must be specified.
+<1> The local Tiger Proxy, must remain.
+<2> The mTLS client certificate from the environment variables.
+<3> Must be equal to `value` in combine_items.json.
+<4> Same URL as `url` in combine_items.json.
 
-=== Correct Completion of the Metadata for the Interface
+Before the tests start, Tiger waits until each test driver responds at its `source` URL.
+To use a dedicated health endpoint instead, add e.g. `healthcheckUrl: https://testdriver1.tu.mycompany.com/actuator/health` (see link:https://gematik.github.io/app-Tiger/Tiger-User-Manual.html#_server_type_external_url[Tiger User Manual]).
 
-IMPORTANT: Please ensure that the interface metadata is populated with all required parameters accurately.
+=== Complete the metadata of your test driver
+
+The plugin selects test drivers by the data of their info endpoint, so fill in *all* required fields.
 
 One of these parameters is the information interface, which requires the OS information.
 This parameter must be filled with the corresponding operating system.
@@ -268,63 +361,290 @@ Organisation admin interface example:
 ----
 
 Please ensure that all required parameters are filled in, not just the `osInfo` field!
+See link:{sourcedir}/main/resources/api/TiMessengerTestTreiber.yaml[test driver interface] for the complete list of parameters.
+Some are optional, but those are also very helpful for test evaluation and should be filled in if possible.
 
 Additionally, this parameter must also be populated when using the same codebase for multiple products requiring approval.
 It must align with the information provided in the submitted application for approval documents.
 
 Example: In the application for approval: TI-M Client Android -> `"operatingSystem": "Android"`.
 
-=== Starting the test cases
+[#_run_the_tests]
+== Run the tests
 
-The test suite executes the tests as Maven integration tests.
-The test suite is started with this command:
-
+[source,bash]
 ----
-mvn verify
+mvn clean verify                      # default pom.xml
+mvn clean verify -f my-pom.xml        # your own pom
 ----
 
-[[parameter_controll_testsuite,Parameter für die Steuerung der Testsuite]]
-==== Parameters that adjust the behavior of the test suite
+Without `clean`, the results of several runs are combined in one target, which might lead to errors.
 
-To be prepared for certain circumstances, the test suite can slightly adjust its behavior.
-Below are parameters that can all be specified using -D<parameterName>(=<parameterValue>) during invocation.
+=== Select the tests
 
-.Parameters for adjusting the test suite
+Always use a tag filter, so that only the tests for your product are run.
+You find the tags at the top of each feature file and above each scenario, they are explained in link:Testsuite.adoc#_6_1_tags_zur_steuerung_der_testsuite[Testsuite.adoc, chapter 6.1].
+
+[%header,cols="2,3"]
+|===
+|What |Example command
+|One feature file |`mvn clean verify -Dcucumber.filter.tags=@File:FeatureFile_04_01_V3_Basis`
+|One scenario |`mvn clean verify -Dcucumber.filter.tags=@TCID:TIM_V3_BASIS_AF_040101`
+|Several scenarios |`-Dcucumber.filter.tags="@TCID:TIM_V3_BASIS_AF_040101 or @TCID:TIM_V3_BASIS_AF_040102"`
+|===
+
+More test sets are listed in link:Testset_V3.adoc[Testset_V3.adoc, chapter 2].
+
+[#_exclude_tests_with_wip]
+=== Exclude tests with @WIP
+
+Scenarios and feature files tagged with `@WIP` (work in progress) are not run, because the plugin creates no combinations for them.
+gematik uses it for unfinished tests, and you can use it the same way for your own tests or to skip a test temporarily in your fork.
+Remove the tag to run the test again (see also link:Testsuite.adoc#_6_2_wip_tag[Testsuite.adoc, chapter 6.2]).
+
+=== Parameters and profiles
+
+Set parameters with `-D<name>=<value>`:
+
 [%header,cols='2,4,1']
 |===
-|Parameter name|
-Effect|defaultValue
-|maxRetryClaimRequest|Specifies how many times claiming a device can fail before it is terminated|3
-|timeout|Specifies how long to wait after a request is sent until the expected response appears|10 sec
-|pollInterval|Specifies the intervals at which a request is sent again until the expected response appears|1 sec
-|httpTimeout|Specifies how long the test suite waits for a response from the test driver interface|180 sec
-|claimDuration|The value sent with a claim request link:https://github.com/gematik/TI-Messenger-Testsuite/blob/main/src/main/resources/api/TiMessengerTestTreiber.yaml#L2358[testdriver.yaml]. Should not be set too high, since it will reset on each device call anyway. |180 sec
-|runWithoutRetry|Sends a request only once and assumes that there are no synchronization issues|false
+|Parameter |Effect |Default
+|maxRetryClaimRequest|How many times claiming a device can fail before the test fails|3
+|timeout|How long to wait for an expected response|10 sec
+|pollInterval|Interval in which a request is repeated until the expected response appears|1 sec
+|httpTimeout|How long to wait for a response of the test driver|180 sec
+|claimDuration|Seconds a device stays claimed (integer). Should not be too high, it is reset on each device call anyway.|180 sec
+|runWithoutRetry|Sends each request only once and assumes there are no synchronization issues|false
+|tiger.openReport|Opens the Serenity report in the browser after the run|true
+|poolGroupString|Selects groups of test drivers, see link:Testsuite.adoc#_6_6_pooling[Testsuite.adoc, chapter 6.6]|
 |===
 
-=== Evaluating the test results
+Activate profiles with `-P<profile>`:
 
-After the test execution, the current report is located in the build directory under link:{rootdir}target/site/serenity/index.html[target/site/serenity/index.html].
-Repeated executions are summarized in a common report.
+[%header,cols='2,4']
+|===
+|Profile |Effect
+|disable-prepare-items|Don't read the info endpoints, use your combine_items.json as it is (e.g. if your info endpoint is not complete yet).
+|dont-break-preparation|Don't stop the build on plugin errors, create all possible combinations. Errors are written to `target/generated-combine/errorLog.txt`.
+|oneonly|Only one combination per scenario.
+|newonly|Only combinations with test drivers tagged `new`.
+|skip-saving-reports|Don't copy the results to the `reports/` folder.
+|===
 
-Additionally, each run is saved in the root directory in the link:{rootdir}reports[reports] folder along with its report and the feature files used.
+=== Run a scenario in IntelliJ IDEA
 
-You can find an example of a Serenity report in the folder link:{rootdir}serenityReportExample[serenityReportExample].
-This report contains successful Pro V3 tests executed against the reference implementation.
+Set up IntelliJ as described in the link:https://gematik.github.io/app-Tiger/Tiger-User-Manual.html#_intellij[Tiger User Manual]. For this test suite, change the following:
 
+* Run the feature files in `target/features`. The files in `src/test/resources/templates` are only templates (`.feature.cute`) without your test clients. Run `mvn clean verify` once to generate the feature files, and again whenever your `combine_items.json` or the templates change.
+* Add these glue packages to the ones from the manual:
++
+[source]
+----
+de.gematik.test.tiger.hooks
+de.gematik.tim.test.glue
+----
+* Add this VM option to unclaim the devices after the test: `-Dcucumber.plugin=de.gematik.tim.test.glue.api.cleanup.CucumberListener`
+
+[#_evaluate_the_test_results]
+== Evaluating the test results
+
+With the default pom.xml, the Serenity report opens in your browser after the run (disable with `-Dtiger.openReport=false`).
+
+=== Where to find the results
+
+* `target/site/serenity/index.html`: report of the latest run.
+* `reports/<timestamp>/report/`: a copy of the report with additional data, kept for each run (ignored by Git).
+
+[IMPORTANT]
+[red]#For the entry criteria of the approval, submit the complete `reports/<timestamp>/report` folder, not the `target` folder.#
+
+[%header,cols="2m,4"]
+|===
+|Path in `reports/<timestamp>/report/` |Content
+|index.html, #index.html|Start page of the Serenity report
+|serenity-summary.html, summary.txt, serenity-summary.json|Summary of the results
+|additional-data/features/|The generated feature files incl. the `Examples` tables
+|additional-data/combine-items/|Information about the plugin configuration
+|additional-data/versions/, additional-data/mvn-properties/|Version of the test suite and the Maven properties used
+|===
+
+=== How to read the Serenity report
+
+* *Header*: the groups and test drivers used.
+* *Summary*: number of tests, results, duration and tags (click a tag to filter).
+* *Test Results*: open a test and expand the steps to see which test driver sent which request and got which response.
+At the end of each test you find the *TestcaseId* (also sent in the `Test-Case-Id` header) and the *RbelLog*, a detailed log of all requests and responses recorded by the Tiger Proxy.
+
+More information: link:Testsuite.adoc#_12_testreport[Testsuite.adoc, chapter 12] (German, with screenshots), link:https://serenity-bdd.github.io/docs/reporting/the_serenity_reports[Serenity BDD reports], link:https://gematik.github.io/app-Tiger/Tiger-User-Manual.html#_rbel_logs[Tiger RbelLogs].
+
+=== Example report
+
+link:{rootdir}serenityReportExample[serenityReportExample] contains successful Pro V3 tests of the reference implementation against itself.
 An old report for version 2 of the test suite can be found in the released link:https://github.com/gematik/TI-Messenger-Testsuite/releases/tag/3.0.1[version 3.0.1 on GitHub].
 To not overload the repository with too many files, we have removed the old report from the main branch.
 
-=== Scope of the Example Serenity report
-
 For the provided Serenity report, the reference implementation is tested against the reference implementation.
 This is intended to support in your development, but *the format is not sufficient to meet the entry criteria*, as only one example per test case is executed in the report, while two examples are required for approval.
-Since version 3 of the test suite is very new, the report might not be complete nor fully correct yet.
 We strive to improve it continuously, and if you find any issues or have suggestions for improvement, please let us know.
 
 This is the command we used to create the example Serenity report:
 
 [source,shell]
 ----
-mvn verify -f prod-pom.xml --no-transfer-progress -P oneonly,dont-break-preparation,V3 -DpoolGroupString=RU1 -Dcucumber.filter.tags=@ZulV3:Pro
+mvn verify -f prod-pom.xml --no-transfer-progress -P oneonly,dont-break-preparation -DpoolGroupString=RU1 -Dcucumber.filter.tags=@ZulV3:Pro
 ----
+
+.Note:
+prod-pom.xml is used internally and is not provided externally.
+Use your regular Maven pom instead.
+If combine_items.json is configured correctly, no additional pom configuration is required.
+For custom configurations, create your own pom according to the instructions in <<_use_your_own_pom>>.
+
+[#_customise_the_test_suite]
+== Customise the test suite
+
+[#_use_your_own_pom]
+=== Use your own pom
+
+*Why?* To use your own combine_items.json and tiger.yml, a default test set, or separate configurations for local runs and CI, without merge conflicts on updates.
+
+[IMPORTANT]
+[red]#Create your pom as a *copy of link:{rootdir}pom.xml[pom.xml]*.
+A pom that only uses link:{rootdir}parent-pom.xml[parent-pom.xml] as parent misses required configuration (e.g. `mvn.properties`, the `reports/` folder and the profiles) and the test run fails.#
+
+. Copy `pom.xml` to `my-pom.xml` *in the root folder of the test suite* and change the `artifactId`, e.g. to `my-testsuite`.
+Maven resolves all paths (sources, `parent-pom.xml`, `target/`, `reports/`) relative to the folder of the pom, so a pom in another folder does not work.
+Your tiger.yml and combine_items.json can be stored anywhere, reference them with an absolute path or a path relative to the root folder.
+. Change the properties you need, keep the others:
++
+[source,xml]
+----
+<tiger.config.file>${project.basedir}/my-config/tiger.yml</tiger.config.file>
+<combine.items.file>${project.basedir}/my-config/combine_items.json</combine.items.file>
+<feature.template.dir>${feature.template.dir.V3}</feature.template.dir>
+<cucumber.filter.tags>@ZulV3:Pro</cucumber.filter.tags>
+----
+. Run `mvn clean verify -f my-pom.xml`.
+. After an update of the test suite, take over the changes of `pom.xml` (`git diff --no-index pom.xml my-pom.xml`).
+
+[%header,cols="2,4"]
+|===
+|Property |Description
+|`tiger.config.file`|Your tiger.yml
+|`combine.items.file`|Your combine_items.json
+|`feature.template.dir`|Comma-separated template folders. Predefined: `feature.template.dir.V3` (default), `feature.template.dir.V2`, `feature.template.dir.11x`
+|`cucumber.filter.tags`|Default tag filter
+|`tiger.openReport`|Open the report in the browser (`false` for CI)
+|`feature.tables.max_rows`|Maximum number of combinations per scenario
+|`skip.saving.reports`|Don't copy the results to `reports/`
+|===
+
+All parameters of <<_parameters_and_profiles>> can also be set as properties.
+
+[#_use_a_proxy]
+=== Use a proxy in a company network
+
+*Why?* In many company networks, outgoing connections must use a proxy, while `localhost` or internal hosts must not.
+Configure the proxy *twice*, because the plugin calls the test drivers directly, and the tests call them through the Tiger Proxy.
+
+*1. Plugin: environment variables*
+
+[source,bash]
+----
+export TIM_PROXY_HOST=proxy.mycompany.com
+export TIM_PROXY_PORT=3128
+export TIM_NO_PROXY_HOSTS=localhost,127.0.0.1,internal.mycompany.com   # optional
+----
+
+`TIM_NO_PROXY_HOSTS` is separated by `,`, `;` or `|`, and suffixes match (`mycompany.com` also matches `testdriver1.tu.mycompany.com`).
+The plugin logs e.g. `Using proxy: proxy.mycompany.com:3128 (except for: [localhost, 127.0.0.1, internal.mycompany.com])`.
+See also the link:https://github.com/gematik/cucumber-test-combinations-maven-plugin/blob/main/doc/userguide/GettingStarted.adoc#_using_proxy[plugin documentation].
+
+*2. Tiger Proxy: `forwardToProxy` in your tiger.yml*
+
+[source,yaml]
+----
+tigerProxy:
+  tls:
+    forwardMutualTlsIdentity: "${TIM_KEYSTORE};${TIM_KEYSTORE_PW};pkcs12"
+  forwardToProxy:
+    hostname: ${TIM_PROXY_HOST}
+    port: ${TIM_PROXY_PORT}
+    type: HTTP
+    noProxyHosts:
+      - "localhost"
+      - "127.0.0.1"
+      - "internal.mycompany.com"
+----
+
+Only add `forwardToProxy` if you need a proxy.
+See also the link:https://gematik.github.io/app-Tiger/Tiger-User-Manual.html#_configuring_the_local_test_suite_tiger_proxy[Tiger User Manual].
+Maven itself needs the proxy in `~/.m2/settings.xml` to download dependencies (see link:https://maven.apache.org/guides/mini/guide-proxies.html[Maven: Configuring a proxy]).
+
+[#_continuous_testing_in_ci]
+== Continuous testing in CI
+
+*Why?* Run the test suite after each change of your TI-Messenger to find interoperability problems early.
+
+. *Agent*: JDK 21, Maven 3.9.x and network access to the test drivers.
+No browser is needed.
+. *Checkout* your fork.
+. *Secrets*: provide the keystore as secret file and set `TIM_KEYSTORE` and `TIM_KEYSTORE_PW` (and the proxy variables, if needed).
+. *Run*: `mvn -B --no-transfer-progress clean verify -f my-pom.xml -Dtiger.openReport=false -Dcucumber.filter.tags=@ZulV3:Pro`
+. *Result*: the build fails if a test fails or the test drivers could not be prepared.
+If only tests fail, the reports are still created.
+. *Archive* `reports/**` and optionally publish `target/failsafe-reports/*.xml` as JUnit results.
+
+=== Jenkins example
+
+Uses the Credentials Binding and link:https://plugins.jenkins.io/htmlpublisher/[HTML Publisher] plugins, with the credentials `tim-client-keystore` (secret file) and `tim-client-keystore-pw` (secret text).
+
+.Jenkinsfile
+[source,groovy]
+----
+pipeline {
+  agent any
+  tools {
+    jdk 'jdk21'        // names as configured in "Manage Jenkins > Tools"
+    maven 'maven3.9'
+  }
+  triggers { cron('H 2 * * *') } // nightly
+  parameters {
+    string(name: 'TAGS', defaultValue: '@ZulV3:Pro', description: 'Cucumber tag filter')
+  }
+  stages {
+    stage('Test') {
+      steps {
+        withCredentials([
+          file(credentialsId: 'tim-client-keystore', variable: 'TIM_KEYSTORE'),
+          string(credentialsId: 'tim-client-keystore-pw', variable: 'TIM_KEYSTORE_PW')
+        ]) {
+          sh """
+            mvn -B --no-transfer-progress clean verify -f my-pom.xml \
+              -Dtiger.openReport=false -Dcucumber.filter.tags="${params.TAGS}"
+          """
+        }
+      }
+    }
+  }
+  post {
+    always {
+      junit allowEmptyResults: true, testResults: 'target/failsafe-reports/*.xml'
+      archiveArtifacts artifacts: 'reports/**', allowEmptyArchive: true
+      publishHTML(target: [reportName: 'Serenity Report', reportDir: 'target/site/serenity',
+                           reportFiles: 'index.html', keepAll: true, allowMissing: true,
+                           alwaysLinkToLastBuild: true])
+    }
+  }
+}
+----
+
+NOTE: Jenkins blocks JavaScript in published HTML by default.
+If the report is not shown correctly, download the archived `reports` folder and open `index.html` locally.
+
+== Troubleshooting and development
+
+* *Additional `/` in request paths*: code generated from the test driver interface may create paths with double `/`.
+Remove the leading `/` of `INFO_PATH` and `DEVICES_PATH` in link:{sourcedir}/main/java/de/gematik/tim/test/glue/api/TestdriverApiPath.java[TestdriverApiPath].
+* *Build fails in the plugin*: check `target/generated-combine/errorLog.txt`.
+With only a few test drivers there may not be enough combinations, use `-P dont-break-preparation`.

@@ -13,6 +13,33 @@
 [
 `docu Testset_V3.adoc`](https://github.com/gematik/TI-Messenger-Testsuite/tree/main/doc/userguide/Testset_V3.adoc)
 
+## Release 3.2.0
+
+### Known issues
+
+- Due to the stricter validation of message editing, the listed V2 tests will fail against the reference implementation.
+  This will be adjusted in a future release of the reference implementation: @TCID:TIM_V2_BASIS_AF_040108, @TCID:
+  TIM_V2_BASIS_AF_040112, @TCID:TIM_V2_BASIS_AF_040903, @TCID:TIM_V2_BASIS_AF_040906, @TCID:TIM_V2_BASIS_AF_060106,
+  @TCID:TIM_V2_BASIS_AF_060110, @TCID:TIM_V2_BASIS_AF_060506, @TCID:TIM_V2_BASIS_AF_060510, @TCID:
+  TIM_V2_BASIS_AF_060606, and @TCID:TIM_V2_BASIS_AF_060610
+
+### Changes
+
+- internal refactoring and added integration tests for RequestResponseUtils
+- Verify fileId consistency when sending attachments.
+- adjusted create room request for @TCID:TIM_V3_ePA_AF_13X0501 to be similar to public chat Matrix preset
+- reworked [
+  `GettingStarted`](https://github.com/gematik/TI-Messenger-Testsuite/blob/main/doc/userguide/GettingStarted.adoc)
+- merged the `DevGuide` into `GettingStarted`
+- new environment variable `TIM_NO_PROXY_HOSTS` to exclude hosts from the proxy configured with `TIM_PROXY_HOST` and
+  `TIM_PROXY_PORT`
+
+### Bugfixes
+
+- Fixes an issue for @TCID:TIM_V3_BASIS_AF_08X0202, where a less common entry in the test card practitioner.name.text
+  field resulted in a failing test. This is resolved by using practitioner.name.given and practitioner.name.family name
+  for the validation instead.
+
 ## Release 3.1.4
 
 ### Known issues
@@ -32,7 +59,8 @@ Thanks to dotWee:
 ### Changes
 
 - test driver API: Clarifies available error codes for deleteMessageViaReplace
-- changed file type of attachment to m.file in @TCID:TIM_V3_BASIS_AF_060108 & @TCID:TIM_V3_BASIS_AF_060508 & @TCID:TIM_V3_BASIS_AF_060608 
+- changed file type of attachment to m.file in @TCID:TIM_V3_BASIS_AF_060108 & @TCID:TIM_V3_BASIS_AF_060508 & @TCID:
+  TIM_V3_BASIS_AF_060608
 - dependency updates:
     - Bumps de.gematik.test:tiger from 4.0.9 to 4.4.2
     - Bumps org.apache.maven.plugins:maven-surefire-plugin from 3.5.6 → 3.6.0
@@ -43,8 +71,8 @@ Thanks to dotWee:
 
 - The Tiger proxy does not close TCP connections on its server-facing side (proxy → backend). This will be fixed with in
   Tiger with a future release. While this may lead to many open connections, it is unlikely, that it will completely
-  exhaust the available ports. All connections are closed at the end of the tests.
-  **Workaround:** Configure the backend server to close idle connections (e.g., set an idle timeout or disable HTTP
+  exhaust the available ports. All connections are closed at the end of the tests. **Workaround:** Configure the backend
+  server to close idle connections (e.g., set an idle timeout or disable HTTP
   keep-alive).
 - Due to the stricter validation of message editing, the listed V2 tests will fail against the reference implementation.
   This will be adjusted in a future release of the reference implementation: @TCID:TIM_V2_BASIS_AF_040108, @TCID:
@@ -74,8 +102,8 @@ Thanks to dotWee:
 
 - The Tiger proxy does not close TCP connections on its server-facing side (proxy → backend). This will be fixed with in
   Tiger with a future release. While this may lead to many open connections, it is unlikely, that it will completely
-  exhaust the available ports. All connections are closed at the end of the tests.
-  **Workaround:** Configure the backend server to close idle connections (e.g., set an idle timeout or disable HTTP
+  exhaust the available ports. All connections are closed at the end of the tests. **Workaround:** Configure the backend
+  server to close idle connections (e.g., set an idle timeout or disable HTTP
   keep-alive).
 
 ### Bugfixes
@@ -878,7 +906,7 @@ Find details about testing with the reference implementation in the chapter 7.4 
 
 - TiMessengerTestTreiber.yaml: replaced location with endpoint (see GitHub
   issue: https://github.com/gematik/TI-Messenger-Testsuite/issues/38)
-- TiMessengerTestTreiber.yaml: fixed one operationId to camelCase(see GitHub
+- TiMessengerTestTreiber.yaml: fixed one operationId to camelCase (see GitHub
   issue: https://github.com/gematik/TI-Messenger-Testsuite/issues/37)
 
 ## Release 1.3.3
@@ -1007,7 +1035,7 @@ Find details about testing with the reference implementation in the chapter 7.4 
 ### Features
 
 - Rename @NoParallel to @Ctl:NoParallel
-- Change step @Und("{string} reserviert ein Client und meldet sich mit den Daten von {string} an der
+- Change step @Und ("{string} reserviert ein Client und meldet sich mit den Daten von {string} an der
   Schnittstelle
   {word} an")
 - New directory for saved mvn properties

@@ -85,10 +85,9 @@ public class FhirSearchOrgQuestion implements Question<FhirSearchResultDTO> {
   private Optional<FhirSearchResultDTO> searchForOrganization(Actor actor) {
     actor.attemptsTo(SEARCH_ORG.request().with(this::prepareQuery));
 
-    FhirSearchResultDTO resp = parseResponse(FhirSearchResultDTO.class);
+    FhirSearchResultDTO searchResult = parseResponse(FhirSearchResultDTO.class);
     actor.remember(LAST_RESPONSE, lastResponse());
-
-    return checkConditions(resp);
+    return checkConditions(searchResult);
   }
 
   private Optional<FhirSearchResultDTO> checkConditions(FhirSearchResultDTO searchResult) {

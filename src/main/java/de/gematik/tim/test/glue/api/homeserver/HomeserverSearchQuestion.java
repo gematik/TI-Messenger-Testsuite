@@ -22,6 +22,7 @@ package de.gematik.tim.test.glue.api.homeserver;
 
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.SEARCH_ON_HOMESERVER;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.repeatedRequest;
 import static java.lang.String.format;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
@@ -75,9 +76,8 @@ public class HomeserverSearchQuestion implements Question<HomeserverSearchResult
     RawDataStatistics.search();
     actor.remember(LAST_RESPONSE, lastResponse());
 
-    HomeserverSearchResultListDTO res =
-        lastResponse().body().as(HomeserverSearchResultListDTO.class);
-    return res.getTotalSearchResults() < 1 ? Optional.empty() : Optional.of(res);
+    HomeserverSearchResultListDTO searchResult = parseResponse(HomeserverSearchResultListDTO.class);
+    return searchResult.getTotalSearchResults() < 1 ? Optional.empty() : Optional.of(searchResult);
   }
 
   private RequestSpecification prepareQuery(RequestSpecification request) {

@@ -160,9 +160,20 @@ public class FhirSearchQuestion implements Question<FhirSearchResultDTO> {
             .filter(
                 practitioner ->
                     practitioner.getName() != null
-                        && practitioner.getName().get(0).getText().contains(name))
+                        && constructDisplayNameFromFhirResource(practitioner).contains(name))
             .toList();
     return practitioners;
+  }
+
+  @SuppressWarnings("java:S1643") // tiny loop, and StringBuilder is hard to read
+  private String constructDisplayNameFromFhirResource(FhirPractitionerDTO practitioner) {
+    String familyName = practitioner.getName().getFirst().getFamily();
+    String displayName = familyName + ", ";
+    for (String givenName : practitioner.getName().getFirst().getGiven()) {
+      //noinspection StringConcatenationInLoop, StringBuilder is hard to read
+      displayName += givenName + " ";
+    }
+    return displayName;
   }
 
   private RequestSpecification prepareQuery(RequestSpecification request) {

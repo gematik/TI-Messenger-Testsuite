@@ -34,6 +34,7 @@ import de.gematik.tim.test.glue.api.exceptions.TestRunException;
 import de.gematik.tim.test.glue.api.teardown.TeardownException;
 import de.gematik.tim.test.models.FhirBaseResourceDTO;
 import de.gematik.tim.test.models.FhirSearchResultDTO;
+import io.restassured.internal.mapping.Jackson3Mapper;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -42,6 +43,8 @@ import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.screenplay.Actor;
 import org.awaitility.core.ConditionTimeoutException;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 @Slf4j
 public class RequestResponseUtils {
@@ -112,8 +115,6 @@ public class RequestResponseUtils {
     }
   }
 
-  @SuppressWarnings(
-      "java:S2201") // Run without retry only used for internal CI, therefor we do not need result
   public static void repeatedRequestForTeardown(Supplier<Optional<Boolean>> request, Actor actor) {
     if (TIMEOUT <= 1 || RUN_WITHOUT_RETRY) {
       request
@@ -139,13 +140,21 @@ public class RequestResponseUtils {
     }
   }
 
+  private static Jackson3Mapper createFhirMapper() {
+    return new Jackson3Mapper(
+        (type, string) ->
+            JsonMapper.builder()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .build());
+  }
+
   public static <T> T parseResponse(Class<T> clazz) {
     try {
       if (FhirBaseResourceDTO.class.isAssignableFrom(clazz)
           || clazz.isInstance(new FhirSearchResultDTO())) {
-        return lastResponse().as(clazz);
+        return lastResponse().as(clazz, createFhirMapper());
       }
-      return lastResponse().as(clazz, TestsuiteInitializer.getStrictMapper());
+      return lastResponse().as(clazz);
     } catch (Exception e) {
       log.error("Could not parse response: ", e);
       throw new TestRunException(
