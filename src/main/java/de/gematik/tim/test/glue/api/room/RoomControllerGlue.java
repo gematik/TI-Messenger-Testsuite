@@ -145,6 +145,9 @@ public class RoomControllerGlue {
         createRoom()
             .withName(roomName)
             .withJoinRule(CreateRoomRequestDTO.JoinRuleEnum.PUBLIC)
+            .withRoomAccess(CreateRoomRequestDTO.RoomAccessEnum.PUBLIC)
+            .withHistoryVisibility(CreateRoomRequestDTO.HistoryVisibilityEnum.SHARED)
+            .withEncryption(false)
             .roomCanBeCreated(false));
     checkResponseCode(actorName, FORBIDDEN.value());
   }

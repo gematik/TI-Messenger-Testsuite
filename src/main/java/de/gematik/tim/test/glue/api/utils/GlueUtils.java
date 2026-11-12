@@ -293,8 +293,8 @@ public class GlueUtils {
 
   public static <T> List<T> getResourcesFromSearchResult(
       FhirSearchResultDTO result, FhirResourceTypeDTO type, Class<T> clazz) {
-    List<FhirBaseResourceDTO> ressourcen = orderByResourceType(result).get(type);
-    return nonNull(ressourcen) ? ressourcen.stream().map(clazz::cast).toList() : List.of();
+    List<FhirBaseResourceDTO> resources = orderByResourceType(result).get(type);
+    return nonNull(resources) ? resources.stream().map(clazz::cast).toList() : List.of();
   }
 
   public static Map<FhirResourceTypeDTO, List<FhirBaseResourceDTO>> orderByResourceType(

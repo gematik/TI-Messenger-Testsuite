@@ -27,9 +27,6 @@ import static java.util.Objects.requireNonNull;
 import static lombok.AccessLevel.PRIVATE;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.gematik.test.tiger.lib.TigerDirector;
 import de.gematik.test.tiger.proxy.TigerProxy;
 import io.cucumber.gherkin.GherkinParser;
@@ -45,7 +42,7 @@ import io.cucumber.messages.types.TableRow;
 import io.restassured.RestAssured;
 import io.restassured.config.HttpClientConfig;
 import io.restassured.config.ObjectMapperConfig;
-import io.restassured.internal.mapping.Jackson2Mapper;
+import io.restassured.internal.mapping.Jackson3Mapper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -62,7 +59,6 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -70,6 +66,8 @@ import org.apache.commons.io.FileUtils;
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)
@@ -106,7 +104,6 @@ public class TestsuiteInitializer {
   private static final String KEY_STORE_PW_ENV_VAR = "TIM_KEYSTORE_PW";
   private static final String RUN_WITHOUT_CERT = "no configured cert found";
 
-  @Getter private static final Jackson2Mapper strictMapper;
   static Long pollInterval;
 
   static {
@@ -175,10 +172,6 @@ public class TestsuiteInitializer {
       }
     }
 
-    strictMapper = createMapper();
-    ObjectMapperConfig mapperConfig = RestAssured.config().getObjectMapperConfig();
-    mapperConfig.defaultObjectMapper(getStrictMapper());
-    RestAssured.config().objectMapperConfig(mapperConfig);
     addHostsToTigerProxy();
     configRestAssured();
     saveMavenProperties(properties);
@@ -213,20 +206,23 @@ public class TestsuiteInitializer {
   }
 
   private static void configRestAssured() {
+    ObjectMapperConfig mapperConfig = RestAssured.config().getObjectMapperConfig();
+    ObjectMapperConfig strictMapperConfig = mapperConfig.defaultObjectMapper(createStrictMapper());
+
     HttpClientConfig httpClientFactory =
         HttpClientConfig.httpClientConfig()
             .setParam("http.socket.timeout", HTTP_TIMEOUT * 1000)
             .setParam("http.connection.timeout", HTTP_TIMEOUT * 1000);
-    RestAssured.config = RestAssured.config().httpClient(httpClientFactory);
+    RestAssured.config =
+        RestAssured.config().httpClient(httpClientFactory).objectMapperConfig(strictMapperConfig);
   }
 
-  private static Jackson2Mapper createMapper() {
-    return new Jackson2Mapper(
-        (type, string) -> {
-          ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
-          objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
-          return objectMapper;
-        });
+  private static Jackson3Mapper createStrictMapper() {
+    return new Jackson3Mapper(
+        (type, string) ->
+            JsonMapper.builder()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true)
+                .build());
   }
 
   private static List<File> getFeatureFiles(File parentFile) {

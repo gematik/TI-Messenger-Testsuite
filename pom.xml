@@ -19,7 +19,7 @@
 
   <properties>
     <tiger.config.file>tiger.yml</tiger.config.file>
-    <sonar.sources>${project.basedir}</sonar.sources>
+    <tiger.openReport>true</tiger.openReport>
     <sonar.exclusions>
       serenityReportExample/**, target11x/**, targetV2part1/**, targetV2part2/**, targetV3delta1/**, targetV3delta2/**
     </sonar.exclusions>
@@ -31,17 +31,17 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.6.0</version>
+        <version>3.6.1</version>
       </plugin>
       <plugin>
-        <artifactId>sonar-maven-plugin</artifactId>
         <groupId>org.sonarsource.scanner.maven</groupId>
-        <version>5.7.0.6970</version>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <version>5.8.0.7211</version>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.6.1</version>
+        <version>3.6.2</version>
         <executions>
           <execution>
             <id>local-timestamp-property</id>
@@ -97,7 +97,8 @@
             </goals>
             <configuration>
               <sourceFile>${basedir}/target/site/serenity/serenity-summary.html</sourceFile>
-              <destinationFile>${basedir}/target/site/serenity/#serenity-summary.html
+              <destinationFile>
+                ${basedir}/target/site/serenity/#serenity-summary.html
               </destinationFile>
             </configuration>
           </execution>
@@ -119,7 +120,9 @@
             </goals>
             <configuration>
               <skip>false</skip>
-              <outputDirectory>${basedir}/reports/${build.time}/report/additional-data/raw-data</outputDirectory>
+              <outputDirectory>
+                ${basedir}/reports/${build.time}/report/additional-data/raw-data
+              </outputDirectory>
               <resources>
                 <resource>
                   <directory>${basedir}/target/generated-raw-data</directory>
@@ -135,7 +138,9 @@
             </goals>
             <configuration>
               <skip>false</skip>
-              <outputDirectory>${basedir}/reports/${build.time}/report/additional-data/features</outputDirectory>
+              <outputDirectory>
+                ${basedir}/reports/${build.time}/report/additional-data/features
+              </outputDirectory>
               <resources>
                 <resource>
                   <directory>${basedir}/target/features</directory>
@@ -151,7 +156,9 @@
             </goals>
             <configuration>
               <skip>false</skip>
-              <outputDirectory>${basedir}/reports/${build.time}/report/additional-data/combine-items</outputDirectory>
+              <outputDirectory>
+                ${basedir}/reports/${build.time}/report/additional-data/combine-items
+              </outputDirectory>
               <resources>
                 <resource>
                   <directory>${basedir}/target/generated-combine</directory>
@@ -167,7 +174,9 @@
             </goals>
             <configuration>
               <skip>${skip.save.tiger-yml}</skip>
-              <outputDirectory>${basedir}/reports/${build.time}/report/additional-data/combine-items</outputDirectory>
+              <outputDirectory>
+                ${basedir}/reports/${build.time}/report/additional-data/combine-items
+              </outputDirectory>
               <resources>
                 <resource>
                   <directory>${basedir}/target/profile-resources</directory>
@@ -186,7 +195,9 @@
             </goals>
             <configuration>
               <skip>false</skip>
-              <outputDirectory>${basedir}/reports/${build.time}/report/additional-data/versions</outputDirectory>
+              <outputDirectory>
+                ${basedir}/reports/${build.time}/report/additional-data/versions
+              </outputDirectory>
               <resources>
                 <resource>
                   <directory>${basedir}/target/classes</directory>
@@ -205,7 +216,9 @@
             </goals>
             <configuration>
               <skip>false</skip>
-              <outputDirectory>${basedir}/reports/${build.time}/report/additional-data</outputDirectory>
+              <outputDirectory>
+                ${basedir}/reports/${build.time}/report/additional-data
+              </outputDirectory>
               <resources>
                 <resource>
                   <directory>${basedir}/target</directory>
@@ -224,7 +237,9 @@
             </goals>
             <configuration>
               <skip>false</skip>
-              <outputDirectory>${basedir}/reports/${build.time}/report/additional-data/mvn-properties</outputDirectory>
+              <outputDirectory>
+                ${basedir}/reports/${build.time}/report/additional-data/mvn-properties
+              </outputDirectory>
               <resources>
                 <resource>
                   <directory>${basedir}/target</directory>
@@ -240,7 +255,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>properties-maven-plugin</artifactId>
-        <version>1.3.0</version>
+        <version>1.3.1</version>
         <executions>
           <execution>
             <phase>generate-resources</phase>
@@ -339,7 +354,7 @@
         <cutest.break.tablesize>false</cutest.break.tablesize>
       </properties>
     </profile>
-    <!--      used to skip saving reports when tests are skipped-->
+    <!-- used to skip saving reports when tests are skipped -->
     <profile>
       <id>skipTests equal skip.saving.reports</id>
       <activation>

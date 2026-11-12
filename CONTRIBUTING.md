@@ -8,13 +8,9 @@ Read our [Code of Conduct](./CODE_OF_CONDUCT.md) to keep our community approacha
 In this guide you will get an overview how you can contribute to our projects by opening an issue, creating, reviewing
 and merging a pull request.
 
-Use the table of contents icon in the top right corner of this document to get to a specific section of this guide
-quickly.
-
 ## Reporting a security vulnerability
 
-Please do not report vulnerabilities and security incidents as GitHub issues. Please report them using the contact form
-at https://fachportal.gematik.de/kontaktformular.
+Please check [SECURITY.md](./SECURITY.md) for information on how to report a security vulnerability.
 
 ## New contributor guide
 
@@ -57,10 +53,9 @@ Commit the changes once you are happy with them.
 - Don't forget
   to [link the PR to the issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue)
   if you are solving one.
-- Update the [README.adoc](./README.adoc), the documentation and the [ReleaseNotes.md](./ReleaseNotes.md) with all
-  details to document the changes made by this PR.
-- Increase the version numbers in any necessary files and the [readme](./README.adoc) to the new version that this
-  Pull Request would represent. The versioning scheme we use is [SemVer](http://semver.org/).
+- Update the documentation and the [ReleaseNotes.md](./ReleaseNotes.md) with all details to document the changes made by
+  this PR.
+- Increase the version numbers in any necessary files. The versioning scheme we use is [SemVer](http://semver.org/).
 - Once you submit your PR, a project team member will review your proposal. We may ask questions or request additional
   information.
 - We may ask for changes to be made before a PR can be merged, either
@@ -77,4 +72,4 @@ Commit the changes once you are happy with them.
 Congratulations :tada::tada: The gematik team thanks you :sparkles:.
 
 Once your PR is merged, your contributions will be publicly visible on
-the [gematik github page](https://github.com/gematik/). 
+the [gematik github page](https://github.com/gematik/).

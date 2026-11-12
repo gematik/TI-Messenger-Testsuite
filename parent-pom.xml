@@ -12,7 +12,7 @@
   <description>Properties and dependencies for Testsuite</description>
 
   <properties>
-    <revision>3.1.4</revision>
+    <revision>3.2.0</revision>
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
     <java.version>21</java.version>
@@ -27,11 +27,13 @@
     <maven.dependency.plugin.version>3.9.0</maven.dependency.plugin.version>
     <maven.source.plugin.version>3.4.0</maven.source.plugin.version>
     <polarion.toolbox.version>3.1.0-223</polarion.toolbox.version>
-    <ti.m.mtls.certs.version>2.2.9</ti.m.mtls.certs.version>
+    <ti.m.mtls.certs.version>2.2.12</ti.m.mtls.certs.version>
     <tiger.version>4.4.2</tiger.version>
 
     <serenity.report.directory>${project.build.directory}/site/serenity</serenity.report.directory>
-    <ti.m.mtls.output.directory>${project.build.directory}/profile-resources</ti.m.mtls.output.directory>
+    <ti.m.mtls.output.directory>
+      ${project.build.directory}/profile-resources
+    </ti.m.mtls.output.directory>
     <tim.shared.properties>${ti.m.mtls.output.directory}/shared.properties</tim.shared.properties>
     <feature_dir>${project.build.directory}/features/</feature_dir>
     <feature.template.basedir>
@@ -52,15 +54,15 @@
     <feature.tables.max_rows>9999</feature.tables.max_rows>
     <maven.build.timestamp.format>yyyy-MM-dd_HH_mm_ss</maven.build.timestamp.format>
     <skip.saving.reports>false</skip.saving.reports>
-    <combine.items.file>
-      ${project.basedir}/combine_items.json
-    </combine.items.file>
+    <combine.items.file>${project.basedir}/combine_items.json</combine.items.file>
     <tim.truststore>${env.TIM_TRUSTSTORE}</tim.truststore>
     <tim.truststore.pw>${env.TIM_TRUSTSTORE_PW}</tim.truststore.pw>
     <tim.keystore>${env.TIM_KEYSTORE}</tim.keystore>
     <tim.keystore.pw>${env.TIM_KEYSTORE_PW}</tim.keystore.pw>
     <tim.fproxy.host>${env.TIM_PROXY_HOST}</tim.fproxy.host>
     <tim.fproxy.port>${env.TIM_PROXY_PORT}</tim.fproxy.port>
+    <tim.fproxy.noproxyhosts>${env.TIM_PROXY_NOPROXYHOSTS}</tim.fproxy.noproxyhosts>
+    <tiger.openReport>false</tiger.openReport>
     <cutest.prepare.skip>false</cutest.prepare.skip>
     <cutest.prepare.skipPrepare>false</cutest.prepare.skipPrepare>
     <cutest.prepare.skipCombine>false</cutest.prepare.skipCombine>
@@ -149,11 +151,6 @@
       <version>10.9.1</version>
     </dependency>
     <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-      <version>2.22.0</version>
-    </dependency>
-    <dependency>
       <groupId>net.minidev</groupId>
       <artifactId>json-smart</artifactId>
       <version>2.6.0</version>
@@ -195,6 +192,12 @@
       <groupId>jakarta.xml.bind</groupId>
       <artifactId>jakarta.xml.bind-api</artifactId>
       <version>4.0.5</version>
+    </dependency>
+    <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>mockwebserver</artifactId>
+      <version>5.5.0</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -250,7 +253,7 @@
           <skipComb>${cutest.prepare.skipCombine}</skipComb>
           <skipCheck>${cutest.prepare.skipCheck}</skipCheck>
           <acceptUnknownInfo>true</acceptUnknownInfo>
-          <!--          Global Config-->
+          <!-- Global Config -->
           <combineItemsFile>${combine.items.file}</combineItemsFile>
           <breakOnContextError>${cutest.break.context}</breakOnContextError>
           <breakOnFailedRequest>${cutest.break.request}</breakOnFailedRequest>
@@ -260,7 +263,8 @@
           <clientCertStorePw>${tim.keystore.pw}</clientCertStorePw>
           <proxyHost>${tim.fproxy.host}</proxyHost>
           <proxyPort>${tim.fproxy.port}</proxyPort>
-          <!--          Prepare item config-->
+          <noProxyHosts>${tim.fproxy.noproxyhosts}</noProxyHosts>
+          <!-- Prepare item config -->
           <envVarFormat>html</envVarFormat>
           <poolGroupString>${poolGroupString}</poolGroupString>
           <tagExpressions>
@@ -353,12 +357,12 @@
               <expression>$.clientInfo.version</expression>
             </propertyExpression>
           </propertyExpressions>
-          <!--          Check config-->
+          <!-- Check config -->
           <checkPath>devices</checkPath>
           <defaultCheckExpressions>
             ITEM.hasTag("orgAdmin") ? $.devices.size() >= 1 : $.devices.size() >= 3
           </defaultCheckExpressions>
-          <!--          Combine config-->
+          <!-- Combine config -->
           <breakIfTableToSmall>${cutest.break.tablesize}</breakIfTableToSmall>
           <outputDir>${feature_dir}</outputDir>
           <templateSources>${feature.template.dir}</templateSources>
@@ -372,7 +376,6 @@
           <softFilterToHardFilter>${soft-filter.to.hard}</softFilterToHardFilter>
           <countExecutionsFormat>${cutest.count.format}</countExecutionsFormat>
         </configuration>
-
         <executions>
           <execution>
             <id>prepare-items</id>
@@ -398,6 +401,12 @@
         <groupId>io.github.git-commit-id</groupId>
         <artifactId>git-commit-id-maven-plugin</artifactId>
         <version>10.0.0</version>
+        <configuration>
+          <generateGitPropertiesFile>true</generateGitPropertiesFile>
+          <includeOnlyProperties>
+            <includeOnlyProperty>^git.branch</includeOnlyProperty>
+          </includeOnlyProperties>
+        </configuration>
         <executions>
           <execution>
             <id>get_git_infos</id>
@@ -407,12 +416,6 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <generateGitPropertiesFile>true</generateGitPropertiesFile>
-          <includeOnlyProperties>
-            <includeOnlyProperty>^git.branch</includeOnlyProperty>
-          </includeOnlyProperties>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.openapitools</groupId>
@@ -451,30 +454,30 @@
         <version>${tiger.version}</version>
         <executions>
           <execution>
-            <configuration>
-              <skip>false</skip>
-              <reportDirectory>${serenity.report.directory}</reportDirectory>
-              <featuresDir>${feature_dir}</featuresDir>
-              <includes>
-                <include>**/*.feature</include>
-              </includes>
-              <driverPackage>
-                de.gematik.tim.test.drivers
-              </driverPackage>
-              <driverClassName>CucumberDriver${ctr}IT</driverClassName>
-              <templateFile>
-                ${project.basedir}/src/main/resources/driver5ClassTemplate.jtmpl
-              </templateFile>
-            </configuration>
             <id>default-sources</id>
             <goals>
               <goal>generate-drivers</goal>
               <goal>generate-serenity-reports</goal>
             </goals>
+            <configuration>
+              <skip>false</skip>
+              <reportDirectory>${serenity.report.directory}</reportDirectory>
+              <openSerenityReportInBrowser>${tiger.openReport}</openSerenityReportInBrowser>
+              <featuresDir>${feature_dir}</featuresDir>
+              <includes>
+                <include>**/*.feature</include>
+              </includes>
+              <driverPackage>de.gematik.tim.test.drivers</driverPackage>
+              <driverClassName>CucumberDriver${ctr}IT</driverClassName>
+              <templateFile>
+                ${project.basedir}/src/main/resources/driver5ClassTemplate.jtmpl
+              </templateFile>
+            </configuration>
           </execution>
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <version>3.5.6</version>
         <configuration>
@@ -520,4 +523,16 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>unit-tests</id>
+      <properties>
+        <cutest.prepare.skip>true</cutest.prepare.skip>
+        <feature_dir>
+          ${project.basedir}/src/test/resources/de/gematik/tim/test/glue/api/
+        </feature_dir>
+      </properties>
+    </profile>
+  </profiles>
 </project>

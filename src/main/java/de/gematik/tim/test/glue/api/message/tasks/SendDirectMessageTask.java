@@ -29,6 +29,7 @@ import static de.gematik.tim.test.glue.api.room.UseRoomAbility.addRoomToActor;
 import static de.gematik.tim.test.glue.api.room.questions.GetRoomQuestion.ownRoom;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.createUniqueMessageTextWithTimestamp;
 import static de.gematik.tim.test.glue.api.utils.GlueUtils.isSameHomeserver;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addMessage;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addRoom;
 import static de.gematik.tim.test.models.RoomMembershipStateDTO.INVITE;
@@ -112,7 +113,7 @@ public class SendDirectMessageTask implements Task {
     }
     actor.attemptsTo(SEND_DIRECT_MESSAGE.request().with(req -> req.body(directMessage)));
     if (HttpStatus.valueOf(lastResponse().statusCode()).is2xxSuccessful()) {
-      addMessage(this.message, lastResponse().as(MessageDTO.class));
+      addMessage(this.message, parseResponse(MessageDTO.class));
     }
 
     logEventsAndSaveRoomToActor(actor, actorMxId, toMxId);

@@ -200,6 +200,12 @@ public class MediaGlue {
     }
   }
 
+  private void checkFileId(MessageDTO receivedMessage, String expectedFileId) {
+    assertThat(receivedMessage.getFileId())
+        .as("FileId must be the same as the uploaded media fileId")
+        .isEqualTo(expectedFileId);
+  }
+
   private void checkMsgType(String actorName, String file, String msgType) {
     uploadsAMediaFile(actorName, file);
     if (!msgType.equals("m.image")
@@ -232,6 +238,7 @@ public class MediaGlue {
     assertThat(receivedMessage.getBody()).isNotNull().isNotEmpty();
     checkRequiredMessageProperties(receivedMessage, msgType, mimetype);
     checkRequiredFileProperties(receivedMessage);
+    checkFileId(receivedMessage, sender.recall(MEDIA_ID));
     RoomDTO room = checkRoomMembershipStateInDirectChatOf(actorName);
     checkRoomVersion(room);
   }
@@ -269,6 +276,7 @@ public class MediaGlue {
     assertThat(receivedMessage.getBody()).isNotNull().isNotEmpty();
     checkRequiredMessageProperties(receivedMessage, msgType, mimetype);
     checkRequiredFileProperties(receivedMessage);
+    checkFileId(receivedMessage, actor.recall(MEDIA_ID));
     checkRoomMembershipState(actor, roomName);
   }
 
@@ -289,7 +297,6 @@ public class MediaGlue {
 
     checkResponseCode(actorName, OK.value());
     checkMediaIntegrity(file, receivedMedia, receivedMessage);
-
     checkRequiredMessageProperties(receivedMessage, msgType, mimetype);
     checkRequiredFileProperties(receivedMessage);
     checkRoomMembershipState(actor, roomName);

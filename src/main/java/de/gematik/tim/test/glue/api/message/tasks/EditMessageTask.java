@@ -23,6 +23,7 @@ package de.gematik.tim.test.glue.api.message.tasks;
 import static de.gematik.tim.test.glue.api.ActorMemoryKeys.LAST_RESPONSE;
 import static de.gematik.tim.test.glue.api.TestdriverApiEndpoint.EDIT_MESSAGE;
 import static de.gematik.tim.test.glue.api.TestdriverApiPath.MESSAGE_ID_VARIABLE;
+import static de.gematik.tim.test.glue.api.utils.RequestResponseUtils.parseResponse;
 import static de.gematik.tim.test.glue.api.utils.TestcasePropertiesManager.addMessage;
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
@@ -59,15 +60,14 @@ public class EditMessageTask implements Task {
 
   @Override
   public <T extends Actor> void performAs(T actor) {
-    MessageContentDTO messageBody =
-        new MessageContentDTO().body(this.body).msgtype("m.text");
+    MessageContentDTO messageBody = new MessageContentDTO().body(this.body).msgtype("m.text");
     actor.attemptsTo(
         EDIT_MESSAGE
             .request()
             .with(req -> req.pathParam(MESSAGE_ID_VARIABLE, this.messageId).body(messageBody)));
     actor.remember(LAST_RESPONSE, lastResponse());
     if (HttpStatus.valueOf(lastResponse().getStatusCode()).is2xxSuccessful()) {
-      addMessage(this.message, lastResponse().as(MessageDTO.class));
+      addMessage(this.message, parseResponse(MessageDTO.class));
     }
   }
 }

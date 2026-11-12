@@ -55,12 +55,12 @@ public class TestcasePropertiesManager {
   private static final String TCID_PREFIX = "@TCID";
   private static String id;
   private static boolean dryRun;
-  private static Map<String, HealthcareServiceInfo> healthcareServices;
-  private static Map<String, FhirEndpointDTO> endpoints;
-  private static Map<String, RoomDTO> rooms;
-  private static Map<String, MessageDTO> messages;
-  private static List<Actor> failedTeardownActors;
-  private static CopyOnWriteArrayList<Actor> activeActors;
+  private static Map<String, HealthcareServiceInfo> healthcareServices = new HashMap<>();
+  private static Map<String, FhirEndpointDTO> endpoints = new HashMap<>();
+  private static Map<String, RoomDTO> rooms = new HashMap<>();
+  private static Map<String, MessageDTO> messages = new HashMap<>();
+  private static List<Actor> failedTeardownActors = new ArrayList<>();
+  private static CopyOnWriteArrayList<Actor> activeActors = new CopyOnWriteArrayList<>();
   @Getter private static Scenario currentScenario;
 
   public static void createTestcaseId(TestCaseStarted testCaseStarted) {
@@ -97,6 +97,10 @@ public class TestcasePropertiesManager {
       throw new TestRunException("The testcase has no id! Please provide id first!");
     }
     return id;
+  }
+
+  public static void setTestcaseId(String testcaseId) {
+    id = testcaseId;
   }
 
   public static void addHs(String name, HealthcareServiceInfo info) {
